@@ -1,0 +1,10 @@
+server:
+  port: 8010
+spring:
+  application:
+    name: hospital-service
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:6006/eureka/

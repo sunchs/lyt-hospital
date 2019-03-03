@@ -1,0 +1,15 @@
+server:
+  port: 4000
+spring:
+  application:
+    name: gateway-service
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:6006/eureka/
+
+#zuul:
+#  routes:
+#    user-service: /user/** #路由映射
+#  ignored-services: user-service #取消代理
