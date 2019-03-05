@@ -7,4 +7,17 @@ pipeline {
             }
         }
     }
+    post {
+        success {
+            script {
+                sh 'ls'
+            }
+        }
+
+        failure {
+            script {
+                sh 'java -version'
+            }
+        }
+    }
 }
