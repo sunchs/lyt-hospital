@@ -1,9 +1,9 @@
 pipeline {
     agent any
     environment {
-        module = "user-service"
+        module = "gateway"
         tag = "v1.0"
-        portBind = ""
+        portBind = "-p 4000:4000"
     }
     stages {
         stage('Build') {
