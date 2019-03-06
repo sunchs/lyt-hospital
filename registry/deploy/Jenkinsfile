@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                dir("registry") {
+                    sh "mvn -Dmaven.test.failure.ignore clean install"
+                }
+            }
+        }
+        stage('Image') {
+            steps {
+                sh "docker build -t registry:v1.0 -f registry/deploy/Dockerfile ."
+            }
+        }
+    }
+    post {
+        success {
+            script {
+                echo "构建成功"
+                sh "docker run -d -p 6006:6006 registry:v1.0"
+            }
+        }
+
+        failure {
+            script {
+                echo "构建失败"
+            }
+        }
+    }
+}
