@@ -3,9 +3,7 @@ pipeline {
     stages {
         stage('关闭程序') {
             steps {
-                dir("registry") {
-                    sh "kill -9 $(lsof -i:6006 -t)"
-                }
+                sh "kill -9 $(lsof -i:6006 -t)"
             }
         }
         stage('Build') {
