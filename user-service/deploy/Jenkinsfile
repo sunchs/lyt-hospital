@@ -3,7 +3,7 @@ pipeline {
     environment {
         module = "user-service"
         tag = "v1.0"
-        portBind = ""
+        portBind = " "
     }
     stages {
         stage('Build') {
