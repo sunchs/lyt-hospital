@@ -8,6 +8,11 @@ pipeline {
                 }
             }
         }
+        stage('Image') {
+            steps {
+                sh "docker build -t user-service -f user-service/deploy/Dockerfile ."
+            }
+        }
     }
     post {
         success {
