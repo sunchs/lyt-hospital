@@ -3,9 +3,9 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                dir("user-service") {
+
                     sh "mvn -Dmaven.test.failure.ignore clean install "
-                }
+                
             }
         }
     }
