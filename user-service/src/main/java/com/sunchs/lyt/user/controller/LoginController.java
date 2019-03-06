@@ -19,4 +19,8 @@ public class LoginController {
 //        return resultData;
 //    }
 
+    @PostMapping("/setLogin")
+    public String login() {
+        return "ccccccc";
+    }
 }
