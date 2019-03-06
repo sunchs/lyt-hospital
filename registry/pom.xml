@@ -23,7 +23,7 @@
     </dependencies>
 
     <build>
-        <finalName>user-service</finalName>
+        <finalName>registry</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
