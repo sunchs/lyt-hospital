@@ -27,4 +27,8 @@ pipeline {
             }
         }
     }
+    options {
+        //保持构建的最大个数
+        buildDiscarder(logRotator( daysToKeepStr: '5',numToKeepStr: '5'));
+    }
 }
