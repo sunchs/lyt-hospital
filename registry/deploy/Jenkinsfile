@@ -1,6 +1,13 @@
 pipeline {
     agent any
     stages {
+        stage('关闭程序') {
+            steps {
+                dir("registry") {
+                    sh "kill -9 $(lsof -i:6006 -t)"
+                }
+            }
+        }
         stage('Build') {
             steps {
                 dir("registry") {
@@ -8,9 +15,16 @@ pipeline {
                 }
             }
         }
+        stage('直接运行') {
+            steps {
+                dir("registry") {
+                    sh "java -Dfile.encoding=UTF8 -Duser.timezone=GMT+08 -jar registry/target/registry.jar"
+                }
+            }
+        }
         stage('Image') {
             steps {
-                sh "docker build -t registry:v1.0 -f registry/deploy/Dockerfile ."
+                //sh "docker build -t registry:v1.0 -f registry/deploy/Dockerfile ."
             }
         }
     }
@@ -18,11 +32,10 @@ pipeline {
         success {
             script {
                 echo "构建成功"
-                sh "java -Dfile.encoding=UTF8 -Duser.timezone=GMT+08 -jar registry/target/registry.jar"
+
                 //sh "docker run -d -p 6006:6006 registry:v1.0"
             }
         }
-
         failure {
             script {
                 echo "构建失败"
