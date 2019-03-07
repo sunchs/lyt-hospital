@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class AccessFilter extends ZuulFilter {
     @Override
     public String filterType() {
-        return "pre";
+        return null;
     }
 
     @Override
@@ -17,7 +17,7 @@ public class AccessFilter extends ZuulFilter {
 
     @Override
     public boolean shouldFilter() {
-        return true;
+        return false;
     }
 
     @Override
