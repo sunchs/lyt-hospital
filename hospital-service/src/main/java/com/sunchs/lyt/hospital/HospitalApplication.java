@@ -1,11 +1,11 @@
-package com.sunchs.lyt.gateway.question;
+package com.sunchs.lyt.hospital;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class QuestionApplication {
+public class HospitalApplication {
     public static void main(String[] args) {
-        SpringApplication.run(QuestionApplication.class, args);
+        SpringApplication.run(HospitalApplication.class, args);
     }
 }

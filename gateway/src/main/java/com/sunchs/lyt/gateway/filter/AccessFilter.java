@@ -3,7 +3,7 @@ package com.sunchs.lyt.gateway.filter;
 import com.netflix.zuul.ZuulFilter;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class AccessFilter extends ZuulFilter {
     @Override
     public String filterType() {
