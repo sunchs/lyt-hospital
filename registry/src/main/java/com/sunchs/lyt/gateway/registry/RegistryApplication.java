@@ -1,4 +1,4 @@
-package com.sunchs.lyt.registry;
+package com.sunchs.lyt.gateway.registry;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

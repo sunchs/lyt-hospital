@@ -1,4 +1,4 @@
-package com.sunchs.lyt.framework.bean;
+package com.sunchs.lyt.gateway.framework.bean;
 
 public class ResultData {
 

@@ -1,4 +1,4 @@
-package com.sunchs.lyt.user;
+package com.sunchs.lyt.gateway.user;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
