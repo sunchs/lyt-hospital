@@ -5,6 +5,8 @@ spring:
     name: gateway
 
 eureka:
+  instance:
+    prefer-ip-address: true
   client:
     serviceUrl:
       defaultZone: http://47.107.255.115:6006/eureka/
