@@ -33,7 +33,7 @@ eureka:
 #    enabled: false
 
 zuul:
-  ribbon-isolation-strategy: thread
+#  ribbon-isolation-strategy: thread
   max:
     host:
       connections: 5000
