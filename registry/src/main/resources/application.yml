@@ -7,8 +7,19 @@ spring:
 eureka:
   instance:
     hostname: eureka
+    lease-expiration-duration-in-seconds: 30
+    lease-renewal-interval-in-seconds: 5
+
   client:
     registerWithEureka: false
     fetchRegistry: false
     serviceUrl:
       defaultZone: http://47.107.255.115:6006/eureka/
+
+  server:
+    ## 自我保护模关闭
+    enable-self-preservation: false
+    ## 主动失效检测间隔,配置成5秒
+    eviction-interval-timer-in-ms: 5000
+    ## 禁用readOnlyCacheMap
+    use-read-only-response-cache: false

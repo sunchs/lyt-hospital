@@ -9,6 +9,7 @@ eureka:
     serviceUrl:
       defaultZone: http://47.107.255.115:6006/eureka/
 
+
 #zuul:
 #  routes:
 #    user-service: /user/** #路由映射
