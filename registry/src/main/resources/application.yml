@@ -2,7 +2,7 @@ server:
   port: 6006
 spring:
   application:
-    name: registry-service
+    name: registry
 
 eureka:
   instance:
