@@ -7,19 +7,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/user")
 public class LoginController {
 
     @PostMapping("/setLogin")
     public ResultData login(@RequestBody RequestData data) {
-        ResultData resultData = new ResultData();
-        resultData.status = 1;
-        resultData.msg = data.getPlatform();
 
-        resultData.data = data.getString("name");
+        Map<String, Object> res = new HashMap<>();
+        res.put("version", data.getVersion());
+        res.put("platform", data.getPlatform());
+        res.put("params", data.getParams().toString());
+        res.put("token", data.getToken());
 
-        return resultData;
+        return ResultData.getSuccess(res);
     }
 
 }

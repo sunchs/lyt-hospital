@@ -1,5 +1,7 @@
 package com.sunchs.lyt.framework.bean;
 
+import com.sunchs.lyt.framework.enums.ResultEnum;
+
 public class ResultData {
 
     public Integer status;
@@ -8,11 +10,24 @@ public class ResultData {
 
     public Object data;
 
-    @Override
-    public String toString() {
-        return "ResultData{" +
-                "status=" + status +
-                ", msg='" + msg + '\'' +
-                '}';
+    public static ResultData getSuccess() {
+        ResultData resultData = new ResultData();
+        resultData.status = ResultEnum.Success.getStatus();
+        resultData.msg = ResultEnum.Success.getMessage();
+        return resultData;
     }
+
+    public static ResultData getSuccess(Object data) {
+        ResultData resultData = getSuccess();
+        resultData.data = data;
+        return resultData;
+    }
+
+    public static ResultData getFailure() {
+        ResultData resultData = new ResultData();
+        resultData.status = ResultEnum.Failure.getStatus();
+        resultData.msg = ResultEnum.Failure.getMessage();
+        return resultData;
+    }
+
 }
