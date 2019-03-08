@@ -22,7 +22,6 @@ pipeline {
             steps {
                 sh "docker rm -f ${module}-${tag}"
                 sh "docker run -dit ${portBind} --name ${module}-${tag} ${module}:${tag}"
-                sh "docker rmi -f \$(docker images | grep ${module}:${tag})"
             }
         }
     }
