@@ -1,13 +1,11 @@
 package com.sunchs.lyt.gateway.filter;
 
 import com.netflix.zuul.ZuulFilter;
-import org.springframework.stereotype.Component;
 
-//@Component
-public class AccessFilter extends ZuulFilter {
+public class PostFilter extends ZuulFilter {
     @Override
     public String filterType() {
-        return "pre";
+        return "post";
     }
 
     @Override
@@ -22,7 +20,6 @@ public class AccessFilter extends ZuulFilter {
 
     @Override
     public Object run() {
-        return "aaaabbbb";
-//        return null;
+        return null;
     }
 }
