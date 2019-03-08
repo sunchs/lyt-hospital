@@ -9,7 +9,7 @@ eureka:
     prefer-ip-address: true
   client:
     serviceUrl:
-      defaultZone: http://localhost:6006/eureka/
+      defaultZone: http://47.107.255.115:6006/eureka/
 
 
 #zuul:
