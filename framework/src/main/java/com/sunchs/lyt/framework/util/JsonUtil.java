@@ -13,9 +13,9 @@ public class JsonUtil {
        return gson.toJson(src);
     }
 
-    public static <T> T toObject(String json, Class<T> classOfT) {
+    public static <T> T toObject(String json, Class<T> clazz) {
         try {
-            return gson.fromJson(json, classOfT);
+            return gson.fromJson(json, clazz);
         } catch (JsonSyntaxException e) {
             return null;
         }

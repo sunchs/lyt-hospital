@@ -30,4 +30,10 @@ public class ResultData {
         return resultData;
     }
 
+    public static ResultData getFailure(String msg) {
+        ResultData resultData = new ResultData();
+        resultData.status = ResultEnum.Failure.getStatus();
+        resultData.msg = msg;
+        return resultData;
+    }
 }

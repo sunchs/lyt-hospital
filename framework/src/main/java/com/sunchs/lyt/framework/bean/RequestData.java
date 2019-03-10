@@ -34,6 +34,14 @@ public class RequestData {
         return jsonParams;
     }
 
+    /**
+     * 将 params 转成 T 对象
+     */
+    public <T> T toObject(Class<T> clazz) {
+        String json = JsonUtil.toJson(params);
+        return JsonUtil.toObject(json, clazz);
+    }
+
     public String getString(String key) {
         if (getParams().has(key)) {
             return getParams().get(key).getAsString();
