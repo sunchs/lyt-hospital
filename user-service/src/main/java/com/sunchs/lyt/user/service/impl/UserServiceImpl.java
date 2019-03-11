@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserData addAccount(UserParam data) throws UserException {
+    public UserData saveAccount(UserParam data) {
         if (StringUtil.isEmpty(data.getUserName())) {
             throw new UserException("用户名不能为空");
         }
@@ -52,14 +52,21 @@ public class UserServiceImpl implements UserService {
             throw new UserException("角色不能为空");
         }
         Map<String, Object> param = new HashMap<>();
+        param.put("userId", data.getUserId());
         param.put("userName", data.getUserName());
         param.put("passWord", MD5Util.encode(data.getPassWord()));
         param.put("name", data.getName());
         param.put("createTime", new Timestamp(System.currentTimeMillis()));
         param.put("pwLog", data.getPassWord());
-        Integer userId = userDao.addUser(param);
+
+        Integer userId = data.getUserId();
+        if (NumberUtil.isZero(userId)) {
+            userId = userDao.addUser(param);// 添加
+        } else {
+            userDao.updateUser(param);// 修改
+        }
         if (userId > 0) {
-            userDao.addUserRole(userId, data.getRoleId());
+            userDao.saveUserRole(userId, data.getRoleId());
             UserData user = userDao.getUserById(userId);
             RoleData role = roleDao.getRoleById(data.getRoleId());
             user.setRole(role);
@@ -67,7 +74,6 @@ public class UserServiceImpl implements UserService {
         }
         return null;
     }
-
 }
 
 

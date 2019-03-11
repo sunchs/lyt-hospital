@@ -27,7 +27,12 @@ public interface UserDao {
     Integer addUser(Map<String, Object> params);
 
     /**
+     * 更新用户
+     */
+    boolean updateUser(Map<String, Object> params);
+
+    /**
      * 添加用户角色
      */
-    void addUserRole(Integer userId, Integer roleId);
+    void saveUserRole(Integer userId, Integer roleId);
 }

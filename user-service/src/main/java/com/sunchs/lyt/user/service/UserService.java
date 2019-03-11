@@ -16,7 +16,7 @@ public interface UserService {
     void token(String token);
 
     /**
-     * 添加账号
+     * 添加、修改账号
      */
-    UserData addAccount(UserParam data) throws RuntimeException;
+    UserData saveAccount(UserParam data);
 }

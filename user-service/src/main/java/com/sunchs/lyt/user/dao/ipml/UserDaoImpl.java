@@ -64,11 +64,24 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void addUserRole(Integer userId, Integer roleId) {
-        String sql = "INSERT INTO user_role(user_id,role_id) VALUES(:userId, :roleId)";
+    public boolean updateUser(Map<String, Object> params) {
+        String sql = "UPDATE user SET password=:passWord, name=:name, pw_log=:pwLog WHERE user_id=:userId";
+        try {
+            db.update(sql, new MapSqlParameterSource(params));
+        } catch (Exception e) {
+            throw new UserException("修改用户数据，SQL异常");
+        }
+        return true;
+    }
+
+    @Override
+    public void saveUserRole(Integer userId, Integer roleId) {
+        String delSql = "DELETE FROM user_role WHERE user_id=:userId";
+        String istSql = "INSERT INTO user_role(user_id,role_id) VALUES(:userId, :roleId)";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("userId", userId)
                 .addValue("roleId", roleId);
-        db.update(sql, param);
+        db.update(delSql, param);
+        db.update(istSql, param);
     }
 }

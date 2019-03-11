@@ -24,8 +24,8 @@ public interface UserController
     /**
      * 注册账号密码
      */
-    @PostMapping("/register")
-    ResultData register(@RequestBody RequestData data);
+    @PostMapping("/save")
+    ResultData save(@RequestBody RequestData data);
 
 
 }

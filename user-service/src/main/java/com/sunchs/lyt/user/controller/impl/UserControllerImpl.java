@@ -3,6 +3,7 @@ package com.sunchs.lyt.user.controller.impl;
 import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
+import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.user.bean.UserData;
 import com.sunchs.lyt.user.bean.UserParam;
 import com.sunchs.lyt.user.controller.UserController;
@@ -31,11 +32,9 @@ public class UserControllerImpl extends BaseController implements UserController
     }
 
     @Override
-    public ResultData register(@RequestBody RequestData data) {
+    public ResultData save(@RequestBody RequestData data) {
         UserParam param = data.toObject(UserParam.class);
-        UserData user = userService.addAccount(param);
-
-        return success(user);
+        return success(userService.saveAccount(param));
     }
 
 }
