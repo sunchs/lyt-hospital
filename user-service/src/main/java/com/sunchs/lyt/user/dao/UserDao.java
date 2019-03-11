@@ -17,7 +17,17 @@ public interface UserDao {
     UserData getUserByToken(String token);
 
     /**
-     * 添加账号数据
+     * 根据 用户ID 获取用户信息
      */
-    Integer addUserData(Map<String, Object> params);
+    UserData getUserById(Integer userId);
+
+    /**
+     * 添加用户
+     */
+    Integer addUser(Map<String, Object> params);
+
+    /**
+     * 添加用户角色
+     */
+    void addUserRole(Integer userId, Integer roleId);
 }

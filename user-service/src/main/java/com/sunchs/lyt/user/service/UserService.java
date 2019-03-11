@@ -1,6 +1,7 @@
 package com.sunchs.lyt.user.service;
 
 import com.sunchs.lyt.user.bean.UserData;
+import com.sunchs.lyt.user.bean.UserParam;
 
 public interface UserService {
 
@@ -17,5 +18,5 @@ public interface UserService {
     /**
      * 添加账号
      */
-    void addAccount(UserData data) throws RuntimeException;
+    UserData addAccount(UserParam data) throws RuntimeException;
 }

@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
 import java.util.Map;
 
 @Repository
@@ -30,7 +31,26 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Integer addUserData(Map<String, Object> params) {
+    public UserData getUserById(Integer userId) {
+        String sql = "SELECT user_id,username,name,token FROM user WHERE user_id=:userId";
+        MapSqlParameterSource param = new MapSqlParameterSource()
+                .addValue("userId", userId);
+        UserData user = db.query(sql, param, (ResultSet rs) -> {
+            if ( ! rs.next()) {
+                return null;
+            }
+            UserData u = new UserData();
+            u.setUserId(rs.getInt("user_id"));
+            u.setUserName(rs.getString("username"));
+            u.setName(rs.getString("name"));
+            u.setToken(rs.getString("token"));
+            return u;
+        });
+        return user;
+    }
+
+    @Override
+    public Integer addUser(Map<String, Object> params) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         String sql = "INSERT INTO user(username,password,name,create_time,pw_log) " +
                 "VALUES(:userName, :passWord, :name, :createTime, :pwLog)";
@@ -41,5 +61,14 @@ public class UserDaoImpl implements UserDao {
             throw new UserException("添加用户数据，SQL异常");
         }
         return keyHolder.getKey().intValue();
+    }
+
+    @Override
+    public void addUserRole(Integer userId, Integer roleId) {
+        String sql = "INSERT INTO user_role(user_id,role_id) VALUES(:userId, :roleId)";
+        MapSqlParameterSource param = new MapSqlParameterSource()
+                .addValue("userId", userId)
+                .addValue("roleId", roleId);
+        db.update(sql, param);
     }
 }

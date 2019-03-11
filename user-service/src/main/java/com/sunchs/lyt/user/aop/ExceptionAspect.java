@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-public class ExceptionInterceptorAspect {
+public class ExceptionAspect {
 
     @Pointcut(value = "execution(* com.sunchs.lyt.user.controller.*.*(..))")
     private void controllerException(){}
@@ -20,6 +20,7 @@ public class ExceptionInterceptorAspect {
         try {
             return joinPoint.proceed();
         } catch (Throwable throwable) {
+            throwable.printStackTrace();
             return ResultData.getFailure(throwable.getMessage());
         }
     }

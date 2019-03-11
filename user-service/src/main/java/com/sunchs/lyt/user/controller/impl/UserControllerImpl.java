@@ -4,8 +4,8 @@ import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
 import com.sunchs.lyt.user.bean.UserData;
+import com.sunchs.lyt.user.bean.UserParam;
 import com.sunchs.lyt.user.controller.UserController;
-import com.sunchs.lyt.user.exception.UserException;
 import com.sunchs.lyt.user.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,11 +32,10 @@ public class UserControllerImpl extends BaseController implements UserController
 
     @Override
     public ResultData register(@RequestBody RequestData data) {
-        UserData userData = data.toObject(UserData.class);
-        userService.addAccount(userData);
+        UserParam param = data.toObject(UserParam.class);
+        UserData user = userService.addAccount(param);
 
-
-        return success();
+        return success(user);
     }
 
 }

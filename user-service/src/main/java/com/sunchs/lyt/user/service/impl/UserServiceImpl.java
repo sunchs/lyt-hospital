@@ -1,8 +1,12 @@
 package com.sunchs.lyt.user.service.impl;
 
 import com.sunchs.lyt.framework.util.MD5Util;
+import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.StringUtil;
+import com.sunchs.lyt.user.bean.RoleData;
 import com.sunchs.lyt.user.bean.UserData;
+import com.sunchs.lyt.user.bean.UserParam;
+import com.sunchs.lyt.user.dao.ipml.RoleDaoImpl;
 import com.sunchs.lyt.user.dao.ipml.UserDaoImpl;
 import com.sunchs.lyt.user.exception.UserException;
 import com.sunchs.lyt.user.service.UserService;
@@ -19,6 +23,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserDaoImpl userDao;
 
+    @Autowired
+    RoleDaoImpl roleDao;
+
     @Override
     public UserData login(String username, String password) {
 
@@ -31,7 +38,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addAccount(UserData data) throws UserException {
+    public UserData addAccount(UserParam data) throws UserException {
         if (StringUtil.isEmpty(data.getUserName())) {
             throw new UserException("用户名不能为空");
         }
@@ -41,7 +48,7 @@ public class UserServiceImpl implements UserService {
         if (StringUtil.isEmpty(data.getName())) {
             throw new UserException("姓名不能为空");
         }
-        if (data.getRole() == 0) {
+        if (NumberUtil.isZero(data.getRoleId())) {
             throw new UserException("角色不能为空");
         }
         Map<String, Object> param = new HashMap<>();
@@ -50,13 +57,15 @@ public class UserServiceImpl implements UserService {
         param.put("name", data.getName());
         param.put("createTime", new Timestamp(System.currentTimeMillis()));
         param.put("pwLog", data.getPassWord());
-        Integer userId = userDao.addUserData(param);
+        Integer userId = userDao.addUser(param);
         if (userId > 0) {
-            System.out.println(userId);
-            System.out.println("添加成功");
+            userDao.addUserRole(userId, data.getRoleId());
+            UserData user = userDao.getUserById(userId);
+            RoleData role = roleDao.getRoleById(data.getRoleId());
+            user.setRole(role);
+            return user;
         }
-        System.out.println("失败");
-
+        return null;
     }
 
 }
