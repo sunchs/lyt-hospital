@@ -3,6 +3,11 @@ server:
 spring:
   application:
     name: user-service
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://47.107.255.115:3306/hospital??useUnicode=true&characterEncoding=utf8&useSSL=false
 
 eureka:
   instance:
