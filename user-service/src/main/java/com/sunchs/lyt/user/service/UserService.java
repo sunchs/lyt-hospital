@@ -8,7 +8,12 @@ public interface UserService {
     /**
      * 登录
      */
-    UserData login(String username, String password);
+    UserData login(UserParam param);
+
+    /**
+     * 退出
+     */
+    boolean logout();
 
     /**
      * Token验证

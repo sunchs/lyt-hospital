@@ -19,10 +19,23 @@ public class UserDaoImpl implements UserDao {
     private NamedParameterJdbcTemplate db;
 
     @Override
-    public UserData getUserByPassword(String username, String password) {
-
-
-        return null;
+    public UserData getUserByAccount(String userName, String passWord) {
+        String sql = "SELECT user_id,username,name,token FROM user WHERE username=:userName AND password=:passWord";
+        MapSqlParameterSource param = new MapSqlParameterSource()
+                .addValue("userName", userName)
+                .addValue("passWord", passWord);
+        UserData user = db.query(sql, param, (ResultSet rs) -> {
+            if ( ! rs.next()) {
+                return null;
+            }
+            UserData u = new UserData();
+            u.setUserId(rs.getInt("user_id"));
+            u.setUserName(rs.getString("username"));
+            u.setName(rs.getString("name"));
+            u.setToken(rs.getString("token"));
+            return u;
+        });
+        return user;
     }
 
     @Override
@@ -41,8 +54,8 @@ public class UserDaoImpl implements UserDao {
             }
             UserData u = new UserData();
             u.setUserId(rs.getInt("user_id"));
-            u.setUserName(rs.getString("username"));
             u.setName(rs.getString("name"));
+            u.setUserName(rs.getString("username"));
             u.setToken(rs.getString("token"));
             return u;
         });
@@ -65,9 +78,24 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean updateUser(Map<String, Object> params) {
-        String sql = "UPDATE user SET password=:passWord, name=:name, pw_log=:pwLog WHERE user_id=:userId";
+        StringBuffer sql = new StringBuffer();
+        sql.append("UPDATE user SET create_time=create_time");
+        if (params.containsKey("passWord")) {
+            sql.append(", password=:passWord");
+        }
+        if (params.containsKey("pwLog")) {
+            sql.append(", pw_log=:pwLog");
+        }
+        if (params.containsKey("name")) {
+            sql.append(", name=:name");
+        }
+        if (params.containsKey("token")) {
+            sql.append(", token=:token");
+        }
+        sql.append(" WHERE user_id=:userId");
+
         try {
-            db.update(sql, new MapSqlParameterSource(params));
+            db.update(sql.toString(), new MapSqlParameterSource(params));
         } catch (Exception e) {
             throw new UserException("修改用户数据，SQL异常");
         }

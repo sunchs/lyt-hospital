@@ -12,6 +12,11 @@ public interface RoleDao {
     RoleData getRoleById(Integer roleId);
 
     /**
+     * 根据 用户ID 获取角色信息
+     */
+    RoleData getRoleByUserId(Integer userId);
+
+    /**
      * 获取 角色 列表数据
      */
     List<RoleData> getRoleList();

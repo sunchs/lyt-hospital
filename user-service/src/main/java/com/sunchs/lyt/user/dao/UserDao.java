@@ -9,7 +9,7 @@ public interface UserDao {
     /**
      * 根据 账号密码 获取用户信息
      */
-    UserData getUserByPassword(String username, String password);
+    UserData getUserByAccount(String username, String password);
 
     /**
      * 根据 Token 获取用户信息

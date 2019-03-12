@@ -1,8 +1,6 @@
 package com.sunchs.lyt.user.service.impl;
 
-import com.sunchs.lyt.framework.util.MD5Util;
-import com.sunchs.lyt.framework.util.NumberUtil;
-import com.sunchs.lyt.framework.util.StringUtil;
+import com.sunchs.lyt.framework.util.*;
 import com.sunchs.lyt.user.bean.RoleData;
 import com.sunchs.lyt.user.bean.UserData;
 import com.sunchs.lyt.user.bean.UserParam;
@@ -27,9 +25,35 @@ public class UserServiceImpl implements UserService {
     RoleDaoImpl roleDao;
 
     @Override
-    public UserData login(String username, String password) {
+    public UserData login(UserParam data) {
+        this.checkAccount(data);
+        UserData user = userDao.getUserByAccount(data.getUserName(), MD5Util.encode(data.getPassWord()));
+        if (user == null) {
+            throw new UserException("账号或者密码错误！");
+        }
+        String key = user.getUserName() + System.currentTimeMillis();
+        String token = MD5Util.encode(key) + "-" + user.getUserId();
+        Map<String, Object> param = new HashMap<>();
+        param.put("userId", user.getUserId());
+        param.put("token", token);
+        if (userDao.updateUser(param)) {
+            user = userDao.getUserById(user.getUserId());
+            user.setRole(roleDao.getRoleByUserId(user.getUserId()));
+        }
+        // 缓存
+        RedisUtil.setValue(token, JsonUtil.toJson(user));
 
-        return null;
+        return user;
+    }
+
+    @Override
+    public boolean logout() {
+        try {
+            RedisUtil.remove(UserUtil.getUserToken());
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -39,12 +63,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserData saveAccount(UserParam data) {
-        if (StringUtil.isEmpty(data.getUserName())) {
-            throw new UserException("用户名不能为空");
-        }
-        if (StringUtil.isEmpty(data.getPassWord())) {
-            throw new UserException("密码不能为空");
-        }
+        this.checkAccount(data);
         if (StringUtil.isEmpty(data.getName())) {
             throw new UserException("姓名不能为空");
         }
@@ -73,6 +92,15 @@ public class UserServiceImpl implements UserService {
             return user;
         }
         return null;
+    }
+
+    private void checkAccount(UserParam data) {
+        if (StringUtil.isEmpty(data.getUserName())) {
+            throw new UserException("用户名不能为空");
+        }
+        if (StringUtil.isEmpty(data.getPassWord())) {
+            throw new UserException("密码不能为空");
+        }
     }
 }
 
