@@ -14,4 +14,15 @@ public interface RoleController {
      */
     @PostMapping("/list")
     ResultData getRoleList(@RequestBody RequestData data);
+
+    /**
+     * 角色 添加/编辑
+     */
+    @PostMapping("/save")
+    ResultData save(@RequestBody RequestData data);
+
+//    /**
+//     * 角色 删除
+//     */
+//    ResultData delete(@RequestBody RequestData data);
 }
