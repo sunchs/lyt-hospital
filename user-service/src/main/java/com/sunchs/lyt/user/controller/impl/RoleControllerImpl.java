@@ -30,7 +30,6 @@ public class RoleControllerImpl extends BaseController implements RoleController
         } else {
             roleService.updateRoleData(param);
         }
-
-        return null;
+        return success();
     }
 }
