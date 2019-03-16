@@ -6,23 +6,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@RequestMapping("/role")
-public interface RoleController {
+
+@RequestMapping("/node")
+public interface NodeController {
 
     /**
-     * 角色列表数据
+     * 节点列表
      */
     @PostMapping("/list")
     ResultData getList(@RequestBody RequestData data);
-
-    /**
-     * 角色 添加/编辑
-     */
-    @PostMapping("/save")
-    ResultData save(@RequestBody RequestData data);
-
-//    /**
-//     * 角色 删除
-//     */
-//    ResultData delete(@RequestBody RequestData data);
 }

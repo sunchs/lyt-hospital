@@ -18,7 +18,7 @@ public class RoleControllerImpl extends BaseController implements RoleController
     RoleServiceImpl roleService;
 
     @Override
-    public ResultData getRoleList(@RequestBody RequestData data) {
+    public ResultData getList(@RequestBody RequestData data) {
         return success(roleService.getRoleList());
     }
 
