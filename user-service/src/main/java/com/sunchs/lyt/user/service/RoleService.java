@@ -1,5 +1,6 @@
 package com.sunchs.lyt.user.service;
 
+import com.sunchs.lyt.user.bean.RoleNodeData;
 import com.sunchs.lyt.user.bean.RoleData;
 import com.sunchs.lyt.user.bean.RoleParam;
 
@@ -13,12 +14,7 @@ public interface RoleService {
     List<RoleData> getRoleList();
 
     /**
-     * 新增角色
+     * 添加、修改账号
      */
-    Integer addRoleData(RoleParam param);
-
-    /**
-     * 编辑角色
-     */
-    Integer updateRoleData(RoleParam param);
+    RoleNodeData save(RoleParam param);
 }

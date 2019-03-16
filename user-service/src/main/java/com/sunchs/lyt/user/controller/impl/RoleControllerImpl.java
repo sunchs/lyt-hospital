@@ -3,7 +3,6 @@ package com.sunchs.lyt.user.controller.impl;
 import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
-import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.user.bean.RoleParam;
 import com.sunchs.lyt.user.controller.RoleController;
 import com.sunchs.lyt.user.service.impl.RoleServiceImpl;
@@ -25,11 +24,6 @@ public class RoleControllerImpl extends BaseController implements RoleController
     @Override
     public ResultData save(@RequestBody RequestData data) {
         RoleParam param = data.toObject(RoleParam.class);
-        if (NumberUtil.isZero(param.getRoleId())) {
-            roleService.addRoleData(param);
-        } else {
-            roleService.updateRoleData(param);
-        }
-        return success();
+        return success(roleService.save(param));
     }
 }

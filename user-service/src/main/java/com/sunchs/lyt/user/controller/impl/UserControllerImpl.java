@@ -30,7 +30,7 @@ public class UserControllerImpl extends BaseController implements UserController
     @Override
     public ResultData save(@RequestBody RequestData data) {
         UserParam param = data.toObject(UserParam.class);
-        return success(userService.saveAccount(param));
+        return success(userService.save(param));
     }
 
 }

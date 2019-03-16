@@ -10,4 +10,9 @@ public interface NodeDao {
      * 获取 角色 列表数据
      */
     List<NodeData> getList();
+
+    /**
+     *
+     */
+    List<NodeData> getNodeByRoleId(Integer roleId);
 }

@@ -1,6 +1,6 @@
 package com.sunchs.lyt.user.dao.ipml;
 
-import com.sunchs.lyt.user.bean.UserData;
+import com.sunchs.lyt.user.bean.UserRoleData;
 import com.sunchs.lyt.user.dao.UserDao;
 import com.sunchs.lyt.user.exception.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -19,16 +20,16 @@ public class UserDaoImpl implements UserDao {
     private NamedParameterJdbcTemplate db;
 
     @Override
-    public UserData getUserByAccount(String userName, String passWord) {
+    public UserRoleData getUserByAccount(String userName, String passWord) {
         String sql = "SELECT user_id,username,name,token FROM user WHERE username=:userName AND password=:passWord";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("userName", userName)
                 .addValue("passWord", passWord);
-        UserData user = db.query(sql, param, (ResultSet rs) -> {
+        UserRoleData user = db.query(sql, param, (ResultSet rs) -> {
             if ( ! rs.next()) {
                 return null;
             }
-            UserData u = new UserData();
+            UserRoleData u = new UserRoleData();
             u.setUserId(rs.getInt("user_id"));
             u.setUserName(rs.getString("username"));
             u.setName(rs.getString("name"));
@@ -39,20 +40,20 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public UserData getUserByToken(String token) {
+    public UserRoleData getUserByToken(String token) {
         return null;
     }
 
     @Override
-    public UserData getUserById(Integer userId) {
+    public UserRoleData getUserById(Integer userId) {
         String sql = "SELECT user_id,username,name,token FROM user WHERE user_id=:userId";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("userId", userId);
-        UserData user = db.query(sql, param, (ResultSet rs) -> {
+        UserRoleData user = db.query(sql, param, (ResultSet rs) -> {
             if ( ! rs.next()) {
                 return null;
             }
-            UserData u = new UserData();
+            UserRoleData u = new UserRoleData();
             u.setUserId(rs.getInt("user_id"));
             u.setName(rs.getString("name"));
             u.setUserName(rs.getString("username"));
@@ -63,53 +64,67 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Integer addUser(Map<String, Object> params) {
+    public Integer insertUser(Map<String, Object> param) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         String sql = "INSERT INTO user(username,password,name,create_time,pw_log) " +
                 "VALUES(:userName, :passWord, :name, :createTime, :pwLog)";
         try {
-            db.update(sql, new MapSqlParameterSource(params), keyHolder);
+            db.update(sql, new MapSqlParameterSource(param), keyHolder);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new UserException("添加用户数据，SQL异常");
         }
         return keyHolder.getKey().intValue();
     }
 
     @Override
-    public boolean updateUser(Map<String, Object> params) {
+    public Integer updateUser(Map<String, Object> param) {
         StringBuffer sql = new StringBuffer();
         sql.append("UPDATE user SET create_time=create_time");
-        if (params.containsKey("passWord")) {
+        if (param.containsKey("passWord")) {
             sql.append(", password=:passWord");
         }
-        if (params.containsKey("pwLog")) {
+        if (param.containsKey("pwLog")) {
             sql.append(", pw_log=:pwLog");
         }
-        if (params.containsKey("name")) {
+        if (param.containsKey("name")) {
             sql.append(", name=:name");
         }
-        if (params.containsKey("token")) {
+        if (param.containsKey("token")) {
             sql.append(", token=:token");
         }
         sql.append(" WHERE user_id=:userId");
-
         try {
-            db.update(sql.toString(), new MapSqlParameterSource(params));
+            db.update(sql.toString(), new MapSqlParameterSource(param));
+            if (param.containsKey("userId")) {
+                return (int) param.get("userId");
+            }
         } catch (Exception e) {
             throw new UserException("修改用户数据，SQL异常");
         }
-        return true;
+        return 0;
     }
 
     @Override
-    public void saveUserRole(Integer userId, Integer roleId) {
+    public void saveUserRole(Integer userId, List<Integer> roleList) {
         String delSql = "DELETE FROM user_role WHERE user_id=:userId";
+        MapSqlParameterSource delParam = new MapSqlParameterSource()
+                .addValue("userId", userId);
+        db.update(delSql, delParam);
+
         String istSql = "INSERT INTO user_role(user_id,role_id) VALUES(:userId, :roleId)";
+        roleList.forEach(roleId->{
+            MapSqlParameterSource param = new MapSqlParameterSource()
+                    .addValue("userId", userId)
+                    .addValue("roleId", roleId);
+            db.update(istSql, param);
+        });
+    }
+
+    @Override
+    public boolean isExistUserName(String userName) {
+        String sql = "SELECT user_id FROM user WHERE username=:userName";
         MapSqlParameterSource param = new MapSqlParameterSource()
-                .addValue("userId", userId)
-                .addValue("roleId", roleId);
-        db.update(delSql, param);
-        db.update(istSql, param);
+                .addValue("userName", userName);
+        return db.query(sql, param, (ResultSet rs) -> rs.next());
     }
 }

@@ -1,5 +1,6 @@
 package com.sunchs.lyt.user.dao;
 
+import com.sunchs.lyt.user.bean.RoleNodeData;
 import com.sunchs.lyt.user.bean.RoleData;
 
 import java.util.List;
@@ -10,12 +11,12 @@ public interface RoleDao {
     /**
      * 根据 角色ID 获取角色信息
      */
-    RoleData getRoleById(Integer roleId);
+    RoleNodeData getRoleById(Integer roleId);
 
     /**
      * 根据 用户ID 获取角色信息
      */
-    RoleData getRoleByUserId(Integer userId);
+    List<RoleData> getRoleByUserId(Integer userId);
 
     /**
      * 获取 角色 列表数据
@@ -25,12 +26,12 @@ public interface RoleDao {
     /**
      * 插入 角色 数据
      */
-    Integer insertRoleData(Map<String, Object> map);
+    Integer insertRoleData(Map<String, Object> param);
 
     /**
      * 更新 角色 数据
      */
-    boolean updateRoleData(Map<String, Object> map);
+    Integer updateRoleData(Map<String, Object> param);
 
     /**
      * 删除角色绑定的节点
@@ -41,5 +42,10 @@ public interface RoleDao {
      * 角色 绑定 节点
      */
     void addRoleNode(Integer roleId, Integer nodeId, Integer action);
+
+    /**
+     * 判断 角色 是否被使用
+     */
+    boolean isExistTitle(Integer roleId, String title);
 
 }

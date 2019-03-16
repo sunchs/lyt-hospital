@@ -1,6 +1,6 @@
 package com.sunchs.lyt.user.service;
 
-import com.sunchs.lyt.user.bean.UserData;
+import com.sunchs.lyt.user.bean.UserRoleData;
 import com.sunchs.lyt.user.bean.UserParam;
 
 public interface UserService {
@@ -8,7 +8,7 @@ public interface UserService {
     /**
      * 登录
      */
-    UserData login(UserParam param);
+    UserRoleData login(UserParam param);
 
     /**
      * 退出
@@ -23,5 +23,5 @@ public interface UserService {
     /**
      * 添加、修改账号
      */
-    UserData saveAccount(UserParam data);
+    UserRoleData save(UserParam data);
 }
