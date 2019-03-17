@@ -13,9 +13,7 @@ import com.sunchs.lyt.user.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -76,7 +74,11 @@ public class RoleServiceImpl implements RoleService {
 
     private void resetNode(Integer roleId, List<NodeActionParam> nodeList) {
         roleDao.deleteRoleNode(roleId);
-        // TODO: access需去重
+        Set<Integer> ids = new HashSet<>();
+        nodeList.forEach(node -> ids.add(node.getNodeId()));
+        if (nodeList.size() > ids.size()) {
+            throw new UserException("节点不能有重复数据");
+        }
         nodeList.forEach(node->{
             Integer nodeId = node.getNodeId();
             Integer action = node.getAction();
