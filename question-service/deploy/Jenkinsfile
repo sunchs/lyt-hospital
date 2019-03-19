@@ -3,7 +3,7 @@ pipeline {
     environment {
         module = "question-service"
         tag = "v1.0"
-        portBind = "-p 6006:6006"
+        portBind = "-p 8002:8002"
     }
     stages {
         stage('Build') {
