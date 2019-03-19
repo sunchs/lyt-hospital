@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        module = "user-service"
+        module = "question-service"
         tag = "v1.0"
         portBind = "-p 6006:6006"
     }
