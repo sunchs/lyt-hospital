@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,33 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
             targetData.setChildren(childList);
         }
         return targetData;
+    }
+
+    @Override
+    public List<QuestionTargetData> getList(Integer id) {
+        String childSql = "SELECT `id` FROM question_target WHERE `pid`=:id ORDER BY `sort` ASC";
+        MapSqlParameterSource childParam = new MapSqlParameterSource()
+                .addValue("id", id);
+        List<Integer> list = db.query(childSql, childParam, (ResultSet rs, int rowNum) -> rs.getInt("id"));
+        List<QuestionTargetData> result = new ArrayList<>();
+        for (Integer tid : list) {
+            result.add(getById(tid));
+        }
+        return result;
+    }
+
+    @Override
+    public Integer getCount(Integer id) {
+        String childSql = "SELECT COUNT(*) total FROM question_target WHERE `pid`=:id";
+        MapSqlParameterSource childParam = new MapSqlParameterSource()
+                .addValue("id", id);
+        Integer total = db.query(childSql, childParam, (ResultSet rs) -> {
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+            return 0;
+        });
+        return total;
     }
 
     @Override

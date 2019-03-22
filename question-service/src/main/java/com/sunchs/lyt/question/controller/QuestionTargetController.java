@@ -16,10 +16,14 @@ public interface QuestionTargetController {
     ResultData getById(@RequestBody RequestData data);
 
     /**
+     * 根据 一级指标ID 获取二级指标列表
+     */
+    @PostMapping("/getList")
+    ResultData getList(@RequestBody RequestData data);
+
+    /**
      * 指标 添加、编辑
      */
     @PostMapping("/save")
     ResultData save(@RequestBody RequestData data);
-
-
 }
