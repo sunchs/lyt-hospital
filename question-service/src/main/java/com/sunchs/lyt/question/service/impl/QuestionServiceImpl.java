@@ -1,8 +1,6 @@
 package com.sunchs.lyt.question.service.impl;
 
-import com.sunchs.lyt.framework.util.MD5Util;
 import com.sunchs.lyt.framework.util.NumberUtil;
-import com.sunchs.lyt.framework.util.StringUtil;
 import com.sunchs.lyt.question.bean.OptionParam;
 import com.sunchs.lyt.question.bean.QuestionData;
 import com.sunchs.lyt.question.bean.QuestionParam;
@@ -10,7 +8,6 @@ import com.sunchs.lyt.question.dao.QuestionDao;
 import com.sunchs.lyt.question.exception.QuestionException;
 import com.sunchs.lyt.question.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;

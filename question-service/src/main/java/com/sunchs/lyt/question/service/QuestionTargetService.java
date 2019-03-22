@@ -4,8 +4,6 @@ import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.question.bean.QuestionTargetData;
 import com.sunchs.lyt.question.bean.QuestionTargetParam;
 
-import java.util.List;
-
 public interface QuestionTargetService {
 
     /**
