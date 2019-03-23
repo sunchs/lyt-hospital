@@ -23,7 +23,7 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
 
     @Override
     public QuestionTargetData getById(Integer id) {
-        String sql = "SELECT `id`,`pid`,`title`,`status`,`remark` FROM question_target WHERE `id`=:id";
+        String sql = "SELECT `id`,`pid`,`title`,`status`,`remarks` FROM question_target WHERE `id`=:id";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("id", id);
         QuestionTargetData targetData =  db.query(sql, param, (ResultSet rs) -> {
@@ -33,7 +33,7 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
             return setResultToData(rs);
         });
         if (targetData != null) {
-            String childSql = "SELECT `id`,`pid`,`title`,`status`,`remark` FROM question_target WHERE `pid`=:id ORDER BY `sort` ASC";
+            String childSql = "SELECT `id`,`pid`,`title`,`status`,`remarks` FROM question_target WHERE `pid`=:id ORDER BY `sort` ASC";
             MapSqlParameterSource childParam = new MapSqlParameterSource()
                     .addValue("id", targetData.id);
             List<QuestionTargetData> childList = db.query(childSql, childParam, (ResultSet rs, int rowNum) -> setResultToData(rs));
@@ -92,7 +92,7 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
         targetData.setPid(rs.getInt("pid"));
         targetData.setTitle(rs.getString("title"));
         targetData.setStatus(rs.getInt("status"));
-        targetData.setRemark(rs.getString("remark"));
+        targetData.setRemarks(rs.getString("remarks"));
         return targetData;
     }
 }
