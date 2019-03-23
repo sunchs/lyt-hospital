@@ -8,7 +8,8 @@ public class QuestionTargetParam {
     public Integer pid;
     public String title;
     public Integer status;
-    public String sort;
+    public String remarks;
+//    public String sort;
     public List<QuestionTargetParam> children;
 
     public Integer getId() {
@@ -27,9 +28,13 @@ public class QuestionTargetParam {
         return status;
     }
 
-    public String getSort() {
-        return sort;
+    public String getRemarks() {
+        return remarks;
     }
+
+    //    public String getSort() {
+//        return sort;
+//    }
 
     public List<QuestionTargetParam> getChildren() {
         return children;

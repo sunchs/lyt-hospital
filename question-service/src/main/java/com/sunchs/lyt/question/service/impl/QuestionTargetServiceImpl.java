@@ -59,7 +59,7 @@ public class QuestionTargetServiceImpl implements QuestionTargetService {
         Map<String, Object> opt = new HashMap<>();
         opt.put("pid", param.getPid());
         opt.put("title", param.getTitle());
-        opt.put("sort", param.getSort());
+        opt.put("remarks", param.getRemarks());
         Integer targetId = questionTargetDao.insert(opt);
         if (targetId > 0) {
             List<QuestionTargetParam> children = param.getChildren();
@@ -67,7 +67,7 @@ public class QuestionTargetServiceImpl implements QuestionTargetService {
                 Map<String, Object> cMap = new HashMap<>();
                 cMap.put("pid", targetId);
                 cMap.put("title", child.getTitle());
-                cMap.put("sort", child.getSort());
+                cMap.put("remarks", "");
                 questionTargetDao.insert(cMap);
             }
         }

@@ -129,9 +129,3 @@ public class QuestionDaoImpl implements QuestionDao {
         }
     }
 }
-
-class a
-{
-    int id;// 问题ID
-    int status;// 问题状态：1开启，2停用
-}

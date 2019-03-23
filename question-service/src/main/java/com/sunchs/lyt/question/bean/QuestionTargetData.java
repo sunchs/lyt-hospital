@@ -8,6 +8,7 @@ public class QuestionTargetData {
     public String title;
     public Integer status;
     public Integer sort;
+    public String remark;
     public List<QuestionTargetData> children;
 
     public void setId(Integer id) {
@@ -28,6 +29,10 @@ public class QuestionTargetData {
 
     public void setSort(Integer sort) {
         this.sort = sort;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public void setChildren(List<QuestionTargetData> children) {
