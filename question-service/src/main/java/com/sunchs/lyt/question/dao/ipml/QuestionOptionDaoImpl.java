@@ -29,8 +29,6 @@ public class QuestionOptionDaoImpl implements QuestionOptionDao {
             option.setSort(rs.getInt("sort"));
             return option;
         });
-        System.out.println(list);
-        System.out.println(list.size());
         return list;
     }
 }

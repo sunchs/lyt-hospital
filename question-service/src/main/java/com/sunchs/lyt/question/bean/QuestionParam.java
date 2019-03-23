@@ -1,8 +1,10 @@
 package com.sunchs.lyt.question.bean;
 
+import com.sunchs.lyt.framework.bean.PagingParam;
+
 import java.util.List;
 
-public class QuestionParam {
+public class QuestionParam extends PagingParam {
 
     public Integer id;
     public String title;

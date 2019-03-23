@@ -21,40 +21,10 @@ public class QuestionControllerImpl extends BaseController implements QuestionCo
         QuestionParam param = data.toObject(QuestionParam.class);
         return success(questionService.save(param));
     }
+
+    @Override
+    public ResultData getPageList(@RequestBody RequestData data) {
+        QuestionParam param = data.toObject(QuestionParam.class);
+        return success(questionService.getPageList(param));
+    }
 }
-
-//    QuestionParam param1 = new QuestionParam();
-//    List<AttributeParam> attr  = new ArrayList<>();
-//        attr.add(new AttributeParam());
-//                param1.attribute = attr;
-//                List<OptionParam> option  = new ArrayList<>();
-//        option.add(new OptionParam());
-//        param1.option = option;
-//        param1.target = new TargetParam();
-
-//class a
-//{
-//    int title;// 题目
-//    Integer score;// 分值
-//    String remark;// 备注
-//    Object target : {// 指标
-//        int one;// 一级指标
-//        int two;// 二级指标
-//        int three;// 三级指标
-//    },
-//    List attribute : [// 自定义属性集合
-//        {
-//            int type;// 属性类型
-//            int attrId;// 属性ID
-//        }
-//    ],
-//    int optionType;// 选项类型
-//    List option : [// 选项集合
-//        {
-//            int optionId;// 选项ID
-//            String optionName;// 选项内容
-//            int optionScore;// 选项分值
-//            int sort;// 排序
-//        }
-//    ]
-//}

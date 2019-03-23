@@ -14,4 +14,10 @@ public interface QuestionController
      */
     @PostMapping("/save")
     ResultData save(@RequestBody RequestData data);
+
+    /**
+     * 题目列表
+     */
+    @PostMapping("/pageList")
+    ResultData getPageList(@RequestBody RequestData data);
 }

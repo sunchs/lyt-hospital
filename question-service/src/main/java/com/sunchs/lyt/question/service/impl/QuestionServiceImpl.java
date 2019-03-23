@@ -1,6 +1,8 @@
 package com.sunchs.lyt.question.service.impl;
 
+import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.NumberUtil;
+import com.sunchs.lyt.framework.util.PagingUtil;
 import com.sunchs.lyt.question.bean.OptionParam;
 import com.sunchs.lyt.question.bean.QuestionData;
 import com.sunchs.lyt.question.bean.QuestionParam;
@@ -39,6 +41,14 @@ public class QuestionServiceImpl implements QuestionService {
             return question;
         }
         return null;
+    }
+
+    @Override
+    public PagingList<QuestionData> getPageList(QuestionParam param) {
+        int total = questionDao.getCount(param);
+        List<QuestionData> pageList = questionDao.getPageList(param);
+        System.out.println(param.getPageNow() +":"+param.getPageSize());
+        return PagingUtil.getData(pageList, total, param.getPageNow(), param.getPageSize());
     }
 
     private Integer insert(QuestionParam param) {

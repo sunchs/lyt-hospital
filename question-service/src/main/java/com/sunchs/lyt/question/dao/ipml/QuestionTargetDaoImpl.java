@@ -37,7 +37,6 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
             MapSqlParameterSource childParam = new MapSqlParameterSource()
                     .addValue("id", targetData.id);
             List<QuestionTargetData> childList = db.query(childSql, childParam, (ResultSet rs, int rowNum) -> setResultToData(rs));
-            System.out.println(childList.size());
             targetData.setChildren(childList);
         }
         return targetData;

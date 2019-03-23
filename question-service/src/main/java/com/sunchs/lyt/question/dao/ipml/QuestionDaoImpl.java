@@ -1,8 +1,7 @@
 package com.sunchs.lyt.question.dao.ipml;
 
-import com.sunchs.lyt.question.bean.OptionData;
-import com.sunchs.lyt.question.bean.QuestionData;
-import com.sunchs.lyt.question.bean.TargetData;
+import com.sunchs.lyt.framework.util.PagingUtil;
+import com.sunchs.lyt.question.bean.*;
 import com.sunchs.lyt.question.dao.QuestionDao;
 import com.sunchs.lyt.question.exception.QuestionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +54,33 @@ public class QuestionDaoImpl implements QuestionDao {
     }
 
     @Override
+    public List<QuestionData> getPageList(QuestionParam param) {
+        int skip = PagingUtil.getSkip(param.getPageNow(), param.getPageSize());
+        String sql = "SELECT `id` FROM question ORDER BY `id` DESC LIMIT :skip,:pageSize";
+        MapSqlParameterSource childParam = new MapSqlParameterSource()
+                .addValue("skip", skip)
+                .addValue("pageSize", param.getPageSize());
+        List<Integer> ids = db.query(sql, childParam, (ResultSet rs, int rowNum) -> rs.getInt("id"));
+        List<QuestionData> result = new ArrayList<>();
+        for (int id : ids) {
+            result.add(getById(id));
+        }
+        return result;
+    }
+
+    @Override
+    public int getCount(QuestionParam param) {
+        String sql = "SELECT COUNT(*) total FROM question";
+        int total =  db.query(sql, (ResultSet rs) -> {
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+            return 0;
+        });
+        return total;
+    }
+
+    @Override
     public Integer insert(Map<String, Object> param) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         String sql = "INSERT INTO question(`title`,`score`,`remark`,`update_id`,`update_time`,`create_id`,`create_time`," +
@@ -69,8 +96,14 @@ public class QuestionDaoImpl implements QuestionDao {
     }
 
     @Override
-    public Integer update(Map<String, Object> param) {
-        return null;
+    public int update(Map<String, Object> param) {
+        try {
+            String sql = "UPDATE question SET `status`=:status WHERE id=:id";
+            db.update(sql, new MapSqlParameterSource(param));
+            return (int) param.get("id");
+        } catch (Exception e) {
+            throw new QuestionException("修改问题状态 --> 异常:" + e.getMessage());
+        }
     }
 
     @Override
@@ -95,4 +128,10 @@ public class QuestionDaoImpl implements QuestionDao {
             throw new QuestionException("删除问题选项 --> 异常:" + e.getMessage());
         }
     }
+}
+
+class a
+{
+    int id;// 问题ID
+    int status;// 问题状态：1开启，2停用
 }
