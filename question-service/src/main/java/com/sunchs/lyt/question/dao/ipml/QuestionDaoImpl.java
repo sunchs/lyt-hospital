@@ -1,6 +1,8 @@
 package com.sunchs.lyt.question.dao.ipml;
 
+import com.sunchs.lyt.question.bean.OptionData;
 import com.sunchs.lyt.question.bean.QuestionData;
+import com.sunchs.lyt.question.bean.TargetData;
 import com.sunchs.lyt.question.dao.QuestionDao;
 import com.sunchs.lyt.question.exception.QuestionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -17,9 +21,36 @@ public class QuestionDaoImpl implements QuestionDao {
     @Autowired
     private NamedParameterJdbcTemplate db;
 
+    @Autowired
+    QuestionOptionDaoImpl questionOptionDao;
+
     @Override
     public QuestionData getById(Integer id) {
-        return null;
+        String sql = "SELECT `id`,`title`,`status`,`score`,`remark`,`update_id`,`update_time`,`create_id`,`create_time`, " +
+                "`target_one`,`target_two`,`target_three`,`option_type` FROM question WHERE id=:id";
+        MapSqlParameterSource param = new MapSqlParameterSource()
+                .addValue("id", id);
+        QuestionData targetData =  db.query(sql, param, (ResultSet rs) -> {
+            if (rs.next()) {
+                QuestionData data = new QuestionData();
+                data.setId(rs.getInt("id"));
+                data.setTitle(rs.getString("title"));
+                data.setScore(rs.getInt("score"));
+                data.setStatus(rs.getInt("status"));
+                data.setRemark(rs.getString("remark"));
+                data.setOptionType(rs.getInt("option_type"));
+                TargetData target = new TargetData();
+                target.setOne(rs.getInt("target_one"));
+                target.setTwo(rs.getInt("target_two"));
+                target.setThree(rs.getInt("target_three"));
+                data.setTarget(target);
+                List<OptionData> optionDataList = questionOptionDao.getListById(data.getId());
+                data.setOption(optionDataList);
+                return data;
+            }
+            return null;
+        });
+        return targetData;
     }
 
     @Override

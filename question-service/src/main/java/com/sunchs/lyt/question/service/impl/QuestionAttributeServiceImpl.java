@@ -4,7 +4,6 @@ import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.question.bean.QuestionAttributeData;
 import com.sunchs.lyt.question.bean.QuestionAttributeParam;
-import com.sunchs.lyt.question.bean.QuestionTargetData;
 import com.sunchs.lyt.question.dao.QuestionAttributeDao;
 import com.sunchs.lyt.question.exception.QuestionException;
 import com.sunchs.lyt.question.service.QuestionAttributeService;
