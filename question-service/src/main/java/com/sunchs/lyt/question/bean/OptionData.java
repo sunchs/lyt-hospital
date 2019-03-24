@@ -4,7 +4,6 @@ public class OptionData {
 
     public Integer optionId;
     public String optionName;
-    public Integer optionScore;
     public Integer sort;
 
     public Integer getOptionId() {
@@ -21,14 +20,6 @@ public class OptionData {
 
     public void setOptionName(String optionName) {
         this.optionName = optionName;
-    }
-
-    public Integer getOptionScore() {
-        return optionScore;
-    }
-
-    public void setOptionScore(Integer optionScore) {
-        this.optionScore = optionScore;
     }
 
     public Integer getSort() {

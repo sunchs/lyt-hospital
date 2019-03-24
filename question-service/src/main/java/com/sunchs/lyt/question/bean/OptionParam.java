@@ -4,7 +4,6 @@ public class OptionParam {
 
     public Integer optionId;
     public String optionName;
-    public Integer optionScore;
     public Integer sort;
 
     public Integer getOptionId() {
@@ -13,10 +12,6 @@ public class OptionParam {
 
     public String getOptionName() {
         return optionName;
-    }
-
-    public Integer getOptionScore() {
-        return optionScore;
     }
 
     public Integer getSort() {

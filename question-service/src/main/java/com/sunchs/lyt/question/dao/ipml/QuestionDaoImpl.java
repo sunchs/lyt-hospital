@@ -26,7 +26,7 @@ public class QuestionDaoImpl implements QuestionDao {
 
     @Override
     public QuestionData getById(Integer id) {
-        String sql = "SELECT `id`,`title`,`status`,`score`,`remark`,`update_id`,`update_time`,`create_id`,`create_time`, " +
+        String sql = "SELECT `id`,`title`,`status`,`remark`,`update_id`,`update_time`,`create_id`,`create_time`, " +
                 "`target_one`,`target_two`,`target_three`,`option_type` FROM question WHERE id=:id";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("id", id);
@@ -34,7 +34,6 @@ public class QuestionDaoImpl implements QuestionDao {
             QuestionData data = new QuestionData();
             data.setId(rs.getInt("id"));
             data.setTitle(rs.getString("title"));
-            data.setScore(rs.getInt("score"));
             data.setStatus(rs.getInt("status"));
             data.setRemark(rs.getString("remark"));
             data.setOptionType(rs.getInt("option_type"));
@@ -76,9 +75,9 @@ public class QuestionDaoImpl implements QuestionDao {
     public Integer insert(Map<String, Object> param) {
         try {
             GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-            String sql = "INSERT INTO question(`title`,`score`,`remark`,`update_id`,`update_time`,`create_id`,`create_time`," +
+            String sql = "INSERT INTO question(`title`,`remark`,`update_id`,`update_time`,`create_id`,`create_time`," +
                     "`target_one`,`target_two`,`target_three`,`option_type`) " +
-                    "VALUES(:title, :score, :remark, :updateId, :updateTime, :createId, :createTime, " +
+                    "VALUES(:title, :remark, :updateId, :updateTime, :createId, :createTime, " +
                     ":targetOne, :targetTwo, :targetThree, :optionType)";
             db.update(sql, new MapSqlParameterSource(param), keyHolder);
             return keyHolder.getKey().intValue();
@@ -101,8 +100,8 @@ public class QuestionDaoImpl implements QuestionDao {
     @Override
     public void insertQuestionOption(Map<String, Object> param) {
         try {
-            String sql = "INSERT INTO question_option(`question_id`,`title`,`score`,`sort`) " +
-                    "VALUES(:questionId, :title, :score, :sort)";
+            String sql = "INSERT INTO question_option(`question_id`,`title`,`sort`) " +
+                    "VALUES(:questionId, :title, :sort)";
             db.update(sql, new MapSqlParameterSource(param));
         } catch (Exception e) {
             throw new QuestionException("插入问题选项 --> 异常:" + e.getMessage());

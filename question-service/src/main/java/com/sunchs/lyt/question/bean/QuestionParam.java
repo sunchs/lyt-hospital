@@ -8,11 +8,9 @@ public class QuestionParam extends PagingParam {
 
     public Integer id;
     public String title;
-    public Integer score;
     public Integer status;
     public String remark;
     public TargetParam target;
-    public List<AttributeParam> attribute;
     public Integer optionType;
     public List<OptionParam> option;
 
@@ -22,10 +20,6 @@ public class QuestionParam extends PagingParam {
 
     public String getTitle() {
         return title;
-    }
-
-    public Integer getScore() {
-        return score;
     }
 
     public Integer getStatus() {
@@ -38,10 +32,6 @@ public class QuestionParam extends PagingParam {
 
     public TargetParam getTarget() {
         return target;
-    }
-
-    public List<AttributeParam> getAttribute() {
-        return attribute;
     }
 
     public Integer getOptionType() {

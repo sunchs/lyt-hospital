@@ -5,11 +5,9 @@ import java.util.List;
 public class QuestionData {
     public Integer id;
     public String title;
-    public Integer score;
     public Integer status;
     public String remark;
     public TargetData target;
-    public List<AttributeData> attribute;
     public Integer optionType;
     public List<OptionData> option;
 
@@ -27,14 +25,6 @@ public class QuestionData {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public Integer getScore() {
-        return score;
-    }
-
-    public void setScore(Integer score) {
-        this.score = score;
     }
 
     public Integer getStatus() {
@@ -59,14 +49,6 @@ public class QuestionData {
 
     public void setTarget(TargetData target) {
         this.target = target;
-    }
-
-    public List<AttributeData> getAttribute() {
-        return attribute;
-    }
-
-    public void setAttribute(List<AttributeData> attribute) {
-        this.attribute = attribute;
     }
 
     public Integer getOptionType() {

@@ -47,7 +47,6 @@ public class QuestionServiceImpl implements QuestionService {
     public PagingList<QuestionData> getPageList(QuestionParam param) {
         int total = questionDao.getCount(param);
         List<QuestionData> pageList = questionDao.getPageList(param);
-        System.out.println(param.getPageNow() +":"+param.getPageSize());
         return PagingUtil.getData(pageList, total, param.getPageNow(), param.getPageSize());
     }
 
@@ -56,7 +55,6 @@ public class QuestionServiceImpl implements QuestionService {
 
         Map<String, Object> opt = new HashMap<>();
         opt.put("title", param.getTitle());
-        opt.put("score", param.getScore());
         opt.put("remark", param.getRemark());
         opt.put("updateId", 0);
         opt.put("updateTime", new Timestamp(System.currentTimeMillis()));
@@ -98,7 +96,6 @@ public class QuestionServiceImpl implements QuestionService {
             Map<String, Object> opt = new HashMap<>();
             opt.put("questionId", questionId);
             opt.put("title", param.getOptionName());
-            opt.put("score", param.getOptionScore());
             opt.put("sort", param.getSort());
             questionDao.insertQuestionOption(opt);
         }

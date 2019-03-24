@@ -18,14 +18,13 @@ public class QuestionOptionDaoImpl implements QuestionOptionDao {
 
     @Override
     public List<OptionData> getListById(Integer questionId) {
-        String childSql = "SELECT `id`,`title`,`score`,`sort` FROM question_option WHERE `question_id`=:questionId";
+        String childSql = "SELECT `id`,`title`,`sort` FROM question_option WHERE `question_id`=:questionId";
         MapSqlParameterSource childParam = new MapSqlParameterSource()
                 .addValue("questionId", questionId);
         List<OptionData> list = db.query(childSql, childParam, (ResultSet rs, int rowNum) -> {
             OptionData option = new OptionData();
             option.setOptionId(rs.getInt("id"));
             option.setOptionName(rs.getString("title"));
-            option.setOptionScore(rs.getInt("score"));
             option.setSort(rs.getInt("sort"));
             return option;
         });
