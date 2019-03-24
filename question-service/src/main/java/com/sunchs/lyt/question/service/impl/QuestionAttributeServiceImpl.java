@@ -55,7 +55,7 @@ public class QuestionAttributeServiceImpl implements QuestionAttributeService {
         Map<String, Object> opt = new HashMap<>();
         opt.put("pid", param.getPid());
         opt.put("title", param.getTitle());
-        opt.put("sort", param.getSort());
+        opt.put("remarks", param.getRemarks());
         Integer attrId = questionAttributeDao.insert(opt);
         if (attrId > 0) {
             List<QuestionAttributeParam> children = param.getChildren();
@@ -63,7 +63,7 @@ public class QuestionAttributeServiceImpl implements QuestionAttributeService {
                 Map<String, Object> cMap = new HashMap<>();
                 cMap.put("pid", attrId);
                 cMap.put("title", child.getTitle());
-                cMap.put("sort", child.getSort());
+                cMap.put("remarks", "");
                 questionAttributeDao.insert(cMap);
             }
         }

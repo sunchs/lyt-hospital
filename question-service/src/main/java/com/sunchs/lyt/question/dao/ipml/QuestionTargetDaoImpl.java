@@ -26,12 +26,7 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
         String sql = "SELECT `id`,`pid`,`title`,`status`,`remarks` FROM question_target WHERE `id`=:id";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("id", id);
-        QuestionTargetData targetData =  db.query(sql, param, (ResultSet rs) -> {
-            if ( ! rs.next()) {
-                return null;
-            }
-            return setResultToData(rs);
-        });
+        QuestionTargetData targetData = db.queryForObject(sql, param, (ResultSet rs, int rowNum) -> setResultToData(rs));
         if (targetData != null) {
             String childSql = "SELECT `id`,`pid`,`title`,`status`,`remarks` FROM question_target WHERE `pid`=:id ORDER BY `sort` ASC";
             MapSqlParameterSource childParam = new MapSqlParameterSource()
@@ -56,21 +51,16 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
     }
 
     @Override
-    public Integer getCount(Integer id) {
-        String childSql = "SELECT COUNT(*) total FROM question_target WHERE `pid`=:id";
+    public int getCount(Integer id) {
+        String childSql = "SELECT COUNT(*) FROM question_target WHERE `pid`=:id";
         MapSqlParameterSource childParam = new MapSqlParameterSource()
                 .addValue("id", id);
-        Integer total = db.query(childSql, childParam, (ResultSet rs) -> {
-            if (rs.next()) {
-                return rs.getInt("total");
-            }
-            return 0;
-        });
-        return total;
+        Integer total = db.queryForObject(childSql, childParam, Integer.class);
+        return total.intValue();
     }
 
     @Override
-    public Integer insert(Map<String, Object> param) {
+    public int insert(Map<String, Object> param) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         String sql = "INSERT INTO question_target(`pid`,`title`,`status`,`remarks`) VALUES(:pid, :title, 1, :remarks)";
         try {
@@ -82,8 +72,8 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
     }
 
     @Override
-    public Integer update(Map<String, Object> param) {
-        return null;
+    public int update(Map<String, Object> param) {
+        return 0;
     }
 
     private QuestionTargetData setResultToData(ResultSet rs) throws SQLException {

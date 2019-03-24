@@ -30,25 +30,22 @@ public class QuestionDaoImpl implements QuestionDao {
                 "`target_one`,`target_two`,`target_three`,`option_type` FROM question WHERE id=:id";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("id", id);
-        QuestionData targetData =  db.query(sql, param, (ResultSet rs) -> {
-            if (rs.next()) {
-                QuestionData data = new QuestionData();
-                data.setId(rs.getInt("id"));
-                data.setTitle(rs.getString("title"));
-                data.setScore(rs.getInt("score"));
-                data.setStatus(rs.getInt("status"));
-                data.setRemark(rs.getString("remark"));
-                data.setOptionType(rs.getInt("option_type"));
-                TargetData target = new TargetData();
-                target.setOne(rs.getInt("target_one"));
-                target.setTwo(rs.getInt("target_two"));
-                target.setThree(rs.getInt("target_three"));
-                data.setTarget(target);
-                List<OptionData> optionDataList = questionOptionDao.getListById(data.getId());
-                data.setOption(optionDataList);
-                return data;
-            }
-            return null;
+        QuestionData targetData =  db.queryForObject(sql, param, (ResultSet rs, int rowNum) -> {
+            QuestionData data = new QuestionData();
+            data.setId(rs.getInt("id"));
+            data.setTitle(rs.getString("title"));
+            data.setScore(rs.getInt("score"));
+            data.setStatus(rs.getInt("status"));
+            data.setRemark(rs.getString("remark"));
+            data.setOptionType(rs.getInt("option_type"));
+            TargetData target = new TargetData();
+            target.setOne(rs.getInt("target_one"));
+            target.setTwo(rs.getInt("target_two"));
+            target.setThree(rs.getInt("target_three"));
+            data.setTarget(target);
+            List<OptionData> optionDataList = questionOptionDao.getListById(data.getId());
+            data.setOption(optionDataList);
+            return data;
         });
         return targetData;
     }
@@ -70,29 +67,24 @@ public class QuestionDaoImpl implements QuestionDao {
 
     @Override
     public int getCount(QuestionParam param) {
-        String sql = "SELECT COUNT(*) total FROM question";
-        int total =  db.query(sql, (ResultSet rs) -> {
-            if (rs.next()) {
-                return rs.getInt("total");
-            }
-            return 0;
-        });
-        return total;
+        String sql = "SELECT COUNT(*) FROM question";
+        Integer integer = db.queryForObject(sql, new MapSqlParameterSource(), Integer.class);
+        return integer.intValue();
     }
 
     @Override
     public Integer insert(Map<String, Object> param) {
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        String sql = "INSERT INTO question(`title`,`score`,`remark`,`update_id`,`update_time`,`create_id`,`create_time`," +
-                "`target_one`,`target_two`,`target_three`,`option_type`) " +
-                "VALUES(:title, :score, :remark, :updateId, :updateTime, :createId, :createTime, " +
-                ":targetOne, :targetTwo, :targetThree, :optionType)";
         try {
+            GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+            String sql = "INSERT INTO question(`title`,`score`,`remark`,`update_id`,`update_time`,`create_id`,`create_time`," +
+                    "`target_one`,`target_two`,`target_three`,`option_type`) " +
+                    "VALUES(:title, :score, :remark, :updateId, :updateTime, :createId, :createTime, " +
+                    ":targetOne, :targetTwo, :targetThree, :optionType)";
             db.update(sql, new MapSqlParameterSource(param), keyHolder);
+            return keyHolder.getKey().intValue();
         } catch (Exception e) {
             throw new QuestionException("添加问题数据 --> 异常:" + e.getMessage());
         }
-        return keyHolder.getKey().intValue();
     }
 
     @Override

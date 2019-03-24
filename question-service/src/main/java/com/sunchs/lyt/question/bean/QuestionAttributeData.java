@@ -8,7 +8,7 @@ public class QuestionAttributeData {
     public Integer pid;
     public String title;
     public Integer status;
-    public Integer sort;
+    public String remarks;
     public List<QuestionAttributeData> children;
 
     public void setId(Integer id) {
@@ -27,8 +27,8 @@ public class QuestionAttributeData {
         this.status = status;
     }
 
-    public void setSort(Integer sort) {
-        this.sort = sort;
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 
     public void setChildren(List<QuestionAttributeData> children) {

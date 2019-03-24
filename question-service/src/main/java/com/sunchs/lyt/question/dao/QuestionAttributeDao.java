@@ -20,15 +20,15 @@ public interface QuestionAttributeDao {
     /**
      * 根据 指标ID 获取指标总条数
      */
-    Integer getCount(Integer id);
+    int getCount(Integer id);
 
     /**
      * 添加指标
      */
-    Integer insert(Map<String, Object> param);
+    int insert(Map<String, Object> param);
 
     /**
      * 修改指标
      */
-    Integer update(Map<String, Object> param);
+    int update(Map<String, Object> param);
 }

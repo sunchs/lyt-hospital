@@ -8,7 +8,7 @@ public class QuestionAttributeParam {
     public Integer pid;
     public String title;
     public Integer status;
-    public String sort;
+    public String remarks;
     public List<QuestionAttributeParam> children;
 
     public Integer getId() {
@@ -27,8 +27,8 @@ public class QuestionAttributeParam {
         return status;
     }
 
-    public String getSort() {
-        return sort;
+    public String getRemarks() {
+        return remarks;
     }
 
     public List<QuestionAttributeParam> getChildren() {
