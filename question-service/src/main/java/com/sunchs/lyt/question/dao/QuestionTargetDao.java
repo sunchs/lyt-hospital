@@ -18,6 +18,11 @@ public interface QuestionTargetDao {
     List<QuestionTargetData> getList(Integer id);
 
     /**
+     * 获取指标所有数据
+     */
+    List<QuestionTargetData> getAll();
+
+    /**
      * 根据 指标ID 获取指标总条数
      */
     int getCount(Integer id);

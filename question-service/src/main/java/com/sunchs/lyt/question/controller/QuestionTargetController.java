@@ -22,6 +22,12 @@ public interface QuestionTargetController {
     ResultData getList(@RequestBody RequestData data);
 
     /**
+     * 获取所有指标数据
+     */
+    @PostMapping("/getAll")
+    ResultData getAll(@RequestBody RequestData data);
+
+    /**
      * 指标 添加、编辑
      */
     @PostMapping("/save")

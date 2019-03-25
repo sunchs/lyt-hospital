@@ -29,6 +29,11 @@ public class QuestionTargetControllerImpl extends BaseController implements Ques
     }
 
     @Override
+    public ResultData getAll(@RequestBody RequestData data) {
+        return success(questionTargetService.getAll());
+    }
+
+    @Override
     public ResultData save(@RequestBody RequestData data) {
         QuestionTargetParam param = data.toObject(QuestionTargetParam.class);
         return success(questionTargetService.save(param));

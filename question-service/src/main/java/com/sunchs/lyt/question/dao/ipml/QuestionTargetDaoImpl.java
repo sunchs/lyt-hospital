@@ -51,6 +51,12 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
     }
 
     @Override
+    public List<QuestionTargetData> getAll() {
+        String sql = "SELECT `id`,`pid`,`title`,`status`,`remarks` FROM question_target ORDER BY `sort` ASC";
+        return db.query(sql, (ResultSet rs, int rowNum) -> setResultToData(rs));
+    }
+
+    @Override
     public int getCount(Integer id) {
         String childSql = "SELECT COUNT(*) FROM question_target WHERE `pid`=:id";
         MapSqlParameterSource childParam = new MapSqlParameterSource()

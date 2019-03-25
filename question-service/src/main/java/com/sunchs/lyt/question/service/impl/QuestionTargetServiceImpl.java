@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionTargetServiceImpl implements QuestionTargetService {
@@ -35,6 +36,20 @@ public class QuestionTargetServiceImpl implements QuestionTargetService {
         page.setTotal(questionTargetDao.getCount(id));
         page.setList(questionTargetDao.getList(id));
         return page;
+    }
+
+    @Override
+    public List<QuestionTargetData> getAll() {
+        List<QuestionTargetData> dbList = questionTargetDao.getAll();
+        for (QuestionTargetData one : dbList) {
+            List<QuestionTargetData> twoList = dbList.stream().filter(row -> row.getPid() == one.getId()).collect(Collectors.toList());
+            for (QuestionTargetData two : twoList) {
+                List<QuestionTargetData> threeList = dbList.stream().filter(row -> row.getPid() == two.getId()).collect(Collectors.toList());
+                two.setChildren(threeList);
+            }
+            one.setChildren(twoList);
+        }
+        return dbList.stream().filter(row -> row.getPid() == 0).collect(Collectors.toList());
     }
 
     @Override
