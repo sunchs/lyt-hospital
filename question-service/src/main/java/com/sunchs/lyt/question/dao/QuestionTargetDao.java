@@ -23,6 +23,11 @@ public interface QuestionTargetDao {
     List<QuestionTargetData> getAll();
 
     /**
+     * 根据 指标ID 获取指标名称
+     */
+    String getNameById(Integer id);
+
+    /**
      * 根据 指标ID 获取指标总条数
      */
     int getCount(Integer id);

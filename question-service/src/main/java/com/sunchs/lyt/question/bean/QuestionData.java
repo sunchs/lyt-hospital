@@ -3,19 +3,22 @@ package com.sunchs.lyt.question.bean;
 import java.util.List;
 
 public class QuestionData {
-    public Integer id;
+    public int id;
     public String title;
-    public Integer status;
+    public int status;
+    public String statusName;
     public String remark;
     public TargetData target;
-    public Integer optionType;
+    public int optionType;
+    public String optionTypeName;
     public List<OptionData> option;
+    public String updateTime;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -27,12 +30,20 @@ public class QuestionData {
         this.title = title;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getStatusName() {
+        return statusName;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
     }
 
     public String getRemark() {
@@ -51,12 +62,20 @@ public class QuestionData {
         this.target = target;
     }
 
-    public Integer getOptionType() {
+    public int getOptionType() {
         return optionType;
     }
 
-    public void setOptionType(Integer optionType) {
+    public void setOptionType(int optionType) {
         this.optionType = optionType;
+    }
+
+    public String getOptionTypeName() {
+        return optionTypeName;
+    }
+
+    public void setOptionTypeName(String optionTypeName) {
+        this.optionTypeName = optionTypeName;
     }
 
     public List<OptionData> getOption() {
@@ -65,5 +84,13 @@ public class QuestionData {
 
     public void setOption(List<OptionData> option) {
         this.option = option;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }

@@ -3,6 +3,8 @@ package com.sunchs.lyt.question.dao.ipml;
 import com.sunchs.lyt.framework.util.PagingUtil;
 import com.sunchs.lyt.question.bean.*;
 import com.sunchs.lyt.question.dao.QuestionDao;
+import com.sunchs.lyt.question.dao.QuestionTargetDao;
+import com.sunchs.lyt.question.enums.QuestionStatus;
 import com.sunchs.lyt.question.exception.QuestionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -11,6 +13,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +27,10 @@ public class QuestionDaoImpl implements QuestionDao {
     private NamedParameterJdbcTemplate db;
 
     @Autowired
-    QuestionOptionDaoImpl questionOptionDao;
+    private QuestionOptionDaoImpl questionOptionDao;
+
+    @Autowired
+    private QuestionTargetDao questionTargetDao;
 
     @Override
     public QuestionData getById(Integer id) {
@@ -35,15 +43,26 @@ public class QuestionDaoImpl implements QuestionDao {
             data.setId(rs.getInt("id"));
             data.setTitle(rs.getString("title"));
             data.setStatus(rs.getInt("status"));
+            data.setStatusName(QuestionStatus.getName(data.getStatus()));
             data.setRemark(rs.getString("remark"));
-            data.setOptionType(rs.getInt("option_type"));
+
             TargetData target = new TargetData();
             target.setOne(rs.getInt("target_one"));
+            target.setOneName(questionTargetDao.getNameById(target.getOne()));
             target.setTwo(rs.getInt("target_two"));
+            target.setTwoName(questionTargetDao.getNameById(target.getTwo()));
             target.setThree(rs.getInt("target_three"));
+            target.setThreeName(questionTargetDao.getNameById(target.getThree()));
             data.setTarget(target);
+
+            data.setOptionType(rs.getInt("option_type"));
+            data.setOptionTypeName("单选");
             List<OptionData> optionDataList = questionOptionDao.getListById(data.getId());
             data.setOption(optionDataList);
+
+            Timestamp updateTime = rs.getTimestamp("update_time");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            data.setUpdateTime(dateFormat.format(updateTime));
             return data;
         });
         return targetData;

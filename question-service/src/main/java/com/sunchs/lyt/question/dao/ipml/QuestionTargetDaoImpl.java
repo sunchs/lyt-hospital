@@ -4,6 +4,7 @@ import com.sunchs.lyt.question.bean.QuestionTargetData;
 import com.sunchs.lyt.question.dao.QuestionTargetDao;
 import com.sunchs.lyt.question.exception.QuestionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -57,6 +58,14 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
     }
 
     @Override
+    public String getNameById(Integer id) {
+        String sql = "SELECT `title` FROM question_target WHERE id=:id";
+        MapSqlParameterSource param = new MapSqlParameterSource()
+                .addValue("id", id);
+        return selectForObject(sql, param, (ResultSet rs, int rowNum) -> rs.getString("title"));
+    }
+
+    @Override
     public int getCount(Integer id) {
         String childSql = "SELECT COUNT(*) FROM question_target WHERE `pid`=:id";
         MapSqlParameterSource childParam = new MapSqlParameterSource()
@@ -90,5 +99,14 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
         targetData.setStatus(rs.getInt("status"));
         targetData.setRemarks(rs.getString("remarks"));
         return targetData;
+    }
+
+    private <T> T selectForObject(String sql, MapSqlParameterSource param, RowMapper<T> mapper) {
+        try {
+            return db.queryForObject(sql, param, mapper);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

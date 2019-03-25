@@ -2,31 +2,58 @@ package com.sunchs.lyt.question.bean;
 
 public class TargetData {
 
-    public Integer one;
-    public Integer two;
-    public Integer three;
+    public int one;
+    public String oneName;
+    public int two;
+    public String twoName;
+    public int three;
+    public String threeName;
 
-    public Integer getOne() {
+    public int getOne() {
         return one;
     }
 
-    public void setOne(Integer one) {
+    public void setOne(int one) {
         this.one = one;
     }
 
-    public Integer getTwo() {
+    public String getOneName() {
+        return oneName;
+    }
+
+    public void setOneName(String oneName) {
+        this.oneName = oneName;
+    }
+
+    public int getTwo() {
         return two;
     }
 
-    public void setTwo(Integer two) {
+    public void setTwo(int two) {
         this.two = two;
     }
 
-    public Integer getThree() {
+    public String getTwoName() {
+        return twoName;
+    }
+
+    public void setTwoName(String twoName) {
+        this.twoName = twoName;
+    }
+
+    public int getThree() {
         return three;
     }
 
-    public void setThree(Integer three) {
+    public void setThree(int three) {
         this.three = three;
+    }
+
+    public String getThreeName() {
+        return threeName;
+    }
+
+    public void setThreeName(String threeName) {
+        this.threeName = threeName;
     }
 }
