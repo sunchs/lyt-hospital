@@ -108,7 +108,7 @@ public class QuestionDaoImpl implements QuestionDao {
     @Override
     public int update(Map<String, Object> param) {
         try {
-            String sql = "UPDATE question SET `status`=:status WHERE id=:id";
+            String sql = "UPDATE question SET `status`=:status,`update_id`=:updateId,`update_time`=:updateTime WHERE id=:id";
             db.update(sql, new MapSqlParameterSource(param));
             return (int) param.get("id");
         } catch (Exception e) {

@@ -70,9 +70,6 @@ public class QuestionServiceImpl implements QuestionService {
         if (questionId > 0) {
             // 插入选项
             resetQuestionOption(questionId, param.getOption());
-
-            // 插入自定义属性
-
         }
         return questionId;
     }
@@ -82,6 +79,8 @@ public class QuestionServiceImpl implements QuestionService {
         opt.put("id", param.getId());
         if (param.getStatus() != null) {
             opt.put("status", param.getStatus());
+            opt.put("updateId", 0);
+            opt.put("updateTime", new Timestamp(System.currentTimeMillis()));
         }
         Integer questionId = questionDao.update(opt);
         if (questionId > 0) {
