@@ -1,8 +1,11 @@
 package com.sunchs.lyt.question.dao;
 
+import com.sunchs.lyt.question.bean.OptionBean;
 import com.sunchs.lyt.question.bean.OptionData;
+import com.sunchs.lyt.question.bean.QuestionOptionData;
 
 import java.util.List;
+import java.util.Map;
 
 public interface QuestionOptionDao {
 
@@ -12,4 +15,16 @@ public interface QuestionOptionDao {
      */
     List<OptionData> getListById(Integer questionId);
 
+    QuestionOptionData getInfo(int id);
+
+    List<OptionBean> getOptionList(int id);
+
+    List<QuestionOptionData> getTypeList();
+
+    // 更新
+    int update(Map<String, Object> param);
+
+    void insertOption(int typeId, String content);
+
+    void deleteOption(int id);
 }
