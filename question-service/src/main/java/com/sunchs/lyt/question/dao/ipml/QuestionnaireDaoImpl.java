@@ -1,6 +1,8 @@
 package com.sunchs.lyt.question.dao.ipml;
 
 import com.sunchs.lyt.framework.util.PagingUtil;
+import com.sunchs.lyt.question.bean.AttributeParam;
+import com.sunchs.lyt.question.bean.QuestionBean;
 import com.sunchs.lyt.question.bean.QuestionnaireData;
 import com.sunchs.lyt.question.bean.QuestionnaireParam;
 import com.sunchs.lyt.question.dao.QuestionnaireDao;
@@ -73,6 +75,41 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
             return (int) param.get("id");
         } catch (Exception e) {
             throw new QuestionException("修改问卷状态 --> 异常:" + e.getMessage());
+        }
+    }
+
+    @Override
+    public int insertQuestion(int wjId, QuestionBean questionBean) {
+        try {
+            GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+            String sql = "INSERT INTO questionnaire_extend(`wj_id`,`question_id`,`skip_content`) " +
+                    "VALUES(:wjId, :questionId, :skipContent)";
+            MapSqlParameterSource param = new MapSqlParameterSource()
+                    .addValue("wjId", wjId)
+                    .addValue("questionId", questionBean.getQuestionId())
+                    .addValue("skipContent", questionBean.getSkipContent());
+            db.update(sql, param, keyHolder);
+            return keyHolder.getKey().intValue();
+        } catch (Exception e) {
+            throw new QuestionException("添加问卷的问题数据 --> 异常:" + e.getMessage());
+        }
+    }
+
+    @Override
+    public int insertAttribute(int wjId, int questionId, AttributeParam attributeParam) {
+        try {
+            GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+            String sql = "INSERT INTO questionnaire_attribute(`wj_id`,`question_id`,`attr_type`,`attr_id`) " +
+                    "VALUES(:wjId, :questionId, :attrType, :attrId)";
+            MapSqlParameterSource param = new MapSqlParameterSource()
+                    .addValue("wjId", wjId)
+                    .addValue("questionId", questionId)
+                    .addValue("attrType", attributeParam.getType())
+                    .addValue("attrId", attributeParam.getAttrId());
+            db.update(sql, param, keyHolder);
+            return keyHolder.getKey().intValue();
+        } catch (Exception e) {
+            throw new QuestionException("添加问卷的问题属性数据 --> 异常:" + e.getMessage());
         }
     }
 }

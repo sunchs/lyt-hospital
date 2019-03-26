@@ -3,10 +3,7 @@ package com.sunchs.lyt.question.service.impl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
-import com.sunchs.lyt.question.bean.QuestionData;
-import com.sunchs.lyt.question.bean.QuestionParam;
-import com.sunchs.lyt.question.bean.QuestionnaireData;
-import com.sunchs.lyt.question.bean.QuestionnaireParam;
+import com.sunchs.lyt.question.bean.*;
 import com.sunchs.lyt.question.dao.QuestionnaireDao;
 import com.sunchs.lyt.question.exception.QuestionException;
 import com.sunchs.lyt.question.service.QuestionnaireService;
@@ -54,12 +51,18 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         opt.put("updateTime", new Timestamp(System.currentTimeMillis()));
         opt.put("createId", 0);
         opt.put("createTime", new Timestamp(System.currentTimeMillis()));
-        Integer id = questionnaireDao.insert(opt);
-        if (id > 0) {
-            // 插入选项
-//            resetQuestionOption(id, param.getOption().getOptionId());
+        Integer wjId = questionnaireDao.insert(opt);
+        if (wjId > 0) {
+            List<QuestionBean> questionList = param.getQuestion();
+            for (QuestionBean question : questionList) {
+                questionnaireDao.insertQuestion(wjId, question);
+                List<AttributeParam> attributeList = question.getAttribute();
+                for (AttributeParam attr : attributeList) {
+                    questionnaireDao.insertAttribute(wjId, question.getQuestionId(), attr);
+                }
+            }
         }
-        return id;
+        return wjId;
     }
 
     private int update(QuestionnaireParam param) {
