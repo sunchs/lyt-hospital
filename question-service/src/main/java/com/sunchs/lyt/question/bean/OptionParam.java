@@ -2,19 +2,14 @@ package com.sunchs.lyt.question.bean;
 
 public class OptionParam {
 
-    public Integer optionId;
-    public String optionName;
-    public Integer sort;
+    public int type;
+    public int optionId;
 
-    public Integer getOptionId() {
+    public int getType() {
+        return type;
+    }
+
+    public int getOptionId() {
         return optionId;
-    }
-
-    public String getOptionName() {
-        return optionName;
-    }
-
-    public Integer getSort() {
-        return sort;
     }
 }

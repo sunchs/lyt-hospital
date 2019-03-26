@@ -76,6 +76,24 @@ public class QuestionOptionDaoImpl implements QuestionOptionDao {
     }
 
     @Override
+    public OptionBean getOption(int id) {
+        try {
+            String sql = "SELECT `id`,`content` FROM option_template WHERE `id`=:id";
+            MapSqlParameterSource param = new MapSqlParameterSource()
+                    .addValue("id", id);
+            OptionBean info = db.queryForObject(sql, param, (ResultSet rs, int rowNum) -> {
+                OptionBean option = new OptionBean();
+                option.setOptionId(rs.getInt("id"));
+                option.setOptionContent(rs.getString("content"));
+                return option;
+            });
+            return info;
+        } catch (Exception e) {
+            throw new QuestionException("获取选项数据 --> 异常:" + id + " --> " + e.getMessage());
+        }
+    }
+
+    @Override
     public int update(Map<String, Object> param) {
         try {
             String sql = "UPDATE option_template SET `remarks`=:remarks WHERE id=:id";

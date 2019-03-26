@@ -29,7 +29,7 @@ public class QuestionOptionControllerImpl extends BaseController implements Ques
     }
 
     @Override
-    public ResultData getList(RequestData data) {
+    public ResultData getList(@RequestBody RequestData data) {
         QuestionOptionParam param = data.toObject(QuestionOptionParam.class);
         return success(questionOptionService.getList(param));
     }

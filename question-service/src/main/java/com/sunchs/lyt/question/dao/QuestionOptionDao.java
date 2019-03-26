@@ -21,6 +21,8 @@ public interface QuestionOptionDao {
 
     List<QuestionOptionData> getTypeList();
 
+    OptionBean getOption(int id);
+
     // 更新
     int update(Map<String, Object> param);
 

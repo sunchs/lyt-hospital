@@ -3,10 +3,12 @@ package com.sunchs.lyt.question.service.impl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
+import com.sunchs.lyt.question.bean.OptionBean;
 import com.sunchs.lyt.question.bean.OptionParam;
 import com.sunchs.lyt.question.bean.QuestionData;
 import com.sunchs.lyt.question.bean.QuestionParam;
 import com.sunchs.lyt.question.dao.QuestionDao;
+import com.sunchs.lyt.question.dao.ipml.QuestionOptionDaoImpl;
 import com.sunchs.lyt.question.exception.QuestionException;
 import com.sunchs.lyt.question.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,10 @@ import java.util.Map;
 public class QuestionServiceImpl implements QuestionService {
 
     @Autowired
-    QuestionDao questionDao;
+    private QuestionDao questionDao;
+
+    @Autowired
+    private QuestionOptionDaoImpl questionOptionDao;
 
     @Override
     public QuestionData save(QuestionParam param) {
@@ -65,11 +70,13 @@ public class QuestionServiceImpl implements QuestionService {
             opt.put("targetTwo", param.getTarget().getTwo());
             opt.put("targetThree", param.getTarget().getThree());
         }
-        opt.put("optionType", param.getOptionType());
+        if (param.getOption() != null) {
+            opt.put("optionType", param.getOption().getType());
+        }
         Integer questionId = questionDao.insert(opt);
         if (questionId > 0) {
             // 插入选项
-            resetQuestionOption(questionId, param.getOption());
+            resetQuestionOption(questionId, param.getOption().getOptionId());
         }
         return questionId;
     }
@@ -89,14 +96,29 @@ public class QuestionServiceImpl implements QuestionService {
         return questionId;
     }
 
-    private void resetQuestionOption(Integer questionId, List<OptionParam> paramList) {
+    private void resetQuestionOption(Integer questionId, int optionId) {
         questionDao.deleteQuestionOption(questionId);
-        for (OptionParam param : paramList) {
-            Map<String, Object> opt = new HashMap<>();
-            opt.put("questionId", questionId);
-            opt.put("title", param.getOptionName());
-            opt.put("sort", param.getSort());
-            questionDao.insertQuestionOption(opt);
+        OptionBean option = questionOptionDao.getOption(optionId);
+        if (option != null) {
+            String optionContent = option.getOptionContent();
+            String[] split = optionContent.split(",");
+            int index = 10;
+            for (String optionValue : split) {
+                Map<String, Object> opt = new HashMap<>();
+                opt.put("questionId", questionId);
+                opt.put("title", optionValue);
+                opt.put("sort", index);
+                questionDao.insertQuestionOption(opt);
+                index++;
+            }
         }
+
+//        for (OptionParam param : paramList) {
+//            Map<String, Object> opt = new HashMap<>();
+//            opt.put("questionId", questionId);
+//            opt.put("title", param.getOptionName());
+//            opt.put("sort", param.getSort());
+//            questionDao.insertQuestionOption(opt);
+//        }
     }
 }
