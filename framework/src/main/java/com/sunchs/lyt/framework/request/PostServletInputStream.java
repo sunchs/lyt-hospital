@@ -26,6 +26,7 @@ public class PostServletInputStream extends ServletInputStream {
         return inputStream;
     }
 
+    @Override
     public void close() throws IOException {
         try {
             if (inputStream != null) {
@@ -58,14 +59,17 @@ public class PostServletInputStream extends ServletInputStream {
         return acquireInputStream().read();
     }
 
+    @Override
     public boolean markSupported() {
         return false;
     }
 
+    @Override
     public synchronized void mark(int i) {
         throw new UnsupportedOperationException("mark not supported");
     }
 
+    @Override
     public synchronized void reset() throws IOException {
         throw new IOException(new UnsupportedOperationException("reset not supported"));
     }
