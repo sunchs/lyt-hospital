@@ -17,6 +17,7 @@ public interface QuestionOptionService {
 
     QuestionOptionData getInfo(QuestionOptionParam param);
 
+
     List<QuestionOptionData> getList(QuestionOptionParam param);
 
 }

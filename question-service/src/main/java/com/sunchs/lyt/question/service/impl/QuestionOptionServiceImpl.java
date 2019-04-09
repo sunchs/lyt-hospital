@@ -1,6 +1,7 @@
 package com.sunchs.lyt.question.service.impl;
 
 import com.sunchs.lyt.framework.util.NumberUtil;
+import com.sunchs.lyt.question.bean.OptionBean;
 import com.sunchs.lyt.question.bean.QuestionOptionData;
 import com.sunchs.lyt.question.bean.QuestionOptionParam;
 import com.sunchs.lyt.question.bean.QuestionTargetParam;
@@ -28,9 +29,9 @@ public class QuestionOptionServiceImpl implements QuestionOptionService {
         int id = questionOptionDao.update(opt);
         if (id > 0) {
             questionOptionDao.deleteOption(id);
-            List<String> optionList = param.getOptionList();
-            for (String option : optionList) {
-                questionOptionDao.insertOption(id, option);
+            List<OptionBean> optionList = param.getOptionList();
+            for (OptionBean option : optionList) {
+                questionOptionDao.insertOption(id, option.getOptionContent());
             }
         }
         return new QuestionOptionData();
