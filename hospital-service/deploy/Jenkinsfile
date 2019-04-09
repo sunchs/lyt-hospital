@@ -1,9 +1,9 @@
 pipeline {
     agent any
     environment {
-        module = "user-service"
+        module = "hospital-service"
         tag = "v1.0"
-        portBind = "-p 6006:6006"
+        portBind = "-p 8003:8003"
     }
     stages {
         stage('Build') {
@@ -20,7 +20,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh "docker rm -f ${module}-${tag}"
+                //sh "docker rm -f ${module}-${tag}"
                 sh "docker run -dit ${portBind} --name ${module}-${tag} ${module}:${tag}"
             }
         }
