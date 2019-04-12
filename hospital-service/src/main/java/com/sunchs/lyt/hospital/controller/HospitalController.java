@@ -18,5 +18,12 @@ public interface HospitalController
     /**
      * 医院信息 删除
      */
+    @PostMapping("/remove")
     ResultData remove(@RequestBody RequestData data);
+
+    /**
+     * 医院信息分页列表
+     */
+    @PostMapping("/pageList")
+    ResultData getPageList(@RequestBody RequestData data);
 }

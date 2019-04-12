@@ -28,4 +28,10 @@ public class HospitalControllerImpl extends BaseController implements HospitalCo
         HospitalParam param = data.toObject(HospitalParam.class);
         return success();
     }
+
+    @Override
+    public ResultData getPageList(RequestData data) {
+        HospitalParam param = data.toObject(HospitalParam.class);
+        return success(hospitalService.getPageList(param));
+    }
 }

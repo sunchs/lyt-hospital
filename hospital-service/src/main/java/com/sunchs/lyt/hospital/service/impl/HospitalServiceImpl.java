@@ -1,7 +1,10 @@
 package com.sunchs.lyt.hospital.service.impl;
 
+import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.JsonUtil;
+import com.sunchs.lyt.framework.util.PagingUtil;
 import com.sunchs.lyt.hospital.bean.HospitalBranchParam;
+import com.sunchs.lyt.hospital.bean.HospitalData;
 import com.sunchs.lyt.hospital.bean.HospitalParam;
 import com.sunchs.lyt.hospital.dao.ipml.HospitalDaoImpl;
 import com.sunchs.lyt.hospital.service.HospitalService;
@@ -47,6 +50,13 @@ public class HospitalServiceImpl implements HospitalService {
             setOutpatientType(hospitalId, param);
             setRegistrationMode(hospitalId, param);
         }
+    }
+
+    @Override
+    public PagingList<HospitalData> getPageList(HospitalParam param) {
+        int total = hospitalDao.getCount(param);
+        List<HospitalData> pageList = hospitalDao.getPageList(param);
+        return PagingUtil.getData(pageList, total, param.getPageNow(), param.getPageSize());
     }
 
     /**

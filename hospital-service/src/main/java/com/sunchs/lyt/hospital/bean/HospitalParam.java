@@ -1,12 +1,14 @@
 package com.sunchs.lyt.hospital.bean;
 
+import com.sunchs.lyt.framework.bean.PagingParam;
+
 import java.util.List;
 
 /**
  * 医院信息参数
  * @author king
  */
-public class HospitalParam {
+public class HospitalParam extends PagingParam {
 
     /**
      * 医院ID
