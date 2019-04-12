@@ -14,4 +14,9 @@ public interface HospitalController
      */
     @PostMapping("/save")
     ResultData save(@RequestBody RequestData data);
+
+    /**
+     * 医院信息 删除
+     */
+    ResultData remove(@RequestBody RequestData data);
 }

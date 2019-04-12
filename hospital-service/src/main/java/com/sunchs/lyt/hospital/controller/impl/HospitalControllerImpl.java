@@ -22,4 +22,10 @@ public class HospitalControllerImpl extends BaseController implements HospitalCo
         hospitalService.save(param);
         return success();
     }
+
+    @Override
+    public ResultData remove(RequestData data) {
+        HospitalParam param = data.toObject(HospitalParam.class);
+        return success();
+    }
 }
