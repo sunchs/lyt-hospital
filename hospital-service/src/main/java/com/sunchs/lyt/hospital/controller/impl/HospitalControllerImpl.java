@@ -36,7 +36,7 @@ public class HospitalControllerImpl extends BaseController implements HospitalCo
     }
 
     @Override
-    public ResultData getById(RequestData data) {
+    public ResultData getById(@RequestBody RequestData data) {
         HospitalParam param = data.toObject(HospitalParam.class);
         return success(hospitalService.getById(param.getId()));
     }
