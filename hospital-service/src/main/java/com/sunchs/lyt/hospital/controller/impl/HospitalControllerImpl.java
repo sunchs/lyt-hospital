@@ -24,14 +24,20 @@ public class HospitalControllerImpl extends BaseController implements HospitalCo
     }
 
     @Override
-    public ResultData remove(RequestData data) {
+    public ResultData remove(@RequestBody RequestData data) {
         HospitalParam param = data.toObject(HospitalParam.class);
         return success();
     }
 
     @Override
-    public ResultData getPageList(RequestData data) {
+    public ResultData getPageList(@RequestBody RequestData data) {
         HospitalParam param = data.toObject(HospitalParam.class);
         return success(hospitalService.getPageList(param));
+    }
+
+    @Override
+    public ResultData getById(RequestData data) {
+        HospitalParam param = data.toObject(HospitalParam.class);
+        return success(hospitalService.getById(param.getId()));
     }
 }

@@ -26,4 +26,10 @@ public interface HospitalController
      */
     @PostMapping("/pageList")
     ResultData getPageList(@RequestBody RequestData data);
+
+    /**
+     * 根据 医院ID 获取医院详情
+     */
+    @PostMapping("/getById")
+    ResultData getById(@RequestBody RequestData data);
 }

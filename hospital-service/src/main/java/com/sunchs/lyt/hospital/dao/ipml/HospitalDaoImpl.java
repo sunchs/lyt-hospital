@@ -27,7 +27,7 @@ public class HospitalDaoImpl implements HospitalDao {
     @Override
     public HospitalData getById(int id) {
         String sql = "SELECT `id`,`hospital_name`,`hospital_type`,`hospital_property`,`subjection`,`address`,`contacts`," +
-                "`contact_info`,`operation_name`,`operation_phone`,`open_beds`,`remarks` FROM question WHERE id=:id";
+                "`contact_info`,`operation_name`,`operation_phone`,`open_beds`,`remarks` FROM hospital WHERE id=:id";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("id", id);
         HospitalData targetData =  db.queryForObject(sql, param, (ResultSet rs, int rowNum) -> {

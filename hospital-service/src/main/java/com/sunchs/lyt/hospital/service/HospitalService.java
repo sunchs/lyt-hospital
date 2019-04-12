@@ -15,4 +15,9 @@ public interface HospitalService {
      * 医院信息分页列表
      */
     PagingList<HospitalData> getPageList(HospitalParam param);
+
+    /**
+     * 根据 医院ID 获取医院详情
+     */
+    HospitalData getById(int hospitalId);
 }

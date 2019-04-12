@@ -59,6 +59,11 @@ public class HospitalServiceImpl implements HospitalService {
         return PagingUtil.getData(pageList, total, param.getPageNow(), param.getPageSize());
     }
 
+    @Override
+    public HospitalData getById(int hospitalId) {
+        return hospitalDao.getById(hospitalId);
+    }
+
     /**
      * 门诊科室
      */
