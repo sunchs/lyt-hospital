@@ -1,6 +1,5 @@
 package com.sunchs.lyt.hospital.service;
 
-import com.sunchs.lyt.hospital.bean.HospitalData;
 import com.sunchs.lyt.hospital.bean.HospitalParam;
 
 public interface HospitalService {
@@ -8,5 +7,5 @@ public interface HospitalService {
     /**
      * 保存数据
      */
-    HospitalData save(HospitalParam param);
+    void save(HospitalParam param);
 }
