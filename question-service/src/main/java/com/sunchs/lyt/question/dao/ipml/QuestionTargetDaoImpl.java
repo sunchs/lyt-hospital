@@ -91,6 +91,28 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
         return 0;
     }
 
+    public int titleQty(String title, int target) {
+        String sql = "SELECT COUNT(*) total FROM question_target WHERE title=:title AND `pid`=:target";
+        MapSqlParameterSource param = new MapSqlParameterSource()
+                .addValue("target", target)
+                .addValue("title", title);
+        Integer total = db.queryForObject(sql, param, Integer.class);
+        if (total.intValue() > 0) {
+            return total.intValue();
+        } else {
+            String sql2 = "SELECT COUNT(*) total FROM question_target WHERE title=:title AND `pid` IN " +
+                    "(SELECT id FROM question_target WHERE `pid`=:target AND title=:title)";
+            MapSqlParameterSource source = new MapSqlParameterSource()
+                    .addValue("target", target)
+                    .addValue("title", title);
+            Integer total2 = db.queryForObject(sql2, source, Integer.class);
+            if (total2.intValue() > 0) {
+                return total2.intValue();
+            }
+        }
+        return 0;
+    }
+
     private QuestionTargetData setResultToData(ResultSet rs) throws SQLException {
         QuestionTargetData targetData = new QuestionTargetData();
         targetData.setId(rs.getInt("id"));

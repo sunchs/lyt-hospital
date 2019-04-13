@@ -55,6 +55,11 @@ public class QuestionTargetServiceImpl implements QuestionTargetService {
     @Override
     public QuestionTargetData save(QuestionTargetParam param) {
         Integer targetId = 0;
+        // 检查标题
+        int qty = questionTargetDao.titleQty(param.getTitle(), param.getPid());
+        if (qty > 0) {
+            throw new QuestionException("指标标题已存在");
+        }
         if (NumberUtil.isZero(param.getId())) {
             targetId = insert(param);
         } else {

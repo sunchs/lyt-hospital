@@ -41,4 +41,9 @@ public interface QuestionTargetDao {
      * 修改指标
      */
     int update(Map<String, Object> param);
+
+    /**
+     * 标题数量
+     */
+    int titleQty(String title, int target);
 }
