@@ -14,11 +14,7 @@ public class PagingUtil {
         if (pageSize == 0) {
             throw new RuntimeException("每页条数不能为零");
         }
-//        System.out.println(total);
-//        System.out.println(pageSize);
-//        System.out.println(total / pageSize);
-//        System.out.println(Math.ceil(total / pageSize));
-        int pages = (int) Math.ceil(total / pageSize);
+        int pages = (int) Math.ceil((double)total / (double)pageSize);
         PagingList<T> page = new PagingList<>();
         page.setTotal(total);
         page.setPages(pages);

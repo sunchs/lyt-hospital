@@ -71,11 +71,18 @@ public class QuestionDaoImpl implements QuestionDao {
     @Override
     public List<QuestionData> getPageList(QuestionParam param) {
         int skip = PagingUtil.getSkip(param.getPageNow(), param.getPageSize());
-        String sql = "SELECT `id` FROM question ORDER BY `id` DESC LIMIT :skip,:pageSize";
         MapSqlParameterSource childParam = new MapSqlParameterSource()
                 .addValue("skip", skip)
                 .addValue("pageSize", param.getPageSize());
-        List<Integer> ids = db.query(sql, childParam, (ResultSet rs, int rowNum) -> rs.getInt("id"));
+        // 筛选条件
+        StringBuffer sql = new StringBuffer();
+        sql.append("SELECT `id` FROM question WHERE 1=1 ");
+        if (param.getTarget() != null && param.getTarget().getOne() > 0) {
+            sql.append("AND target_one=:targetOne ");
+            childParam.addValue("targetOne", param.getTarget().getOne());
+        }
+        sql.append("ORDER BY `id` DESC LIMIT :skip,:pageSize");
+        List<Integer> ids = db.query(sql.toString(), childParam, (ResultSet rs, int rowNum) -> rs.getInt("id"));
         List<QuestionData> result = new ArrayList<>();
         for (int id : ids) {
             result.add(getById(id));
@@ -85,8 +92,15 @@ public class QuestionDaoImpl implements QuestionDao {
 
     @Override
     public int getCount(QuestionParam param) {
-        String sql = "SELECT COUNT(*) FROM question";
-        Integer integer = db.queryForObject(sql, new MapSqlParameterSource(), Integer.class);
+        StringBuffer sql = new StringBuffer();
+        sql.append("SELECT COUNT(*) FROM question WHERE 1=1 ");
+        MapSqlParameterSource source = new MapSqlParameterSource();
+        if (param.getTarget() != null && param.getTarget().getOne() > 0) {
+            sql.append("AND target_one=:targetOne");
+            source.addValue("targetOne", param.getTarget().getOne());
+        }
+        System.out.println(sql.toString());
+        Integer integer = db.queryForObject(sql.toString(), source, Integer.class);
         return integer.intValue();
     }
 
