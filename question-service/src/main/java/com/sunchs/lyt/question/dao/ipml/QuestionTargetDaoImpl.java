@@ -91,6 +91,7 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
         return 0;
     }
 
+    @Override
     public int titleQty(String title, int target) {
         String sql = "SELECT COUNT(*) total FROM question_target WHERE title=:title AND `pid`=:target";
         MapSqlParameterSource param = new MapSqlParameterSource()
@@ -101,7 +102,7 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
             return total.intValue();
         } else {
             String sql2 = "SELECT COUNT(*) total FROM question_target WHERE title=:title AND `pid` IN " +
-                    "(SELECT id FROM question_target WHERE `pid`=:target AND title=:title)";
+                    "(SELECT id FROM question_target WHERE `pid`=:target)";
             MapSqlParameterSource source = new MapSqlParameterSource()
                     .addValue("target", target)
                     .addValue("title", title);

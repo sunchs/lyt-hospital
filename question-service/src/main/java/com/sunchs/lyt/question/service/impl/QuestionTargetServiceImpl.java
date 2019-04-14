@@ -58,7 +58,14 @@ public class QuestionTargetServiceImpl implements QuestionTargetService {
         // 检查标题
         int qty = questionTargetDao.titleQty(param.getTitle(), param.getPid());
         if (qty > 0) {
-            throw new QuestionException("指标标题已存在");
+            throw new QuestionException("指标标题: [ "+param.getTitle()+" ], 已存在");
+        }
+        List<QuestionTargetParam> children = param.getChildren();
+        for (QuestionTargetParam child : children) {
+            int sonQty = questionTargetDao.titleQty(child.getTitle(), param.getPid());
+            if (sonQty > 0) {
+                throw new QuestionException("指标标题: [ "+child.getTitle()+" ], 已存在");
+            }
         }
         if (NumberUtil.isZero(param.getId())) {
             targetId = insert(param);
