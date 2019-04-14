@@ -6,7 +6,7 @@ public class QuestionBean {
 
     public int questionId;
     public String skipContent;
-    public List<AttributeParam> attribute;
+    public List<TagParam> tagList;
 
     public int getQuestionId() {
         return questionId;
@@ -24,11 +24,11 @@ public class QuestionBean {
         this.skipContent = skipContent;
     }
 
-    public List<AttributeParam> getAttribute() {
-        return attribute;
+    public List<TagParam> getTagList() {
+        return tagList;
     }
 
-    public void setAttribute(List<AttributeParam> attribute) {
-        this.attribute = attribute;
+    public void setTagList(List<TagParam> tagList) {
+        this.tagList = tagList;
     }
 }

@@ -1,9 +1,9 @@
 package com.sunchs.lyt.question.bean;
 
-public class AttributeParam {
+public class TagParam {
 
     public int type;
-    public int attrId;
+    public int tagId;
 
     public int getType() {
         return type;
@@ -13,11 +13,11 @@ public class AttributeParam {
         this.type = type;
     }
 
-    public int getAttrId() {
-        return attrId;
+    public int getTagId() {
+        return tagId;
     }
 
-    public void setAttrId(int attrId) {
-        this.attrId = attrId;
+    public void setTagId(int tagId) {
+        this.tagId = tagId;
     }
 }

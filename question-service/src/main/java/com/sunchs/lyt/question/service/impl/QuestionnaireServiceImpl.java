@@ -5,7 +5,6 @@ import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
 import com.sunchs.lyt.question.bean.*;
 import com.sunchs.lyt.question.dao.QuestionnaireDao;
-import com.sunchs.lyt.question.exception.QuestionException;
 import com.sunchs.lyt.question.service.QuestionnaireService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,18 +50,11 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         opt.put("updateTime", new Timestamp(System.currentTimeMillis()));
         opt.put("createId", 0);
         opt.put("createTime", new Timestamp(System.currentTimeMillis()));
-        Integer wjId = questionnaireDao.insert(opt);
-        if (wjId > 0) {
-            List<QuestionBean> questionList = param.getQuestion();
-            for (QuestionBean question : questionList) {
-                questionnaireDao.insertQuestion(wjId, question);
-                List<AttributeParam> attributeList = question.getAttribute();
-                for (AttributeParam attr : attributeList) {
-                    questionnaireDao.insertAttribute(wjId, question.getQuestionId(), attr);
-                }
-            }
+        int id = questionnaireDao.insert(opt);
+        if (id > 0) {
+
         }
-        return wjId;
+        return id;
     }
 
     private int update(QuestionnaireParam param) {

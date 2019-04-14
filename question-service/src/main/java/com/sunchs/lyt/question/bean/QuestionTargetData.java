@@ -9,6 +9,7 @@ public class QuestionTargetData {
     public int status;
     public int sort;
     public String remarks;
+    public String updateTime;
     public List<QuestionTargetData> children;
 
     public int getId() {
@@ -65,5 +66,9 @@ public class QuestionTargetData {
 
     public void setChildren(List<QuestionTargetData> children) {
         this.children = children;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }

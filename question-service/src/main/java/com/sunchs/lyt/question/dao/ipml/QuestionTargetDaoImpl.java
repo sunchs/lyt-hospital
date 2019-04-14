@@ -12,6 +12,9 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,12 +27,12 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
 
     @Override
     public QuestionTargetData getById(Integer id) {
-        String sql = "SELECT `id`,`pid`,`title`,`status`,`remarks` FROM question_target WHERE `id`=:id";
+        String sql = "SELECT `id`,`pid`,`title`,`status`,`remarks`,`update_time` FROM question_target WHERE `id`=:id";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("id", id);
         QuestionTargetData targetData = db.queryForObject(sql, param, (ResultSet rs, int rowNum) -> setResultToData(rs));
         if (targetData != null) {
-            String childSql = "SELECT `id`,`pid`,`title`,`status`,`remarks` FROM question_target WHERE `pid`=:id ORDER BY `sort` ASC";
+            String childSql = "SELECT `id`,`pid`,`title`,`status`,`remarks`,`update_time` FROM question_target WHERE `pid`=:id ORDER BY `sort` ASC";
             MapSqlParameterSource childParam = new MapSqlParameterSource()
                     .addValue("id", targetData.id);
             List<QuestionTargetData> childList = db.query(childSql, childParam, (ResultSet rs, int rowNum) -> setResultToData(rs));
@@ -53,16 +56,20 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
 
     @Override
     public List<QuestionTargetData> getAll() {
-        String sql = "SELECT `id`,`pid`,`title`,`status`,`remarks` FROM question_target ORDER BY `sort` ASC";
+        String sql = "SELECT `id`,`pid`,`title`,`status`,`remarks`,`update_time` FROM question_target ORDER BY `sort` ASC";
         return db.query(sql, (ResultSet rs, int rowNum) -> setResultToData(rs));
     }
 
     @Override
     public String getNameById(Integer id) {
-        String sql = "SELECT `title` FROM question_target WHERE id=:id";
-        MapSqlParameterSource param = new MapSqlParameterSource()
-                .addValue("id", id);
-        return selectForObject(sql, param, (ResultSet rs, int rowNum) -> rs.getString("title"));
+        try {
+            String sql = "SELECT `title` FROM question_target WHERE id=:id";
+            MapSqlParameterSource param = new MapSqlParameterSource()
+                    .addValue("id", id);
+            return db.queryForObject(sql, param, (ResultSet rs, int rowNum) -> rs.getString("title"));
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     @Override
@@ -77,7 +84,8 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
     @Override
     public int insert(Map<String, Object> param) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        String sql = "INSERT INTO question_target(`pid`,`title`,`status`,`remarks`) VALUES(:pid, :title, 1, :remarks)";
+        String sql = "INSERT INTO question_target(`pid`,`title`,`status`,`remarks`,`update_id`,`update_time`,`create_id`,`create_time`) " +
+                "VALUES(:pid, :title, 1, :remarks, :updateId, :updateTime, :createId, :createTime)";
         try {
             db.update(sql, new MapSqlParameterSource(param), keyHolder);
         } catch (Exception e) {
@@ -121,6 +129,10 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
         targetData.setTitle(rs.getString("title"));
         targetData.setStatus(rs.getInt("status"));
         targetData.setRemarks(rs.getString("remarks"));
+
+        Timestamp updateTime = rs.getTimestamp("update_time");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        targetData.setUpdateTime(dateFormat.format(updateTime));
         return targetData;
     }
 

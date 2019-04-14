@@ -1,6 +1,5 @@
 package com.sunchs.lyt.question.dao;
 
-import com.sunchs.lyt.question.bean.AttributeParam;
 import com.sunchs.lyt.question.bean.QuestionBean;
 import com.sunchs.lyt.question.bean.QuestionnaireData;
 import com.sunchs.lyt.question.bean.QuestionnaireParam;
@@ -29,11 +28,6 @@ public interface QuestionnaireDao {
      *
      */
     int insertQuestion(int wjId, QuestionBean questionBean);
-
-    /**
-     *
-     */
-    int insertAttribute(int wjId, int questionId, AttributeParam attributeParam);
 
     /**
      * 修改问卷

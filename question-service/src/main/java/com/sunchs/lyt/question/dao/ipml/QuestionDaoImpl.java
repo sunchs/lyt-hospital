@@ -32,8 +32,11 @@ public class QuestionDaoImpl implements QuestionDao {
     @Autowired
     private QuestionTargetDao questionTargetDao;
 
+    @Autowired
+    private QuestionTagDaoImpl questionTagDao;
+
     @Override
-    public QuestionData getById(Integer id) {
+    public QuestionData getById(int id) {
         String sql = "SELECT `id`,`title`,`status`,`remark`,`update_id`,`update_time`,`create_id`,`create_time`, " +
                 "`target_one`,`target_two`,`target_three`,`option_type` FROM question WHERE id=:id";
         MapSqlParameterSource param = new MapSqlParameterSource()
@@ -59,6 +62,9 @@ public class QuestionDaoImpl implements QuestionDao {
             data.setOptionTypeName("单选");
             List<OptionData> optionDataList = questionOptionDao.getListById(data.getId());
             data.setOption(optionDataList);
+
+            // 标签列表
+            data.setTagList(questionTagDao.getQuestionTag(id));
 
             Timestamp updateTime = rs.getTimestamp("update_time");
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -105,7 +111,7 @@ public class QuestionDaoImpl implements QuestionDao {
     }
 
     @Override
-    public Integer insert(Map<String, Object> param) {
+    public int insert(Map<String, Object> param) {
         try {
             GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
             String sql = "INSERT INTO question(`title`,`remark`,`update_id`,`update_time`,`create_id`,`create_time`," +
@@ -142,7 +148,7 @@ public class QuestionDaoImpl implements QuestionDao {
     }
 
     @Override
-    public void deleteQuestionOption(Integer questionId) {
+    public void deleteQuestionOption(int questionId) {
         try {
             String delSql = "DELETE FROM question_option WHERE question_id=:questionId";
             MapSqlParameterSource delParam = new MapSqlParameterSource()
@@ -150,6 +156,29 @@ public class QuestionDaoImpl implements QuestionDao {
             db.update(delSql, delParam);
         } catch (Exception e) {
             throw new QuestionException("删除问题选项 --> 异常:" + e.getMessage());
+        }
+    }
+
+    @Override
+    public void insertQuestionAttribute(Map<String, Object> param) {
+        try {
+            String sql = "INSERT INTO question_tag_binding(`question_id`,`tag_type`,`tag_id`) " +
+                    "VALUES(:questionId, :tagType, :tagId)";
+            db.update(sql, new MapSqlParameterSource(param));
+        } catch (Exception e) {
+            throw new QuestionException("插入问题选项 --> 异常:" + e.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteQuestionAttribute(int questionId) {
+        try {
+            String delSql = "DELETE FROM question_tag_binding WHERE question_id=:questionId";
+            MapSqlParameterSource delParam = new MapSqlParameterSource()
+                    .addValue("questionId", questionId);
+            db.update(delSql, delParam);
+        } catch (Exception e) {
+            throw new QuestionException("删除问题绑定标签 --> 异常:" + e.getMessage());
         }
     }
 }

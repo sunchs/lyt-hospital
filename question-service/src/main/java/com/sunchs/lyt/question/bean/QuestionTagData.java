@@ -2,14 +2,15 @@ package com.sunchs.lyt.question.bean;
 
 import java.util.List;
 
-public class QuestionAttributeData {
+public class QuestionTagData {
 
     public Integer id;
     public Integer pid;
     public String title;
     public Integer status;
     public String remarks;
-    public List<QuestionAttributeData> children;
+    public String updateTime;
+    public List<QuestionTagData> children;
 
     public void setId(Integer id) {
         this.id = id;
@@ -31,7 +32,11 @@ public class QuestionAttributeData {
         this.remarks = remarks;
     }
 
-    public void setChildren(List<QuestionAttributeData> children) {
+    public void setChildren(List<QuestionTagData> children) {
         this.children = children;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }

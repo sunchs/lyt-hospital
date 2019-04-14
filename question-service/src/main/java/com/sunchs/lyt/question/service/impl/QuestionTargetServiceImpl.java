@@ -11,6 +11,7 @@ import com.sunchs.lyt.question.service.QuestionTargetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +83,10 @@ public class QuestionTargetServiceImpl implements QuestionTargetService {
         opt.put("pid", param.getPid());
         opt.put("title", param.getTitle());
         opt.put("remarks", param.getRemarks());
+        opt.put("updateId", 0);
+        opt.put("updateTime", new Timestamp(System.currentTimeMillis()));
+        opt.put("createId", 0);
+        opt.put("createTime", new Timestamp(System.currentTimeMillis()));
         Integer targetId = questionTargetDao.insert(opt);
         if (targetId > 0) {
             List<QuestionTargetParam> children = param.getChildren();
@@ -90,6 +95,10 @@ public class QuestionTargetServiceImpl implements QuestionTargetService {
                 cMap.put("pid", targetId);
                 cMap.put("title", child.getTitle());
                 cMap.put("remarks", "");
+                cMap.put("updateId", 0);
+                cMap.put("updateTime", new Timestamp(System.currentTimeMillis()));
+                cMap.put("createId", 0);
+                cMap.put("createTime", new Timestamp(System.currentTimeMillis()));
                 questionTargetDao.insert(cMap);
             }
         }

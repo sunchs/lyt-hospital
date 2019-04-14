@@ -11,7 +11,7 @@ public interface QuestionDao {
     /**
      * 根据 问题ID 获取问题信息
      */
-    QuestionData getById(Integer id);
+    QuestionData getById(int id);
 
     /**
      * 获取 问题分页 数据
@@ -26,7 +26,7 @@ public interface QuestionDao {
     /**
      * 添加问题
      */
-    Integer insert(Map<String, Object> param);
+    int insert(Map<String, Object> param);
 
     /**
      * 修改问题
@@ -41,5 +41,15 @@ public interface QuestionDao {
     /**
      * 根据 问题ID 删除选项
      */
-    void deleteQuestionOption(Integer questionId);
+    void deleteQuestionOption(int questionId);
+
+    /**
+     * 根据 问题ID 添加标签
+     */
+    void insertQuestionAttribute(Map<String, Object> param);
+
+    /**
+     * 根据 问题ID 删除标签
+     */
+    void deleteQuestionAttribute(int questionId);
 }

@@ -3,10 +3,7 @@ package com.sunchs.lyt.question.service.impl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
-import com.sunchs.lyt.question.bean.OptionBean;
-import com.sunchs.lyt.question.bean.OptionParam;
-import com.sunchs.lyt.question.bean.QuestionData;
-import com.sunchs.lyt.question.bean.QuestionParam;
+import com.sunchs.lyt.question.bean.*;
 import com.sunchs.lyt.question.dao.QuestionDao;
 import com.sunchs.lyt.question.dao.ipml.QuestionOptionDaoImpl;
 import com.sunchs.lyt.question.exception.QuestionException;
@@ -30,7 +27,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public QuestionData save(QuestionParam param) {
-        Integer questionId = 0;
+        int questionId = 0;
         if (NumberUtil.isZero(param.getId())) {
             questionId = insert(param);
         } else {
@@ -55,9 +52,7 @@ public class QuestionServiceImpl implements QuestionService {
         return PagingUtil.getData(pageList, total, param.getPageNow(), param.getPageSize());
     }
 
-    private Integer insert(QuestionParam param) {
-        // 参数检查
-
+    private int insert(QuestionParam param) {
         Map<String, Object> opt = new HashMap<>();
         opt.put("title", param.getTitle());
         opt.put("remark", param.getRemark());
@@ -73,15 +68,17 @@ public class QuestionServiceImpl implements QuestionService {
         if (param.getOption() != null) {
             opt.put("optionType", param.getOption().getType());
         }
-        Integer questionId = questionDao.insert(opt);
+        int questionId = questionDao.insert(opt);
         if (questionId > 0) {
             // 插入选项
             resetQuestionOption(questionId, param.getOption().getOptionId());
+            // 插入标签
+            resetQuestionAttribute(questionId, param.getTagList());
         }
         return questionId;
     }
 
-    private Integer update(QuestionParam param) {
+    private int update(QuestionParam param) {
         Map<String, Object> opt = new HashMap<>();
         opt.put("id", param.getId());
         if (param.getStatus() != null) {
@@ -89,14 +86,14 @@ public class QuestionServiceImpl implements QuestionService {
             opt.put("updateId", 0);
             opt.put("updateTime", new Timestamp(System.currentTimeMillis()));
         }
-        Integer questionId = questionDao.update(opt);
+        int questionId = questionDao.update(opt);
         if (questionId > 0) {
 //            userDao.saveUserRole(questionId, param.getRole());
         }
         return questionId;
     }
 
-    private void resetQuestionOption(Integer questionId, int optionId) {
+    private void resetQuestionOption(int questionId, int optionId) {
         questionDao.deleteQuestionOption(questionId);
         OptionBean option = questionOptionDao.getOption(optionId);
         if (option != null) {
@@ -120,5 +117,18 @@ public class QuestionServiceImpl implements QuestionService {
 //            opt.put("sort", param.getSort());
 //            questionDao.insertQuestionOption(opt);
 //        }
+    }
+
+    private void resetQuestionAttribute(int questionId, List<TagParam> attribute) {
+        questionDao.deleteQuestionAttribute(questionId);
+        if (attribute != null && attribute.size() > 0) {
+            attribute.forEach(param -> {
+                Map<String, Object> opt = new HashMap<>();
+                opt.put("questionId", questionId);
+                opt.put("tagType", param.getType());
+                opt.put("tagId", param.getTagId());
+                questionDao.insertQuestionAttribute(opt);
+            });
+        }
     }
 }

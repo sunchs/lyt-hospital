@@ -12,6 +12,7 @@ public class QuestionData {
     public int optionType;
     public String optionTypeName;
     public List<OptionData> option;
+    public List<TagData> tagList;
     public String updateTime;
 
     public int getId() {
@@ -92,5 +93,13 @@ public class QuestionData {
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public List<TagData> getTagList() {
+        return tagList;
+    }
+
+    public void setTagList(List<TagData> tagList) {
+        this.tagList = tagList;
     }
 }
