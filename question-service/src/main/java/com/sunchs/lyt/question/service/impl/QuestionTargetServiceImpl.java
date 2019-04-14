@@ -2,6 +2,7 @@ package com.sunchs.lyt.question.service.impl;
 
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.NumberUtil;
+import com.sunchs.lyt.framework.util.StringUtil;
 import com.sunchs.lyt.question.bean.QuestionTargetParam;
 import com.sunchs.lyt.question.bean.QuestionTargetData;
 import com.sunchs.lyt.question.dao.ipml.QuestionTargetDaoImpl;
@@ -56,16 +57,10 @@ public class QuestionTargetServiceImpl implements QuestionTargetService {
     public QuestionTargetData save(QuestionTargetParam param) {
         Integer targetId = 0;
         // 检查标题
-        int qty = questionTargetDao.titleQty(param.getTitle(), param.getPid());
-        if (qty > 0) {
-            throw new QuestionException("指标标题: [ "+param.getTitle()+" ], 已存在");
-        }
+        chenckTime(param.getTitle(), param.getPid());
         List<QuestionTargetParam> children = param.getChildren();
         for (QuestionTargetParam child : children) {
-            int sonQty = questionTargetDao.titleQty(child.getTitle(), param.getPid());
-            if (sonQty > 0) {
-                throw new QuestionException("指标标题: [ "+child.getTitle()+" ], 已存在");
-            }
+            chenckTime(child.getTitle(), param.getPid());
         }
         if (NumberUtil.isZero(param.getId())) {
             targetId = insert(param);
@@ -103,5 +98,15 @@ public class QuestionTargetServiceImpl implements QuestionTargetService {
 
     private Integer update(QuestionTargetParam param) {
         return 0;
+    }
+
+    private void chenckTime(String title, int target) {
+        if (StringUtil.isEmpty(title)) {
+            throw new QuestionException("指标标题不能为空");
+        }
+        int sonQty = questionTargetDao.titleQty(title, target);
+        if (sonQty > 0) {
+            throw new QuestionException("指标标题: [ "+ title +" ], 已存在");
+        }
     }
 }
