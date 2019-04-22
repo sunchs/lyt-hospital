@@ -28,7 +28,7 @@ public class QuestionService implements IQuestionService {
     @Override
     public QuestionData save(QuestionParam param) {
         int questionId = 0;
-        if (param.getId() > 0) {
+        if (NumberUtil.isZero(param.getId())) {
             questionId = insert(param);
         } else {
             questionId = update(param);

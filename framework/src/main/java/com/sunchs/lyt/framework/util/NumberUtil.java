@@ -14,4 +14,10 @@ public class NumberUtil {
         return false;
     }
 
+    public static boolean isZero(int value) {
+        if (value == 0) {
+            return true;
+        }
+        return false;
+    }
 }
