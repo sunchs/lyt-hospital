@@ -23,13 +23,13 @@
     </properties>
 
     <modules>
+        <module>framework</module>
+        <module>db</module>
         <module>registry</module>
         <module>gateway</module>
         <module>hospital-service</module>
         <module>question-service</module>
         <module>user-service</module>
-        <module>framework</module>
-        <module>db</module>
     </modules>
 
     <dependencies>
