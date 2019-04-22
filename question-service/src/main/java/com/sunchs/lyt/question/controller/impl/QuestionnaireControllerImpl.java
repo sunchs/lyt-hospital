@@ -5,7 +5,7 @@ import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
 import com.sunchs.lyt.question.bean.QuestionnaireParam;
 import com.sunchs.lyt.question.controller.QuestionnaireController;
-import com.sunchs.lyt.question.service.impl.QuestionnaireServiceImpl;
+import com.sunchs.lyt.question.service.impl.QuestionnaireService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class QuestionnaireControllerImpl extends BaseController implements QuestionnaireController {
 
     @Autowired
-    QuestionnaireServiceImpl questionnaireService;
+    QuestionnaireService questionnaireService;
 
     @Override
     public ResultData save(@RequestBody RequestData data) {

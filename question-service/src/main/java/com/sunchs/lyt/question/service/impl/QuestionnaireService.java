@@ -5,7 +5,7 @@ import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
 import com.sunchs.lyt.question.bean.*;
 import com.sunchs.lyt.question.dao.QuestionnaireDao;
-import com.sunchs.lyt.question.service.QuestionnaireService;
+import com.sunchs.lyt.question.service.IQuestionnaireService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class QuestionnaireServiceImpl implements QuestionnaireService {
+public class QuestionnaireService implements IQuestionnaireService {
 
     @Autowired
     private QuestionnaireDao questionnaireDao;

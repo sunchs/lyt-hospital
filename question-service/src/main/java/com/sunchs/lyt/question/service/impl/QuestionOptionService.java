@@ -1,13 +1,10 @@
 package com.sunchs.lyt.question.service.impl;
 
-import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.question.bean.OptionBean;
 import com.sunchs.lyt.question.bean.QuestionOptionData;
 import com.sunchs.lyt.question.bean.QuestionOptionParam;
-import com.sunchs.lyt.question.bean.QuestionTargetParam;
-import com.sunchs.lyt.question.dao.QuestionOptionDao;
 import com.sunchs.lyt.question.dao.ipml.QuestionOptionDaoImpl;
-import com.sunchs.lyt.question.service.QuestionOptionService;
+import com.sunchs.lyt.question.service.IQuestionOptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class QuestionOptionServiceImpl implements QuestionOptionService {
+public class QuestionOptionService implements IQuestionOptionService {
 
     @Autowired
     QuestionOptionDaoImpl questionOptionDao;

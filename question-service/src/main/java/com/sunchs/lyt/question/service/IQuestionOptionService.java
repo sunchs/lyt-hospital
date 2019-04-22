@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public interface QuestionOptionService {
+public interface IQuestionOptionService {
 
     /**
      * 保存数据

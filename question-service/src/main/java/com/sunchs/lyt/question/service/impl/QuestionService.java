@@ -7,7 +7,7 @@ import com.sunchs.lyt.question.bean.*;
 import com.sunchs.lyt.question.dao.QuestionDao;
 import com.sunchs.lyt.question.dao.ipml.QuestionOptionDaoImpl;
 import com.sunchs.lyt.question.exception.QuestionException;
-import com.sunchs.lyt.question.service.QuestionService;
+import com.sunchs.lyt.question.service.IQuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class QuestionServiceImpl implements QuestionService {
+public class QuestionService implements IQuestionService {
 
     @Autowired
     private QuestionDao questionDao;
@@ -28,7 +28,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public QuestionData save(QuestionParam param) {
         int questionId = 0;
-        if (NumberUtil.isZero(param.getId())) {
+        if (param.getId() > 0) {
             questionId = insert(param);
         } else {
             questionId = update(param);

@@ -4,7 +4,7 @@ import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.question.bean.QuestionnaireData;
 import com.sunchs.lyt.question.bean.QuestionnaireParam;
 
-public interface QuestionnaireService {
+public interface IQuestionnaireService {
 
     /**
      * 问卷分页

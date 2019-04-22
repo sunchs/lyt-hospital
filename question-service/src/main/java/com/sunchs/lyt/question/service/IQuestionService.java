@@ -4,7 +4,7 @@ import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.question.bean.QuestionData;
 import com.sunchs.lyt.question.bean.QuestionParam;
 
-public interface QuestionService {
+public interface IQuestionService {
 
     /**
      * 保存数据

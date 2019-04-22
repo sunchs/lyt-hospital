@@ -5,7 +5,7 @@ import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
 import com.sunchs.lyt.question.bean.QuestionParam;
 import com.sunchs.lyt.question.controller.QuestionController;
-import com.sunchs.lyt.question.service.QuestionService;
+import com.sunchs.lyt.question.service.impl.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
