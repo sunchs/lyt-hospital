@@ -1,10 +1,5 @@
 package com.sunchs.lyt.hospital.service.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.plugins.Page;
-import com.sunchs.lyt.db.business.entity.Question;
-import com.sunchs.lyt.db.business.service.IQuestionService;
 import com.sunchs.lyt.db.business.service.impl.QuestionServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.JsonUtil;
@@ -32,39 +27,33 @@ public class HospitalServiceImpl implements HospitalService {
 
     @Override
     public void save(HospitalParam param) {
-        Wrapper<Question> where = new EntityWrapper<>();
-        Page<Question> questionPage = questionService.selectPage(new Page<>(1, 5), where);
-        List<Question> records = questionPage.getRecords();
-        records.forEach(row-> System.out.println(row));
-        System.out.println(questionPage);
-
-//        Map<String, Object> opt = new HashMap<>();
-//        opt.put("hospitalName", param.getHospitalName());
-//        opt.put("hospitalType", param.getHospitalType());
-//        opt.put("hospitalProperty", param.getHospitalProperty());
-//        opt.put("subjection", param.getSubjection());
-//        opt.put("address", param.getAddress());
-//        opt.put("contacts", param.getContacts());
-//        opt.put("contactInfo", param.getContactInfo());
-//        opt.put("operationName", param.getOperationName());
-//        opt.put("operationPhone", param.getOperationPhone());
-//        opt.put("openBeds", param.getOpenBeds());
-//        opt.put("remarks", param.getRemarks());
-//        int hospitalId = 0;
-//        if (param.getId() > 0) {
-//            opt.put("id", param.getId());
-//            hospitalId = hospitalDao.update(opt);
-//        } else {
-//            hospitalId = hospitalDao.insert(opt);
-//        }
-//        if (hospitalId > 0) {
-//            setOutpatientOffice(hospitalId, param);
-//            setInpatientOffice(hospitalId, param);
-//            setSpecialOffice(hospitalId, param);
-//            setHospitalBranch(hospitalId, param);
-//            setOutpatientType(hospitalId, param);
-//            setRegistrationMode(hospitalId, param);
-//        }
+        Map<String, Object> opt = new HashMap<>();
+        opt.put("hospitalName", param.getHospitalName());
+        opt.put("hospitalType", param.getHospitalType());
+        opt.put("hospitalProperty", param.getHospitalProperty());
+        opt.put("subjection", param.getSubjection());
+        opt.put("address", param.getAddress());
+        opt.put("contacts", param.getContacts());
+        opt.put("contactInfo", param.getContactInfo());
+        opt.put("operationName", param.getOperationName());
+        opt.put("operationPhone", param.getOperationPhone());
+        opt.put("openBeds", param.getOpenBeds());
+        opt.put("remarks", param.getRemarks());
+        int hospitalId = 0;
+        if (param.getId() > 0) {
+            opt.put("id", param.getId());
+            hospitalId = hospitalDao.update(opt);
+        } else {
+            hospitalId = hospitalDao.insert(opt);
+        }
+        if (hospitalId > 0) {
+            setOutpatientOffice(hospitalId, param);
+            setInpatientOffice(hospitalId, param);
+            setSpecialOffice(hospitalId, param);
+            setHospitalBranch(hospitalId, param);
+            setOutpatientType(hospitalId, param);
+            setRegistrationMode(hospitalId, param);
+        }
     }
 
     @Override
