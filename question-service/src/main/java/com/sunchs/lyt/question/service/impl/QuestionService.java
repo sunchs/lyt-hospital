@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class QuestionService implements IQuestionService {
@@ -121,14 +122,17 @@ public class QuestionService implements IQuestionService {
 
     private void resetQuestionAttribute(int questionId, List<TagParam> attribute) {
         questionDao.deleteQuestionAttribute(questionId);
-        if (attribute != null && attribute.size() > 0) {
-            attribute.forEach(param -> {
+        if (attribute == null || attribute.size() == 0) {
+            return;
+        }
+        for (TagParam param : attribute) {
+            if (Objects.nonNull(param) && NumberUtil.nonZero(param.getTagId())) {
                 Map<String, Object> opt = new HashMap<>();
                 opt.put("questionId", questionId);
                 opt.put("tagType", param.getType());
                 opt.put("tagId", param.getTagId());
                 questionDao.insertQuestionAttribute(opt);
-            });
+            }
         }
     }
 }

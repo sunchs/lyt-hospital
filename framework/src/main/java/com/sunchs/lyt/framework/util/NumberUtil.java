@@ -20,4 +20,8 @@ public class NumberUtil {
         }
         return false;
     }
+
+    public static boolean nonZero(int value) {
+        return ! isZero(value);
+    }
 }
