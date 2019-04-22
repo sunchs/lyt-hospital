@@ -29,6 +29,7 @@
         <module>question-service</module>
         <module>user-service</module>
         <module>framework</module>
+        <module>db</module>
     </modules>
 
     <dependencies>
@@ -71,6 +72,11 @@
             <dependency>
                 <groupId>com.sunchs.lyt</groupId>
                 <artifactId>framework</artifactId>
+                <version>0.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sunchs.lyt</groupId>
+                <artifactId>db</artifactId>
                 <version>0.0.1</version>
             </dependency>
         </dependencies>
