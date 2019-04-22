@@ -1,6 +1,5 @@
 package com.sunchs.lyt.hospital.service.impl;
 
-import com.sunchs.lyt.db.business.service.impl.QuestionServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.JsonUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
@@ -21,9 +20,6 @@ public class HospitalServiceImpl implements HospitalService {
 
     @Autowired
     private HospitalDaoImpl hospitalDao;
-
-    @Autowired
-    QuestionServiceImpl questionService;
 
     @Override
     public void save(HospitalParam param) {
