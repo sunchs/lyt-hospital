@@ -9,6 +9,7 @@ public class QuestionnaireParam extends PagingParam {
     public int id;
     public String title;
     public Integer status;
+    public int targetOne;
     public List<QuestionBean> question;
 
     public int getId() {
@@ -21,6 +22,10 @@ public class QuestionnaireParam extends PagingParam {
 
     public Integer getStatus() {
         return status;
+    }
+
+    public int getTargetOne() {
+        return targetOne;
     }
 
     public List<QuestionBean> getQuestion() {

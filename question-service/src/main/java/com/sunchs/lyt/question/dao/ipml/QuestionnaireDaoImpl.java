@@ -1,5 +1,9 @@
 package com.sunchs.lyt.question.dao.ipml;
 
+import com.sunchs.lyt.db.business.entity.Questionnaire;
+import com.sunchs.lyt.db.business.entity.QuestionnaireExtend;
+import com.sunchs.lyt.db.business.service.impl.QuestionnaireExtendServiceImpl;
+import com.sunchs.lyt.db.business.service.impl.QuestionnaireServiceImpl;
 import com.sunchs.lyt.framework.util.PagingUtil;
 import com.sunchs.lyt.question.bean.TagParam;
 import com.sunchs.lyt.question.bean.QuestionBean;
@@ -22,6 +26,12 @@ import java.util.Map;
 
 @Repository
 public class QuestionnaireDaoImpl implements QuestionnaireDao {
+
+    @Autowired
+    private QuestionnaireServiceImpl questionnaireService;
+
+    @Autowired
+    private QuestionnaireExtendServiceImpl questionnaireExtendService;
 
     @Override
     public int getCount(QuestionnaireParam param) {
@@ -55,41 +65,27 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
     }
 
     @Override
-    public int insert(Map<String, Object> param) {
+    public boolean insert(Questionnaire entity) {
         try {
-            GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-            String sql = "INSERT INTO questionnaire(`title`,`update_id`,`update_time`,`create_id`,`create_time`) " +
-                    "VALUES(:title, :updateId, :updateTime, :createId, :createTime)";
-            db.update(sql, new MapSqlParameterSource(param), keyHolder);
-            return keyHolder.getKey().intValue();
+            return questionnaireService.insert(entity);
         } catch (Exception e) {
             throw new QuestionException("添加问卷数据 --> 异常:" + e.getMessage());
         }
     }
 
     @Override
-    public int update(Map<String, Object> param) {
+    public boolean update(Questionnaire entity) {
         try {
-            String sql = "UPDATE questionnaire SET `status`=:status,`update_id`=:updateId,`update_time`=:updateTime WHERE id=:id";
-            db.update(sql, new MapSqlParameterSource(param));
-            return (int) param.get("id");
+            return questionnaireService.updateById(entity);
         } catch (Exception e) {
             throw new QuestionException("修改问卷状态 --> 异常:" + e.getMessage());
         }
     }
 
     @Override
-    public int insertQuestion(int wjId, QuestionBean questionBean) {
+    public boolean insertQuestion(QuestionnaireExtend entity) {
         try {
-            GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-            String sql = "INSERT INTO questionnaire_extend(`wj_id`,`question_id`,`skip_content`) " +
-                    "VALUES(:wjId, :questionId, :skipContent)";
-            MapSqlParameterSource param = new MapSqlParameterSource()
-                    .addValue("wjId", wjId)
-                    .addValue("questionId", questionBean.getQuestionId())
-                    .addValue("skipContent", questionBean.getSkipContent());
-            db.update(sql, param, keyHolder);
-            return keyHolder.getKey().intValue();
+            return questionnaireExtendService.insert(entity);
         } catch (Exception e) {
             throw new QuestionException("添加问卷的问题数据 --> 异常:" + e.getMessage());
         }

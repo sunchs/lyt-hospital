@@ -1,5 +1,7 @@
 package com.sunchs.lyt.question.dao;
 
+import com.sunchs.lyt.db.business.entity.Questionnaire;
+import com.sunchs.lyt.db.business.entity.QuestionnaireExtend;
 import com.sunchs.lyt.question.bean.QuestionBean;
 import com.sunchs.lyt.question.bean.QuestionnaireData;
 import com.sunchs.lyt.question.bean.QuestionnaireParam;
@@ -22,15 +24,15 @@ public interface QuestionnaireDao {
     /**
      * 添加问卷
      */
-    int insert(Map<String, Object> param);
+    boolean insert(Questionnaire entity);
 
     /**
      *
      */
-    int insertQuestion(int wjId, QuestionBean questionBean);
+    boolean insertQuestion(QuestionnaireExtend entity);
 
     /**
      * 修改问卷
      */
-    int update(Map<String, Object> param);
+    boolean update(Questionnaire entity);
 }

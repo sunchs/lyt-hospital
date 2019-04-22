@@ -21,7 +21,7 @@ public class QuestionOptionDaoImpl implements QuestionOptionDao {
     private NamedParameterJdbcTemplate db;
 
     @Override
-    public List<OptionData> getListById(Integer questionId) {
+    public List<OptionData> getListById(int questionId) {
         String childSql = "SELECT `id`,`title`,`sort` FROM question_option WHERE `question_id`=:questionId";
         MapSqlParameterSource childParam = new MapSqlParameterSource()
                 .addValue("questionId", questionId);

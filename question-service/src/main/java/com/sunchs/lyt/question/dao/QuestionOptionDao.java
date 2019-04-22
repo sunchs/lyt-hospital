@@ -13,7 +13,7 @@ public interface QuestionOptionDao {
      * 根据 问题ID 获取选项列表
      * @param questionId
      */
-    List<OptionData> getListById(Integer questionId);
+    List<OptionData> getListById(int questionId);
 
     QuestionOptionData getInfo(int id);
 

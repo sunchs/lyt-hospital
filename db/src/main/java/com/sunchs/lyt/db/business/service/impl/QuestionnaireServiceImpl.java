@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 
 /**
  * <p>
- * 调查问卷表 服务实现类
+ * 问卷表 服务实现类
  * </p>
  *
  * @author king
- * @since 2019-04-21
+ * @since 2019-04-22
  */
 @Service
 public class QuestionnaireServiceImpl extends ServiceImpl<QuestionnaireMapper, Questionnaire> implements IQuestionnaireService {

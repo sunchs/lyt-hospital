@@ -19,7 +19,8 @@ public class QuestionnaireControllerImpl extends BaseController implements Quest
     @Override
     public ResultData save(@RequestBody RequestData data) {
         QuestionnaireParam param = data.toObject(QuestionnaireParam.class);
-        return success(questionnaireService.save(param));
+        questionnaireService.save(param);
+        return success();
     }
 
     @Override

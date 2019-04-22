@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.service.IService;
 
 /**
  * <p>
- *  服务类
+ * 问卷题目表 服务类
  * </p>
  *
  * @author king
- * @since 2019-04-21
+ * @since 2019-04-22
  */
 public interface IQuestionnaireExtendService extends IService<QuestionnaireExtend> {
 

@@ -9,11 +9,11 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 
+ * 问卷题目表
  * </p>
  *
  * @author king
- * @since 2019-04-21
+ * @since 2019-04-22
  */
 @TableName("questionnaire_extend")
 public class QuestionnaireExtend extends Model<QuestionnaireExtend> {
@@ -29,8 +29,8 @@ public class QuestionnaireExtend extends Model<QuestionnaireExtend> {
     /**
      * 问卷ID
      */
-    @TableField("wj_id")
-    private Integer wjId;
+    @TableField("questionnaire_id")
+    private Integer questionnaireId;
 
     /**
      * 题目ID
@@ -39,7 +39,19 @@ public class QuestionnaireExtend extends Model<QuestionnaireExtend> {
     private Integer questionId;
 
     /**
-     * 选项跳转字符串
+     * 跳转方式
+     */
+    @TableField("skip_mode")
+    private Integer skipMode;
+
+    /**
+     * 跳转题目ID
+     */
+    @TableField("skip_question_id")
+    private Integer skipQuestionId;
+
+    /**
+     * 跳转详情
      */
     @TableField("skip_content")
     private String skipContent;
@@ -51,12 +63,12 @@ public class QuestionnaireExtend extends Model<QuestionnaireExtend> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getWjId() {
-        return wjId;
+    public Integer getQuestionnaireId() {
+        return questionnaireId;
     }
 
-    public void setWjId(Integer wjId) {
-        this.wjId = wjId;
+    public void setQuestionnaireId(Integer questionnaireId) {
+        this.questionnaireId = questionnaireId;
     }
     public Integer getQuestionId() {
         return questionId;
@@ -64,6 +76,20 @@ public class QuestionnaireExtend extends Model<QuestionnaireExtend> {
 
     public void setQuestionId(Integer questionId) {
         this.questionId = questionId;
+    }
+    public Integer getSkipMode() {
+        return skipMode;
+    }
+
+    public void setSkipMode(Integer skipMode) {
+        this.skipMode = skipMode;
+    }
+    public Integer getSkipQuestionId() {
+        return skipQuestionId;
+    }
+
+    public void setSkipQuestionId(Integer skipQuestionId) {
+        this.skipQuestionId = skipQuestionId;
     }
     public String getSkipContent() {
         return skipContent;
@@ -75,9 +101,13 @@ public class QuestionnaireExtend extends Model<QuestionnaireExtend> {
 
     public static final String ID = "id";
 
-    public static final String WJ_ID = "wj_id";
+    public static final String QUESTIONNAIRE_ID = "questionnaire_id";
 
     public static final String QUESTION_ID = "question_id";
+
+    public static final String SKIP_MODE = "skip_mode";
+
+    public static final String SKIP_QUESTION_ID = "skip_question_id";
 
     public static final String SKIP_CONTENT = "skip_content";
 
@@ -90,8 +120,10 @@ public class QuestionnaireExtend extends Model<QuestionnaireExtend> {
     public String toString() {
         return "QuestionnaireExtend{" +
         "id=" + id +
-        ", wjId=" + wjId +
+        ", questionnaireId=" + questionnaireId +
         ", questionId=" + questionId +
+        ", skipMode=" + skipMode +
+        ", skipQuestionId=" + skipQuestionId +
         ", skipContent=" + skipContent +
         "}";
     }

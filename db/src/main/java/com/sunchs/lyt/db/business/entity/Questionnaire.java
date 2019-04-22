@@ -9,11 +9,11 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 调查问卷表
+ * 问卷表
  * </p>
  *
  * @author king
- * @since 2019-04-21
+ * @since 2019-04-22
  */
 public class Questionnaire extends Model<Questionnaire> {
 
@@ -34,6 +34,12 @@ public class Questionnaire extends Model<Questionnaire> {
      * 状态
      */
     private Integer status;
+
+    /**
+     * 一级指标
+     */
+    @TableField("target_one")
+    private Integer targetOne;
 
     /**
      * 更新人ID
@@ -80,6 +86,13 @@ public class Questionnaire extends Model<Questionnaire> {
     public void setStatus(Integer status) {
         this.status = status;
     }
+    public Integer getTargetOne() {
+        return targetOne;
+    }
+
+    public void setTargetOne(Integer targetOne) {
+        this.targetOne = targetOne;
+    }
     public Integer getUpdateId() {
         return updateId;
     }
@@ -115,6 +128,8 @@ public class Questionnaire extends Model<Questionnaire> {
 
     public static final String STATUS = "status";
 
+    public static final String TARGET_ONE = "target_one";
+
     public static final String UPDATE_ID = "update_id";
 
     public static final String UPDATE_TIME = "update_time";
@@ -134,6 +149,7 @@ public class Questionnaire extends Model<Questionnaire> {
         "id=" + id +
         ", title=" + title +
         ", status=" + status +
+        ", targetOne=" + targetOne +
         ", updateId=" + updateId +
         ", updateTime=" + updateTime +
         ", createId=" + createId +

@@ -14,5 +14,5 @@ public interface IQuestionnaireService {
     /**
      * 保存数据
      */
-    QuestionnaireData save(QuestionnaireParam param);
+    void save(QuestionnaireParam param);
 }
