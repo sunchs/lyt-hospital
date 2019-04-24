@@ -10,6 +10,7 @@ public class QuestionData {
     public String remark;
     public TargetData target;
     public int optionType;
+    public String optionMode;
     public String optionTypeName;
     public List<OptionData> option;
     public List<TagData> tagList;
@@ -71,6 +72,14 @@ public class QuestionData {
         this.optionType = optionType;
     }
 
+    public String getOptionMode() {
+        return optionMode;
+    }
+
+    public void setOptionMode(String optionMode) {
+        this.optionMode = optionMode;
+    }
+
     public String getOptionTypeName() {
         return optionTypeName;
     }
@@ -87,19 +96,19 @@ public class QuestionData {
         this.option = option;
     }
 
-    public String getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
-    }
-
     public List<TagData> getTagList() {
         return tagList;
     }
 
     public void setTagList(List<TagData> tagList) {
         this.tagList = tagList;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }

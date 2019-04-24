@@ -7,6 +7,7 @@ public class QuestionOptionData {
     public int id;
     public String title;
     public String remarks;
+    public String mode;
     public List<OptionBean> optionList;
 
     public int getId() {
@@ -31,6 +32,14 @@ public class QuestionOptionData {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 
     public List<OptionBean> getOptionList() {

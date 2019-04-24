@@ -37,7 +37,7 @@ public class QuestionOptionDaoImpl implements QuestionOptionDao {
 
     @Override
     public QuestionOptionData getInfo(int id) {
-        String sql = "SELECT `id`,`content`,`remarks` FROM option_template WHERE `id`=:id";
+        String sql = "SELECT `id`,`content`,`remarks`,`mode` FROM option_template WHERE `id`=:id";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("id", id);
         QuestionOptionData info = db.queryForObject(sql, param, (ResultSet rs, int rowNum) -> {
