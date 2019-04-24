@@ -45,6 +45,7 @@ public class QuestionOptionDaoImpl implements QuestionOptionDao {
             option.setId(rs.getInt("id"));
             option.setTitle(rs.getString("content"));
             option.setRemarks(rs.getString("remarks"));
+            option.setMode(rs.getString("mode"));
             return option;
         });
         return info;
