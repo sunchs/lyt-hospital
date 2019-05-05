@@ -11,12 +11,12 @@ public interface QuestionTargetService {
     /**
      * 根据 指标ID 获取指标信息
      */
-    QuestionTargetData getById(Integer id);
+    QuestionTargetData getById(int id);
 
-    /**
-     * 根据 指标ID 获取指标列表
-     */
-    PagingList<QuestionTargetData> getList(Integer id);
+//    /**
+//     * 根据 指标ID 获取指标列表
+//     */
+//    PagingList<QuestionTargetData> getList(int id);
 
     /**
      * 获取所有指标数据
@@ -26,6 +26,6 @@ public interface QuestionTargetService {
     /**
      * 保存数据
      */
-    QuestionTargetData save(QuestionTargetParam param);
+    void save(QuestionTargetParam param);
 
 }

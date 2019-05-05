@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-04-21
+ * @since 2019-05-05
  */
 @TableName("question_tag_binding")
 public class QuestionTagBinding extends Model<QuestionTagBinding> {

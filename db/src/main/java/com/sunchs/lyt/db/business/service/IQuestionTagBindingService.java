@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.service.IService;
  * </p>
  *
  * @author king
- * @since 2019-04-21
+ * @since 2019-05-05
  */
 public interface IQuestionTagBindingService extends IService<QuestionTagBinding> {
 

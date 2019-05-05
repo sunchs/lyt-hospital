@@ -22,5 +22,15 @@
             <!--<artifactId>fastjson</artifactId>-->
             <!--<version>1.2.41</version>-->
         <!--</dependency>-->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sunchs.lyt</groupId>
+            <artifactId>db</artifactId>
+            <version>0.0.1</version>
+        </dependency>
     </dependencies>
 </project>

@@ -1,6 +1,6 @@
 package com.sunchs.lyt.db.business.mapper;
 
-import com.sunchs.lyt.db.business.entity.QuestionTag;
+import com.sunchs.lyt.db.business.entity.QuestionTarget;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @author king
  * @since 2019-05-05
  */
-public interface QuestionTagMapper extends BaseMapper<QuestionTag> {
+public interface QuestionTargetMapper extends BaseMapper<QuestionTarget> {
 
 }

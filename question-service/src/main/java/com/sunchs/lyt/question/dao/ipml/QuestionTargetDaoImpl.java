@@ -1,23 +1,23 @@
 package com.sunchs.lyt.question.dao.ipml;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.sunchs.lyt.db.business.entity.QuestionTarget;
+import com.sunchs.lyt.db.business.service.impl.QuestionTargetServiceImpl;
+import com.sunchs.lyt.framework.util.JsonUtil;
 import com.sunchs.lyt.question.bean.QuestionTargetData;
 import com.sunchs.lyt.question.dao.QuestionTargetDao;
 import com.sunchs.lyt.question.exception.QuestionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 @Repository
 public class QuestionTargetDaoImpl implements QuestionTargetDao {
@@ -25,43 +25,54 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
     @Autowired
     private NamedParameterJdbcTemplate db;
 
+    @Autowired
+    private QuestionTargetServiceImpl questionTargetService;
+
     @Override
-    public QuestionTargetData getById(Integer id) {
-        String sql = "SELECT `id`,`pid`,`title`,`status`,`remarks`,`update_time` FROM question_target WHERE `id`=:id";
-        MapSqlParameterSource param = new MapSqlParameterSource()
-                .addValue("id", id);
-        QuestionTargetData targetData = db.queryForObject(sql, param, (ResultSet rs, int rowNum) -> setResultToData(rs));
-        if (targetData != null) {
-            String childSql = "SELECT `id`,`pid`,`title`,`status`,`remarks`,`update_time` FROM question_target WHERE `pid`=:id ORDER BY `sort` ASC";
-            MapSqlParameterSource childParam = new MapSqlParameterSource()
-                    .addValue("id", targetData.id);
-            List<QuestionTargetData> childList = db.query(childSql, childParam, (ResultSet rs, int rowNum) -> setResultToData(rs));
-            targetData.setChildren(childList);
+    public QuestionTargetData getById(int id) {
+        Wrapper<QuestionTarget> where = new EntityWrapper<>();
+        where.eq("id", id);
+        QuestionTarget questionTarget = questionTargetService.selectOne(where);
+        if (Objects.nonNull(questionTarget)) {
+            // 转换对象
+            String oldString = JsonUtil.toJson(questionTarget);
+            QuestionTargetData data = JsonUtil.toObject(oldString, QuestionTargetData.class);
+
+            // 获取子集合
+            Wrapper<QuestionTarget> child = new EntityWrapper<>();
+            child.eq("pid", id);
+            List<QuestionTarget> list = questionTargetService.selectList(child);
+            List<QuestionTargetData> listData = new ArrayList<>();
+            for (QuestionTarget target : list) {
+                listData.add(JsonUtil.toObject(JsonUtil.toJson(target), QuestionTargetData.class));
+            }
+            data.setChildren(listData);
+            return data;
         }
-        return targetData;
+        return null;
+    }
+
+//    @Override
+//    public List<QuestionTargetData> getList(int id) {
+//        String childSql = "SELECT `id` FROM question_target WHERE `pid`=:id ORDER BY `sort` ASC";
+//        MapSqlParameterSource childParam = new MapSqlParameterSource()
+//                .addValue("id", id);
+//        List<Integer> list = db.query(childSql, childParam, (ResultSet rs, int rowNum) -> rs.getInt("id"));
+//        List<QuestionTargetData> result = new ArrayList<>();
+//        for (Integer tid : list) {
+//            result.add(getById(tid));
+//        }
+//        return result;
+//    }
+
+    @Override
+    public List<QuestionTarget> getAll() {
+        Wrapper<QuestionTarget> where = new EntityWrapper<>();
+        return questionTargetService.selectList(where);
     }
 
     @Override
-    public List<QuestionTargetData> getList(Integer id) {
-        String childSql = "SELECT `id` FROM question_target WHERE `pid`=:id ORDER BY `sort` ASC";
-        MapSqlParameterSource childParam = new MapSqlParameterSource()
-                .addValue("id", id);
-        List<Integer> list = db.query(childSql, childParam, (ResultSet rs, int rowNum) -> rs.getInt("id"));
-        List<QuestionTargetData> result = new ArrayList<>();
-        for (Integer tid : list) {
-            result.add(getById(tid));
-        }
-        return result;
-    }
-
-    @Override
-    public List<QuestionTargetData> getAll() {
-        String sql = "SELECT `id`,`pid`,`title`,`status`,`remarks`,`update_time` FROM question_target ORDER BY `sort` ASC";
-        return db.query(sql, (ResultSet rs, int rowNum) -> setResultToData(rs));
-    }
-
-    @Override
-    public String getNameById(Integer id) {
+    public String getNameById(int id) {
         try {
             String sql = "SELECT `title` FROM question_target WHERE id=:id";
             MapSqlParameterSource param = new MapSqlParameterSource()
@@ -71,33 +82,29 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
             return "";
         }
     }
+//
+//    @Override
+//    public int getCount(int id) {
+//        String childSql = "SELECT COUNT(*) FROM question_target WHERE `pid`=:id";
+//        MapSqlParameterSource childParam = new MapSqlParameterSource()
+//                .addValue("id", id);
+//        Integer total = db.queryForObject(childSql, childParam, Integer.class);
+//        return total.intValue();
+//    }
 
     @Override
-    public int getCount(Integer id) {
-        String childSql = "SELECT COUNT(*) FROM question_target WHERE `pid`=:id";
-        MapSqlParameterSource childParam = new MapSqlParameterSource()
-                .addValue("id", id);
-        Integer total = db.queryForObject(childSql, childParam, Integer.class);
-        return total.intValue();
-    }
-
-    @Override
-    public int insert(Map<String, Object> param) {
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        String sql = "INSERT INTO question_target(`pid`,`title`,`status`,`remarks`,`update_id`,`update_time`,`create_id`,`create_time`) " +
-                "VALUES(:pid, :title, 1, :remarks, :updateId, :updateTime, :createId, :createTime)";
+    public boolean insert(QuestionTarget questionTarget) {
         try {
-            db.update(sql, new MapSqlParameterSource(param), keyHolder);
+            return questionTargetService.insert(questionTarget);
         } catch (Exception e) {
             throw new QuestionException("添加指标数据 --> 异常:" + e.getMessage());
         }
-        return keyHolder.getKey().intValue();
     }
 
-    @Override
-    public int update(Map<String, Object> param) {
-        return 0;
-    }
+//    @Override
+//    public int update(Map<String, Object> param) {
+//        return 0;
+//    }
 
     @Override
     public int titleQty(String title, int target) {
@@ -130,18 +137,9 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
         targetData.setStatus(rs.getInt("status"));
         targetData.setRemarks(rs.getString("remarks"));
 
-        Timestamp updateTime = rs.getTimestamp("update_time");
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        targetData.setUpdateTime(dateFormat.format(updateTime));
+//        Timestamp updateTime = rs.getTimestamp("update_time");
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        targetData.setUpdateTime(dateFormat.format(updateTime));
         return targetData;
-    }
-
-    private <T> T selectForObject(String sql, MapSqlParameterSource param, RowMapper<T> mapper) {
-        try {
-            return db.queryForObject(sql, param, mapper);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }

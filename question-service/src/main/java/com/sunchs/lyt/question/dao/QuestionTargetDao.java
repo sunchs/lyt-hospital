@@ -1,46 +1,46 @@
 package com.sunchs.lyt.question.dao;
 
+import com.sunchs.lyt.db.business.entity.QuestionTarget;
 import com.sunchs.lyt.question.bean.QuestionTargetData;
 
 import java.util.List;
-import java.util.Map;
 
 public interface QuestionTargetDao {
 
     /**
      * 根据 指标ID 获取指标信息
      */
-    QuestionTargetData getById(Integer id);
-
-    /**
-     * 根据 指标ID 获取指标列表
-     */
-    List<QuestionTargetData> getList(Integer id);
+    QuestionTargetData getById(int id);
+//
+//    /**
+//     * 根据 指标ID 获取指标列表
+//     */
+//    List<QuestionTargetData> getList(int id);
 
     /**
      * 获取指标所有数据
      */
-    List<QuestionTargetData> getAll();
+    List<QuestionTarget> getAll();
 
     /**
      * 根据 指标ID 获取指标名称
      */
-    String getNameById(Integer id);
+    String getNameById(int id);
 
-    /**
-     * 根据 指标ID 获取指标总条数
-     */
-    int getCount(Integer id);
+//    /**
+//     * 根据 指标ID 获取指标总条数
+//     */
+//    int getCount(int id);
 
     /**
      * 添加指标
      */
-    int insert(Map<String, Object> param);
+    boolean insert(QuestionTarget questionTarget);
 
-    /**
-     * 修改指标
-     */
-    int update(Map<String, Object> param);
+//    /**
+//     * 修改指标
+//     */
+//    int update(Map<String, Object> param);
 
     /**
      * 标题数量

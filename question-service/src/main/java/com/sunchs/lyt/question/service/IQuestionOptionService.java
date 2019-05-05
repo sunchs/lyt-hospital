@@ -12,7 +12,7 @@ public interface IQuestionOptionService {
     /**
      * 保存数据
      */
-    QuestionOptionData save(QuestionOptionParam param);
+    void save(QuestionOptionParam param);
 
 
     QuestionOptionData getInfo(QuestionOptionParam param);

@@ -22,11 +22,11 @@ public class QuestionTargetControllerImpl extends BaseController implements Ques
         return success(questionTargetService.getById(param.getId()));
     }
 
-    @Override
-    public ResultData getList(@RequestBody RequestData data) {
-        QuestionTargetParam param = data.toObject(QuestionTargetParam.class);
-        return success(questionTargetService.getList(param.getId()));
-    }
+//    @Override
+//    public ResultData getList(@RequestBody RequestData data) {
+//        QuestionTargetParam param = data.toObject(QuestionTargetParam.class);
+//        return success(questionTargetService.getList(param.getId()));
+//    }
 
     @Override
     public ResultData getAll(@RequestBody RequestData data) {
@@ -36,6 +36,7 @@ public class QuestionTargetControllerImpl extends BaseController implements Ques
     @Override
     public ResultData save(@RequestBody RequestData data) {
         QuestionTargetParam param = data.toObject(QuestionTargetParam.class);
-        return success(questionTargetService.save(param));
+        questionTargetService.save(param);
+        return success();
     }
 }

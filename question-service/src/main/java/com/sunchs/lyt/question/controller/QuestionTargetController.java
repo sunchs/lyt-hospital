@@ -15,11 +15,11 @@ public interface QuestionTargetController {
     @PostMapping("/getById")
     ResultData getById(@RequestBody RequestData data);
 
-    /**
-     * 根据 一级指标ID 获取二级指标列表
-     */
-    @PostMapping("/getList")
-    ResultData getList(@RequestBody RequestData data);
+//    /**
+//     * 根据 一级指标ID 获取二级指标列表
+//     */
+//    @PostMapping("/getList")
+//    ResultData getList(@RequestBody RequestData data);
 
     /**
      * 获取所有指标数据

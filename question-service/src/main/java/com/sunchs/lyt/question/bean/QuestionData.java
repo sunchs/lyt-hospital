@@ -1,44 +1,21 @@
 package com.sunchs.lyt.question.bean;
 
+import com.sunchs.lyt.db.business.entity.Question;
+
 import java.util.List;
 
-public class QuestionData {
-    public int id;
-    public String title;
-    public int status;
+public class QuestionData extends Question {
+
     public String statusName;
-    public String remark;
-    public TargetData target;
-    public int optionType;
+    public String targetOneName;
+    public String targetTwoName;
+    public String targetThreeName;
+
     public String optionMode;
     public String optionTypeName;
+
     public List<OptionData> option;
     public List<TagData> tagList;
-    public String updateTime;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
 
     public String getStatusName() {
         return statusName;
@@ -48,28 +25,28 @@ public class QuestionData {
         this.statusName = statusName;
     }
 
-    public String getRemark() {
-        return remark;
+    public String getTargetOneName() {
+        return targetOneName;
     }
 
-    public void setRemark(String remark) {
-        this.remark = remark;
+    public void setTargetOneName(String targetOneName) {
+        this.targetOneName = targetOneName;
     }
 
-    public TargetData getTarget() {
-        return target;
+    public String getTargetTwoName() {
+        return targetTwoName;
     }
 
-    public void setTarget(TargetData target) {
-        this.target = target;
+    public void setTargetTwoName(String targetTwoName) {
+        this.targetTwoName = targetTwoName;
     }
 
-    public int getOptionType() {
-        return optionType;
+    public String getTargetThreeName() {
+        return targetThreeName;
     }
 
-    public void setOptionType(int optionType) {
-        this.optionType = optionType;
+    public void setTargetThreeName(String targetThreeName) {
+        this.targetThreeName = targetThreeName;
     }
 
     public String getOptionMode() {
@@ -102,13 +79,5 @@ public class QuestionData {
 
     public void setTagList(List<TagData> tagList) {
         this.tagList = tagList;
-    }
-
-    public String getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
     }
 }

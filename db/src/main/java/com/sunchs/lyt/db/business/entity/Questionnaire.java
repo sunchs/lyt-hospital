@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-04-22
+ * @since 2019-05-05
  */
 public class Questionnaire extends Model<Questionnaire> {
 
@@ -24,6 +24,12 @@ public class Questionnaire extends Model<Questionnaire> {
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+
+    /**
+     * 医院ID
+     */
+    @TableField("hospital_id")
+    private Integer hospitalId;
 
     /**
      * 标题
@@ -71,6 +77,13 @@ public class Questionnaire extends Model<Questionnaire> {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+    public Integer getHospitalId() {
+        return hospitalId;
+    }
+
+    public void setHospitalId(Integer hospitalId) {
+        this.hospitalId = hospitalId;
     }
     public String getTitle() {
         return title;
@@ -124,6 +137,8 @@ public class Questionnaire extends Model<Questionnaire> {
 
     public static final String ID = "id";
 
+    public static final String HOSPITAL_ID = "hospital_id";
+
     public static final String TITLE = "title";
 
     public static final String STATUS = "status";
@@ -147,6 +162,7 @@ public class Questionnaire extends Model<Questionnaire> {
     public String toString() {
         return "Questionnaire{" +
         "id=" + id +
+        ", hospitalId=" + hospitalId +
         ", title=" + title +
         ", status=" + status +
         ", targetOne=" + targetOne +

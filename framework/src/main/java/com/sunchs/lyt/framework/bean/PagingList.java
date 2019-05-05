@@ -5,26 +5,66 @@ import java.util.List;
 
 public class PagingList<T> {
 
-    public Integer total;// 总条数
-    public Integer pages;// 总页数
-    public Integer pageNow;// 当前页数
-    public Integer pageSize;// 每页条数
-    public List<T> list = new ArrayList<>();// 列表数据
+    /**
+     * 总条数
+     */
+    private long total;
 
-    public void setTotal(Integer total) {
+    /**
+     * 总页数
+     */
+    private long pages;
+
+    /**
+     * 当前页数
+     */
+    private int pageNow;
+
+    /**
+     * 每页条数
+     */
+    private int pageSize;
+
+    /**
+     * 列表数据
+     */
+    public List<T> list = new ArrayList<>();
+
+
+    public long getTotal() {
+        return total;
+    }
+
+    public void setTotal(long total) {
         this.total = total;
     }
 
-    public void setPages(Integer pages) {
+    public long getPages() {
+        return pages;
+    }
+
+    public void setPages(long pages) {
         this.pages = pages;
     }
 
-    public void setPageNow(Integer pageNow) {
+    public int getPageNow() {
+        return pageNow;
+    }
+
+    public void setPageNow(int pageNow) {
         this.pageNow = pageNow;
     }
 
-    public void setPageSize(Integer pageSize) {
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public List<T> getList() {
+        return list;
     }
 
     public void setList(List<T> list) {

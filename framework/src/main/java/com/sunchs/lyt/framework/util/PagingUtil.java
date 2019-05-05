@@ -1,6 +1,8 @@
 package com.sunchs.lyt.framework.util;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.framework.bean.PagingList;
+
 
 import java.util.List;
 
@@ -24,4 +26,16 @@ public class PagingUtil {
         return page;
     }
 
+    /**
+     * MyBatis-plus分页 转 自定义分页
+     */
+    public static <T> PagingList<T> getData(Page<T> pageData) {
+        PagingList<T> page = new PagingList<>();
+        page.setTotal(pageData.getTotal());
+        page.setPages(pageData.getPages());
+        page.setPageNow(pageData.getCurrent());
+        page.setPageSize(pageData.getSize());
+        page.setList(pageData.getRecords());
+        return page;
+    }
 }

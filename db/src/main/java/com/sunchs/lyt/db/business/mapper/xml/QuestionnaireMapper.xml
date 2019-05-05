@@ -5,6 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.sunchs.lyt.db.business.entity.Questionnaire">
         <id column="id" property="id" />
+        <result column="hospital_id" property="hospitalId" />
         <result column="title" property="title" />
         <result column="status" property="status" />
         <result column="target_one" property="targetOne" />

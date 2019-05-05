@@ -1,5 +1,7 @@
 package com.sunchs.lyt.question.dao;
 
+import com.sunchs.lyt.db.business.entity.OptionTemplate;
+import com.sunchs.lyt.db.business.entity.QuestionOption;
 import com.sunchs.lyt.question.bean.OptionBean;
 import com.sunchs.lyt.question.bean.OptionData;
 import com.sunchs.lyt.question.bean.QuestionOptionData;
@@ -21,12 +23,20 @@ public interface QuestionOptionDao {
 
     List<QuestionOptionData> getTypeList();
 
-    OptionBean getOption(int id);
+    /**
+     * 根据 选项模版ID 获取选项数据
+     */
+    OptionTemplate getOptionById(int optionId);
 
-    // 更新
-    int update(Map<String, Object> param);
+    /**
+     * 添加问题选项
+     */
+    boolean insertQuestionOption(QuestionOption questionOption);
+
+    boolean update(OptionTemplate optionTemplate);
 
     void insertOption(int typeId, String content);
 
     void deleteOption(int id);
+
 }

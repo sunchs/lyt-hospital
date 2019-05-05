@@ -1,10 +1,11 @@
 package com.sunchs.lyt.question.service.impl;
 
-import com.sunchs.lyt.framework.bean.PagingList;
+import com.sunchs.lyt.db.business.entity.QuestionTarget;
+import com.sunchs.lyt.framework.util.JsonUtil;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.StringUtil;
-import com.sunchs.lyt.question.bean.QuestionTargetParam;
 import com.sunchs.lyt.question.bean.QuestionTargetData;
+import com.sunchs.lyt.question.bean.QuestionTargetParam;
 import com.sunchs.lyt.question.dao.ipml.QuestionTargetDaoImpl;
 import com.sunchs.lyt.question.exception.QuestionException;
 import com.sunchs.lyt.question.service.QuestionTargetService;
@@ -12,104 +13,99 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-@Service
+@Service("QuestionTargetServiceImpl1")
 public class QuestionTargetServiceImpl implements QuestionTargetService {
 
     @Autowired
     QuestionTargetDaoImpl questionTargetDao;
 
     @Override
-    public QuestionTargetData getById(Integer id) {
-        QuestionTargetData target = questionTargetDao.getById(id);
-        if (target == null) {
-//            return new QuestionTargetData();
-        }
-        return target;
+    public QuestionTargetData getById(int id) {
+        return questionTargetDao.getById(id);
     }
 
-    @Override
-    public PagingList<QuestionTargetData> getList(Integer id) {
-        PagingList<QuestionTargetData> page = new PagingList<>();
-        page.setTotal(questionTargetDao.getCount(id));
-        page.setList(questionTargetDao.getList(id));
-        return page;
-    }
+//    @Override
+//    public PagingList<QuestionTargetData> getList(int id) {
+//        PagingList<QuestionTargetData> page = new PagingList<>();
+//        page.setTotal(questionTargetDao.getCount(id));
+//        page.setList(questionTargetDao.getList(id));
+//        return page;
+//    }
 
     @Override
     public List<QuestionTargetData> getAll() {
-        List<QuestionTargetData> dbList = questionTargetDao.getAll();
-        for (QuestionTargetData one : dbList) {
-            List<QuestionTargetData> twoList = dbList.stream().filter(row -> row.getPid() == one.getId()).collect(Collectors.toList());
+        List<QuestionTargetData> list = new ArrayList<>();
+        List<QuestionTarget> dbList = questionTargetDao.getAll();
+        for (QuestionTarget one : dbList) {
+            QuestionTargetData oneData = JsonUtil.toObject(JsonUtil.toJson(one), QuestionTargetData.class);
+            list.add(oneData);
+        }
+
+        for (QuestionTargetData one : list) {
+            List<QuestionTargetData> twoList = list.stream().filter(row -> row.getPid().equals(one.getId())).collect(Collectors.toList());
             for (QuestionTargetData two : twoList) {
-                List<QuestionTargetData> threeList = dbList.stream().filter(row -> row.getPid() == two.getId()).collect(Collectors.toList());
+                List<QuestionTargetData> threeList = list.stream().filter(row -> row.getPid().equals(two.getId())).collect(Collectors.toList());
                 two.setChildren(threeList);
             }
             one.setChildren(twoList);
         }
-        return dbList.stream().filter(row -> row.getPid() == 0).collect(Collectors.toList());
+        return list.stream().filter(row -> row.getPid() == 0).collect(Collectors.toList());
     }
 
     @Override
-    public QuestionTargetData save(QuestionTargetParam param) {
-        Integer targetId = 0;
+    public void save(QuestionTargetParam param) {
         // 检查标题
-        chenckTime(param.getTitle(), param.getPid());
+        checkTitle(param.getTitle(), param.getPid());
         List<QuestionTargetParam> children = param.getChildren();
         for (QuestionTargetParam child : children) {
-            chenckTime(child.getTitle(), param.getPid());
+            checkTitle(child.getTitle(), param.getPid());
         }
         if (NumberUtil.isZero(param.getId())) {
-            targetId = insert(param);
+            insert(param);
         } else {
-            targetId = update(param);
+//            update(param);
         }
-        if (targetId > 0) {
-            QuestionTargetData question = questionTargetDao.getById(targetId);
-            if (question == null) {
-                throw new QuestionException("指标ID：" + targetId + "，不存在");
-            }
-            return question;
-        }
-        return null;
     }
 
-    private Integer insert(QuestionTargetParam param) {
-        Map<String, Object> opt = new HashMap<>();
-        opt.put("pid", param.getPid());
-        opt.put("title", param.getTitle());
-        opt.put("remarks", param.getRemarks());
-        opt.put("updateId", 0);
-        opt.put("updateTime", new Timestamp(System.currentTimeMillis()));
-        opt.put("createId", 0);
-        opt.put("createTime", new Timestamp(System.currentTimeMillis()));
-        Integer targetId = questionTargetDao.insert(opt);
-        if (targetId > 0) {
+    private void insert(QuestionTargetParam param) {
+        QuestionTarget data = new QuestionTarget();
+        data.setPid(param.getPid());
+        data.setTitle(param.getTitle());
+        data.setStatus(1);
+        data.setRemarks(param.getRemarks());
+        // TODO::用户ID
+        data.setUpdateId(0);
+        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        // TODO::用户ID
+        data.setCreateId(0);
+        data.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        if (questionTargetDao.insert(data)) {
             List<QuestionTargetParam> children = param.getChildren();
             for (QuestionTargetParam child : children) {
-                Map<String, Object> cMap = new HashMap<>();
-                cMap.put("pid", targetId);
-                cMap.put("title", child.getTitle());
-                cMap.put("remarks", "");
-                cMap.put("updateId", 0);
-                cMap.put("updateTime", new Timestamp(System.currentTimeMillis()));
-                cMap.put("createId", 0);
-                cMap.put("createTime", new Timestamp(System.currentTimeMillis()));
-                questionTargetDao.insert(cMap);
+                QuestionTarget childData = new QuestionTarget();
+                childData.setPid(data.getId());
+                childData.setTitle(child.getTitle());
+                childData.setStatus(1);
+                // TODO::用户ID
+                childData.setUpdateId(0);
+                childData.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+                // TODO::用户ID
+                childData.setCreateId(0);
+                childData.setCreateTime(new Timestamp(System.currentTimeMillis()));
+                questionTargetDao.insert(childData);
             }
         }
-        return targetId;
     }
 
-    private Integer update(QuestionTargetParam param) {
-        return 0;
-    }
+//    private Integer update(QuestionTargetParam param) {
+//        return 0;
+//    }
 
-    private void chenckTime(String title, int target) {
+    private void checkTitle(String title, int target) {
         if (StringUtil.isEmpty(title)) {
             throw new QuestionException("指标标题不能为空");
         }

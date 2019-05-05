@@ -1,55 +1,29 @@
 package com.sunchs.lyt.question.dao;
 
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.sunchs.lyt.db.business.entity.Question;
 import com.sunchs.lyt.question.bean.QuestionData;
-import com.sunchs.lyt.question.bean.QuestionParam;
-
-import java.util.List;
-import java.util.Map;
 
 public interface QuestionDao {
 
     /**
      * 根据 问题ID 获取问题信息
      */
-    QuestionData getById(int id);
+    QuestionData getById(int questionId);
 
     /**
-     * 获取 问题分页 数据
+     * 获取问题分页信息
      */
-    List<QuestionData> getPageList(QuestionParam param);
-
-    /**
-     * 获取 问题 总条数
-     */
-    int getCount(QuestionParam param);
+    Page<Question> getPaging(Wrapper<Question> where, int pageNow, int pageSize);
 
     /**
      * 添加问题
      */
-    int insert(Map<String, Object> param);
+    boolean insert(Question question);
 
     /**
      * 修改问题
      */
-    int update(Map<String, Object> param);
-
-    /**
-     * 根据 问题ID 添加选项
-     */
-    void insertQuestionOption(Map<String, Object> param);
-
-    /**
-     * 根据 问题ID 删除选项
-     */
-    void deleteQuestionOption(int questionId);
-
-    /**
-     * 根据 问题ID 添加标签
-     */
-    void insertQuestionAttribute(Map<String, Object> param);
-
-    /**
-     * 根据 问题ID 删除标签
-     */
-    void deleteQuestionAttribute(int questionId);
+    boolean update(Question question);
 }

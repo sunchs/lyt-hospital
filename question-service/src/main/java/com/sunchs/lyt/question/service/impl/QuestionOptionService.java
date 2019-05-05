@@ -1,5 +1,6 @@
 package com.sunchs.lyt.question.service.impl;
 
+import com.sunchs.lyt.db.business.entity.OptionTemplate;
 import com.sunchs.lyt.question.bean.OptionBean;
 import com.sunchs.lyt.question.bean.QuestionOptionData;
 import com.sunchs.lyt.question.bean.QuestionOptionParam;
@@ -19,19 +20,17 @@ public class QuestionOptionService implements IQuestionOptionService {
     QuestionOptionDaoImpl questionOptionDao;
 
     @Override
-    public QuestionOptionData save(QuestionOptionParam param) {
-        Map<String, Object> opt = new HashMap<>();
-        opt.put("id", param.getId());
-        opt.put("remarks", param.getRemarks());
-        int id = questionOptionDao.update(opt);
-        if (id > 0) {
-            questionOptionDao.deleteOption(id);
+    public void save(QuestionOptionParam param) {
+        OptionTemplate optionTemplate = new OptionTemplate();
+        optionTemplate.setId(param.getId());
+        optionTemplate.setRemarks(param.getRemarks());
+        if (questionOptionDao.update(optionTemplate)) {
+            questionOptionDao.deleteOption(param.getId());
             List<OptionBean> optionList = param.getOptionList();
             for (OptionBean option : optionList) {
-                questionOptionDao.insertOption(id, option.getOptionContent());
+                questionOptionDao.insertOption(param.getId(), option.getOptionContent());
             }
         }
-        return new QuestionOptionData();
     }
 
     @Override

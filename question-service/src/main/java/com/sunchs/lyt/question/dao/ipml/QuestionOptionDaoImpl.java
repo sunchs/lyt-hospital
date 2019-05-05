@@ -1,5 +1,11 @@
 package com.sunchs.lyt.question.dao.ipml;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.sunchs.lyt.db.business.entity.OptionTemplate;
+import com.sunchs.lyt.db.business.entity.QuestionOption;
+import com.sunchs.lyt.db.business.service.impl.OptionTemplateServiceImpl;
+import com.sunchs.lyt.db.business.service.impl.QuestionOptionServiceImpl;
 import com.sunchs.lyt.question.bean.OptionBean;
 import com.sunchs.lyt.question.bean.OptionData;
 import com.sunchs.lyt.question.bean.QuestionOptionData;
@@ -12,13 +18,18 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class QuestionOptionDaoImpl implements QuestionOptionDao {
 
     @Autowired
     private NamedParameterJdbcTemplate db;
+
+    @Autowired
+    private OptionTemplateServiceImpl optionTemplateService;
+
+    @Autowired
+    private QuestionOptionServiceImpl questionOptionService;
 
     @Override
     public List<OptionData> getListById(int questionId) {
@@ -77,29 +88,29 @@ public class QuestionOptionDaoImpl implements QuestionOptionDao {
     }
 
     @Override
-    public OptionBean getOption(int id) {
+    public OptionTemplate getOptionById(int optionId) {
         try {
-            String sql = "SELECT `id`,`content` FROM option_template WHERE `id`=:id";
-            MapSqlParameterSource param = new MapSqlParameterSource()
-                    .addValue("id", id);
-            OptionBean info = db.queryForObject(sql, param, (ResultSet rs, int rowNum) -> {
-                OptionBean option = new OptionBean();
-                option.setOptionId(rs.getInt("id"));
-                option.setOptionContent(rs.getString("content"));
-                return option;
-            });
-            return info;
+            Wrapper<OptionTemplate> where = new EntityWrapper<>();
+            where.eq("id", optionId);
+            return optionTemplateService.selectOne(where);
         } catch (Exception e) {
-            throw new QuestionException("获取选项数据 --> 异常:" + id + " --> " + e.getMessage());
+            throw new QuestionException("获取选项数据 --> 异常:" + optionId + " --> " + e.getMessage());
         }
     }
 
     @Override
-    public int update(Map<String, Object> param) {
+    public boolean insertQuestionOption(QuestionOption questionOption) {
         try {
-            String sql = "UPDATE option_template SET `remarks`=:remarks WHERE id=:id";
-            db.update(sql, new MapSqlParameterSource(param));
-            return (int) param.get("id");
+            return questionOptionService.insert(questionOption);
+        } catch (Exception e) {
+            throw new QuestionException("插入问题选项 --> 异常:" + e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean update(OptionTemplate optionTemplate) {
+        try {
+            return optionTemplateService.updateById(optionTemplate);
         } catch (Exception e) {
             throw new QuestionException("更新选项备注 --> 异常:" + e.getMessage());
         }
@@ -108,11 +119,10 @@ public class QuestionOptionDaoImpl implements QuestionOptionDao {
     @Override
     public void insertOption(int typeId, String content) {
         try {
-            String sql = "INSERT INTO option_template(`pid`,`content`) VALUES(:typeId, :content)";
-            MapSqlParameterSource param = new MapSqlParameterSource()
-                    .addValue("typeId", typeId)
-                    .addValue("content", content);
-            db.update(sql, param);
+            OptionTemplate data = new OptionTemplate();
+            data.setPid(typeId);
+            data.setContent(content);
+            optionTemplateService.insert(data);
         } catch (Exception e) {
             throw new QuestionException("插入选项内容 --> 异常:" + e.getMessage());
         }
@@ -121,10 +131,9 @@ public class QuestionOptionDaoImpl implements QuestionOptionDao {
     @Override
     public void deleteOption(int id) {
         try {
-            String sql = "DELETE FROM option_template WHERE pid=:id";
-            MapSqlParameterSource param = new MapSqlParameterSource()
-                    .addValue("id", id);
-            db.update(sql, param);
+            Wrapper<OptionTemplate> where = new EntityWrapper<>();
+            where.eq("id", id);
+            optionTemplateService.delete(where);
         } catch (Exception e) {
             throw new QuestionException("删除选项内容 --> 异常:" + e.getMessage());
         }

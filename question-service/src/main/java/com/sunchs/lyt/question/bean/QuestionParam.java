@@ -7,35 +7,50 @@ import java.util.List;
 public class QuestionParam extends PagingParam {
 
     public int id;
+    public String number;
     public String title;
-    public Integer status;
+    public int status;
+    public int targetOne;
+    public int targetTwo;
+    public int targetThree;
+    public int optionId;
     public String remark;
-    public TargetParam target;
-    public OptionParam option;
     public List<TagParam> tagList;
 
     public int getId() {
         return id;
     }
 
+    public String getNumber() {
+        return number;
+    }
+
     public String getTitle() {
         return title;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
+    }
+
+    public int getTargetOne() {
+        return targetOne;
+    }
+
+    public int getTargetTwo() {
+        return targetTwo;
+    }
+
+    public int getTargetThree() {
+        return targetThree;
+    }
+
+    public int getOptionId() {
+        return optionId;
     }
 
     public String getRemark() {
         return remark;
-    }
-
-    public TargetParam getTarget() {
-        return target;
-    }
-
-    public OptionParam getOption() {
-        return option;
     }
 
     public List<TagParam> getTagList() {

@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-04-21
+ * @since 2019-05-05
  */
 public class Question extends Model<Question> {
 
@@ -24,6 +24,17 @@ public class Question extends Model<Question> {
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+
+    /**
+     * 医院ID
+     */
+    @TableField("hospital_id")
+    private Integer hospitalId;
+
+    /**
+     * 编号
+     */
+    private String number;
 
     /**
      * 标题
@@ -54,16 +65,10 @@ public class Question extends Model<Question> {
     private Integer targetThree;
 
     /**
-     * 分类ID
+     * 选项类型，选项模版的父ID
      */
     @TableField("option_type")
     private Integer optionType;
-
-    /**
-     * 答题模式
-     */
-    @TableField("option_mode")
-    private String optionMode;
 
     /**
      * 备注
@@ -100,6 +105,20 @@ public class Question extends Model<Question> {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+    public Integer getHospitalId() {
+        return hospitalId;
+    }
+
+    public void setHospitalId(Integer hospitalId) {
+        this.hospitalId = hospitalId;
+    }
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
     public String getTitle() {
         return title;
@@ -143,13 +162,6 @@ public class Question extends Model<Question> {
     public void setOptionType(Integer optionType) {
         this.optionType = optionType;
     }
-    public String getOptionMode() {
-        return optionMode;
-    }
-
-    public void setOptionMode(String optionMode) {
-        this.optionMode = optionMode;
-    }
     public String getRemark() {
         return remark;
     }
@@ -188,6 +200,10 @@ public class Question extends Model<Question> {
 
     public static final String ID = "id";
 
+    public static final String HOSPITAL_ID = "hospital_id";
+
+    public static final String NUMBER = "number";
+
     public static final String TITLE = "title";
 
     public static final String STATUS = "status";
@@ -199,8 +215,6 @@ public class Question extends Model<Question> {
     public static final String TARGET_THREE = "target_three";
 
     public static final String OPTION_TYPE = "option_type";
-
-    public static final String OPTION_MODE = "option_mode";
 
     public static final String REMARK = "remark";
 
@@ -221,13 +235,14 @@ public class Question extends Model<Question> {
     public String toString() {
         return "Question{" +
         "id=" + id +
+        ", hospitalId=" + hospitalId +
+        ", number=" + number +
         ", title=" + title +
         ", status=" + status +
         ", targetOne=" + targetOne +
         ", targetTwo=" + targetTwo +
         ", targetThree=" + targetThree +
         ", optionType=" + optionType +
-        ", optionMode=" + optionMode +
         ", remark=" + remark +
         ", updateId=" + updateId +
         ", updateTime=" + updateTime +

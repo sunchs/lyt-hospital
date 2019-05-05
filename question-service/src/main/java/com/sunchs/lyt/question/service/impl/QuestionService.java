@@ -1,9 +1,18 @@
 package com.sunchs.lyt.question.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.sunchs.lyt.db.business.entity.OptionTemplate;
+import com.sunchs.lyt.db.business.entity.Question;
+import com.sunchs.lyt.db.business.entity.QuestionOption;
+import com.sunchs.lyt.db.business.entity.QuestionTagBinding;
+import com.sunchs.lyt.db.business.service.impl.QuestionTagBindingServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
-import com.sunchs.lyt.question.bean.*;
+import com.sunchs.lyt.question.bean.QuestionParam;
+import com.sunchs.lyt.question.bean.TagParam;
 import com.sunchs.lyt.question.dao.QuestionDao;
 import com.sunchs.lyt.question.dao.ipml.QuestionOptionDaoImpl;
 import com.sunchs.lyt.question.exception.QuestionException;
@@ -12,9 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -26,112 +33,95 @@ public class QuestionService implements IQuestionService {
     @Autowired
     private QuestionOptionDaoImpl questionOptionDao;
 
+    @Autowired
+    private QuestionTagBindingServiceImpl questionTagBindingService;
+
     @Override
-    public QuestionData save(QuestionParam param) {
-        int questionId = 0;
+    public void save(QuestionParam param) {
         if (NumberUtil.isZero(param.getId())) {
-            questionId = insert(param);
+            insert(param);
         } else {
-            questionId = update(param);
+            update(param);
         }
-        if (questionId > 0) {
-            QuestionData question = questionDao.getById(questionId);
-            if (question == null) {
-                throw new QuestionException("问题ID：" + questionId + "，不存在");
-            } else {
-//                user.setRoleList(roleDao.getRoleByUserId(userId));
-            }
-            return question;
-        }
-        return null;
     }
 
     @Override
-    public PagingList<QuestionData> getPageList(QuestionParam param) {
-        int total = questionDao.getCount(param);
-        List<QuestionData> pageList = questionDao.getPageList(param);
-        return PagingUtil.getData(pageList, total, param.getPageNow(), param.getPageSize());
+    public PagingList<Question> getPageList(QuestionParam param) {
+        Wrapper<Question> where = new EntityWrapper<>();
+        if (param.getTargetOne() > 0) {
+            where.eq("target_one", param.getTargetOne());
+        }
+        Page<Question> data = questionDao.getPaging(where, param.getPageNow(), param.getPageSize());
+        return PagingUtil.getData(data);
     }
 
-    private int insert(QuestionParam param) {
-        Map<String, Object> opt = new HashMap<>();
-        opt.put("title", param.getTitle());
-        opt.put("remark", param.getRemark());
-        opt.put("updateId", 0);
-        opt.put("updateTime", new Timestamp(System.currentTimeMillis()));
-        opt.put("createId", 0);
-        opt.put("createTime", new Timestamp(System.currentTimeMillis()));
-        if (param.getTarget() != null) {
-            opt.put("targetOne", param.getTarget().getOne());
-            opt.put("targetTwo", param.getTarget().getTwo());
-            opt.put("targetThree", param.getTarget().getThree());
+    private void insert(QuestionParam param) {
+        // 获取选项数据
+        OptionTemplate optionTemplate = questionOptionDao.getOptionById(param.getOptionId());
+        if (Objects.isNull(optionTemplate)) {
+            throw new QuestionException("选项模版被删除，请重新选择");
         }
-        if (param.getOption() != null) {
-            opt.put("optionType", param.getOption().getType());
-        }
-        int questionId = questionDao.insert(opt);
-        if (questionId > 0) {
+
+        Question question = new Question();
+        // TODO::医院ID
+        question.setHospitalId(0);
+        question.setNumber(param.getNumber());
+        question.setTitle(param.getTitle());
+        question.setStatus(1);
+        question.setTargetOne(param.getTargetOne());
+        question.setTargetTwo(param.getTargetTwo());
+        question.setTargetThree(param.getTargetThree());
+        question.setOptionType(optionTemplate.getPid());
+        question.setRemark(param.getRemark());
+        // TODO::用户ID
+        question.setUpdateId(0);
+        question.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        // TODO::用户ID
+        question.setCreateId(0);
+        question.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        if (questionDao.insert(question)) {
             // 插入选项
-            resetQuestionOption(questionId, param.getOption().getOptionId());
+            setQuestionOption(question.getId(), optionTemplate);
             // 插入标签
-            resetQuestionAttribute(questionId, param.getTagList());
+            setQuestionAttribute(question.getId(), param.getTagList());
         }
-        return questionId;
     }
 
-    private int update(QuestionParam param) {
-        Map<String, Object> opt = new HashMap<>();
-        opt.put("id", param.getId());
-        if (param.getStatus() != null) {
-            opt.put("status", param.getStatus());
-            opt.put("updateId", 0);
-            opt.put("updateTime", new Timestamp(System.currentTimeMillis()));
-        }
-        int questionId = questionDao.update(opt);
-        if (questionId > 0) {
-//            userDao.saveUserRole(questionId, param.getRole());
-        }
-        return questionId;
+    private void update(QuestionParam param) {
+        Question question = new Question();
+        question.setStatus(param.getStatus());
+        question.setRemark(param.getRemark());
+        // TODO::用户ID
+        question.setUpdateId(0);
+        question.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        questionDao.update(question);
     }
 
-    private void resetQuestionOption(int questionId, int optionId) {
-        questionDao.deleteQuestionOption(questionId);
-        OptionBean option = questionOptionDao.getOption(optionId);
-        if (option != null) {
-            String optionContent = option.getOptionContent();
-            String[] split = optionContent.split(",");
-            int index = 10;
-            for (String optionValue : split) {
-                Map<String, Object> opt = new HashMap<>();
-                opt.put("questionId", questionId);
-                opt.put("title", optionValue);
-                opt.put("sort", index);
-                questionDao.insertQuestionOption(opt);
-                index++;
-            }
+    private void setQuestionOption(int questionId, OptionTemplate optionTemplate) {
+        String content = optionTemplate.getContent();
+        String[] split = content.split(",");
+        int index = 1;
+        for (String value : split) {
+            QuestionOption data = new QuestionOption();
+            data.setQuestionId(questionId);
+            data.setTitle(value);
+            data.setSort(index);
+            questionOptionDao.insertQuestionOption(data);
+            index++;
         }
-
-//        for (OptionParam param : paramList) {
-//            Map<String, Object> opt = new HashMap<>();
-//            opt.put("questionId", questionId);
-//            opt.put("title", param.getOptionName());
-//            opt.put("sort", param.getSort());
-//            questionDao.insertQuestionOption(opt);
-//        }
     }
 
-    private void resetQuestionAttribute(int questionId, List<TagParam> attribute) {
-        questionDao.deleteQuestionAttribute(questionId);
-        if (attribute == null || attribute.size() == 0) {
+    private void setQuestionAttribute(int questionId, List<TagParam> tagParam) {
+        if (tagParam == null || tagParam.size() == 0) {
             return;
         }
-        for (TagParam param : attribute) {
+        for (TagParam param : tagParam) {
             if (Objects.nonNull(param) && NumberUtil.nonZero(param.getTagId())) {
-                Map<String, Object> opt = new HashMap<>();
-                opt.put("questionId", questionId);
-                opt.put("tagType", param.getType());
-                opt.put("tagId", param.getTagId());
-                questionDao.insertQuestionAttribute(opt);
+                QuestionTagBinding data = new QuestionTagBinding();
+                data.setQuestionId(questionId);
+                data.setTagType(param.getType());
+                data.setTagId(param.getTagId());
+                questionTagBindingService.insert(data);
             }
         }
     }

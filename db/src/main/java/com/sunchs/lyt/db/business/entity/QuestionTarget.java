@@ -16,8 +16,8 @@ import java.io.Serializable;
  * @author king
  * @since 2019-05-05
  */
-@TableName("question_tag")
-public class QuestionTag extends Model<QuestionTag> {
+@TableName("question_target")
+public class QuestionTarget extends Model<QuestionTarget> {
 
     private static final long serialVersionUID = 1L;
 
@@ -43,14 +43,14 @@ public class QuestionTag extends Model<QuestionTag> {
     private Integer status;
 
     /**
-     * 备注
-     */
-    private String remarks;
-
-    /**
      * 排序
      */
     private Integer sort;
+
+    /**
+     * 备注
+     */
+    private String remarks;
 
     /**
      * 更新人ID
@@ -104,19 +104,19 @@ public class QuestionTag extends Model<QuestionTag> {
     public void setStatus(Integer status) {
         this.status = status;
     }
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
-    }
     public Integer getSort() {
         return sort;
     }
 
     public void setSort(Integer sort) {
         this.sort = sort;
+    }
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
     public Integer getUpdateId() {
         return updateId;
@@ -155,9 +155,9 @@ public class QuestionTag extends Model<QuestionTag> {
 
     public static final String STATUS = "status";
 
-    public static final String REMARKS = "remarks";
-
     public static final String SORT = "sort";
+
+    public static final String REMARKS = "remarks";
 
     public static final String UPDATE_ID = "update_id";
 
@@ -174,13 +174,13 @@ public class QuestionTag extends Model<QuestionTag> {
 
     @Override
     public String toString() {
-        return "QuestionTag{" +
+        return "QuestionTarget{" +
         "id=" + id +
         ", pid=" + pid +
         ", title=" + title +
         ", status=" + status +
-        ", remarks=" + remarks +
         ", sort=" + sort +
+        ", remarks=" + remarks +
         ", updateId=" + updateId +
         ", updateTime=" + updateTime +
         ", createId=" + createId +

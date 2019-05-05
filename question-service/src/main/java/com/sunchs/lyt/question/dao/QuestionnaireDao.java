@@ -1,5 +1,7 @@
 package com.sunchs.lyt.question.dao;
 
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.Questionnaire;
 import com.sunchs.lyt.db.business.entity.QuestionnaireExtend;
 import com.sunchs.lyt.question.bean.QuestionBean;
@@ -12,14 +14,9 @@ import java.util.Map;
 public interface QuestionnaireDao {
 
     /**
-     * 获取 问卷 总条数
-     */
-    int getCount(QuestionnaireParam param);
-
-    /**
      * 获取 问卷分页 数据
      */
-    List<QuestionnaireData> getPageList(QuestionnaireParam param);
+    Page<Questionnaire> getPaging(Wrapper<Questionnaire> where, int pageNow, int pageSize);
 
     /**
      * 添加问卷

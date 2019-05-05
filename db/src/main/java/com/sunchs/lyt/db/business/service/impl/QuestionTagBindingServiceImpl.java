@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author king
- * @since 2019-04-21
+ * @since 2019-05-05
  */
 @Service
 public class QuestionTagBindingServiceImpl extends ServiceImpl<QuestionTagBindingMapper, QuestionTagBinding> implements IQuestionTagBindingService {

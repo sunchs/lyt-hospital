@@ -1,16 +1,16 @@
 package com.sunchs.lyt.db.business.service;
 
-import com.sunchs.lyt.db.business.entity.Question;
+import com.sunchs.lyt.db.business.entity.OptionTemplate;
 import com.baomidou.mybatisplus.service.IService;
 
 /**
  * <p>
- * 问题表 服务类
+ * 选项模版表 服务类
  * </p>
  *
  * @author king
  * @since 2019-05-05
  */
-public interface IQuestionService extends IService<Question> {
+public interface IOptionTemplateService extends IService<OptionTemplate> {
 
 }

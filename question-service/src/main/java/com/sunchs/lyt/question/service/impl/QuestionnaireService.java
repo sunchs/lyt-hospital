@@ -1,18 +1,32 @@
 package com.sunchs.lyt.question.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.Questionnaire;
 import com.sunchs.lyt.db.business.entity.QuestionnaireExtend;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.JsonUtil;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
-import com.sunchs.lyt.question.bean.*;
+import com.sunchs.lyt.question.bean.OptionData;
+import com.sunchs.lyt.question.bean.OptionSkipParam;
+import com.sunchs.lyt.question.bean.QuestionBean;
+import com.sunchs.lyt.question.bean.QuestionnaireParam;
 import com.sunchs.lyt.question.dao.QuestionnaireDao;
 import com.sunchs.lyt.question.dao.ipml.QuestionOptionDaoImpl;
+import com.sunchs.lyt.question.jxl.ExcelHeadConfig;
+import com.sunchs.lyt.question.jxl.ExcelHeadParam;
 import com.sunchs.lyt.question.service.IQuestionnaireService;
+import jxl.format.Colour;
+import jxl.write.Label;
+import jxl.write.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +42,13 @@ public class QuestionnaireService implements IQuestionnaireService {
     private QuestionnaireDao questionnaireDao;
 
     @Override
-    public PagingList<QuestionnaireData> getPageList(QuestionnaireParam param) {
-        int total = questionnaireDao.getCount(param);
-        List<QuestionnaireData> pageList = questionnaireDao.getPageList(param);
-        return PagingUtil.getData(pageList, total, param.getPageNow(), param.getPageSize());
+    public PagingList<Questionnaire> getPageList(QuestionnaireParam param) {
+
+        outputFile();
+
+        Wrapper<Questionnaire> where = new EntityWrapper<>();
+        Page<Questionnaire> pageData = questionnaireDao.getPaging(where, param.getPageNow(), param.getPageSize());
+        return PagingUtil.getData(pageData);
     }
 
     @Override
@@ -40,6 +57,45 @@ public class QuestionnaireService implements IQuestionnaireService {
             insert(param);
         } else {
             update(param);
+        }
+    }
+
+    private void outputFile() {
+        File file1 = new File("temp");
+        if ( ! file1.exists()) {
+            System.out.println("不存在");
+            if (file1.mkdirs()) {
+                System.out.println("mkdir");
+            } else {
+                System.out.println("not mkdir");
+            }
+        }
+        try {
+            File file = new File("temp/aaa.xls");
+            WritableWorkbook wb = jxl.Workbook.createWorkbook(file);
+            // 改变默认颜色
+            Color color = Color.decode("#EEA9B8");
+            wb.setColourRGB(Colour.RED, color.getRed(), color.getGreen(), color.getBlue());
+            WritableSheet sheet = wb.createSheet("表1", 0);
+            // 写表头
+            List<ExcelHeadParam> headList = JsonUtil.toObject(ExcelHeadConfig.questionnaire, List.class);
+            for (int i = 0; i < headList.size(); i++) {
+                WritableCellFormat format = new WritableCellFormat();
+                format.setBackground(Colour.RED);
+                sheet.addCell(new Label(i, 1, headList.get(i).getTitle(), format));
+                // 宽度
+                sheet.setColumnView(i, headList.get(i).getColumnWidth());
+            }
+
+
+
+            wb.write();
+            wb.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (WriteException e) {
+            e.printStackTrace();
         }
     }
 
