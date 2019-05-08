@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.sunchs.lyt.db.business.entity.QuestionTarget;
 import com.sunchs.lyt.db.business.service.impl.QuestionTargetServiceImpl;
 import com.sunchs.lyt.framework.util.JsonUtil;
+import com.sunchs.lyt.framework.util.ObjectUtil;
 import com.sunchs.lyt.question.bean.QuestionTargetData;
 import com.sunchs.lyt.question.dao.QuestionTargetDao;
 import com.sunchs.lyt.question.exception.QuestionException;
@@ -44,7 +45,9 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
             List<QuestionTarget> list = questionTargetService.selectList(child);
             List<QuestionTargetData> listData = new ArrayList<>();
             for (QuestionTarget target : list) {
-                listData.add(JsonUtil.toObject(JsonUtil.toJson(target), QuestionTargetData.class));
+                QuestionTargetData targetData = ObjectUtil.copy(target, QuestionTargetData.class);
+                targetData.initData();
+                listData.add(targetData);
             }
             data.setChildren(listData);
             return data;
@@ -129,17 +132,17 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
         return 0;
     }
 
-    private QuestionTargetData setResultToData(ResultSet rs) throws SQLException {
-        QuestionTargetData targetData = new QuestionTargetData();
-        targetData.setId(rs.getInt("id"));
-        targetData.setPid(rs.getInt("pid"));
-        targetData.setTitle(rs.getString("title"));
-        targetData.setStatus(rs.getInt("status"));
-        targetData.setRemarks(rs.getString("remarks"));
-
-//        Timestamp updateTime = rs.getTimestamp("update_time");
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        targetData.setUpdateTime(dateFormat.format(updateTime));
-        return targetData;
-    }
+//    private QuestionTargetData setResultToData(ResultSet rs) throws SQLException {
+//        QuestionTargetData targetData = new QuestionTargetData();
+//        targetData.setId(rs.getInt("id"));
+//        targetData.setPid(rs.getInt("pid"));
+//        targetData.setTitle(rs.getString("title"));
+//        targetData.setStatus(rs.getInt("status"));
+//        targetData.setRemarks(rs.getString("remarks"));
+//
+////        Timestamp updateTime = rs.getTimestamp("update_time");
+////        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+////        targetData.setUpdateTime(dateFormat.format(updateTime));
+//        return targetData;
+//    }
 }

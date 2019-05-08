@@ -3,6 +3,7 @@ package com.sunchs.lyt.question.service.impl;
 import com.sunchs.lyt.db.business.entity.QuestionTarget;
 import com.sunchs.lyt.framework.util.JsonUtil;
 import com.sunchs.lyt.framework.util.NumberUtil;
+import com.sunchs.lyt.framework.util.ObjectUtil;
 import com.sunchs.lyt.framework.util.StringUtil;
 import com.sunchs.lyt.question.bean.QuestionTargetData;
 import com.sunchs.lyt.question.bean.QuestionTargetParam;
@@ -41,7 +42,8 @@ public class QuestionTargetServiceImpl implements QuestionTargetService {
         List<QuestionTargetData> list = new ArrayList<>();
         List<QuestionTarget> dbList = questionTargetDao.getAll();
         for (QuestionTarget one : dbList) {
-            QuestionTargetData oneData = JsonUtil.toObject(JsonUtil.toJson(one), QuestionTargetData.class);
+            QuestionTargetData oneData = ObjectUtil.copy(one, QuestionTargetData.class);
+            oneData.initData();
             list.add(oneData);
         }
 
