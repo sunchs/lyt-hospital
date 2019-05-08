@@ -4,19 +4,25 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.Questionnaire;
 import com.sunchs.lyt.db.business.entity.QuestionnaireExtend;
-import com.sunchs.lyt.question.bean.QuestionBean;
-import com.sunchs.lyt.question.bean.QuestionnaireData;
-import com.sunchs.lyt.question.bean.QuestionnaireParam;
 
 import java.util.List;
-import java.util.Map;
 
 public interface QuestionnaireDao {
+
+    /**
+     * 根据 问卷ID 获取问卷基本信息
+     */
+    Questionnaire getById(int id);
 
     /**
      * 获取 问卷分页 数据
      */
     Page<Questionnaire> getPaging(Wrapper<Questionnaire> where, int pageNow, int pageSize);
+
+    /**
+     * 根据 问卷ID 获取问卷题目
+     */
+    List<QuestionnaireExtend> getExtendById(int id);
 
     /**
      * 添加问卷

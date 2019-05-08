@@ -2,15 +2,15 @@ package com.sunchs.lyt.question.bean;
 
 public class OptionData {
 
-    public Integer optionId;
+    public int optionId;
     public String optionName;
-    public Integer sort;
+    public int skipQuestionId;
 
-    public Integer getOptionId() {
+    public int getOptionId() {
         return optionId;
     }
 
-    public void setOptionId(Integer optionId) {
+    public void setOptionId(int optionId) {
         this.optionId = optionId;
     }
 
@@ -22,11 +22,11 @@ public class OptionData {
         this.optionName = optionName;
     }
 
-    public Integer getSort() {
-        return sort;
+    public int getSkipQuestionId() {
+        return skipQuestionId;
     }
 
-    public void setSort(Integer sort) {
-        this.sort = sort;
+    public void setSkipQuestionId(int skipQuestionId) {
+        this.skipQuestionId = skipQuestionId;
     }
 }

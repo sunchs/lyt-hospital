@@ -21,4 +21,12 @@ public interface QuestionnaireController {
     @PostMapping("/pageList")
     ResultData getPageList(@RequestBody RequestData data);
 
+    /**
+     * 导出文件
+     */
+    @PostMapping("/outputFile")
+    ResultData outputFile(@RequestBody RequestData data);
+
+
+
 }

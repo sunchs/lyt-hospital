@@ -5,13 +5,14 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.Question;
 import com.sunchs.lyt.db.business.service.impl.QuestionServiceImpl;
-import com.sunchs.lyt.framework.util.JsonUtil;
+import com.sunchs.lyt.framework.util.FormatUtil;
+import com.sunchs.lyt.framework.util.ObjectUtil;
 import com.sunchs.lyt.question.bean.OptionData;
 import com.sunchs.lyt.question.bean.QuestionData;
 import com.sunchs.lyt.question.bean.QuestionOptionData;
 import com.sunchs.lyt.question.dao.QuestionDao;
 import com.sunchs.lyt.question.dao.QuestionTargetDao;
-import com.sunchs.lyt.question.enums.QuestionStatus;
+import com.sunchs.lyt.question.enums.QuestionStatusEnum;
 import com.sunchs.lyt.question.exception.QuestionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -39,10 +40,9 @@ public class QuestionDaoImpl implements QuestionDao {
         Wrapper<Question> where = new EntityWrapper<>();
         where.eq("id", questionId);
         Question question = questionService.selectOne(where);
-        if (Objects.isNull(question)) {
-            String oldString = JsonUtil.toJson(question);
-            QuestionData data = JsonUtil.toObject(oldString, QuestionData.class);
-            data.setStatusName(QuestionStatus.getName(data.getStatus()));
+        if (Objects.nonNull(question)) {
+            QuestionData data = ObjectUtil.copy(question, QuestionData.class);
+            data.setStatusName(QuestionStatusEnum.get(data.getStatus()));
             data.setTargetOneName(questionTargetDao.getNameById(data.getTargetOne()));
             data.setTargetTwoName(questionTargetDao.getNameById(data.getTargetTwo()));
             data.setTargetThreeName(questionTargetDao.getNameById(data.getTargetThree()));
@@ -55,6 +55,8 @@ public class QuestionDaoImpl implements QuestionDao {
 
             // 标签列表
             data.setTagList(questionTagDao.getQuestionTag(questionId));
+
+            data.setUpdateTimeName(FormatUtil.dateTime(data.getUpdateTime()));
 
             return data;
         }

@@ -14,6 +14,8 @@ public class QuestionData extends Question {
     public String optionMode;
     public String optionTypeName;
 
+    private String updateTimeName;
+
     public List<OptionData> option;
     public List<TagData> tagList;
 
@@ -79,5 +81,13 @@ public class QuestionData extends Question {
 
     public void setTagList(List<TagData> tagList) {
         this.tagList = tagList;
+    }
+
+    public String getUpdateTimeName() {
+        return updateTimeName;
+    }
+
+    public void setUpdateTimeName(String updateTimeName) {
+        this.updateTimeName = updateTimeName;
     }
 }

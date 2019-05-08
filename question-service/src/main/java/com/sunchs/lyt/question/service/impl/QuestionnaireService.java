@@ -1,5 +1,7 @@
 package com.sunchs.lyt.question.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -8,15 +10,13 @@ import com.sunchs.lyt.db.business.entity.QuestionnaireExtend;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.JsonUtil;
 import com.sunchs.lyt.framework.util.NumberUtil;
+import com.sunchs.lyt.framework.util.ObjectUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
-import com.sunchs.lyt.question.bean.OptionData;
-import com.sunchs.lyt.question.bean.OptionSkipParam;
-import com.sunchs.lyt.question.bean.QuestionBean;
-import com.sunchs.lyt.question.bean.QuestionnaireParam;
+import com.sunchs.lyt.question.bean.*;
+import com.sunchs.lyt.question.dao.QuestionDao;
 import com.sunchs.lyt.question.dao.QuestionnaireDao;
 import com.sunchs.lyt.question.dao.ipml.QuestionOptionDaoImpl;
-import com.sunchs.lyt.question.jxl.ExcelHeadConfig;
-import com.sunchs.lyt.question.jxl.ExcelHeadParam;
+import com.sunchs.lyt.question.exception.QuestionException;
 import com.sunchs.lyt.question.service.IQuestionnaireService;
 import jxl.format.Colour;
 import jxl.write.Label;
@@ -28,9 +28,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class QuestionnaireService implements IQuestionnaireService {
@@ -41,11 +40,47 @@ public class QuestionnaireService implements IQuestionnaireService {
     @Autowired
     private QuestionnaireDao questionnaireDao;
 
+    @Autowired
+    private QuestionDao questionDao;
+
+    @Override
+    public QuestionnaireData getById(int id) {
+        Questionnaire res = questionnaireDao.getById(id);
+        if (Objects.nonNull(res)) {
+            QuestionnaireData data = ObjectUtil.copy(res, QuestionnaireData.class);
+            data.initData();
+
+            List<QuestionDataExt> questionList = new ArrayList<>();
+            questionnaireDao.getExtendById(id).forEach(ext->{
+                QuestionData questionData = questionDao.getById(ext.getQuestionId());
+                if (ext.getSkipMode().equals(1)) {
+                    questionData.getOption().forEach(o -> {
+                        o.setSkipQuestionId(ext.getSkipQuestionId());
+                    });
+                } else if (ext.getSkipMode().equals(2)) {
+                    Map<Integer, Integer> skipMap = getSkipContentMap(ext.getSkipContent());
+                    questionData.getOption().forEach(o -> {
+                        if (skipMap.containsKey(o.getOptionId())) {
+                            o.setSkipQuestionId(skipMap.get(o.getOptionId()));
+                        }
+                    });
+                }
+
+                QuestionDataExt extData = ObjectUtil.copy(questionData, QuestionDataExt.class);
+                extData.setSkipMode(ext.getSkipMode());
+                if (Objects.nonNull(questionData)) {
+                    questionList.add(extData);
+                }
+            });
+
+            data.setQuestionList(questionList);
+            return data;
+        }
+        return null;
+    }
+
     @Override
     public PagingList<Questionnaire> getPageList(QuestionnaireParam param) {
-
-        outputFile();
-
         Wrapper<Questionnaire> where = new EntityWrapper<>();
         Page<Questionnaire> pageData = questionnaireDao.getPaging(where, param.getPageNow(), param.getPageSize());
         return PagingUtil.getData(pageData);
@@ -60,34 +95,76 @@ public class QuestionnaireService implements IQuestionnaireService {
         }
     }
 
-    private void outputFile() {
-        File file1 = new File("temp");
-        if ( ! file1.exists()) {
-            System.out.println("不存在");
-            if (file1.mkdirs()) {
-                System.out.println("mkdir");
-            } else {
-                System.out.println("not mkdir");
-            }
+    @Override
+    public String createExcelFile(int id) {
+        String path = "temp";
+        String fileName = System.currentTimeMillis() +".xls";
+        initPath(path);
+
+        QuestionnaireData data = getById(id);
+        if (Objects.isNull(data)) {
+            throw new QuestionException("找不到问卷信息");
         }
         try {
-            File file = new File("temp/aaa.xls");
+            File file = new File(path + "/" + fileName);
             WritableWorkbook wb = jxl.Workbook.createWorkbook(file);
             // 改变默认颜色
             Color color = Color.decode("#EEA9B8");
             wb.setColourRGB(Colour.RED, color.getRed(), color.getGreen(), color.getBlue());
-            WritableSheet sheet = wb.createSheet("表1", 0);
+            WritableSheet sheet = wb.createSheet(data.getTitle(), 0);
             // 写表头
-            List<ExcelHeadParam> headList = JsonUtil.toObject(ExcelHeadConfig.questionnaire, List.class);
-            for (int i = 0; i < headList.size(); i++) {
-                WritableCellFormat format = new WritableCellFormat();
-                format.setBackground(Colour.RED);
-                sheet.addCell(new Label(i, 1, headList.get(i).getTitle(), format));
-                // 宽度
-                sheet.setColumnView(i, headList.get(i).getColumnWidth());
+            WritableCellFormat format = new WritableCellFormat();
+            format.setBackground(Colour.RED);
+            // 标签列数
+            int tagLen = getTagLen(data.getQuestionList());
+            // 选项列数
+            int optionLen = getOptionLen(data.getQuestionList());
+
+            int columnPos = 0;
+            int linePos = 0;
+            sheet.addCell(new Label(columnPos++, linePos, "题目编号", format));
+            sheet.addCell(new Label(columnPos++, linePos, "题目类型", format));
+            sheet.addCell(new Label(columnPos++, linePos, "问题文本", format));
+            sheet.addCell(new Label(columnPos++, linePos, "跳转题目", format));
+            sheet.addCell(new Label(columnPos++, linePos, "三级指标", format));
+            sheet.addCell(new Label(columnPos++, linePos, "二级指标", format));
+            for (int i = 0; i < tagLen; i++) {
+                sheet.addCell(new Label(columnPos++, linePos, "标签"+(i+1), format));
             }
+            for (int i = 0; i < optionLen; i++) {
+                sheet.addCell(new Label(columnPos++, linePos, "答案"+(i+1), format));
+            }
+            // 列宽度
+            for (int i = 0; i < columnPos; i++) {
+                sheet.setColumnView(i, 12);
+            }
+            sheet.setColumnView(0, 10);
+            sheet.setColumnView(2, 40);
 
+            // 写入数据
+            for (QuestionDataExt question : data.getQuestionList()) {
+                columnPos = 0;
+                linePos++;
 
+                sheet.addCell(new Label(columnPos++, linePos, question.getNumber()));
+                sheet.addCell(new Label(columnPos++, linePos, question.getOptionTypeName()));
+                sheet.addCell(new Label(columnPos++, linePos, question.getTitle()));
+                sheet.addCell(new Label(columnPos++, linePos, getSkipContent(question)));
+                sheet.addCell(new Label(columnPos++, linePos, question.getTargetThreeName()));
+                sheet.addCell(new Label(columnPos++, linePos, question.getTargetTwoName()));
+                // 自动标签
+                List<TagData> tagList = question.getTagList();
+                for (int i = 0; i < tagList.size(); i++) {
+                    sheet.addCell(new Label(columnPos+i, linePos, tagList.get(i).getTagName()));
+                }
+                columnPos += tagLen;
+                // 自动选项
+                List<OptionData> optionList = question.getOption();
+                for (int i = 0; i < optionList.size(); i++) {
+                    sheet.addCell(new Label(columnPos+i, linePos, optionList.get(i).getOptionName()));
+                }
+                columnPos += optionLen;
+            }
 
             wb.write();
             wb.close();
@@ -96,6 +173,55 @@ public class QuestionnaireService implements IQuestionnaireService {
             e.printStackTrace();
         } catch (WriteException e) {
             e.printStackTrace();
+        }
+
+        return path + "/" + fileName;
+    }
+
+    private int getTagLen(List<QuestionDataExt> questionList) {
+        int len = 0;
+        for (QuestionDataExt ext : questionList) {
+            int size = ext.getTagList().size();
+            if (size > len) {
+                len = size;
+            }
+        }
+        return len;
+    }
+
+    private int getOptionLen(List<QuestionDataExt> questionList) {
+        int len = 0;
+        for (QuestionDataExt ext : questionList) {
+            int size = ext.getOption().size();
+            if (size > len) {
+                len = size;
+            }
+        }
+        return len;
+    }
+
+    private String getSkipContent(QuestionDataExt questionDataExt) {
+        if (questionDataExt.getSkipMode() == 1) {
+            for (OptionData optionData : questionDataExt.getOption()) {
+                return optionData.getSkipQuestionId()+"";
+            }
+        } else if (questionDataExt.getSkipMode() == 2) {
+            String val = "";
+            for (OptionData optionData : questionDataExt.getOption()) {
+                if (optionData.getSkipQuestionId() != 0) {
+                    String item = optionData.getOptionId()+":"+optionData.getSkipQuestionId();
+                    val += val.isEmpty() ? item : ", "+item;
+                }
+            }
+            return val;
+        }
+        return "";
+    }
+
+    private void initPath(String path) {
+        File file1 = new File(path);
+        if ( ! file1.exists()) {
+            file1.mkdirs();
         }
     }
 
@@ -168,5 +294,14 @@ public class QuestionnaireService implements IQuestionnaireService {
         data.setUpdateId(0);
         data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         questionnaireDao.update(data);
+    }
+
+    private Map<Integer, Integer> getSkipContentMap(String skipContent) {
+        Map<Integer, Integer> skipMap = new HashMap<>();
+        JSONArray objects = JSONObject.parseArray(skipContent);
+        for (int i = 0; i < objects.size(); i++) {
+            skipMap.put(objects.getJSONObject(i).getInteger("optionId"), objects.getJSONObject(i).getInteger("skipQuestionId"));
+        }
+        return skipMap;
     }
 }
