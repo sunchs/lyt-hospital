@@ -42,7 +42,7 @@ public class QuestionnaireControllerImpl extends BaseController implements Quest
     public ResultData outputFile(@RequestBody RequestData data) {
         QuestionnaireParam param = data.toObject(QuestionnaireParam.class);
         String path = questionnaireService.createExcelFile(param.getId());
-        return success("http://47.107.255.115:8002/download/?fileName="+path);
+        return success("http://47.107.255.115:8002/questionnaire/download/?fileName="+path);
     }
 
     //实现Spring Boot 的文件下载功能，映射网址为/download
