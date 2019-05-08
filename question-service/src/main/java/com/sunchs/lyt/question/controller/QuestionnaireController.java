@@ -12,6 +12,12 @@ public interface QuestionnaireController {
     /**
      * 问卷 添加、编辑
      */
+    @PostMapping("/getById")
+    ResultData getById(@RequestBody RequestData data);
+
+    /**
+     * 问卷 添加、编辑
+     */
     @PostMapping("/save")
     ResultData save(@RequestBody RequestData data);
 

@@ -227,6 +227,8 @@ public class QuestionnaireService implements IQuestionnaireService {
 
     private void insert(QuestionnaireParam param) {
         Questionnaire data = new Questionnaire();
+        // TODO::医院ID
+        data.setHospitalId(0);
         data.setTitle(param.getTitle());
         data.setStatus(param.getStatus());
         data.setTargetOne(param.getTargetOne());
