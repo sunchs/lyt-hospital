@@ -6,6 +6,7 @@ import com.sunchs.lyt.db.business.entity.OptionTemplate;
 import com.sunchs.lyt.db.business.entity.QuestionOption;
 import com.sunchs.lyt.db.business.service.impl.OptionTemplateServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.QuestionOptionServiceImpl;
+import com.sunchs.lyt.framework.util.FormatUtil;
 import com.sunchs.lyt.question.bean.OptionBean;
 import com.sunchs.lyt.question.bean.OptionData;
 import com.sunchs.lyt.question.bean.QuestionOptionData;
@@ -56,6 +57,7 @@ public class QuestionOptionDaoImpl implements QuestionOptionDao {
             option.setTitle(rs.getString("content"));
             option.setRemarks(rs.getString("remarks"));
             option.setMode(rs.getString("mode"));
+            option.setUpdateTimeName(FormatUtil.dateTime(rs.getTimestamp("update_time")));
             return option;
         });
         return info;

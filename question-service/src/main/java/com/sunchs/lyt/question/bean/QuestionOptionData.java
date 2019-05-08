@@ -8,6 +8,7 @@ public class QuestionOptionData {
     public String title;
     public String remarks;
     public String mode;
+    public String updateTimeName;
     public List<OptionBean> optionList;
 
     public int getId() {
@@ -40,6 +41,14 @@ public class QuestionOptionData {
 
     public void setMode(String mode) {
         this.mode = mode;
+    }
+
+    public String getUpdateTimeName() {
+        return updateTimeName;
+    }
+
+    public void setUpdateTimeName(String updateTimeName) {
+        this.updateTimeName = updateTimeName;
     }
 
     public List<OptionBean> getOptionList() {
