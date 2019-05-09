@@ -11,6 +11,7 @@ import com.sunchs.lyt.db.business.service.impl.QuestionTagBindingServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
+import com.sunchs.lyt.question.bean.QuestionData;
 import com.sunchs.lyt.question.bean.QuestionParam;
 import com.sunchs.lyt.question.bean.TagParam;
 import com.sunchs.lyt.question.dao.QuestionDao;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,13 +48,17 @@ public class QuestionService implements IQuestionService {
     }
 
     @Override
-    public PagingList<Question> getPageList(QuestionParam param) {
+    public PagingList<QuestionData> getPageList(QuestionParam param) {
         Wrapper<Question> where = new EntityWrapper<>();
         if (param.getTargetOne() > 0) {
-            where.eq("target_one", param.getTargetOne());
+            where.eq(Question.TARGET_ONE, param.getTargetOne());
         }
         Page<Question> data = questionDao.getPaging(where, param.getPageNow(), param.getPageSize());
-        return PagingUtil.getData(data);
+        List<QuestionData> list = new ArrayList<>();
+        for (Question question : data.getRecords()) {
+            list.add(questionDao.getById(question.getId()));
+        }
+        return PagingUtil.getData(list, param.getPageNow(), param.getPageSize(), data.getSize());
     }
 
     private void insert(QuestionParam param) {

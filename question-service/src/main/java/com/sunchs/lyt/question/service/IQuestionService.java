@@ -1,6 +1,5 @@
 package com.sunchs.lyt.question.service;
 
-import com.sunchs.lyt.db.business.entity.Question;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.question.bean.QuestionData;
 import com.sunchs.lyt.question.bean.QuestionParam;
@@ -15,5 +14,5 @@ public interface IQuestionService {
     /**
      * 问题分页列表
      */
-    PagingList<Question> getPageList(QuestionParam param);
+    PagingList<QuestionData> getPageList(QuestionParam param);
 }
