@@ -4,7 +4,7 @@ import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.hospital.bean.HospitalData;
 import com.sunchs.lyt.hospital.bean.HospitalParam;
 
-public interface HospitalService {
+public interface IHospitalService {
 
     /**
      * 保存数据

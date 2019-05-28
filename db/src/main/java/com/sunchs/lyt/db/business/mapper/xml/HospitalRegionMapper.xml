@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sunchs.lyt.db.business.mapper.HospitalRegionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sunchs.lyt.db.business.entity.HospitalRegion">
+        <id column="id" property="id" />
+        <result column="hospital_id" property="hospitalId" />
+        <result column="pid" property="pid" />
+        <result column="region_id" property="regionId" />
+        <result column="title" property="title" />
+    </resultMap>
+
+</mapper>
