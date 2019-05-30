@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sunchs.lyt.db.business.mapper.ItemsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sunchs.lyt.db.business.entity.Items">
+        <id column="id" property="id" />
+        <result column="hospital_id" property="hospitalId" />
+        <result column="number" property="number" />
+        <result column="title" property="title" />
+        <result column="checkType" property="checkType" />
+        <result column="isBatch" property="isBatch" />
+        <result column="startTime" property="startTime" />
+        <result column="endTime" property="endTime" />
+        <result column="checkQty" property="checkQty" />
+        <result column="nowQty" property="nowQty" />
+        <result column="approachTime" property="approachTime" />
+        <result column="deliveryTime" property="deliveryTime" />
+        <result column="dataAnalysisTime" property="dataAnalysisTime" />
+        <result column="reportStartTime" property="reportStartTime" />
+        <result column="reportEndTime" property="reportEndTime" />
+        <result column="user_id" property="userId" />
+    </resultMap>
+
+</mapper>

@@ -1,9 +1,30 @@
 package com.sunchs.lyt.item.controller;
 
+import com.sunchs.lyt.framework.bean.RequestData;
+import com.sunchs.lyt.framework.bean.ResultData;
+import com.sunchs.lyt.framework.controller.BaseController;
+import com.sunchs.lyt.item.bean.ItemParam;
+import com.sunchs.lyt.item.service.impl.ItemService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
 @RequestMapping("/item")
-public interface ItemController
-{
+public class ItemController extends BaseController {
+
+    @Autowired
+    private ItemService itemService;
+
+    /**
+     * 项目 添加、编辑
+     */
+    @PostMapping("/save")
+    public ResultData save(@RequestBody RequestData data) {
+        ItemParam param = data.toObject(ItemParam.class);
+        return success(itemService.save(param));
+    }
 
 }
