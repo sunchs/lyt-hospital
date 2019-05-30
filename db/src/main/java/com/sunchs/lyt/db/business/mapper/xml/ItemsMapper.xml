@@ -8,6 +8,7 @@
         <result column="hospital_id" property="hospitalId" />
         <result column="number" property="number" />
         <result column="title" property="title" />
+        <result column="status" property="status" />
         <result column="checkType" property="checkType" />
         <result column="isBatch" property="isBatch" />
         <result column="startTime" property="startTime" />
@@ -20,6 +21,10 @@
         <result column="reportStartTime" property="reportStartTime" />
         <result column="reportEndTime" property="reportEndTime" />
         <result column="user_id" property="userId" />
+        <result column="update_id" property="updateId" />
+        <result column="update_time" property="updateTime" />
+        <result column="create_id" property="createId" />
+        <result column="create_time" property="createTime" />
     </resultMap>
 
 </mapper>

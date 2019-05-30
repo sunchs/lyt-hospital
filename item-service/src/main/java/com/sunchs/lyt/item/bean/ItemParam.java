@@ -86,7 +86,7 @@ public class ItemParam {
      */
     private int userId;
 
-    public void filter() {
+    public void filterParam() {
         if (StringUtil.isEmpty(number)) {
             throw new ItemException("项目编号不能为空");
         }

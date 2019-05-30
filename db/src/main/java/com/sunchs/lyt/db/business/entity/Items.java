@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-05-29
+ * @since 2019-05-30
  */
 public class Items extends Model<Items> {
 
@@ -40,6 +40,11 @@ public class Items extends Model<Items> {
      * 项目标题
      */
     private String title;
+
+    /**
+     * 状态
+     */
+    private Integer status;
 
     /**
      * 调查类型
@@ -102,6 +107,30 @@ public class Items extends Model<Items> {
     @TableField("user_id")
     private Integer userId;
 
+    /**
+     * 更新人ID
+     */
+    @TableField("update_id")
+    private Integer updateId;
+
+    /**
+     * 更新时间
+     */
+    @TableField("update_time")
+    private Date updateTime;
+
+    /**
+     * 创建人ID
+     */
+    @TableField("create_id")
+    private Integer createId;
+
+    /**
+     * 创建时间
+     */
+    @TableField("create_time")
+    private Date createTime;
+
     public Integer getId() {
         return id;
     }
@@ -129,6 +158,13 @@ public class Items extends Model<Items> {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
     public Integer getCheckType() {
         return checkType;
@@ -214,6 +250,34 @@ public class Items extends Model<Items> {
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
+    public Integer getUpdateId() {
+        return updateId;
+    }
+
+    public void setUpdateId(Integer updateId) {
+        this.updateId = updateId;
+    }
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+    public Integer getCreateId() {
+        return createId;
+    }
+
+    public void setCreateId(Integer createId) {
+        this.createId = createId;
+    }
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 
     public static final String ID = "id";
 
@@ -222,6 +286,8 @@ public class Items extends Model<Items> {
     public static final String NUMBER = "number";
 
     public static final String TITLE = "title";
+
+    public static final String STATUS = "status";
 
     public static final String CHECKTYPE = "checkType";
 
@@ -247,6 +313,14 @@ public class Items extends Model<Items> {
 
     public static final String USER_ID = "user_id";
 
+    public static final String UPDATE_ID = "update_id";
+
+    public static final String UPDATE_TIME = "update_time";
+
+    public static final String CREATE_ID = "create_id";
+
+    public static final String CREATE_TIME = "create_time";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -259,6 +333,7 @@ public class Items extends Model<Items> {
         ", hospitalId=" + hospitalId +
         ", number=" + number +
         ", title=" + title +
+        ", status=" + status +
         ", checkType=" + checkType +
         ", isBatch=" + isBatch +
         ", startTime=" + startTime +
@@ -271,6 +346,10 @@ public class Items extends Model<Items> {
         ", reportStartTime=" + reportStartTime +
         ", reportEndTime=" + reportEndTime +
         ", userId=" + userId +
+        ", updateId=" + updateId +
+        ", updateTime=" + updateTime +
+        ", createId=" + createId +
+        ", createTime=" + createTime +
         "}";
     }
 }
