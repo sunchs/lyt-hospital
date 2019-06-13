@@ -55,4 +55,15 @@ public class RequestData {
         }
         return 0;
     }
+
+    @Override
+    public String toString() {
+        return "RequestData{" +
+                "version='" + version + '\'' +
+                ", platform='" + platform + '\'' +
+                ", params=" + params +
+                ", token='" + token + '\'' +
+                ", jsonParams=" + jsonParams +
+                '}';
+    }
 }

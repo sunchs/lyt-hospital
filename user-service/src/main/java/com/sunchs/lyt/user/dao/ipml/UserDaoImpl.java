@@ -19,49 +19,49 @@ public class UserDaoImpl implements UserDao {
     @Autowired
     private NamedParameterJdbcTemplate db;
 
-    @Override
-    public UserRoleData getUserByAccount(String userName, String passWord) {
-        String sql = "SELECT user_id,username,name,token FROM user WHERE username=:userName AND password=:passWord";
-        MapSqlParameterSource param = new MapSqlParameterSource()
-                .addValue("userName", userName)
-                .addValue("passWord", passWord);
-        UserRoleData user = db.query(sql, param, (ResultSet rs) -> {
-            if ( ! rs.next()) {
-                return null;
-            }
-            UserRoleData u = new UserRoleData();
-            u.setUserId(rs.getInt("user_id"));
-            u.setUserName(rs.getString("username"));
-            u.setName(rs.getString("name"));
-            u.setToken(rs.getString("token"));
-            return u;
-        });
-        return user;
-    }
+//    @Override
+//    public UserRoleData getUserByAccount(String userName, String passWord) {
+//        String sql = "SELECT user_id,username,name,token FROM user WHERE username=:userName AND password=:passWord";
+//        MapSqlParameterSource param = new MapSqlParameterSource()
+//                .addValue("userName", userName)
+//                .addValue("passWord", passWord);
+//        UserRoleData user = db.query(sql, param, (ResultSet rs) -> {
+//            if ( ! rs.next()) {
+//                return null;
+//            }
+//            UserRoleData u = new UserRoleData();
+//            u.setUserId(rs.getInt("user_id"));
+//            u.setUserName(rs.getString("username"));
+//            u.setName(rs.getString("name"));
+//            u.setToken(rs.getString("token"));
+//            return u;
+//        });
+//        return user;
+//    }
 
     @Override
     public UserRoleData getUserByToken(String token) {
         return null;
     }
 
-    @Override
-    public UserRoleData getUserById(Integer userId) {
-        String sql = "SELECT user_id,username,name,token FROM user WHERE user_id=:userId";
-        MapSqlParameterSource param = new MapSqlParameterSource()
-                .addValue("userId", userId);
-        UserRoleData user = db.query(sql, param, (ResultSet rs) -> {
-            if ( ! rs.next()) {
-                return null;
-            }
-            UserRoleData u = new UserRoleData();
-            u.setUserId(rs.getInt("user_id"));
-            u.setName(rs.getString("name"));
-            u.setUserName(rs.getString("username"));
-            u.setToken(rs.getString("token"));
-            return u;
-        });
-        return user;
-    }
+//    @Override
+//    public UserRoleData getUserById(Integer userId) {
+//        String sql = "SELECT user_id,username,name,token FROM user WHERE user_id=:userId";
+//        MapSqlParameterSource param = new MapSqlParameterSource()
+//                .addValue("userId", userId);
+//        UserRoleData user = db.query(sql, param, (ResultSet rs) -> {
+//            if ( ! rs.next()) {
+//                return null;
+//            }
+//            UserRoleData u = new UserRoleData();
+//            u.setUserId(rs.getInt("user_id"));
+//            u.setName(rs.getString("name"));
+//            u.setUserName(rs.getString("username"));
+//            u.setToken(rs.getString("token"));
+//            return u;
+//        });
+//        return user;
+//    }
 
     @Override
     public Integer insertUser(Map<String, Object> param) {

@@ -3,13 +3,19 @@ package com.sunchs.lyt.gateway.filter;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.sunchs.lyt.framework.bean.RequestData;
+import com.sunchs.lyt.framework.bean.ResultData;
+import com.sunchs.lyt.framework.constants.CacheKeys;
 import com.sunchs.lyt.framework.util.JsonUtil;
+import com.sunchs.lyt.framework.util.RedisUtil;
 import com.sunchs.lyt.framework.util.StreamUtil;
 import com.sunchs.lyt.framework.util.StringUtil;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Component
 public class PreFilter extends ZuulFilter {
@@ -33,6 +39,17 @@ public class PreFilter extends ZuulFilter {
     public Object run() {
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
+        System.out.println(request.getRequestURL());
+        System.out.println(request.getRequestURI());
+
+        /**
+         * 忽略部分
+         */
+        Set<String> ignoreUri = new HashSet<>();
+        ignoreUri.add("/user-service/user/login");
+        if (ignoreUri.contains(request.getRequestURI())) {
+            return null;
+        }
 
         String stream = null;
         try {
@@ -40,38 +57,61 @@ public class PreFilter extends ZuulFilter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        /**
+         * 检查参数
+         */
         if (StringUtil.isEmpty(stream)) {
-            // 检查是否有参数
-            System.out.println("请输入参数");
+            rejectRequest(ResultData.getFailure("基本参数:[ 请输入参数 ]"));
             return null;
         }
+
         RequestData data = JsonUtil.toObject(stream, RequestData.class);
-        if (data == null) {
-            // 检查参数合法性
-            System.out.println("JSON语法不正确");
+        /**
+         * 检查参数合法性
+         */
+        if (Objects.isNull(data)) {
+            rejectRequest(ResultData.getFailure("基本参数:[ JSON语法不正确 ]"));
             return null;
         }
 
+        /**
+         * 检查 版本
+         */
         if (StringUtil.isEmpty(data.getVersion())) {
-            System.out.println("版本 不能为空");
+            rejectRequest(ResultData.getFailure("基本参数:[ 版本 不能为空 ]"));
             return null;
         }
 
+        /**
+         * 检查 平台
+         */
         if (StringUtil.isEmpty(data.getPlatform())) {
-            System.out.println("平台 不能为空");
+            rejectRequest(ResultData.getFailure("基本参数:[ 平台 不能为空 ]"));
             return null;
         }
 
+        /**
+         * 检查 Token
+         */
         if (StringUtil.isEmpty(data.getToken())) {
-            System.out.println("token 不能为空");
+            rejectRequest(ResultData.getFailure("基本参数:[ Token 不能为空 ]"));
             return null;
+        } else {
+            boolean exists = RedisUtil.exists(CacheKeys.USER_LOGIN + data.getToken());
+            if ( ! exists) {
+                rejectRequest(ResultData.getLoginFailure());
+                return null;
+            }
         }
 
-//        System.out.println("-----------pre-----> run");
-//
-//        requestContext.setSendZuulResponse(true);
-//        requestContext.setResponseStatusCode(200);
-//        requestContext.setResponseBody("{\"name\":\"chhliu\"}");// 输出最终结果
         return null;
+    }
+
+    private void rejectRequest(ResultData resultData) {
+        RequestContext ctx = RequestContext.getCurrentContext();
+        ctx.setSendZuulResponse(false);
+        ctx.setResponseBody(JsonUtil.toJson(resultData));
+        ctx.getResponse().setContentType("application/json;charset=UTF-8");
     }
 }

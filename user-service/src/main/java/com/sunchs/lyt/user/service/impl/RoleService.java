@@ -1,5 +1,9 @@
 package com.sunchs.lyt.user.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.sunchs.lyt.db.business.entity.UserRole;
+import com.sunchs.lyt.db.business.service.impl.UserRoleServiceImpl;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.StringUtil;
 import com.sunchs.lyt.user.bean.NodeActionParam;
@@ -9,20 +13,24 @@ import com.sunchs.lyt.user.bean.RoleParam;
 import com.sunchs.lyt.user.dao.NodeDao;
 import com.sunchs.lyt.user.dao.RoleDao;
 import com.sunchs.lyt.user.exception.UserException;
-import com.sunchs.lyt.user.service.RoleService;
+import com.sunchs.lyt.user.service.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-public class RoleServiceImpl implements RoleService {
+public class RoleService implements IRoleService {
 
     @Autowired
     RoleDao roleDao;
 
     @Autowired
     NodeDao nodeDao;
+
+    @Autowired
+    private UserRoleServiceImpl userRoleService;
 
     @Override
     public List<RoleData> getRoleList() {
@@ -47,6 +55,21 @@ public class RoleServiceImpl implements RoleService {
             return role;
         }
         return null;
+    }
+
+    @Override
+    public void bindUserRole(int userId, List<Integer> roleList) {
+        // 清历史数据
+        Wrapper<UserRole> w = new EntityWrapper<>();
+        w.eq(UserRole.USER_ID, userId);
+        userRoleService.delete(w);
+        // 插入新数据
+        roleList.forEach(roleId -> {
+            UserRole data = new UserRole();
+            data.setUserId(userId);
+            data.setRoleId(roleId);
+            userRoleService.insert(data);
+        });
     }
 
     private Integer insertRoleData(RoleParam param) {

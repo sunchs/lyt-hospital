@@ -8,6 +8,7 @@
         <result column="item_id" property="itemId" />
         <result column="office_id" property="officeId" />
         <result column="questionnaire_id" property="questionnaireId" />
+        <result column="quantity" property="quantity" />
     </resultMap>
 
 </mapper>

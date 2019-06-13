@@ -3,7 +3,7 @@ package com.sunchs.lyt.user.service;
 import com.sunchs.lyt.user.bean.UserRoleData;
 import com.sunchs.lyt.user.bean.UserParam;
 
-public interface UserService {
+public interface IUserService {
 
     /**
      * 登录
@@ -16,12 +16,7 @@ public interface UserService {
     boolean logout();
 
     /**
-     * Token验证
-     */
-    void token(String token);
-
-    /**
      * 添加、修改账号
      */
-    UserRoleData save(UserParam data);
+    int save(UserParam data);
 }

@@ -7,20 +7,20 @@ import java.util.Map;
 
 public interface UserDao {
 
-    /**
-     * 根据 账号密码 获取用户信息
-     */
-    UserRoleData getUserByAccount(String username, String password);
+//    /**
+//     * 根据 账号密码 获取用户信息
+//     */
+//    UserRoleData getUserByAccount(String username, String password);
 
     /**
      * 根据 Token 获取用户信息
      */
     UserRoleData getUserByToken(String token);
-
-    /**
-     * 根据 用户ID 获取用户信息
-     */
-    UserRoleData getUserById(Integer userId);
+//
+//    /**
+//     * 根据 用户ID 获取用户信息
+//     */
+//    UserRoleData getUserById(Integer userId);
 
     /**
      * 添加用户

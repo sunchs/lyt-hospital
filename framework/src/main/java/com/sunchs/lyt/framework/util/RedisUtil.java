@@ -69,6 +69,19 @@ public class RedisUtil {
         }
     }
 
+    public static void setValue(String key, String value, int delay) {
+        Jedis jedis = getPool().getResource();
+        try {
+            jedis.set(key, value);
+            jedis.expire(key, delay);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Redis异常");
+        } finally {
+            closeResource(jedis);
+        }
+    }
+
     public static <T> void setValue(String key, Class<T> clazz) {
         String value = JsonUtil.toJson(clazz);
         setValue(key, value);

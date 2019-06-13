@@ -2,17 +2,26 @@ package com.sunchs.lyt.user.controller;
 
 import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.ResultData;
+import com.sunchs.lyt.framework.controller.BaseController;
+import com.sunchs.lyt.user.service.impl.NodeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-
+@RestController
 @RequestMapping("/node")
-public interface NodeController {
+public class NodeController extends BaseController {
+
+    @Autowired
+    NodeService nodeService;
 
     /**
      * 节点列表
      */
     @PostMapping("/list")
-    ResultData getList(@RequestBody RequestData data);
+    public ResultData getList(@RequestBody RequestData data) {
+        return success(nodeService.getList());
+    }
 }

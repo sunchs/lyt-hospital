@@ -1,21 +1,22 @@
 package com.sunchs.lyt.user.bean;
 
 import java.util.List;
+import java.util.Set;
 
 public class UserRoleData {
 
-    public Integer userId;
-    public String userName;
-    public String name;
-    public String token;
-    public List<RoleData> roleList;
+    private Integer id;
+    private String userName;
+    private String name;
+    private String token;
+    private Set<Integer> roleList;
 
-    public Integer getUserId() {
-        return userId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getUserName() {
@@ -42,11 +43,11 @@ public class UserRoleData {
         this.token = token;
     }
 
-    public List<RoleData> getRoleList() {
+    public Set<Integer> getRoleList() {
         return roleList;
     }
 
-    public void setRoleList(List<RoleData> roleList) {
+    public void setRoleList(Set<Integer> roleList) {
         this.roleList = roleList;
     }
 }

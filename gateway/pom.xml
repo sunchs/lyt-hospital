@@ -21,6 +21,14 @@
             <groupId>com.sunchs.lyt</groupId>
             <artifactId>framework</artifactId>
         </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sunchs.lyt</groupId>
+            <artifactId>db</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

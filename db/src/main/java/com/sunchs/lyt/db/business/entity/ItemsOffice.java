@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-05-30
+ * @since 2019-06-11
  */
 @TableName("items_office")
 public class ItemsOffice extends Model<ItemsOffice> {
@@ -44,6 +44,11 @@ public class ItemsOffice extends Model<ItemsOffice> {
     @TableField("questionnaire_id")
     private Integer questionnaireId;
 
+    /**
+     * 抽样量
+     */
+    private Integer quantity;
+
     public Integer getId() {
         return id;
     }
@@ -72,6 +77,13 @@ public class ItemsOffice extends Model<ItemsOffice> {
     public void setQuestionnaireId(Integer questionnaireId) {
         this.questionnaireId = questionnaireId;
     }
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
 
     public static final String ID = "id";
 
@@ -80,6 +92,8 @@ public class ItemsOffice extends Model<ItemsOffice> {
     public static final String OFFICE_ID = "office_id";
 
     public static final String QUESTIONNAIRE_ID = "questionnaire_id";
+
+    public static final String QUANTITY = "quantity";
 
     @Override
     protected Serializable pkVal() {
@@ -93,6 +107,7 @@ public class ItemsOffice extends Model<ItemsOffice> {
         ", itemId=" + itemId +
         ", officeId=" + officeId +
         ", questionnaireId=" + questionnaireId +
+        ", quantity=" + quantity +
         "}";
     }
 }

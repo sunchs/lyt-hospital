@@ -36,4 +36,11 @@ public class ResultData {
         resultData.msg = msg;
         return resultData;
     }
+
+    public static ResultData getLoginFailure() {
+        ResultData resultData = new ResultData();
+        resultData.status = -2;
+        resultData.msg = "Token已过期";
+        return resultData;
+    }
 }
