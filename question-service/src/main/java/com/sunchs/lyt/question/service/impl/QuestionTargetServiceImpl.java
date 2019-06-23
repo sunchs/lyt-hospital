@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service("QuestionTargetServiceImpl1")
@@ -56,6 +58,38 @@ public class QuestionTargetServiceImpl implements QuestionTargetService {
             one.setChildren(twoList);
         }
         return list.stream().filter(row -> row.getPid() == 0).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Map<String, Object>> getSelectData() {
+        List<Map<String, Object>> list = new ArrayList<>();
+        List<QuestionTarget> dbList = questionTargetDao.getAll();
+
+        // 一级数据
+        List<Map<String, Object>> oneList = fetchTargetList(dbList, 0);
+        oneList.forEach(one -> {
+            // 二级数据
+            List<Map<String, Object>> twoList = fetchTargetList(dbList, (int) one.get("id"));
+            twoList.forEach(two -> {
+                // 三级数据
+                List<Map<String, Object>> threeList = fetchTargetList(dbList, (int) two.get("id"));
+                two.put("children", threeList);
+            });
+            one.put("children", twoList);
+        });
+        return list;
+    }
+
+    private List<Map<String, Object>> fetchTargetList(List<QuestionTarget> dbList, Integer pid) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        List<QuestionTarget> filterList = dbList.stream().filter(row -> row.getPid().equals(pid)).collect(Collectors.toList());
+        for (QuestionTarget two : filterList) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", two.getId());
+            map.put("title", two.getTitle());
+            list.add(map);
+        }
+        return list;
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.sunchs.lyt.question.bean.QuestionTargetData;
 import com.sunchs.lyt.question.bean.QuestionTargetParam;
 
 import java.util.List;
+import java.util.Map;
 
 public interface QuestionTargetService {
 
@@ -22,6 +23,11 @@ public interface QuestionTargetService {
      * 获取所有指标数据
      */
     List<QuestionTargetData> getAll();
+
+    /**
+     * 获取所有指标数据
+     */
+    List<Map<String, Object>> getSelectData();
 
     /**
      * 保存数据

@@ -28,6 +28,13 @@ public interface QuestionTargetController {
     ResultData getAll(@RequestBody RequestData data);
 
     /**
+     * 获取菜单数据
+     */
+    @PostMapping("/getMenuData")
+    ResultData getMenuData(@RequestBody RequestData data);
+
+
+    /**
      * 指标 添加、编辑
      */
     @PostMapping("/save")
