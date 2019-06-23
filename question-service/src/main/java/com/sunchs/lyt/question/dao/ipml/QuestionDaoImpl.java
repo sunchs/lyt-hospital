@@ -52,6 +52,9 @@ public class QuestionDaoImpl implements QuestionDao {
             data.setOptionMode(optionData.getMode());
             List<OptionData> optionDataList = questionOptionDao.getListById(data.getId());
             data.setOption(optionDataList);
+            for (int i = 0; i < optionDataList.size(); i++) {
+                data.setOptionName(data.getOptionName() + (i+1) + "、" + optionDataList.get(i).getOptionName() + "  ");
+            }
 
             // 标签列表
             data.setTagList(questionTagDao.getQuestionTag(questionId));

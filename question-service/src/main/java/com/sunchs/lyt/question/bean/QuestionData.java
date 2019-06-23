@@ -6,18 +6,19 @@ import java.util.List;
 
 public class QuestionData extends Question {
 
-    public String statusName;
-    public String targetOneName;
-    public String targetTwoName;
-    public String targetThreeName;
+    private String statusName;
+    private String targetOneName;
+    private String targetTwoName;
+    private String targetThreeName;
 
-    public String optionMode;
-    public String optionTypeName;
+    private String optionMode;
+    private String optionTypeName;
 
     private String updateTimeName;
 
-    public List<OptionData> option;
-    public List<TagData> tagList;
+    private List<OptionData> option;
+    private String optionName;
+    private List<TagData> tagList;
 
     public String getStatusName() {
         return statusName;
@@ -67,6 +68,14 @@ public class QuestionData extends Question {
         this.optionTypeName = optionTypeName;
     }
 
+    public String getUpdateTimeName() {
+        return updateTimeName;
+    }
+
+    public void setUpdateTimeName(String updateTimeName) {
+        this.updateTimeName = updateTimeName;
+    }
+
     public List<OptionData> getOption() {
         return option;
     }
@@ -75,19 +84,19 @@ public class QuestionData extends Question {
         this.option = option;
     }
 
+    public String getOptionName() {
+        return optionName;
+    }
+
+    public void setOptionName(String optionName) {
+        this.optionName = optionName;
+    }
+
     public List<TagData> getTagList() {
         return tagList;
     }
 
     public void setTagList(List<TagData> tagList) {
         this.tagList = tagList;
-    }
-
-    public String getUpdateTimeName() {
-        return updateTimeName;
-    }
-
-    public void setUpdateTimeName(String updateTimeName) {
-        this.updateTimeName = updateTimeName;
     }
 }
