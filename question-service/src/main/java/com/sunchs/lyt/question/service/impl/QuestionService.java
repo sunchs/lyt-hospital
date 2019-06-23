@@ -7,10 +7,13 @@ import com.sunchs.lyt.db.business.entity.OptionTemplate;
 import com.sunchs.lyt.db.business.entity.Question;
 import com.sunchs.lyt.db.business.entity.QuestionOption;
 import com.sunchs.lyt.db.business.entity.QuestionTagBinding;
+import com.sunchs.lyt.db.business.service.impl.QuestionServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.QuestionTagBindingServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
+import com.sunchs.lyt.framework.util.StringUtil;
+import com.sunchs.lyt.framework.util.UserThreadUtil;
 import com.sunchs.lyt.question.bean.QuestionData;
 import com.sunchs.lyt.question.bean.QuestionParam;
 import com.sunchs.lyt.question.bean.TagParam;
@@ -37,6 +40,9 @@ public class QuestionService implements IQuestionService {
 
     @Autowired
     private QuestionTagBindingServiceImpl questionTagBindingService;
+
+    @Autowired
+    private QuestionServiceImpl questionService;
 
     @Override
     public void save(QuestionParam param) {
@@ -94,13 +100,15 @@ public class QuestionService implements IQuestionService {
     }
 
     private void update(QuestionParam param) {
-        Question question = new Question();
-        question.setStatus(param.getStatus());
-        question.setRemark(param.getRemark());
-        // TODO::用户ID
-        question.setUpdateId(0);
-        question.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-        questionDao.update(question);
+        Question data = new Question();
+        data.setId(param.getId());
+        data.setStatus(param.getStatus());
+        if (StringUtil.isNotEmpty(param.getRemark())) {
+            data.setRemark(param.getRemark());
+        }
+        data.setUpdateId(UserThreadUtil.getUserId());
+        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        questionService.updateById(data);
     }
 
     private void setQuestionOption(int questionId, OptionTemplate optionTemplate) {
