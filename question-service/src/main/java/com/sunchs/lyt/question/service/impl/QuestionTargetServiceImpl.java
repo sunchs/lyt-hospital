@@ -62,9 +62,7 @@ public class QuestionTargetServiceImpl implements QuestionTargetService {
 
     @Override
     public List<Map<String, Object>> getSelectData() {
-        List<Map<String, Object>> list = new ArrayList<>();
         List<QuestionTarget> dbList = questionTargetDao.getAll();
-
         // 一级数据
         List<Map<String, Object>> oneList = fetchTargetList(dbList, 0);
         oneList.forEach(one -> {
@@ -77,7 +75,7 @@ public class QuestionTargetServiceImpl implements QuestionTargetService {
             });
             one.put("children", twoList);
         });
-        return list;
+        return oneList;
     }
 
     private List<Map<String, Object>> fetchTargetList(List<QuestionTarget> dbList, Integer pid) {
