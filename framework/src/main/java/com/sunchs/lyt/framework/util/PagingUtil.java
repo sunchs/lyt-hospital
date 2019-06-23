@@ -12,7 +12,7 @@ public class PagingUtil {
         return (pageNow - 1) * pageSize;
     }
 
-    public static <T> PagingList<T> getData(List<T> list, int total, int pageNow, int pageSize) {
+    public static <T> PagingList<T> getData(List<T> list, long total, int pageNow, int pageSize) {
         if (pageSize == 0) {
             throw new RuntimeException("每页条数不能为零");
         }

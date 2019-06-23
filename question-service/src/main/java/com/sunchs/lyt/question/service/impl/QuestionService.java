@@ -58,7 +58,7 @@ public class QuestionService implements IQuestionService {
         for (Question question : data.getRecords()) {
             list.add(questionDao.getById(question.getId()));
         }
-        return PagingUtil.getData(list, data.getSize(), data.getCurrent(), data.getLimit());
+        return PagingUtil.getData(list, data.getTotal(), data.getCurrent(), data.getSize());
     }
 
     private void insert(QuestionParam param) {
