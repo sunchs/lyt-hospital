@@ -2,9 +2,7 @@ package com.sunchs.lyt.question.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.sunchs.lyt.db.business.entity.OptionTemplate;
 import com.sunchs.lyt.db.business.entity.QuestionTag;
-import com.sunchs.lyt.db.business.entity.QuestionTarget;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.question.bean.QuestionTagData;
