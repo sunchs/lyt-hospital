@@ -1,4 +1,4 @@
-package com.sunchs.lyt.question.controller.impl;
+package com.sunchs.lyt.question.controller;
 
 import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.ResultData;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class QuestionTargetController extends BaseController {
 
     @Autowired
-    QuestionTargetService questionTargetService;
+    QuestionTargetService targetService;
 
     /**
      * 根据 指标ID 获取指标详情
@@ -24,13 +24,13 @@ public class QuestionTargetController extends BaseController {
     @PostMapping("/getById")
     public ResultData getById(@RequestBody RequestData data) {
         QuestionTargetParam param = data.toObject(QuestionTargetParam.class);
-        return success(questionTargetService.getById(param.getId()));
+        return success(targetService.getById(param.getId()));
     }
 
 //    @Override
 //    public ResultData getList(@RequestBody RequestData data) {
 //        QuestionTargetParam param = data.toObject(QuestionTargetParam.class);
-//        return success(questionTargetService.getList(param.getId()));
+//        return success(targetService.getList(param.getId()));
 //    }
 
     /**
@@ -38,15 +38,7 @@ public class QuestionTargetController extends BaseController {
      */
     @PostMapping("/getAll")
     public ResultData getAll(@RequestBody RequestData data) {
-        return success(questionTargetService.getAll());
-    }
-
-    /**
-     * 获取菜单数据
-     */
-    @PostMapping("/getCascaderData")
-    public ResultData getCascaderData(RequestData data) {
-        return success(questionTargetService.getCascaderData());
+        return success(targetService.getAll());
     }
 
     /**
@@ -55,7 +47,15 @@ public class QuestionTargetController extends BaseController {
     @PostMapping("/save")
     public ResultData save(@RequestBody RequestData data) {
         QuestionTargetParam param = data.toObject(QuestionTargetParam.class);
-        questionTargetService.save(param);
+        targetService.save(param);
         return success();
+    }
+
+    /**
+     * 获取 级联 数据
+     */
+    @PostMapping("/getCascaderData")
+    public ResultData getCascaderData() {
+        return success(targetService.getCascaderData());
     }
 }

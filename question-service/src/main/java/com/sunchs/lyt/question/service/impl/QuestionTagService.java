@@ -1,25 +1,35 @@
 package com.sunchs.lyt.question.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.sunchs.lyt.db.business.entity.OptionTemplate;
+import com.sunchs.lyt.db.business.entity.QuestionTag;
+import com.sunchs.lyt.db.business.entity.QuestionTarget;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.question.bean.QuestionTagData;
 import com.sunchs.lyt.question.bean.QuestionTagParam;
 import com.sunchs.lyt.question.dao.QuestionTagDao;
 import com.sunchs.lyt.question.exception.QuestionException;
-import com.sunchs.lyt.question.service.QuestionAttributeService;
+import com.sunchs.lyt.question.service.IQuestionTagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
-public class QuestionAttributeServiceImpl implements QuestionAttributeService {
+public class QuestionTagService implements IQuestionTagService {
 
     @Autowired
     QuestionTagDao questionTagDao;
+
+    @Autowired
+    private QuestionTag questionTag;
 
     @Override
     public QuestionTagData getById(Integer id) {
@@ -83,4 +93,33 @@ public class QuestionAttributeServiceImpl implements QuestionAttributeService {
         return 0;
     }
 
+    @Override
+    public List<Map<String, Object>> getCascaderData() {
+        Wrapper<QuestionTag> where = new EntityWrapper<>();
+        List<QuestionTag> dbList = questionTag.selectList(where);
+        // 一级数据
+        List<Map<String, Object>> oneList = fetchTagList(dbList, 0);
+        oneList.forEach(one -> {
+            // 二级数据
+            List<Map<String, Object>> twoList = fetchTagList(dbList, (int) one.get("id"));
+            twoList.forEach(two -> {
+                // 三级数据
+                two.put("children", fetchTagList(dbList, (int) two.get("id")));
+            });
+            one.put("children", twoList);
+        });
+        return oneList;
+    }
+
+    private List<Map<String, Object>> fetchTagList(List<QuestionTag> dbList, Integer pid) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        List<QuestionTag> filterList = dbList.stream().filter(row -> row.getPid().equals(pid)).collect(Collectors.toList());
+        for (QuestionTag row : filterList) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", row.getId());
+            map.put("title", row.getTitle());
+            list.add(map);
+        }
+        return list;
+    }
 }
