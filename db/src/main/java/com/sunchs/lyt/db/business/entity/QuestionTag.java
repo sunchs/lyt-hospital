@@ -14,7 +14,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-05-05
+ * @since 2019-06-24
  */
 @TableName("question_tag")
 public class QuestionTag extends Model<QuestionTag> {

@@ -3,6 +3,7 @@ package com.sunchs.lyt.question.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.sunchs.lyt.db.business.entity.QuestionTag;
+import com.sunchs.lyt.db.business.service.impl.QuestionTagServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.question.bean.QuestionTagData;
@@ -27,7 +28,7 @@ public class QuestionTagService implements IQuestionTagService {
     QuestionTagDao questionTagDao;
 
     @Autowired
-    private QuestionTag questionTag;
+    private QuestionTagServiceImpl tagService;
 
     @Override
     public QuestionTagData getById(Integer id) {
@@ -94,7 +95,7 @@ public class QuestionTagService implements IQuestionTagService {
     @Override
     public List<Map<String, Object>> getCascaderData() {
         Wrapper<QuestionTag> where = new EntityWrapper<>();
-        List<QuestionTag> dbList = questionTag.selectList(where);
+        List<QuestionTag> dbList = tagService.selectList(where);
         // 一级数据
         List<Map<String, Object>> oneList = fetchTagList(dbList, 0);
         oneList.forEach(one -> {
