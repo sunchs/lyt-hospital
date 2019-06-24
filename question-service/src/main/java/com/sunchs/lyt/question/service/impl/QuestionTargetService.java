@@ -1,7 +1,6 @@
 package com.sunchs.lyt.question.service.impl;
 
 import com.sunchs.lyt.db.business.entity.QuestionTarget;
-import com.sunchs.lyt.framework.util.JsonUtil;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.ObjectUtil;
 import com.sunchs.lyt.framework.util.StringUtil;
@@ -9,7 +8,7 @@ import com.sunchs.lyt.question.bean.QuestionTargetData;
 import com.sunchs.lyt.question.bean.QuestionTargetParam;
 import com.sunchs.lyt.question.dao.ipml.QuestionTargetDaoImpl;
 import com.sunchs.lyt.question.exception.QuestionException;
-import com.sunchs.lyt.question.service.QuestionTargetService;
+import com.sunchs.lyt.question.service.IQuestionTargetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service("QuestionTargetServiceImpl1")
-public class QuestionTargetServiceImpl implements QuestionTargetService {
+public class QuestionTargetService implements IQuestionTargetService {
 
     @Autowired
     QuestionTargetDaoImpl questionTargetDao;
@@ -61,7 +60,22 @@ public class QuestionTargetServiceImpl implements QuestionTargetService {
     }
 
     @Override
-    public List<Map<String, Object>> getSelectData() {
+    public void save(QuestionTargetParam param) {
+        // 检查标题
+        checkTitle(param.getTitle(), param.getPid());
+        List<QuestionTargetParam> children = param.getChildren();
+        for (QuestionTargetParam child : children) {
+            checkTitle(child.getTitle(), param.getPid());
+        }
+        if (NumberUtil.isZero(param.getId())) {
+            insert(param);
+        } else {
+//            update(param);
+        }
+    }
+
+    @Override
+    public List<Map<String, Object>> getCascaderData() {
         List<QuestionTarget> dbList = questionTargetDao.getAll();
         // 一级数据
         List<Map<String, Object>> oneList = fetchTargetList(dbList, 0);
@@ -70,8 +84,7 @@ public class QuestionTargetServiceImpl implements QuestionTargetService {
             List<Map<String, Object>> twoList = fetchTargetList(dbList, (int) one.get("id"));
             twoList.forEach(two -> {
                 // 三级数据
-                List<Map<String, Object>> threeList = fetchTargetList(dbList, (int) two.get("id"));
-                two.put("children", threeList);
+                two.put("children", fetchTargetList(dbList, (int) two.get("id")));
             });
             one.put("children", twoList);
         });
@@ -88,21 +101,6 @@ public class QuestionTargetServiceImpl implements QuestionTargetService {
             list.add(map);
         }
         return list;
-    }
-
-    @Override
-    public void save(QuestionTargetParam param) {
-        // 检查标题
-        checkTitle(param.getTitle(), param.getPid());
-        List<QuestionTargetParam> children = param.getChildren();
-        for (QuestionTargetParam child : children) {
-            checkTitle(child.getTitle(), param.getPid());
-        }
-        if (NumberUtil.isZero(param.getId())) {
-            insert(param);
-        } else {
-//            update(param);
-        }
     }
 
     private void insert(QuestionTargetParam param) {

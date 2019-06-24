@@ -1,13 +1,12 @@
 package com.sunchs.lyt.question.service;
 
-import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.question.bean.QuestionTargetData;
 import com.sunchs.lyt.question.bean.QuestionTargetParam;
 
 import java.util.List;
 import java.util.Map;
 
-public interface QuestionTargetService {
+public interface IQuestionTargetService {
 
     /**
      * 根据 指标ID 获取指标信息
@@ -24,14 +23,15 @@ public interface QuestionTargetService {
      */
     List<QuestionTargetData> getAll();
 
-    /**
-     * 获取所有指标数据
-     */
-    List<Map<String, Object>> getSelectData();
+
 
     /**
      * 保存数据
      */
     void save(QuestionTargetParam param);
 
+    /**
+     * 获取 级联 数据
+     */
+    List<Map<String, Object>> getCascaderData();
 }

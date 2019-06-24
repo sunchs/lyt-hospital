@@ -5,6 +5,7 @@ import com.sunchs.lyt.question.bean.QuestionOptionParam;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface IQuestionOptionService {
@@ -19,5 +20,10 @@ public interface IQuestionOptionService {
 
 
     List<QuestionOptionData> getList(QuestionOptionParam param);
+
+    /**
+     * 获取 级联 数据
+     */
+    List<Map<String, Object>> getCascaderData();
 
 }
