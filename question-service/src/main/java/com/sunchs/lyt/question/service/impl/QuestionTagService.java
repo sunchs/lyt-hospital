@@ -100,12 +100,7 @@ public class QuestionTagService implements IQuestionTagService {
         List<Map<String, Object>> oneList = fetchTagList(dbList, 0);
         oneList.forEach(one -> {
             // 二级数据
-            List<Map<String, Object>> twoList = fetchTagList(dbList, (int) one.get("id"));
-            twoList.forEach(two -> {
-                // 三级数据
-                two.put("children", fetchTagList(dbList, (int) two.get("id")));
-            });
-            one.put("children", twoList);
+            one.put("children", fetchTagList(dbList, (int) one.get("id")));
         });
         return oneList;
     }
