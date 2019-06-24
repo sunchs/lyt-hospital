@@ -64,15 +64,15 @@ public class QuestionOptionService implements IQuestionOptionService {
         Wrapper<OptionTemplate> where = new EntityWrapper<>();
         List<OptionTemplate> dbList = templateService.selectList(where);
         // 一级数据
-        List<Map<String, Object>> oneList = fetchTargetList(dbList, 0);
+        List<Map<String, Object>> oneList = fetchOptionList(dbList, 0);
         oneList.forEach(one -> {
             // 二级数据
-            one.put("children", fetchTargetList(dbList, (int) one.get("id")));
+            one.put("children", fetchOptionList(dbList, (int) one.get("id")));
         });
         return oneList;
     }
 
-    private List<Map<String, Object>> fetchTargetList(List<OptionTemplate> dbList, Integer pid) {
+    private List<Map<String, Object>> fetchOptionList(List<OptionTemplate> dbList, Integer pid) {
         List<Map<String, Object>> list = new ArrayList<>();
         List<OptionTemplate> filterList = dbList.stream().filter(row -> row.getPid().equals(pid)).collect(Collectors.toList());
         for (OptionTemplate row : filterList) {

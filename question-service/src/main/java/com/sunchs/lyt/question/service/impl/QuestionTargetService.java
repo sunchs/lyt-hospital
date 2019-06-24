@@ -94,10 +94,10 @@ public class QuestionTargetService implements IQuestionTargetService {
     private List<Map<String, Object>> fetchTargetList(List<QuestionTarget> dbList, Integer pid) {
         List<Map<String, Object>> list = new ArrayList<>();
         List<QuestionTarget> filterList = dbList.stream().filter(row -> row.getPid().equals(pid)).collect(Collectors.toList());
-        for (QuestionTarget two : filterList) {
+        for (QuestionTarget row : filterList) {
             Map<String, Object> map = new HashMap<>();
-            map.put("id", two.getId());
-            map.put("title", two.getTitle());
+            map.put("id", row.getId());
+            map.put("title", row.getTitle());
             list.add(map);
         }
         return list;
