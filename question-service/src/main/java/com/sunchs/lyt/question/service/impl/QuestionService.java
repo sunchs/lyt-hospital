@@ -59,6 +59,7 @@ public class QuestionService implements IQuestionService {
         if (param.getTargetOne() > 0) {
             where.eq(Question.TARGET_ONE, param.getTargetOne());
         }
+        where.orderBy(Question.ID, false);
         Page<Question> data = questionDao.getPaging(where, param.getPageNow(), param.getPageSize());
         List<QuestionData> list = new ArrayList<>();
         for (Question question : data.getRecords()) {
@@ -85,11 +86,9 @@ public class QuestionService implements IQuestionService {
         question.setTargetThree(param.getTargetThree());
         question.setOptionType(optionTemplate.getPid());
         question.setRemark(param.getRemark());
-        // TODO::用户ID
-        question.setUpdateId(0);
+        question.setUpdateId(UserThreadUtil.getUserId());
         question.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-        // TODO::用户ID
-        question.setCreateId(0);
+        question.setCreateId(UserThreadUtil.getUserId());
         question.setCreateTime(new Timestamp(System.currentTimeMillis()));
         if (questionDao.insert(question)) {
             // 插入选项
