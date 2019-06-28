@@ -5,12 +5,12 @@ public enum QuestionnaireStatusEnum {
     /**
      * 草稿
      */
-    Draft(1, "草稿"),
+    Draft(0, "草稿"),
 
     /**
      * 发布
      */
-    Release(2, "发布"),
+    Release(1, "发布"),
 
     /**
      * 删除

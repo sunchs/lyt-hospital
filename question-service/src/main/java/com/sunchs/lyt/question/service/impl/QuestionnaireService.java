@@ -7,15 +7,15 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.Questionnaire;
 import com.sunchs.lyt.db.business.entity.QuestionnaireExtend;
+import com.sunchs.lyt.db.business.service.impl.QuestionnaireServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
-import com.sunchs.lyt.framework.util.JsonUtil;
-import com.sunchs.lyt.framework.util.NumberUtil;
-import com.sunchs.lyt.framework.util.ObjectUtil;
-import com.sunchs.lyt.framework.util.PagingUtil;
+import com.sunchs.lyt.framework.util.*;
 import com.sunchs.lyt.question.bean.*;
 import com.sunchs.lyt.question.dao.QuestionDao;
+import com.sunchs.lyt.question.dao.QuestionTargetDao;
 import com.sunchs.lyt.question.dao.QuestionnaireDao;
 import com.sunchs.lyt.question.dao.ipml.QuestionOptionDaoImpl;
+import com.sunchs.lyt.question.enums.QuestionnaireStatusEnum;
 import com.sunchs.lyt.question.exception.QuestionException;
 import com.sunchs.lyt.question.service.IQuestionnaireService;
 import jxl.format.Colour;
@@ -42,6 +42,12 @@ public class QuestionnaireService implements IQuestionnaireService {
 
     @Autowired
     private QuestionDao questionDao;
+
+    @Autowired
+    private QuestionTargetDao questionTargetDao;
+
+    @Autowired
+    private QuestionnaireServiceImpl questionnaireService;
 
     @Override
     public QuestionnaireData getById(int id) {
@@ -80,10 +86,22 @@ public class QuestionnaireService implements IQuestionnaireService {
     }
 
     @Override
-    public PagingList<Questionnaire> getPageList(QuestionnaireParam param) {
+    public PagingList<QuestionnaireData> getPageList(QuestionnaireParam param) {
         Wrapper<Questionnaire> where = new EntityWrapper<>();
-        Page<Questionnaire> pageData = questionnaireDao.getPaging(where, param.getPageNow(), param.getPageSize());
-        return PagingUtil.getData(pageData);
+        Page<Questionnaire> page = questionnaireService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), where);
+        List<QuestionnaireData> list = new ArrayList<>();
+        page.getRecords().forEach(row -> {
+            QuestionnaireData data = ObjectUtil.copy(row, QuestionnaireData.class);
+            data.setStatusName(QuestionnaireStatusEnum.get(row.getStatus()));
+            data.setTargetOneName(questionTargetDao.getNameById(data.getTargetOne()));
+
+            data.setUpdateTimeName(FormatUtil.dateTime(data.getUpdateTime()));
+
+            list.add(data);
+        });
+
+
+        return PagingUtil.getData(list, page.getTotal(), page.getCurrent(), page.getSize());
     }
 
     @Override

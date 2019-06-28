@@ -15,7 +15,7 @@ public interface IQuestionnaireService {
     /**
      * 问卷分页
      */
-    PagingList<Questionnaire> getPageList(QuestionnaireParam param);
+    PagingList<QuestionnaireData> getPageList(QuestionnaireParam param);
 
     /**
      * 保存数据
