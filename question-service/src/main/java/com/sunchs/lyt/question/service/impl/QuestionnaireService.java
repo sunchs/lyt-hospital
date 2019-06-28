@@ -94,7 +94,12 @@ public class QuestionnaireService implements IQuestionnaireService {
             QuestionnaireData data = ObjectUtil.copy(row, QuestionnaireData.class);
             data.setStatusName(QuestionnaireStatusEnum.get(row.getStatus()));
             data.setTargetOneName(questionTargetDao.getNameById(data.getTargetOne()));
-
+            if (data.getHospitalId() == 0) {
+                data.setHospitalName("通用");
+            } else {
+                // TODO:: 医院名
+                data.setHospitalName("XXX医院");
+            }
             data.setUpdateTimeName(FormatUtil.dateTime(data.getUpdateTime()));
 
             list.add(data);

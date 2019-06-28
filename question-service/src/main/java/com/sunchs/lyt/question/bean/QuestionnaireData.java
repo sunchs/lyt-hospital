@@ -17,6 +17,8 @@ public class QuestionnaireData extends Questionnaire {
 
     private String updateTimeName;
 
+    private String hospitalName;
+
     private List<QuestionDataExt> questionList;
 
     public String getStatusName() {
@@ -49,6 +51,14 @@ public class QuestionnaireData extends Questionnaire {
 
     public void setQuestionList(List<QuestionDataExt> questionList) {
         this.questionList = questionList;
+    }
+
+    public String getHospitalName() {
+        return hospitalName;
+    }
+
+    public void setHospitalName(String hospitalName) {
+        this.hospitalName = hospitalName;
     }
 
     public void initData() {
