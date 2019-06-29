@@ -60,12 +60,12 @@ public class QuestionnaireService implements IQuestionnaireService {
             questionnaireDao.getExtendById(id).forEach(ext->{
                 QuestionData questionData = questionDao.getById(ext.getQuestionId());
                 if (ext.getSkipMode().equals(1)) {
-                    questionData.getOption().forEach(o -> {
+                    questionData.getOptionList().forEach(o -> {
                         o.setSkipQuestionId(ext.getSkipQuestionId());
                     });
                 } else if (ext.getSkipMode().equals(2)) {
                     Map<Integer, Integer> skipMap = getSkipContentMap(ext.getSkipContent());
-                    questionData.getOption().forEach(o -> {
+                    questionData.getOptionList().forEach(o -> {
                         if (skipMap.containsKey(o.getOptionId())) {
                             o.setSkipQuestionId(skipMap.get(o.getOptionId()));
                         }
@@ -182,7 +182,7 @@ public class QuestionnaireService implements IQuestionnaireService {
                 }
                 columnPos += tagLen;
                 // 自动选项
-                List<OptionData> optionList = question.getOption();
+                List<OptionData> optionList = question.getOptionList();
                 for (int i = 0; i < optionList.size(); i++) {
                     sheet.addCell(new Label(columnPos+i, linePos, optionList.get(i).getOptionName()));
                 }
@@ -215,7 +215,7 @@ public class QuestionnaireService implements IQuestionnaireService {
     private int getOptionLen(List<QuestionDataExt> questionList) {
         int len = 0;
         for (QuestionDataExt ext : questionList) {
-            int size = ext.getOption().size();
+            int size = ext.getOptionList().size();
             if (size > len) {
                 len = size;
             }
@@ -225,12 +225,12 @@ public class QuestionnaireService implements IQuestionnaireService {
 
     private String getSkipContent(QuestionDataExt questionDataExt) {
         if (questionDataExt.getSkipMode() == 1) {
-            for (OptionData optionData : questionDataExt.getOption()) {
+            for (OptionData optionData : questionDataExt.getOptionList()) {
                 return optionData.getSkipQuestionId()+"";
             }
         } else if (questionDataExt.getSkipMode() == 2) {
             String val = "";
-            for (OptionData optionData : questionDataExt.getOption()) {
+            for (OptionData optionData : questionDataExt.getOptionList()) {
                 if (optionData.getSkipQuestionId() != 0) {
                     String item = optionData.getOptionId()+":"+optionData.getSkipQuestionId();
                     val += val.isEmpty() ? item : ", "+item;
