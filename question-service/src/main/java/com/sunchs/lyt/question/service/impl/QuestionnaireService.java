@@ -263,7 +263,7 @@ public class QuestionnaireService implements IQuestionnaireService {
         data.setCreateTime(new Timestamp(System.currentTimeMillis()));
         if (questionnaireDao.insert(data)) {
             Integer questionnaireId = data.getId();
-            List<QuestionBean> questionList = param.getQuestion();
+            List<QuestionBean> questionList = param.getQuestionList();
             for (QuestionBean question : questionList) {
                 QuestionnaireExtend extend = new QuestionnaireExtend();
                 extend.setQuestionnaireId(questionnaireId);

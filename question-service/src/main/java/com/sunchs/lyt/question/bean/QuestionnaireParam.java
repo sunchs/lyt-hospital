@@ -6,29 +6,49 @@ import java.util.List;
 
 public class QuestionnaireParam extends PagingParam {
 
-    public int id;
-    public String title;
-    public Integer status;
-    public int targetOne;
-    public List<QuestionBean> question;
+    private int id;
+    private String title;
+    private int status;
+    private int targetOne;
+    private List<QuestionBean> questionList;
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public Integer getStatus() {
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getStatus() {
         return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public int getTargetOne() {
         return targetOne;
     }
 
-    public List<QuestionBean> getQuestion() {
-        return question;
+    public void setTargetOne(int targetOne) {
+        this.targetOne = targetOne;
+    }
+
+    public List<QuestionBean> getQuestionList() {
+        return questionList;
+    }
+
+    public void setQuestionList(List<QuestionBean> questionList) {
+        this.questionList = questionList;
     }
 }
