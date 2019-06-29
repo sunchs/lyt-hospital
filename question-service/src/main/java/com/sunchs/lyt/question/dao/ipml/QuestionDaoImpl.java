@@ -10,6 +10,7 @@ import com.sunchs.lyt.framework.util.ObjectUtil;
 import com.sunchs.lyt.question.bean.OptionData;
 import com.sunchs.lyt.question.bean.QuestionData;
 import com.sunchs.lyt.question.bean.QuestionOptionData;
+import com.sunchs.lyt.question.bean.TagData;
 import com.sunchs.lyt.question.dao.QuestionDao;
 import com.sunchs.lyt.question.dao.QuestionTargetDao;
 import com.sunchs.lyt.question.enums.QuestionStatusEnum;
@@ -51,14 +52,19 @@ public class QuestionDaoImpl implements QuestionDao {
             data.setOptionTypeName(optionData.getTitle());
             data.setOptionMode(optionData.getMode());
             List<OptionData> optionDataList = questionOptionDao.getListById(data.getId());
-            data.setOption(optionDataList);
-            data.setOptionName("");
+            data.setOptionList(optionDataList);
+            data.setOptionListName("");
             for (int i = 0; i < optionDataList.size(); i++) {
-                data.setOptionName(data.getOptionName() + (i+1) + "、" + optionDataList.get(i).getOptionName() + "  ");
+                data.setOptionListName(data.getOptionListName() + (i+1) + "、" + optionDataList.get(i).getOptionName() + "  ");
             }
 
             // 标签列表
-            data.setTagList(questionTagDao.getQuestionTag(questionId));
+            List<TagData> tagDataList = questionTagDao.getQuestionTag(questionId);
+            data.setTagList(tagDataList);
+            data.setTagListName("");
+            for (int i = 0; i < tagDataList.size(); i++) {
+                data.setTagListName(data.getTagListName() + (i+1) + "、" + tagDataList.get(i).getTagName() + "  ");
+            }
 
             data.setUpdateTimeName(FormatUtil.dateTime(data.getUpdateTime()));
 

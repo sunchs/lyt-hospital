@@ -16,9 +16,10 @@ public class QuestionData extends Question {
 
     private String updateTimeName;
 
-    private List<OptionData> option;
-    private String optionName;
+    private List<OptionData> optionList;
+    private String optionListName;
     private List<TagData> tagList;
+    private String tagListName;
 
     public String getStatusName() {
         return statusName;
@@ -76,20 +77,20 @@ public class QuestionData extends Question {
         this.updateTimeName = updateTimeName;
     }
 
-    public List<OptionData> getOption() {
-        return option;
+    public List<OptionData> getOptionList() {
+        return optionList;
     }
 
-    public void setOption(List<OptionData> option) {
-        this.option = option;
+    public void setOptionList(List<OptionData> optionList) {
+        this.optionList = optionList;
     }
 
-    public String getOptionName() {
-        return optionName;
+    public String getOptionListName() {
+        return optionListName;
     }
 
-    public void setOptionName(String optionName) {
-        this.optionName = optionName;
+    public void setOptionListName(String optionListName) {
+        this.optionListName = optionListName;
     }
 
     public List<TagData> getTagList() {
@@ -98,5 +99,13 @@ public class QuestionData extends Question {
 
     public void setTagList(List<TagData> tagList) {
         this.tagList = tagList;
+    }
+
+    public String getTagListName() {
+        return tagListName;
+    }
+
+    public void setTagListName(String tagListName) {
+        this.tagListName = tagListName;
     }
 }
