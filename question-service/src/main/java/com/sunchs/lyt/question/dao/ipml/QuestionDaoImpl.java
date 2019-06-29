@@ -63,7 +63,7 @@ public class QuestionDaoImpl implements QuestionDao {
             data.setTagList(tagDataList);
             data.setTagListName("");
             for (int i = 0; i < tagDataList.size(); i++) {
-                data.setTagListName(data.getTagListName() + (i+1) + "、" + tagDataList.get(i).getTagName() + "  ");
+                data.setTagListName(data.getTagListName() + tagDataList.get(i).getTagName() + "  ");
             }
 
             data.setUpdateTimeName(FormatUtil.dateTime(data.getUpdateTime()));
