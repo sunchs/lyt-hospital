@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author king
- * @since 2019-04-22
+ * @since 2019-06-29
  */
 @Service
 public class QuestionnaireExtendServiceImpl extends ServiceImpl<QuestionnaireExtendMapper, QuestionnaireExtend> implements IQuestionnaireExtendService {

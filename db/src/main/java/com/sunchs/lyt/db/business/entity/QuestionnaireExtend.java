@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-04-22
+ * @since 2019-06-29
  */
 @TableName("questionnaire_extend")
 public class QuestionnaireExtend extends Model<QuestionnaireExtend> {
@@ -55,6 +55,11 @@ public class QuestionnaireExtend extends Model<QuestionnaireExtend> {
      */
     @TableField("skip_content")
     private String skipContent;
+
+    /**
+     * 排序
+     */
+    private Integer sort;
 
     public Integer getId() {
         return id;
@@ -98,6 +103,13 @@ public class QuestionnaireExtend extends Model<QuestionnaireExtend> {
     public void setSkipContent(String skipContent) {
         this.skipContent = skipContent;
     }
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
 
     public static final String ID = "id";
 
@@ -110,6 +122,8 @@ public class QuestionnaireExtend extends Model<QuestionnaireExtend> {
     public static final String SKIP_QUESTION_ID = "skip_question_id";
 
     public static final String SKIP_CONTENT = "skip_content";
+
+    public static final String SORT = "sort";
 
     @Override
     protected Serializable pkVal() {
@@ -125,6 +139,7 @@ public class QuestionnaireExtend extends Model<QuestionnaireExtend> {
         ", skipMode=" + skipMode +
         ", skipQuestionId=" + skipQuestionId +
         ", skipContent=" + skipContent +
+        ", sort=" + sort +
         "}";
     }
 }

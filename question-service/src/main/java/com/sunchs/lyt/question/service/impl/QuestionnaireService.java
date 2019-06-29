@@ -88,6 +88,7 @@ public class QuestionnaireService implements IQuestionnaireService {
     @Override
     public PagingList<QuestionnaireData> getPageList(QuestionnaireParam param) {
         Wrapper<Questionnaire> where = new EntityWrapper<>();
+        where.orderBy(Questionnaire.ID, false);
         Page<Questionnaire> page = questionnaireService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), where);
         List<QuestionnaireData> list = new ArrayList<>();
         page.getRecords().forEach(row -> {
@@ -269,6 +270,7 @@ public class QuestionnaireService implements IQuestionnaireService {
                 extend.setQuestionnaireId(questionnaireId);
                 extend.setQuestionId(question.getQuestionId());
                 extend.setSkipMode(question.getSkipMode());
+                extend.setSort(question.getSort());
                 if (question.getSkipMode() == 1) {
                     extend.setSkipQuestionId(question.getSkipQuestionId());
                 } else if (question.getSkipMode() == 2) {

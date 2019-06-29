@@ -10,6 +10,7 @@
         <result column="skip_mode" property="skipMode" />
         <result column="skip_question_id" property="skipQuestionId" />
         <result column="skip_content" property="skipContent" />
+        <result column="sort" property="sort" />
     </resultMap>
 
 </mapper>

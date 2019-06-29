@@ -7,19 +7,24 @@ public class QuestionBean {
     /**
      * 起跳题目ID
      */
-    public int questionId;
+    private int questionId;
 
     /**
      * 跳转模式：0、不跳转， 1、题目跳转，2、选项跳转
      */
-    public int skipMode;
+    private int skipMode;
 
     /**
      * 跳转内容
      * skipQuestionId、skipContent 二选一
      */
-    public int skipQuestionId;
-    public List<OptionSkipParam> skipContent;
+    private int skipQuestionId;
+    private List<OptionSkipParam> skipContent;
+
+    /**
+     * 排序
+     */
+    private int sort;
 
     public int getQuestionId() {
         return questionId;
@@ -51,5 +56,13 @@ public class QuestionBean {
 
     public void setSkipContent(List<OptionSkipParam> skipContent) {
         this.skipContent = skipContent;
+    }
+
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
     }
 }
