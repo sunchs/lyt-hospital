@@ -78,16 +78,19 @@ public class RoleService implements IRoleService {
     }
 
     @Override
-    public Map<Integer, String> getSelectData() {
-        Map<Integer, String> res = new HashMap<>();
+    public List<Map<String, Object>> getSelectData() {
+        List<Map<String, Object>> list = new ArrayList<>();
         Wrapper<Role> w = new EntityWrapper<>();
         w.eq(Role.STATUS, 1);
         w.orderBy(Role.SORT, true);
-        List<Role> list = roleService.selectList(w);
-        list.forEach(row -> {
-            res.put(row.getId(), row.getTitle());
+        List<Role> res = roleService.selectList(w);
+        res.forEach(row -> {
+            Map<String, Object> m = new HashMap<>();
+            m.put("id", row.getId());
+            m.put("title", row.getTitle());
+            list.add(m);
         });
-        return res;
+        return list;
     }
 
     private Integer insertRoleData(RoleParam param) {

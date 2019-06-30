@@ -27,5 +27,5 @@ public interface IRoleService {
     /**
      * 获取select数据
      */
-    Map<Integer, String> getSelectData();
+    List<Map<String, Object>> getSelectData();
 }

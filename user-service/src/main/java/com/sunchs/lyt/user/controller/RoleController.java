@@ -35,6 +35,9 @@ public class RoleController extends BaseController {
         return success(roleService.save(param));
     }
 
+    /**
+     * 下拉菜单数据
+     */
     @PostMapping("/selectData")
     public ResultData selectData(@RequestBody RequestData data) {
         return success(roleService.getSelectData());
