@@ -52,6 +52,7 @@ public class UserService implements IUserService {
     @Override
     public PagingList<UserData> getPagingList(UserParam param) {
         Wrapper<User> w = new EntityWrapper<>();
+        w.orderBy(User.ID, false);
         Page<User> page = userService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), w);
         List<UserData> list = new ArrayList<>();
         page.getRecords().forEach(row->{
