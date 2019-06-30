@@ -21,7 +21,7 @@ public class UserController extends BaseController {
     /**
      * 用户列表
      */
-    @PostMapping("/list")
+    @PostMapping("/pageList")
     public ResultData getList(@RequestBody RequestData data) {
         UserParam param = data.toObject(UserParam.class);
         return success(userService.getPagingList(param));
