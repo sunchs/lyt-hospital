@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-06-11
+ * @since 2019-06-30
  */
 public class Role extends Model<Role> {
 
@@ -38,7 +38,7 @@ public class Role extends Model<Role> {
     /**
      * 是否开启
      */
-    private Integer enabled;
+    private Integer status;
 
     /**
      * 排序
@@ -90,12 +90,12 @@ public class Role extends Model<Role> {
     public void setTitle(String title) {
         this.title = title;
     }
-    public Integer getEnabled() {
-        return enabled;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setEnabled(Integer enabled) {
-        this.enabled = enabled;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
     public Integer getSort() {
         return sort;
@@ -139,7 +139,7 @@ public class Role extends Model<Role> {
 
     public static final String TITLE = "title";
 
-    public static final String ENABLED = "enabled";
+    public static final String STATUS = "status";
 
     public static final String SORT = "sort";
 
@@ -162,7 +162,7 @@ public class Role extends Model<Role> {
         "id=" + id +
         ", pid=" + pid +
         ", title=" + title +
-        ", enabled=" + enabled +
+        ", status=" + status +
         ", sort=" + sort +
         ", updateId=" + updateId +
         ", updateTime=" + updateTime +

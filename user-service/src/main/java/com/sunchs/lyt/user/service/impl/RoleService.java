@@ -2,7 +2,9 @@ package com.sunchs.lyt.user.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.sunchs.lyt.db.business.entity.Role;
 import com.sunchs.lyt.db.business.entity.UserRole;
+import com.sunchs.lyt.db.business.service.impl.RoleServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.UserRoleServiceImpl;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.StringUtil;
@@ -31,6 +33,9 @@ public class RoleService implements IRoleService {
 
     @Autowired
     private UserRoleServiceImpl userRoleService;
+
+    @Autowired
+    private RoleServiceImpl roleService;
 
     @Override
     public List<RoleData> getRoleList() {
@@ -70,6 +75,19 @@ public class RoleService implements IRoleService {
             data.setRoleId(roleId);
             userRoleService.insert(data);
         });
+    }
+
+    @Override
+    public Map<Integer, String> getSelectData() {
+        Map<Integer, String> res = new HashMap<>();
+        Wrapper<Role> w = new EntityWrapper<>();
+        w.eq(Role.STATUS, 1);
+        w.orderBy(Role.SORT, true);
+        List<Role> list = roleService.selectList(w);
+        list.forEach(row -> {
+            res.put(row.getId(), row.getTitle());
+        });
+        return res;
     }
 
     private Integer insertRoleData(RoleParam param) {

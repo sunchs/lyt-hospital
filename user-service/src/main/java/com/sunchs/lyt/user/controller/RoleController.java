@@ -34,4 +34,9 @@ public class RoleController extends BaseController {
         RoleParam param = data.toObject(RoleParam.class);
         return success(roleService.save(param));
     }
+
+    @PostMapping("/selectData")
+    public ResultData selectData(@RequestBody RequestData data) {
+        return success(roleService.getSelectData());
+    }
 }
