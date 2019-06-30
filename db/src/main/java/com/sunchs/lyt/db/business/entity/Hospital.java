@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-05-28
+ * @since 2019-07-01
  */
 public class Hospital extends Model<Hospital> {
 
@@ -36,6 +36,11 @@ public class Hospital extends Model<Hospital> {
      */
     @TableField("hospital_type")
     private Integer hospitalType;
+
+    /**
+     * 是否开启
+     */
+    private Integer status;
 
     /**
      * 医院性质
@@ -131,6 +136,13 @@ public class Hospital extends Model<Hospital> {
 
     public void setHospitalType(Integer hospitalType) {
         this.hospitalType = hospitalType;
+    }
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
     public Integer getHospitalProperty() {
         return hospitalProperty;
@@ -230,6 +242,8 @@ public class Hospital extends Model<Hospital> {
 
     public static final String HOSPITAL_TYPE = "hospital_type";
 
+    public static final String STATUS = "status";
+
     public static final String HOSPITAL_PROPERTY = "hospital_property";
 
     public static final String SUBJECTION = "subjection";
@@ -267,6 +281,7 @@ public class Hospital extends Model<Hospital> {
         "id=" + id +
         ", hospitalName=" + hospitalName +
         ", hospitalType=" + hospitalType +
+        ", status=" + status +
         ", hospitalProperty=" + hospitalProperty +
         ", subjection=" + subjection +
         ", address=" + address +

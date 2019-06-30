@@ -16,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class HospitalService implements IHospitalService {
@@ -92,6 +90,22 @@ public class HospitalService implements IHospitalService {
     public HospitalData getById(int hospitalId) {
         Hospital hospital = hospitalService.selectById(hospitalId);
         return getHospitalInfo(hospital);
+    }
+
+    @Override
+    public List<Map<String, Object>> getSelectData() {
+        List<Map<String, Object>> list = new ArrayList<>();
+        Wrapper<Hospital> w = new EntityWrapper<>();
+        w.eq(Hospital.STATUS, 1);
+        w.orderBy(Role.ID, true);
+        List<Hospital> res = hospitalService.selectList(w);
+        res.forEach(row -> {
+            Map<String, Object> m = new HashMap<>();
+            m.put("id", row.getId());
+            m.put("title", row.getHospitalName());
+            list.add(m);
+        });
+        return list;
     }
 
     private HospitalData getHospitalInfo(Hospital hospital) {

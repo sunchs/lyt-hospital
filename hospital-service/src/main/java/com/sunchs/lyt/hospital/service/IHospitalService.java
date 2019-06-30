@@ -4,6 +4,9 @@ import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.hospital.bean.HospitalData;
 import com.sunchs.lyt.hospital.bean.HospitalParam;
 
+import java.util.List;
+import java.util.Map;
+
 public interface IHospitalService {
 
     /**
@@ -20,4 +23,9 @@ public interface IHospitalService {
      * 根据 医院ID 获取医院详情
      */
     HospitalData getById(int hospitalId);
+
+    /**
+     * 获取select数据
+     */
+    List<Map<String, Object>> getSelectData();
 }

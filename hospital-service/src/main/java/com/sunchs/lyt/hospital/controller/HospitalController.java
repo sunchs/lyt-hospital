@@ -54,4 +54,12 @@ public class HospitalController extends BaseController {
         HospitalParam param = data.toObject(HospitalParam.class);
         return success(hospitalService.getById(param.getId()));
     }
+
+    /**
+     * 下拉菜单数据
+     */
+    @PostMapping("/selectData")
+    public ResultData selectData(@RequestBody RequestData data) {
+        return success(hospitalService.getSelectData());
+    }
 }
