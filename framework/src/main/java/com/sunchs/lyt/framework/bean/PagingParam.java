@@ -2,14 +2,30 @@ package com.sunchs.lyt.framework.bean;
 
 public class PagingParam {
 
-    public Integer pageNow;// 当前页数
-    public Integer pageSize;// 每页条数
+    /**
+     * 当前页数
+     */
+    private int pageNow;
 
-    public Integer getPageNow() {
+    /**
+     * 每页条数
+     */
+    private int pageSize;
+
+
+    public int getPageNow() {
         return pageNow;
     }
 
-    public Integer getPageSize() {
+    public void setPageNow(int pageNow) {
+        this.pageNow = pageNow;
+    }
+
+    public int getPageSize() {
         return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
     }
 }

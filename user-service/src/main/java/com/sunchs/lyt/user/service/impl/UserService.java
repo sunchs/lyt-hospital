@@ -2,25 +2,26 @@ package com.sunchs.lyt.user.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.User;
 import com.sunchs.lyt.db.business.entity.UserRole;
 import com.sunchs.lyt.db.business.service.impl.UserRoleServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.UserServiceImpl;
+import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.constants.CacheKeys;
 import com.sunchs.lyt.framework.constants.DateTimes;
 import com.sunchs.lyt.framework.util.*;
+import com.sunchs.lyt.user.bean.UserData;
 import com.sunchs.lyt.user.bean.UserParam;
 import com.sunchs.lyt.user.bean.UserRoleData;
+import com.sunchs.lyt.user.enums.StatusEnum;
 import com.sunchs.lyt.user.exception.UserException;
 import com.sunchs.lyt.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService implements IUserService {
@@ -33,6 +34,19 @@ public class UserService implements IUserService {
 
     @Autowired
     private UserServiceImpl userService;
+
+    @Override
+    public PagingList<UserData> getPagingList(UserParam param) {
+        Wrapper<User> w = new EntityWrapper<>();
+        Page<User> page = userService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), w);
+        List<UserData> list = new ArrayList<>();
+        page.getRecords().forEach(row->{
+            UserData data = ObjectUtil.copy(row, UserData.class);
+            data.setStatusName(StatusEnum.getName(data.getStatus()));
+            list.add(data);
+        });
+        return PagingUtil.getData(list, page.getTotal(), page.getCurrent(), page.getSize());
+    }
 
     @Override
     public UserRoleData login(UserParam param) {
@@ -100,7 +114,7 @@ public class UserService implements IUserService {
         data.setUsername(param.getUserName());
         data.setPassword(MD5Util.encode(param.getPassWord()));
         data.setName(param.getName());
-        data.setEnabled(1);
+        data.setStatus(1);
         data.setCreateTime(new Timestamp(System.currentTimeMillis()));
         data.setPwLog(param.getPassWord());
         data.setUpdateId(UserThreadUtil.getUserId());

@@ -1,17 +1,18 @@
 package com.sunchs.lyt.user.bean;
 
+import com.sunchs.lyt.framework.bean.PagingParam;
 import com.sunchs.lyt.framework.util.StringUtil;
 import com.sunchs.lyt.user.exception.UserException;
 
 import java.util.List;
 
-public class UserParam {
+public class UserParam extends PagingParam {
 
-    public Integer id;
-    public String userName;
-    public String passWord;
-    public String name;
-    public List<Integer> roleList;
+    private Integer id;
+    private String userName;
+    private String passWord;
+    private String name;
+    private List<Integer> roleList;
 
     public void checkUserName() {
         if (StringUtil.isEmpty(userName)) {

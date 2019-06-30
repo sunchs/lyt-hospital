@@ -19,6 +19,15 @@ public class UserController extends BaseController {
     UserService userService;
 
     /**
+     * 用户列表
+     */
+    @PostMapping("/list")
+    public ResultData getList(@RequestBody RequestData data) {
+        UserParam param = data.toObject(UserParam.class);
+        return success(userService.getPagingList(param));
+    }
+
+    /**
      * 登录系统
      */
     @PostMapping("/login")

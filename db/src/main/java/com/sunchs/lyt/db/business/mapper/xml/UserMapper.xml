@@ -8,7 +8,7 @@
         <result column="username" property="username" />
         <result column="password" property="password" />
         <result column="name" property="name" />
-        <result column="enabled" property="enabled" />
+        <result column="status" property="status" />
         <result column="token" property="token" />
         <result column="pw_log" property="pwLog" />
         <result column="update_id" property="updateId" />

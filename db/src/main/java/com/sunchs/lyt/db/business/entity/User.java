@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-06-11
+ * @since 2019-06-30
  */
 public class User extends Model<User> {
 
@@ -43,7 +43,7 @@ public class User extends Model<User> {
     /**
      * 是否开启
      */
-    private Integer enabled;
+    private Integer status;
 
     /**
      * 密钥
@@ -108,12 +108,12 @@ public class User extends Model<User> {
     public void setName(String name) {
         this.name = name;
     }
-    public Integer getEnabled() {
-        return enabled;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setEnabled(Integer enabled) {
-        this.enabled = enabled;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
     public String getToken() {
         return token;
@@ -166,7 +166,7 @@ public class User extends Model<User> {
 
     public static final String NAME = "name";
 
-    public static final String ENABLED = "enabled";
+    public static final String STATUS = "status";
 
     public static final String TOKEN = "token";
 
@@ -192,7 +192,7 @@ public class User extends Model<User> {
         ", username=" + username +
         ", password=" + password +
         ", name=" + name +
-        ", enabled=" + enabled +
+        ", status=" + status +
         ", token=" + token +
         ", pwLog=" + pwLog +
         ", updateId=" + updateId +
