@@ -19,6 +19,15 @@ public class UserController extends BaseController {
     UserService userService;
 
     /**
+     * 添加账号
+     */
+    @PostMapping("/save")
+    public ResultData save(@RequestBody RequestData data) {
+        UserParam param = data.toObject(UserParam.class);
+        return success(userService.save(param));
+    }
+
+    /**
      * 用户列表
      */
     @PostMapping("/pageList")
@@ -44,14 +53,7 @@ public class UserController extends BaseController {
         return success(userService.logout());
     }
 
-    /**
-     * 添加账号
-     */
-    @PostMapping("/save")
-    public ResultData save(@RequestBody RequestData data) {
-        UserParam param = data.toObject(UserParam.class);
-        return success(userService.save(param));
-    }
+
 
 }
 

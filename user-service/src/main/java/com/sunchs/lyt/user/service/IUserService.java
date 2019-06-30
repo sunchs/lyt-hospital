@@ -10,6 +10,11 @@ import java.util.List;
 public interface IUserService {
 
     /**
+     * 添加、修改账号
+     */
+    int save(UserParam data);
+
+    /**
      * 用户列表
      */
     PagingList<UserData> getPagingList(UserParam param);
@@ -25,7 +30,7 @@ public interface IUserService {
     boolean logout();
 
     /**
-     * 添加、修改账号
+     * 用户绑定医院
      */
-    int save(UserParam data);
+    void bindUserHospital(int userId, List<Integer> hospitalList);
 }

@@ -8,10 +8,11 @@ import java.util.List;
 
 public class UserParam extends PagingParam {
 
-    private Integer id;
+    private int id;
     private String userName;
     private String passWord;
     private String name;
+    private int status;
     private List<Integer> roleList;
 
     public void checkUserName() {
@@ -38,7 +39,7 @@ public class UserParam extends PagingParam {
         }
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
@@ -52,6 +53,10 @@ public class UserParam extends PagingParam {
 
     public String getName() {
         return name;
+    }
+
+    public int getStatus() {
+        return status;
     }
 
     public List<Integer> getRoleList() {

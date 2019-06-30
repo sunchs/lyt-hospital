@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.User;
+import com.sunchs.lyt.db.business.entity.UserHospital;
 import com.sunchs.lyt.db.business.entity.UserRole;
+import com.sunchs.lyt.db.business.service.impl.UserHospitalServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.UserRoleServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.UserServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
@@ -34,6 +36,18 @@ public class UserService implements IUserService {
 
     @Autowired
     private UserServiceImpl userService;
+
+    @Autowired
+    private UserHospitalServiceImpl userHospitalService;
+
+    @Override
+    public int save(UserParam param) {
+        if (NumberUtil.isZero(param.getId())) {
+            return insert(param);
+        } else {
+            return update(param);
+        }
+    }
 
     @Override
     public PagingList<UserData> getPagingList(UserParam param) {
@@ -90,12 +104,18 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public int save(UserParam param) {
-        if (NumberUtil.isZero(param.getId())) {
-            return insert(param);
-        } else {
-            return update(param);
-        }
+    public void bindUserHospital(int userId, List<Integer> hospitalList) {
+        // 清历史数据
+        Wrapper<UserHospital> w = new EntityWrapper<>();
+        w.eq(UserRole.USER_ID, userId);
+        userHospitalService.delete(w);
+        // 插入新数据
+        hospitalList.forEach(hospitalId -> {
+            UserHospital data = new UserHospital();
+            data.setUserId(userId);
+            data.setHospitalId(hospitalId);
+            userHospitalService.insert(data);
+        });
     }
 
     /**
@@ -114,15 +134,13 @@ public class UserService implements IUserService {
         data.setUsername(param.getUserName());
         data.setPassword(MD5Util.encode(param.getPassWord()));
         data.setName(param.getName());
-        data.setStatus(1);
+        data.setStatus(param.getStatus());
         data.setCreateTime(new Timestamp(System.currentTimeMillis()));
         data.setPwLog(param.getPassWord());
         data.setUpdateId(UserThreadUtil.getUserId());
         data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-        if (NumberUtil.isZero(param.getId())) {
-            data.setCreateId(UserThreadUtil.getUserId());
-            data.setCreateTime(new Timestamp(System.currentTimeMillis()));
-        }
+        data.setCreateId(UserThreadUtil.getUserId());
+        data.setCreateTime(new Timestamp(System.currentTimeMillis()));
         if (userService.insert(data)) {
             roleService.bindUserRole(data.getId(), param.getRoleList());
             return data.getId();
