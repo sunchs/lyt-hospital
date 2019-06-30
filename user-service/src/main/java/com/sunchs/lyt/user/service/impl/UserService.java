@@ -143,6 +143,7 @@ public class UserService implements IUserService {
         data.setCreateTime(new Timestamp(System.currentTimeMillis()));
         if (userService.insert(data)) {
             roleService.bindUserRole(data.getId(), param.getRoleList());
+            bindUserHospital(data.getId(), param.getHospitalList());
             return data.getId();
         }
         return 0;
@@ -151,7 +152,7 @@ public class UserService implements IUserService {
     /**
      * 更新用户信息
      */
-    private Integer update(UserParam param) {
+    private int update(UserParam param) {
         User data = new User();
         data.setId(param.getId());
         data.setPassword(MD5Util.encode(param.getPassWord()));
@@ -161,6 +162,7 @@ public class UserService implements IUserService {
         data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         if (userService.updateById(data)) {
             roleService.bindUserRole(data.getId(), param.getRoleList());
+            bindUserHospital(data.getId(), param.getHospitalList());
             return data.getId();
         }
         return 0;

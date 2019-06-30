@@ -14,6 +14,7 @@ public class UserParam extends PagingParam {
     private String name;
     private int status;
     private List<Integer> roleList;
+    private List<Integer> hospitalList;
 
     public void checkUserName() {
         if (StringUtil.isEmpty(userName)) {
@@ -61,5 +62,9 @@ public class UserParam extends PagingParam {
 
     public List<Integer> getRoleList() {
         return roleList;
+    }
+
+    public List<Integer> getHospitalList() {
+        return hospitalList;
     }
 }
