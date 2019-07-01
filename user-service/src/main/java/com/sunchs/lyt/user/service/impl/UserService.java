@@ -68,7 +68,7 @@ public class UserService implements IUserService {
             uw.eq(UserRole.USER_ID, row.getId());
             List<UserRole> userRoleList = userRoleService.selectList(uw);
             List<Integer> roleIds = userRoleList.stream().map(UserRole::getRoleId).collect(Collectors.toList());
-            roleIds.forEach(id -> data.setRoleId(id);// TODO:: 只取了一个，日后优化
+            roleIds.forEach(id -> data.setRoleId(id));// TODO:: 只取了一个，日后优化
 
             Wrapper<Role> rw = new EntityWrapper<>();
             rw.in(Role.ID, roleIds);
@@ -80,7 +80,7 @@ public class UserService implements IUserService {
             uhw.eq(UserHospital.USER_ID, row.getId());
             List<UserHospital> userHospitalList = userHospitalService.selectList(uhw);
             List<Integer> hospitalIds = userHospitalList.stream().map(UserHospital::getHospitalId).collect(Collectors.toList());
-            hospitalIds.forEach(id -> data.setHospitalId(id);// TODO:: 只取了一个，日后优化
+            hospitalIds.forEach(id -> data.setHospitalId(id));// TODO:: 只取了一个，日后优化
 
             Wrapper<Hospital> hw = new EntityWrapper<>();
             hw.in(Hospital.ID, hospitalIds);
