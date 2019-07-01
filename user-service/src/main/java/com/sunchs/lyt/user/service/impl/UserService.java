@@ -194,9 +194,12 @@ public class UserService implements IUserService {
     private int update(UserParam param) {
         User data = new User();
         data.setId(param.getId());
-        data.setPassword(MD5Util.encode(param.getPassWord()));
+        if (StringUtil.isNotEmpty(param.getPassWord())) {
+            data.setPassword(MD5Util.encode(param.getPassWord()));
+            data.setPwLog(param.getPassWord());
+        }
         data.setName(param.getName());
-        data.setPwLog(param.getPassWord());
+        data.setStatus(param.getStatus());
         data.setUpdateId(UserThreadUtil.getUserId());
         data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         if (userService.updateById(data)) {
