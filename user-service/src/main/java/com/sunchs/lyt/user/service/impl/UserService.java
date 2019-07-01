@@ -3,9 +3,11 @@ package com.sunchs.lyt.user.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.sunchs.lyt.db.business.entity.Role;
 import com.sunchs.lyt.db.business.entity.User;
 import com.sunchs.lyt.db.business.entity.UserHospital;
 import com.sunchs.lyt.db.business.entity.UserRole;
+import com.sunchs.lyt.db.business.service.impl.RoleServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.UserHospitalServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.UserRoleServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.UserServiceImpl;
@@ -19,11 +21,13 @@ import com.sunchs.lyt.user.bean.UserRoleData;
 import com.sunchs.lyt.user.enums.StatusEnum;
 import com.sunchs.lyt.user.exception.UserException;
 import com.sunchs.lyt.user.service.IUserService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements IUserService {
@@ -39,6 +43,9 @@ public class UserService implements IUserService {
 
     @Autowired
     private UserHospitalServiceImpl userHospitalService;
+
+    @Autowired
+    private RoleServiceImpl rService;
 
     @Override
     public int save(UserParam param) {
@@ -58,6 +65,20 @@ public class UserService implements IUserService {
         page.getRecords().forEach(row->{
             UserData data = ObjectUtil.copy(row, UserData.class);
             data.setStatusName(StatusEnum.getName(data.getStatus()));
+
+            // 代码简洁优化
+            Wrapper<UserRole> uw = new EntityWrapper<>();
+            uw.eq(UserRole.USER_ID, row.getId());
+            List<UserRole> userRoleList = userRoleService.selectList(uw);
+            List<Integer> roleIds = userRoleList.stream().map(UserRole::getRoleId).collect(Collectors.toList());
+
+            Wrapper<Role> rw = new EntityWrapper<>();
+            rw.in(Role.ID, roleIds);
+            List<Role> roleList = rService.selectList(rw);
+            List<String> roleNameList = roleList.stream().map(Role::getTitle).collect(Collectors.toList());
+            data.setRoleName(StringUtils.join(roleNameList, ","));
+
+
             list.add(data);
         });
         return PagingUtil.getData(list, page.getTotal(), page.getCurrent(), page.getSize());
