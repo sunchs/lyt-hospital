@@ -70,11 +70,15 @@ public class UserService implements IUserService {
             List<Integer> roleIds = userRoleList.stream().map(UserRole::getRoleId).collect(Collectors.toList());
             roleIds.forEach(id -> data.setRoleId(id));// TODO:: 只取了一个，日后优化
 
-            Wrapper<Role> rw = new EntityWrapper<>();
-            rw.in(Role.ID, roleIds);
-            List<Role> roleList = rService.selectList(rw);
-            List<String> roleNameList = roleList.stream().map(Role::getTitle).collect(Collectors.toList());
-            data.setRoleName(StringUtils.join(roleNameList, ","));
+            if (roleIds.size() > 0) {
+                Wrapper<Role> rw = new EntityWrapper<>();
+                rw.in(Role.ID, roleIds);
+                List<Role> roleList = rService.selectList(rw);
+                List<String> roleNameList = roleList.stream().map(Role::getTitle).collect(Collectors.toList());
+                data.setRoleName(StringUtils.join(roleNameList, ","));
+            } else {
+                data.setRoleName("无绑定");
+            }
 
             Wrapper<UserHospital> uhw = new EntityWrapper<>();
             uhw.eq(UserHospital.USER_ID, row.getId());
@@ -82,11 +86,15 @@ public class UserService implements IUserService {
             List<Integer> hospitalIds = userHospitalList.stream().map(UserHospital::getHospitalId).collect(Collectors.toList());
             hospitalIds.forEach(id -> data.setHospitalId(id));// TODO:: 只取了一个，日后优化
 
-            Wrapper<Hospital> hw = new EntityWrapper<>();
-            hw.in(Hospital.ID, hospitalIds);
-            List<Hospital> hospitalList = hospitalService.selectList(hw);
-            List<String> hospitalNameList = hospitalList.stream().map(Hospital::getHospitalName).collect(Collectors.toList());
-            data.setHospitalName(StringUtils.join(hospitalNameList, ","));
+            if (hospitalIds.size() > 0) {
+                Wrapper<Hospital> hw = new EntityWrapper<>();
+                hw.in(Hospital.ID, hospitalIds);
+                List<Hospital> hospitalList = hospitalService.selectList(hw);
+                List<String> hospitalNameList = hospitalList.stream().map(Hospital::getHospitalName).collect(Collectors.toList());
+                data.setHospitalName(StringUtils.join(hospitalNameList, ","));
+            } else {
+                data.setHospitalName("无限制");
+            }
 
             list.add(data);
         });
