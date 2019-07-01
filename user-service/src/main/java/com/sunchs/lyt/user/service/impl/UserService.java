@@ -3,14 +3,8 @@ package com.sunchs.lyt.user.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.sunchs.lyt.db.business.entity.Role;
-import com.sunchs.lyt.db.business.entity.User;
-import com.sunchs.lyt.db.business.entity.UserHospital;
-import com.sunchs.lyt.db.business.entity.UserRole;
-import com.sunchs.lyt.db.business.service.impl.RoleServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.UserHospitalServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.UserRoleServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.UserServiceImpl;
+import com.sunchs.lyt.db.business.entity.*;
+import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.constants.CacheKeys;
 import com.sunchs.lyt.framework.constants.DateTimes;
@@ -47,6 +41,9 @@ public class UserService implements IUserService {
     @Autowired
     private RoleServiceImpl rService;
 
+    @Autowired
+    private HospitalServiceImpl hospitalService;
+
     @Override
     public int save(UserParam param) {
         if (NumberUtil.isZero(param.getId())) {
@@ -71,6 +68,7 @@ public class UserService implements IUserService {
             uw.eq(UserRole.USER_ID, row.getId());
             List<UserRole> userRoleList = userRoleService.selectList(uw);
             List<Integer> roleIds = userRoleList.stream().map(UserRole::getRoleId).collect(Collectors.toList());
+            roleIds.forEach(id -> data.setRoleId(id);// TODO:: 只取了一个，日后优化
 
             Wrapper<Role> rw = new EntityWrapper<>();
             rw.in(Role.ID, roleIds);
@@ -78,6 +76,17 @@ public class UserService implements IUserService {
             List<String> roleNameList = roleList.stream().map(Role::getTitle).collect(Collectors.toList());
             data.setRoleName(StringUtils.join(roleNameList, ","));
 
+            Wrapper<UserHospital> uhw = new EntityWrapper<>();
+            uhw.eq(UserHospital.USER_ID, row.getId());
+            List<UserHospital> userHospitalList = userHospitalService.selectList(uhw);
+            List<Integer> hospitalIds = userHospitalList.stream().map(UserHospital::getHospitalId).collect(Collectors.toList());
+            hospitalIds.forEach(id -> data.setHospitalId(id);// TODO:: 只取了一个，日后优化
+
+            Wrapper<Hospital> hw = new EntityWrapper<>();
+            hw.in(Hospital.ID, hospitalIds);
+            List<Hospital> hospitalList = hospitalService.selectList(hw);
+            List<String> hospitalNameList = hospitalList.stream().map(Hospital::getHospitalName).collect(Collectors.toList());
+            data.setHospitalName(StringUtils.join(hospitalNameList, ","));
 
             list.add(data);
         });
