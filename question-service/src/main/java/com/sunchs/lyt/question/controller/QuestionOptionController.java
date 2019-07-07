@@ -39,6 +39,15 @@ public class QuestionOptionController extends BaseController {
     }
 
     /**
+     * 根据 模版ID 获取选项模版
+     */
+    @PostMapping("/getTemplateById")
+    public ResultData getTemplateById(@RequestBody RequestData data) {
+        OptionTemplateParam param = data.toObject(OptionTemplateParam.class);
+        return success(optionService.getTemplateById(param.getId()));
+    }
+
+    /**
      * 根据 类型ID 获取选项详情
      */
     @PostMapping("/getById")
