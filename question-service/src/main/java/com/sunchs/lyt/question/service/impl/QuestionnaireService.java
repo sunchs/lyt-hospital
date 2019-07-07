@@ -21,6 +21,7 @@ import com.sunchs.lyt.question.service.IQuestionnaireService;
 import jxl.format.Colour;
 import jxl.write.Label;
 import jxl.write.*;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +54,7 @@ public class QuestionnaireService implements IQuestionnaireService {
     public QuestionnaireData getById(int id) {
         Questionnaire res = questionnaireDao.getById(id);
         if (Objects.nonNull(res)) {
+            System.out.println("Questionnaire对象："+res);
             QuestionnaireData data = ObjectUtil.copy(res, QuestionnaireData.class);
             data.initData();
 
@@ -317,10 +319,9 @@ public class QuestionnaireService implements IQuestionnaireService {
         Questionnaire data = new Questionnaire();
         data.setId(param.getId());
         data.setStatus(param.getStatus());
-        // TODO::用户ID
-        data.setUpdateId(0);
+        data.setUpdateId(UserThreadUtil.getUserId());
         data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-        questionnaireDao.update(data);
+        questionnaireService.updateById(data);
     }
 
     private Map<Integer, Integer> getSkipContentMap(String skipContent) {
