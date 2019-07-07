@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.sunchs.lyt.db.business.entity.OptionTemplate;
 import com.sunchs.lyt.db.business.service.impl.OptionTemplateServiceImpl;
+import com.sunchs.lyt.framework.util.UserThreadUtil;
 import com.sunchs.lyt.question.bean.*;
 import com.sunchs.lyt.question.dao.ipml.QuestionOptionDaoImpl;
 import com.sunchs.lyt.question.service.IQuestionOptionService;
@@ -11,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,6 +47,12 @@ public class QuestionOptionService implements IQuestionOptionService {
         data.setId(param.getId());
         data.setPid(data.getPid());
         data.setContent(content);
+        data.setUpdateId(UserThreadUtil.getUserId());
+        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        if (param.getId() == 0) {
+            data.setCreateId(UserThreadUtil.getUserId());
+            data.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        }
         if (templateService.insertOrUpdate(data)) {
             return data.getId();
         }

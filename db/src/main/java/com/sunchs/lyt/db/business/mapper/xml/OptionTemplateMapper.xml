@@ -10,6 +10,10 @@
         <result column="sort" property="sort" />
         <result column="remarks" property="remarks" />
         <result column="mode" property="mode" />
+        <result column="update_id" property="updateId" />
+        <result column="update_time" property="updateTime" />
+        <result column="create_id" property="createId" />
+        <result column="create_time" property="createTime" />
     </resultMap>
 
 </mapper>
