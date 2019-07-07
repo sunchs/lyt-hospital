@@ -10,12 +10,12 @@ public enum QuestionnaireStatusEnum {
     /**
      * 发布
      */
-    Release(1, "发布"),
+    Release(1, "启用"),
 
     /**
      * 删除
      */
-    Delete(100, "删除");
+    Delete(2, "停用");
 
     public int status;
     public String title;
