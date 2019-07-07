@@ -61,23 +61,25 @@ public class QuestionnaireService implements IQuestionnaireService {
             List<QuestionDataExt> questionList = new ArrayList<>();
             questionnaireDao.getExtendById(id).forEach(ext->{
                 QuestionData questionData = questionDao.getById(ext.getQuestionId());
-                if (ext.getSkipMode().equals(1)) {
-                    questionData.getOptionList().forEach(o -> {
-                        o.setSkipQuestionId(ext.getSkipQuestionId());
-                    });
-                } else if (ext.getSkipMode().equals(2)) {
-                    Map<Integer, Integer> skipMap = getSkipContentMap(ext.getSkipContent());
-                    questionData.getOptionList().forEach(o -> {
-                        if (skipMap.containsKey(o.getOptionId())) {
-                            o.setSkipQuestionId(skipMap.get(o.getOptionId()));
-                        }
-                    });
-                }
-
-                QuestionDataExt extData = ObjectUtil.copy(questionData, QuestionDataExt.class);
-                extData.setSkipMode(ext.getSkipMode());
                 if (Objects.nonNull(questionData)) {
-                    questionList.add(extData);
+                    if (ext.getSkipMode().equals(1)) {
+                        questionData.getOptionList().forEach(o -> {
+                            o.setSkipQuestionId(ext.getSkipQuestionId());
+                        });
+                    } else if (ext.getSkipMode().equals(2)) {
+                        Map<Integer, Integer> skipMap = getSkipContentMap(ext.getSkipContent());
+                        questionData.getOptionList().forEach(o -> {
+                            if (skipMap.containsKey(o.getOptionId())) {
+                                o.setSkipQuestionId(skipMap.get(o.getOptionId()));
+                            }
+                        });
+                    }
+
+                    QuestionDataExt extData = ObjectUtil.copy(questionData, QuestionDataExt.class);
+                    extData.setSkipMode(ext.getSkipMode());
+                    if (Objects.nonNull(questionData)) {
+                        questionList.add(extData);
+                    }
                 }
             });
 
