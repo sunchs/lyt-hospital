@@ -3,6 +3,7 @@ package com.sunchs.lyt.question.controller;
 import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
+import com.sunchs.lyt.question.bean.OptionTemplateParam;
 import com.sunchs.lyt.question.bean.QuestionOptionParam;
 import com.sunchs.lyt.question.service.IQuestionOptionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,15 @@ public class QuestionOptionController extends BaseController {
         QuestionOptionParam param = data.toObject(QuestionOptionParam.class);
         optionService.save(param);
         return success();
+    }
+
+    /**
+     * 选项 添加、编辑
+     */
+    @PostMapping("/saveTemplate")
+    public ResultData saveTemplate(@RequestBody RequestData data) {
+        OptionTemplateParam param = data.toObject(OptionTemplateParam.class);
+        return success(optionService.saveTemplate(param));
     }
 
     /**
