@@ -11,9 +11,15 @@ public class OptionTemplateParam {
     private int pid;
     private List<String> optionList;
 
+    public void checkPid() {
+        if (pid == 0) {
+            throw new QuestionException("选项类型不能为空");
+        }
+    }
+
     public void checkOption() {
         if (CollectionUtils.isEmpty(optionList)) {
-            throw new QuestionException("选项不能为空");
+            throw new QuestionException("选项内容不能为空");
         }
     }
 

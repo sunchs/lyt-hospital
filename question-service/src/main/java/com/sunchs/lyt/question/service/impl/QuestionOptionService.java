@@ -41,11 +41,12 @@ public class QuestionOptionService implements IQuestionOptionService {
 
     @Override
     public int saveTemplate(OptionTemplateParam param) {
+        param.checkPid();
         param.checkOption();
         String content = StringUtils.join(param.getOptionList(), ",");
         OptionTemplate data = new OptionTemplate();
         data.setId(param.getId());
-        data.setPid(data.getPid());
+        data.setPid(param.getPid());
         data.setContent(content);
         data.setUpdateId(UserThreadUtil.getUserId());
         data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
