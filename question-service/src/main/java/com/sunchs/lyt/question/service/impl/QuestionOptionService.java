@@ -50,7 +50,7 @@ public class QuestionOptionService implements IQuestionOptionService {
         }
         return 0;
     }
-    
+
     @Override
     public OptionTemplateData getTemplateById(int templateId) {
         Wrapper<OptionTemplate> w = new EntityWrapper<>();
