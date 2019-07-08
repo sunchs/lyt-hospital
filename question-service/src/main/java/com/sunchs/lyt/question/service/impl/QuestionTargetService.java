@@ -4,6 +4,7 @@ import com.sunchs.lyt.db.business.entity.QuestionTarget;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.ObjectUtil;
 import com.sunchs.lyt.framework.util.StringUtil;
+import com.sunchs.lyt.framework.util.UserThreadUtil;
 import com.sunchs.lyt.question.bean.QuestionTargetData;
 import com.sunchs.lyt.question.bean.QuestionTargetParam;
 import com.sunchs.lyt.question.dao.ipml.QuestionTargetDaoImpl;
@@ -60,7 +61,7 @@ public class QuestionTargetService implements IQuestionTargetService {
     }
 
     @Override
-    public void save(QuestionTargetParam param) {
+    public int save(QuestionTargetParam param) {
         // 检查标题
         checkTitle(param.getTitle(), param.getPid());
         List<QuestionTargetParam> children = param.getChildren();
@@ -68,10 +69,11 @@ public class QuestionTargetService implements IQuestionTargetService {
             checkTitle(child.getTitle(), param.getPid());
         }
         if (NumberUtil.isZero(param.getId())) {
-            insert(param);
+            return insert(param);
         } else {
 //            update(param);
         }
+        return 0;
     }
 
     @Override
@@ -103,17 +105,15 @@ public class QuestionTargetService implements IQuestionTargetService {
         return list;
     }
 
-    private void insert(QuestionTargetParam param) {
+    private int insert(QuestionTargetParam param) {
         QuestionTarget data = new QuestionTarget();
         data.setPid(param.getPid());
         data.setTitle(param.getTitle());
         data.setStatus(1);
         data.setRemarks(param.getRemarks());
-        // TODO::用户ID
-        data.setUpdateId(0);
+        data.setUpdateId(UserThreadUtil.getUserId());
         data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-        // TODO::用户ID
-        data.setCreateId(0);
+        data.setCreateId(UserThreadUtil.getUserId());
         data.setCreateTime(new Timestamp(System.currentTimeMillis()));
         if (questionTargetDao.insert(data)) {
             List<QuestionTargetParam> children = param.getChildren();
@@ -122,15 +122,15 @@ public class QuestionTargetService implements IQuestionTargetService {
                 childData.setPid(data.getId());
                 childData.setTitle(child.getTitle());
                 childData.setStatus(1);
-                // TODO::用户ID
-                childData.setUpdateId(0);
+                childData.setUpdateId(UserThreadUtil.getUserId());
                 childData.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-                // TODO::用户ID
-                childData.setCreateId(0);
+                childData.setCreateId(UserThreadUtil.getUserId());
                 childData.setCreateTime(new Timestamp(System.currentTimeMillis()));
                 questionTargetDao.insert(childData);
             }
+            return data.getId();
         }
+        return 0;
     }
 
 //    private Integer update(QuestionTargetParam param) {

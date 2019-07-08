@@ -28,7 +28,7 @@ public interface IQuestionTargetService {
     /**
      * 保存数据
      */
-    void save(QuestionTargetParam param);
+    int save(QuestionTargetParam param);
 
     /**
      * 获取 级联 数据

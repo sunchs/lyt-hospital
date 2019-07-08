@@ -47,8 +47,7 @@ public class QuestionTargetController extends BaseController {
     @PostMapping("/save")
     public ResultData save(@RequestBody RequestData data) {
         QuestionTargetParam param = data.toObject(QuestionTargetParam.class);
-        targetService.save(param);
-        return success();
+        return success(targetService.save(param));
     }
 
     /**
