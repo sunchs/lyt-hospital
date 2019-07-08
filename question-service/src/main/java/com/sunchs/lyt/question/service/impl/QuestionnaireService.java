@@ -75,6 +75,7 @@ public class QuestionnaireService implements IQuestionnaireService {
                             if (skipMap.containsKey(o.getOptionId())) {
                                 OptionData oData = new OptionData();
                                 oData.setOptionId(o.getOptionId());
+                                oData.setOptionName(o.getOptionName());
                                 oData.setSkipQuestionId(skipMap.get(o.getOptionId()));
                                 skipContent.add(oData);
                             }
