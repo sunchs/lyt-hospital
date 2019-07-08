@@ -4,18 +4,18 @@ import java.util.List;
 
 public class QuestionTagParam {
 
-    public Integer id;
-    public Integer pid;
+    public int id;
+    public int pid;
     public String title;
-    public Integer status;
+    public int status;
     public String remarks;
     public List<QuestionTagParam> children;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public Integer getPid() {
+    public int getPid() {
         return pid;
     }
 
@@ -23,7 +23,7 @@ public class QuestionTagParam {
         return title;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
