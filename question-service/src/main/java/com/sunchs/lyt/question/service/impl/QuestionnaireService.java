@@ -76,6 +76,7 @@ public class QuestionnaireService implements IQuestionnaireService {
                                 OptionData oData = new OptionData();
                                 oData.setOptionId(o.getOptionId());
                                 oData.setSkipQuestionId(skipMap.get(o.getOptionId()));
+                                skipContent.add(oData);
                             }
                         });
                     }
