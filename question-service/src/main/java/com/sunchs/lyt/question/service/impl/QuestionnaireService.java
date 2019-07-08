@@ -52,34 +52,35 @@ public class QuestionnaireService implements IQuestionnaireService {
 
     @Override
     public QuestionnaireData getById(int id) {
+        // 获取问卷基本信息
         Questionnaire res = questionnaireDao.getById(id);
         if (Objects.nonNull(res)) {
-            System.out.println("Questionnaire对象："+res);
             QuestionnaireData data = ObjectUtil.copy(res, QuestionnaireData.class);
             data.initData();
-
+            // 获取问卷扩展信息
             List<QuestionDataExt> questionList = new ArrayList<>();
-            questionnaireDao.getExtendById(id).forEach(ext->{
+            List<QuestionnaireExtend> extendList = questionnaireDao.getExtendById(id);
+            extendList.forEach(ext->{
+                // 获取题目详情
                 QuestionData questionData = questionDao.getById(ext.getQuestionId());
                 if (Objects.nonNull(questionData)) {
-                    if (ext.getSkipMode().equals(1)) {
-                        questionData.getOptionList().forEach(o -> {
-                            o.setSkipQuestionId(ext.getSkipQuestionId());
-                        });
-                    } else if (ext.getSkipMode().equals(2)) {
+                    QuestionDataExt extData = ObjectUtil.copy(questionData, QuestionDataExt.class);
+                    extData.setSkipMode(ext.getSkipMode());
+                    extData.setSkipQuestionId(ext.getSkipQuestionId());
+                    // 针对选项跳转
+                    List<OptionData> skipContent = new ArrayList<>();
+                    if (ext.getSkipMode().equals(2)) {
                         Map<Integer, Integer> skipMap = getSkipContentMap(ext.getSkipContent());
                         questionData.getOptionList().forEach(o -> {
                             if (skipMap.containsKey(o.getOptionId())) {
-                                o.setSkipQuestionId(skipMap.get(o.getOptionId()));
+                                OptionData oData = new OptionData();
+                                oData.setOptionId(o.getOptionId());
+                                oData.setSkipQuestionId(skipMap.get(o.getOptionId()));
                             }
                         });
                     }
-
-                    QuestionDataExt extData = ObjectUtil.copy(questionData, QuestionDataExt.class);
-                    extData.setSkipMode(ext.getSkipMode());
-                    if (Objects.nonNull(questionData)) {
-                        questionList.add(extData);
-                    }
+                    extData.setSkipContent(skipContent);
+                    questionList.add(extData);
                 }
             });
 
