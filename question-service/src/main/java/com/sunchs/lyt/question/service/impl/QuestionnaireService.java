@@ -66,22 +66,17 @@ public class QuestionnaireService implements IQuestionnaireService {
                 if (Objects.nonNull(questionData)) {
                     QuestionDataExt extData = ObjectUtil.copy(questionData, QuestionDataExt.class);
                     extData.setSkipMode(ext.getSkipMode());
+                    // 针对直接跳转
                     extData.setSkipQuestionId(ext.getSkipQuestionId());
                     // 针对选项跳转
-                    List<OptionData> skipContent = new ArrayList<>();
                     if (ext.getSkipMode().equals(2)) {
                         Map<Integer, Integer> skipMap = getSkipContentMap(ext.getSkipContent());
                         questionData.getOptionList().forEach(o -> {
                             if (skipMap.containsKey(o.getOptionId())) {
-                                OptionData oData = new OptionData();
-                                oData.setOptionId(o.getOptionId());
-                                oData.setOptionName(o.getOptionName());
-                                oData.setSkipQuestionId(skipMap.get(o.getOptionId()));
-                                skipContent.add(oData);
+                                o.setSkipQuestionId(skipMap.get(o.getOptionId()));
                             }
                         });
                     }
-                    extData.setSkipContent(skipContent);
                     questionList.add(extData);
                 }
             });
