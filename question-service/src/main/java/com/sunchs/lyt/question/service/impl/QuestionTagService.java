@@ -6,6 +6,7 @@ import com.sunchs.lyt.db.business.entity.QuestionTag;
 import com.sunchs.lyt.db.business.service.impl.QuestionTagServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.NumberUtil;
+import com.sunchs.lyt.framework.util.UserThreadUtil;
 import com.sunchs.lyt.question.bean.QuestionTagData;
 import com.sunchs.lyt.question.bean.QuestionTagParam;
 import com.sunchs.lyt.question.dao.QuestionTagDao;
@@ -66,9 +67,9 @@ public class QuestionTagService implements IQuestionTagService {
         opt.put("pid", param.getPid());
         opt.put("title", param.getTitle());
         opt.put("remarks", param.getRemarks());
-        opt.put("updateId", 0);
+        opt.put("updateId", UserThreadUtil.getUserId());
         opt.put("updateTime", new Timestamp(System.currentTimeMillis()));
-        opt.put("createId", 0);
+        opt.put("createId", UserThreadUtil.getUserId());
         opt.put("createTime", new Timestamp(System.currentTimeMillis()));
         Integer attrId = questionTagDao.insert(opt);
         if (attrId > 0) {
@@ -78,9 +79,9 @@ public class QuestionTagService implements IQuestionTagService {
                 cMap.put("pid", attrId);
                 cMap.put("title", child.getTitle());
                 cMap.put("remarks", "");
-                cMap.put("updateId", 0);
+                cMap.put("updateId", UserThreadUtil.getUserId());
                 cMap.put("updateTime", new Timestamp(System.currentTimeMillis()));
-                cMap.put("createId", 0);
+                cMap.put("createId", UserThreadUtil.getUserId());
                 cMap.put("createTime", new Timestamp(System.currentTimeMillis()));
                 questionTagDao.insert(cMap);
             }
