@@ -241,9 +241,7 @@ public class QuestionnaireService implements IQuestionnaireService {
 
     private String getSkipContent(QuestionData questionData) {
         if (questionData.getSkipMode() == 1) {
-            for (OptionData optionData : questionData.getOptionList()) {
-                return optionData.getSkipQuestionId()+"";
-            }
+            return questionData.getSkipQuestionId()+"";
         } else if (questionData.getSkipMode() == 2) {
             String val = "";
             for (OptionData optionData : questionData.getOptionList()) {
