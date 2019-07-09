@@ -2,8 +2,9 @@ package com.sunchs.lyt.question.bean;
 
 public class OptionBean {
 
-    public int optionId;
-    public String optionContent;
+    private int optionId;
+    private String optionContent;
+    private String updateTimeName;
 
     public int getOptionId() {
         return optionId;
@@ -19,5 +20,13 @@ public class OptionBean {
 
     public void setOptionContent(String optionContent) {
         this.optionContent = optionContent;
+    }
+
+    public String getUpdateTimeName() {
+        return updateTimeName;
+    }
+
+    public void setUpdateTimeName(String updateTimeName) {
+        this.updateTimeName = updateTimeName;
     }
 }
