@@ -75,6 +75,8 @@ public class QuestionnaireService implements IQuestionnaireService {
                             }
                         });
                     }
+                    // 题目排序
+                    questionData.setSort(ext.getSort());
                     questionList.add(questionData);
                 }
             });

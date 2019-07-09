@@ -23,6 +23,8 @@ public class QuestionData extends Question {
     private List<TagData> tagList;
     private String tagListName;
 
+    private int sort;
+
     public String getStatusName() {
         return statusName;
     }
@@ -125,5 +127,13 @@ public class QuestionData extends Question {
 
     public void setTagListName(String tagListName) {
         this.tagListName = tagListName;
+    }
+
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
     }
 }
