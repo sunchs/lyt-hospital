@@ -255,11 +255,9 @@ public class QuestionnaireService implements IQuestionnaireService {
         data.setTitle(param.getTitle());
         data.setStatus(param.getStatus());
         data.setTargetOne(param.getTargetOne());
-        // TODO::用户ID
-        data.setUpdateId(0);
+        data.setUpdateId(UserThreadUtil.getUserId());
         data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-        // TODO::用户ID
-        data.setCreateId(0);
+        data.setCreateId(UserThreadUtil.getUserId());
         data.setCreateTime(new Timestamp(System.currentTimeMillis()));
         if (questionnaireDao.insert(data)) {
             Integer questionnaireId = data.getId();
@@ -273,7 +271,7 @@ public class QuestionnaireService implements IQuestionnaireService {
                 if (question.getSkipMode() == 1) {
                     extend.setSkipQuestionId(question.getSkipQuestionId());
                 } else if (question.getSkipMode() == 2) {
-                    String skipBody = setSkipContent(question.getQuestionId(), question.getSkipContent());
+                    String skipBody = setSkipContent(question.getQuestionId(), question.getOptionList());
                     extend.setSkipContent(skipBody);
                 }
                 questionnaireDao.insertQuestion(extend);
