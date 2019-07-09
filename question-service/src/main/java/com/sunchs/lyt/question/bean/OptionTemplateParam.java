@@ -21,6 +21,9 @@ public class OptionTemplateParam {
         if (CollectionUtils.isEmpty(optionList)) {
             throw new QuestionException("选项内容不能为空");
         }
+        optionList.forEach(option -> {
+            option = option.replaceAll(",", "，");
+        });
     }
 
     public int getId() {
