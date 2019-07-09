@@ -20,7 +20,12 @@ public interface IQuestionnaireService {
     /**
      * 保存数据
      */
-    void save(QuestionnaireParam param);
+    int save(QuestionnaireParam param);
+
+    /**
+     * 更新状态
+     */
+    void updateStatus(QuestionnaireParam param);
 
     /**
      * 根据 问卷ID 生产xls文件

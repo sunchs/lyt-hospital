@@ -34,7 +34,16 @@ public class QuestionnaireController extends BaseController {
     @PostMapping("/save")
     public ResultData save(@RequestBody RequestData data) {
         QuestionnaireParam param = data.toObject(QuestionnaireParam.class);
-        questionnaireService.save(param);
+        return success(questionnaireService.save(param));
+    }
+
+    /**
+     * 问卷 添加、编辑
+     */
+    @PostMapping("/updateStatus")
+    public ResultData updateStatus(@RequestBody RequestData data) {
+        QuestionnaireParam param = data.toObject(QuestionnaireParam.class);
+        questionnaireService.updateStatus(param);
         return success();
     }
 

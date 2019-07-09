@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.Questionnaire;
 import com.sunchs.lyt.db.business.entity.QuestionnaireExtend;
+import com.sunchs.lyt.db.business.service.impl.QuestionnaireExtendServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.QuestionnaireServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.*;
@@ -49,6 +50,9 @@ public class QuestionnaireService implements IQuestionnaireService {
 
     @Autowired
     private QuestionnaireServiceImpl questionnaireService;
+
+    @Autowired
+    private QuestionnaireExtendServiceImpl questionnaireExtendService;
 
     @Override
     public QuestionnaireData getById(int id) {
@@ -112,12 +116,22 @@ public class QuestionnaireService implements IQuestionnaireService {
     }
 
     @Override
-    public void save(QuestionnaireParam param) {
+    public int save(QuestionnaireParam param) {
         if (NumberUtil.isZero(param.getId())) {
-            insert(param);
+            return insert(param);
         } else {
-            update(param);
+            return update(param);
         }
+    }
+
+    @Override
+    public void updateStatus(QuestionnaireParam param) {
+        Questionnaire data = new Questionnaire();
+        data.setId(param.getId());
+        data.setStatus(param.getStatus());
+        data.setUpdateId(UserThreadUtil.getUserId());
+        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        questionnaireService.updateById(data);
     }
 
     @Override
@@ -250,7 +264,7 @@ public class QuestionnaireService implements IQuestionnaireService {
         }
     }
 
-    private void insert(QuestionnaireParam param) {
+    private int insert(QuestionnaireParam param) {
         Questionnaire data = new Questionnaire();
         // TODO::医院ID
         data.setHospitalId(0);
@@ -262,22 +276,43 @@ public class QuestionnaireService implements IQuestionnaireService {
         data.setCreateId(UserThreadUtil.getUserId());
         data.setCreateTime(new Timestamp(System.currentTimeMillis()));
         if (questionnaireDao.insert(data)) {
-            Integer questionnaireId = data.getId();
-            List<QuestionBean> questionList = param.getQuestionList();
-            for (QuestionBean question : questionList) {
-                QuestionnaireExtend extend = new QuestionnaireExtend();
-                extend.setQuestionnaireId(questionnaireId);
-                extend.setQuestionId(question.getQuestionId());
-                extend.setSkipMode(question.getSkipMode());
-                extend.setSort(question.getSort());
-                if (question.getSkipMode() == 1) {
-                    extend.setSkipQuestionId(question.getSkipQuestionId());
-                } else if (question.getSkipMode() == 2) {
-                    String skipBody = setSkipContent(question.getQuestionId(), question.getOptionList());
-                    extend.setSkipContent(skipBody);
-                }
-                questionnaireDao.insertQuestion(extend);
+            insertExtend(data.getId(), param.getQuestionList());
+        }
+        return data.getId();
+    }
+
+    private int update(QuestionnaireParam param) {
+        Questionnaire data = new Questionnaire();
+        data.setId(param.getId());
+        // TODO::医院ID
+        data.setTitle(param.getTitle());
+        data.setUpdateId(UserThreadUtil.getUserId());
+        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        if (questionnaireDao.update(data)) {
+            insertExtend(data.getId(), param.getQuestionList());
+        }
+        return data.getId();
+    }
+
+    private void insertExtend(int questionnaireId, List<QuestionBean> questionList) {
+        // 清楚历史数据
+        Wrapper<QuestionnaireExtend> w = new EntityWrapper<>();
+        w.eq(QuestionnaireExtend.QUESTIONNAIRE_ID, questionnaireId);
+        questionnaireExtendService.delete(w);
+        // 插入新数据
+        for (QuestionBean question : questionList) {
+            QuestionnaireExtend extend = new QuestionnaireExtend();
+            extend.setQuestionnaireId(questionnaireId);
+            extend.setQuestionId(question.getQuestionId());
+            extend.setSkipMode(question.getSkipMode());
+            extend.setSort(question.getSort());
+            if (question.getSkipMode() == 1) {
+                extend.setSkipQuestionId(question.getSkipQuestionId());
+            } else if (question.getSkipMode() == 2) {
+                String skipBody = setSkipContent(question.getQuestionId(), question.getOptionList());
+                extend.setSkipContent(skipBody);
             }
+            questionnaireDao.insertQuestion(extend);
         }
     }
 
@@ -310,15 +345,6 @@ public class QuestionnaireService implements IQuestionnaireService {
             }
         }
         return 0;
-    }
-
-    private void update(QuestionnaireParam param) {
-        Questionnaire data = new Questionnaire();
-        data.setId(param.getId());
-        data.setStatus(param.getStatus());
-        data.setUpdateId(UserThreadUtil.getUserId());
-        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-        questionnaireService.updateById(data);
     }
 
     private Map<Integer, Integer> getSkipContentMap(String skipContent) {
