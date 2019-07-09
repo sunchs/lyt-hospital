@@ -103,6 +103,7 @@ public class QuestionOptionService implements IQuestionOptionService {
     @Override
     public List<Map<String, Object>> getCascaderData() {
         Wrapper<OptionTemplate> where = new EntityWrapper<>();
+        where.ne(OptionTemplate.STATUS, 2);
         List<OptionTemplate> dbList = templateService.selectList(where);
         // 一级数据
         List<Map<String, Object>> oneList = fetchOptionList(dbList, 0);

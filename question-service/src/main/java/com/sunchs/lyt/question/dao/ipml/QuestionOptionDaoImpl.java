@@ -64,7 +64,7 @@ public class QuestionOptionDaoImpl implements QuestionOptionDao {
 
     @Override
     public List<OptionBean> getOptionList(int id) {
-        String sql = "SELECT `id`,`content`,`update_time` FROM option_template WHERE `pid`=:pid";
+        String sql = "SELECT `id`,`content`,`update_time` FROM option_template WHERE `pid`=:pid AND `status`=1";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("pid", id);
         return db.query(sql, param, (ResultSet rs, int rowNum) -> {
