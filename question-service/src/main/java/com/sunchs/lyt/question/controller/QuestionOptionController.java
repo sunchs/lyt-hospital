@@ -48,6 +48,16 @@ public class QuestionOptionController extends BaseController {
     }
 
     /**
+     * 根据 模版ID 更新模版状态
+     */
+    @PostMapping("/updateTemplateStatus")
+    public ResultData updateTemplateStatus(@RequestBody RequestData data) {
+        OptionTemplateParam param = data.toObject(OptionTemplateParam.class);
+        optionService.updateTemplateStatus(param);
+        return success();
+    }
+
+    /**
      * 根据 类型ID 获取选项详情
      */
     @PostMapping("/getById")

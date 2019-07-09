@@ -27,6 +27,11 @@ public interface IQuestionOptionService {
      */
     OptionTemplateData getTemplateById(int templateId);
 
+    /**
+     * 根据 模版ID 更新模版状态
+     */
+    void updateTemplateStatus(OptionTemplateParam param);
+
 
     QuestionOptionData getInfo(QuestionOptionParam param);
 

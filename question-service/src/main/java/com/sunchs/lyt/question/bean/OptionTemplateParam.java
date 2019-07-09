@@ -9,6 +9,7 @@ public class OptionTemplateParam {
 
     private int id;
     private int pid;
+    private int status;
     private List<String> optionList;
 
     public void checkPid() {
@@ -41,6 +42,14 @@ public class OptionTemplateParam {
 
     public void setPid(int pid) {
         this.pid = pid;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public List<String> getOptionList() {

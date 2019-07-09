@@ -73,6 +73,16 @@ public class QuestionOptionService implements IQuestionOptionService {
     }
 
     @Override
+    public void updateTemplateStatus(OptionTemplateParam param) {
+        OptionTemplate data = new OptionTemplate();
+        data.setId(param.getId());
+        data.setStatus(param.getStatus());
+        data.setUpdateId(UserThreadUtil.getUserId());
+        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        templateService.updateById(data);
+    }
+
+    @Override
     public QuestionOptionData getInfo(QuestionOptionParam param) {
         QuestionOptionData info = questionOptionDao.getInfo(param.getId());
         if (info != null) {
