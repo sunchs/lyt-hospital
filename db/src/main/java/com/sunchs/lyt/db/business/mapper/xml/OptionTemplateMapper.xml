@@ -6,9 +6,9 @@
     <resultMap id="BaseResultMap" type="com.sunchs.lyt.db.business.entity.OptionTemplate">
         <id column="id" property="id" />
         <result column="pid" property="pid" />
+        <result column="status" property="status" />
         <result column="content" property="content" />
         <result column="sort" property="sort" />
-        <result column="remarks" property="remarks" />
         <result column="mode" property="mode" />
         <result column="update_id" property="updateId" />
         <result column="update_time" property="updateTime" />

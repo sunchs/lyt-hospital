@@ -29,7 +29,7 @@ public class QuestionOptionService implements IQuestionOptionService {
     public void save(QuestionOptionParam param) {
         OptionTemplate optionTemplate = new OptionTemplate();
         optionTemplate.setId(param.getId());
-        optionTemplate.setRemarks(param.getRemarks());
+//        optionTemplate.setRemarks(param.getRemarks());
         if (questionOptionDao.update(optionTemplate)) {
             questionOptionDao.deleteOption(param.getId());
             List<OptionBean> optionList = param.getOptionList();

@@ -14,7 +14,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-07-08
+ * @since 2019-07-09
  */
 @TableName("option_template")
 public class OptionTemplate extends Model<OptionTemplate> {
@@ -33,7 +33,12 @@ public class OptionTemplate extends Model<OptionTemplate> {
     private Integer pid;
 
     /**
-     * 标题
+     * 状态
+     */
+    private Integer status;
+
+    /**
+     * 内容
      */
     private String content;
 
@@ -41,11 +46,6 @@ public class OptionTemplate extends Model<OptionTemplate> {
      * 排序
      */
     private Integer sort;
-
-    /**
-     * 备注
-     */
-    private String remarks;
 
     /**
      * 选项方式
@@ -90,6 +90,13 @@ public class OptionTemplate extends Model<OptionTemplate> {
     public void setPid(Integer pid) {
         this.pid = pid;
     }
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
     public String getContent() {
         return content;
     }
@@ -103,13 +110,6 @@ public class OptionTemplate extends Model<OptionTemplate> {
 
     public void setSort(Integer sort) {
         this.sort = sort;
-    }
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
     }
     public String getMode() {
         return mode;
@@ -151,11 +151,11 @@ public class OptionTemplate extends Model<OptionTemplate> {
 
     public static final String PID = "pid";
 
+    public static final String STATUS = "status";
+
     public static final String CONTENT = "content";
 
     public static final String SORT = "sort";
-
-    public static final String REMARKS = "remarks";
 
     public static final String MODE = "mode";
 
@@ -177,9 +177,9 @@ public class OptionTemplate extends Model<OptionTemplate> {
         return "OptionTemplate{" +
         "id=" + id +
         ", pid=" + pid +
+        ", status=" + status +
         ", content=" + content +
         ", sort=" + sort +
-        ", remarks=" + remarks +
         ", mode=" + mode +
         ", updateId=" + updateId +
         ", updateTime=" + updateTime +
