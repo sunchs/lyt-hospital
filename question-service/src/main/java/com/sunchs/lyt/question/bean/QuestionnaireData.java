@@ -19,7 +19,7 @@ public class QuestionnaireData extends Questionnaire {
 
     private String hospitalName;
 
-    private List<QuestionDataExt> questionList;
+    private List<QuestionData> questionList;
 
     public String getStatusName() {
         return statusName;
@@ -45,11 +45,11 @@ public class QuestionnaireData extends Questionnaire {
         this.updateTimeName = updateTimeName;
     }
 
-    public List<QuestionDataExt> getQuestionList() {
+    public List<QuestionData> getQuestionList() {
         return questionList;
     }
 
-    public void setQuestionList(List<QuestionDataExt> questionList) {
+    public void setQuestionList(List<QuestionData> questionList) {
         this.questionList = questionList;
     }
 

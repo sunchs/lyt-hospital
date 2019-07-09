@@ -58,16 +58,14 @@ public class QuestionnaireService implements IQuestionnaireService {
             QuestionnaireData data = ObjectUtil.copy(res, QuestionnaireData.class);
             data.initData();
             // 获取问卷扩展信息
-            List<QuestionDataExt> questionList = new ArrayList<>();
-            List<QuestionnaireExtend> extendList = questionnaireDao.getExtendById(id);
-            extendList.forEach(ext->{
+            List<QuestionData> questionList = new ArrayList<>();
+            questionnaireDao.getExtendById(id).forEach(ext->{
                 // 获取题目详情
                 QuestionData questionData = questionDao.getById(ext.getQuestionId());
                 if (Objects.nonNull(questionData)) {
-                    QuestionDataExt extData = ObjectUtil.copy(questionData, QuestionDataExt.class);
-                    extData.setSkipMode(ext.getSkipMode());
+                    questionData.setSkipMode(ext.getSkipMode());
                     // 针对直接跳转
-                    extData.setSkipQuestionId(ext.getSkipQuestionId());
+                    questionData.setSkipQuestionId(ext.getSkipQuestionId());
                     // 针对选项跳转
                     if (ext.getSkipMode().equals(2)) {
                         Map<Integer, Integer> skipMap = getSkipContentMap(ext.getSkipContent());
@@ -77,10 +75,9 @@ public class QuestionnaireService implements IQuestionnaireService {
                             }
                         });
                     }
-                    questionList.add(extData);
+                    questionList.add(questionData);
                 }
             });
-
             data.setQuestionList(questionList);
             return data;
         }
@@ -168,7 +165,7 @@ public class QuestionnaireService implements IQuestionnaireService {
             sheet.setColumnView(2, 40);
 
             // 写入数据
-            for (QuestionDataExt question : data.getQuestionList()) {
+            for (QuestionData question : data.getQuestionList()) {
                 columnPos = 0;
                 linePos++;
 
@@ -204,9 +201,9 @@ public class QuestionnaireService implements IQuestionnaireService {
         return path + "/" + fileName;
     }
 
-    private int getTagLen(List<QuestionDataExt> questionList) {
+    private int getTagLen(List<QuestionData> questionList) {
         int len = 0;
-        for (QuestionDataExt ext : questionList) {
+        for (QuestionData ext : questionList) {
             int size = ext.getTagList().size();
             if (size > len) {
                 len = size;
@@ -215,9 +212,9 @@ public class QuestionnaireService implements IQuestionnaireService {
         return len;
     }
 
-    private int getOptionLen(List<QuestionDataExt> questionList) {
+    private int getOptionLen(List<QuestionData> questionList) {
         int len = 0;
-        for (QuestionDataExt ext : questionList) {
+        for (QuestionData ext : questionList) {
             int size = ext.getOptionList().size();
             if (size > len) {
                 len = size;
@@ -226,14 +223,14 @@ public class QuestionnaireService implements IQuestionnaireService {
         return len;
     }
 
-    private String getSkipContent(QuestionDataExt questionDataExt) {
-        if (questionDataExt.getSkipMode() == 1) {
-            for (OptionData optionData : questionDataExt.getOptionList()) {
+    private String getSkipContent(QuestionData questionData) {
+        if (questionData.getSkipMode() == 1) {
+            for (OptionData optionData : questionData.getOptionList()) {
                 return optionData.getSkipQuestionId()+"";
             }
-        } else if (questionDataExt.getSkipMode() == 2) {
+        } else if (questionData.getSkipMode() == 2) {
             String val = "";
-            for (OptionData optionData : questionDataExt.getOptionList()) {
+            for (OptionData optionData : questionData.getOptionList()) {
                 if (optionData.getSkipQuestionId() != 0) {
                     String item = optionData.getOptionId()+":"+optionData.getSkipQuestionId();
                     val += val.isEmpty() ? item : ", "+item;

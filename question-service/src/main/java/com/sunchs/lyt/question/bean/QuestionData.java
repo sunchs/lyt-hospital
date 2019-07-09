@@ -16,6 +16,8 @@ public class QuestionData extends Question {
 
     private String updateTimeName;
 
+    private int skipMode;
+    private int skipQuestionId;
     private List<OptionData> optionList;
     private String optionListName;
     private List<TagData> tagList;
@@ -75,6 +77,22 @@ public class QuestionData extends Question {
 
     public void setUpdateTimeName(String updateTimeName) {
         this.updateTimeName = updateTimeName;
+    }
+
+    public int getSkipMode() {
+        return skipMode;
+    }
+
+    public void setSkipMode(int skipMode) {
+        this.skipMode = skipMode;
+    }
+
+    public int getSkipQuestionId() {
+        return skipQuestionId;
+    }
+
+    public void setSkipQuestionId(int skipQuestionId) {
+        this.skipQuestionId = skipQuestionId;
     }
 
     public List<OptionData> getOptionList() {

@@ -19,7 +19,7 @@ public class QuestionBean {
      * skipQuestionId、skipContent 二选一
      */
     private int skipQuestionId;
-    private List<OptionSkipParam> skipContent;
+    private List<OptionSkipParam> optionList;
 
     /**
      * 排序
@@ -50,12 +50,12 @@ public class QuestionBean {
         this.skipQuestionId = skipQuestionId;
     }
 
-    public List<OptionSkipParam> getSkipContent() {
-        return skipContent;
+    public List<OptionSkipParam> getOptionList() {
+        return optionList;
     }
 
-    public void setSkipContent(List<OptionSkipParam> skipContent) {
-        this.skipContent = skipContent;
+    public void setOptionList(List<OptionSkipParam> optionList) {
+        this.optionList = optionList;
     }
 
     public int getSort() {
