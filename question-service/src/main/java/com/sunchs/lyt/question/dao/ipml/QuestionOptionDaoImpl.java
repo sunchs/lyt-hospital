@@ -48,14 +48,13 @@ public class QuestionOptionDaoImpl implements QuestionOptionDao {
 
     @Override
     public QuestionOptionData getInfo(int id) {
-        String sql = "SELECT `id`,`content`,`remarks`,`mode`,`update_time` FROM option_template WHERE `id`=:id";
+        String sql = "SELECT `id`,`content`,`mode`,`update_time` FROM option_template WHERE `id`=:id";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("id", id);
         QuestionOptionData info = db.queryForObject(sql, param, (ResultSet rs, int rowNum) -> {
             QuestionOptionData option = new QuestionOptionData();
             option.setId(rs.getInt("id"));
             option.setTitle(rs.getString("content"));
-            option.setRemarks(rs.getString("remarks"));
             option.setMode(rs.getString("mode"));
             option.setUpdateTimeName(FormatUtil.dateTime(rs.getTimestamp("update_time")));
             return option;
@@ -79,12 +78,11 @@ public class QuestionOptionDaoImpl implements QuestionOptionDao {
 
     @Override
     public List<QuestionOptionData> getTypeList() {
-        String sql = "SELECT `id`,`content`,`remarks`,`mode`,`update_time` FROM option_template WHERE `pid`=0 ORDER BY `sort` ASC";
+        String sql = "SELECT `id`,`content`,`mode`,`update_time` FROM option_template WHERE `pid`=0 ORDER BY `sort` ASC";
         return db.query(sql, new MapSqlParameterSource(), (ResultSet rs, int rowNum) -> {
             QuestionOptionData option = new QuestionOptionData();
             option.setId(rs.getInt("id"));
             option.setTitle(rs.getString("content"));
-            option.setRemarks(rs.getString("remarks"));
             option.setMode(rs.getString("mode"));
             option.setUpdateTimeName(FormatUtil.dateTime(rs.getTimestamp("update_time")));
             return option;

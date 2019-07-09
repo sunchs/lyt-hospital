@@ -35,7 +35,9 @@ public interface IQuestionOptionService {
 
     QuestionOptionData getInfo(QuestionOptionParam param);
 
-
+    /**
+     * 获取选项模版列表
+     */
     List<QuestionOptionData> getList(QuestionOptionParam param);
 
     /**
