@@ -1,6 +1,7 @@
 package com.sunchs.lyt.question.service;
 
 import com.sunchs.lyt.framework.bean.PagingList;
+import com.sunchs.lyt.question.bean.OptionTemplateParam;
 import com.sunchs.lyt.question.bean.QuestionTagData;
 import com.sunchs.lyt.question.bean.QuestionTagParam;
 
@@ -18,6 +19,11 @@ public interface IQuestionTagService {
      * 根据 属性ID 获取属性列表
      */
     PagingList<QuestionTagData> getList(Integer id);
+
+    /**
+     * 根据 标签ID 更新模版状态
+     */
+    void updateStatus(QuestionTagParam param);
 
     /**
      * 保存数据

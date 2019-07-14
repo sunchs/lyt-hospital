@@ -2,11 +2,13 @@ package com.sunchs.lyt.question.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.sunchs.lyt.db.business.entity.OptionTemplate;
 import com.sunchs.lyt.db.business.entity.QuestionTag;
 import com.sunchs.lyt.db.business.service.impl.QuestionTagServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.UserThreadUtil;
+import com.sunchs.lyt.question.bean.OptionTemplateParam;
 import com.sunchs.lyt.question.bean.QuestionTagData;
 import com.sunchs.lyt.question.bean.QuestionTagParam;
 import com.sunchs.lyt.question.dao.QuestionTagDao;
@@ -104,6 +106,16 @@ public class QuestionTagService implements IQuestionTagService {
             son.setCreateTime(new Timestamp(System.currentTimeMillis()));
             questionTagService.insert(son);
         }
+    }
+
+    @Override
+    public void updateStatus(QuestionTagParam param) {
+        QuestionTag data = new QuestionTag();
+        data.setId(param.getId());
+        data.setStatus(param.getStatus());
+        data.setUpdateId(UserThreadUtil.getUserId());
+        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        questionTagService.updateById(data);
     }
 
     @Override

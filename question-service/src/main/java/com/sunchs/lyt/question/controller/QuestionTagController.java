@@ -3,6 +3,7 @@ package com.sunchs.lyt.question.controller;
 import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
+import com.sunchs.lyt.question.bean.OptionTemplateParam;
 import com.sunchs.lyt.question.bean.QuestionTagParam;
 import com.sunchs.lyt.question.service.impl.QuestionTagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,16 @@ public class QuestionTagController extends BaseController {
     public ResultData save(@RequestBody RequestData data) {
         QuestionTagParam param = data.toObject(QuestionTagParam.class);
         return success(tagService.save(param));
+    }
+
+    /**
+     * 根据 模版ID 更新模版状态
+     */
+    @PostMapping("/updateStatus")
+    public ResultData updateStatus(@RequestBody RequestData data) {
+        QuestionTagParam param = data.toObject(QuestionTagParam.class);
+        optionService.updateStatus(param);
+        return success();
     }
 
     /**
