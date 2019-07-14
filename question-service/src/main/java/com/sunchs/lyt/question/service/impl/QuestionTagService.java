@@ -121,6 +121,7 @@ public class QuestionTagService implements IQuestionTagService {
     @Override
     public List<Map<String, Object>> getCascaderData() {
         Wrapper<QuestionTag> where = new EntityWrapper<>();
+        where.eq(QuestionTag.STATUS, 1);
         List<QuestionTag> dbList = tagService.selectList(where);
         // 一级数据
         List<Map<String, Object>> oneList = fetchTagList(dbList, 0);

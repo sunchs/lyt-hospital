@@ -44,7 +44,7 @@ public class QuestionTagDaoImpl implements QuestionTagDao {
 
     @Override
     public List<QuestionTagData> getList(int id) {
-        String childSql = "SELECT `id` FROM question_tag WHERE `pid`=:id ORDER BY `sort` ASC";
+        String childSql = "SELECT `id` FROM question_tag WHERE `pid`=:id AND `status`=1 ORDER BY `sort` ASC";
         MapSqlParameterSource childParam = new MapSqlParameterSource()
                 .addValue("id", id);
         List<Integer> list = db.query(childSql, childParam, (ResultSet rs, int rowNum) -> rs.getInt("id"));
@@ -57,7 +57,7 @@ public class QuestionTagDaoImpl implements QuestionTagDao {
 
     @Override
     public int getCount(int id) {
-        String childSql = "SELECT COUNT(*) FROM question_tag WHERE `pid`=:id";
+        String childSql = "SELECT COUNT(*) FROM question_tag WHERE `pid`=:id AND `status`=1";
         MapSqlParameterSource childParam = new MapSqlParameterSource()
                 .addValue("id", id);
         Integer total = db.queryForObject(childSql, childParam, Integer.class);
