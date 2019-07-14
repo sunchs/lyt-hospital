@@ -31,6 +31,9 @@ public class QuestionTagService implements IQuestionTagService {
     @Autowired
     private QuestionTagServiceImpl tagService;
 
+    @Autowired
+    private QuestionTagServiceImpl questionTagService;
+
     @Override
     public QuestionTagData getById(Integer id) {
         return questionTagDao.getById(id);
@@ -45,52 +48,62 @@ public class QuestionTagService implements IQuestionTagService {
     }
 
     @Override
-    public QuestionTagData save(QuestionTagParam param) {
-        Integer attrId = 0;
+    public int save(QuestionTagParam param) {
         if (NumberUtil.isZero(param.getId())) {
-            attrId = insert(param);
+            return insert(param);
         } else {
-            attrId = update(param);
+            return update(param);
         }
-        if (attrId > 0) {
-            QuestionTagData attributeData = questionTagDao.getById(attrId);
-            if (attributeData == null) {
-                throw new QuestionException("属性ID：" + attrId + "，不存在");
-            }
-            return attributeData;
-        }
-        return null;
     }
 
-    private Integer insert(QuestionTagParam param) {
-        Map<String, Object> opt = new HashMap<>();
-        opt.put("pid", param.getPid());
-        opt.put("title", param.getTitle());
-        opt.put("remarks", param.getRemarks());
-        opt.put("updateId", UserThreadUtil.getUserId());
-        opt.put("updateTime", new Timestamp(System.currentTimeMillis()));
-        opt.put("createId", UserThreadUtil.getUserId());
-        opt.put("createTime", new Timestamp(System.currentTimeMillis()));
-        Integer attrId = questionTagDao.insert(opt);
-        if (attrId > 0) {
-            List<QuestionTagParam> children = param.getChildren();
-            for (QuestionTagParam child : children) {
-                Map<String, Object> cMap = new HashMap<>();
-                cMap.put("pid", attrId);
-                cMap.put("title", child.getTitle());
-                cMap.put("remarks", "");
-                cMap.put("updateId", UserThreadUtil.getUserId());
-                cMap.put("updateTime", new Timestamp(System.currentTimeMillis()));
-                cMap.put("createId", UserThreadUtil.getUserId());
-                cMap.put("createTime", new Timestamp(System.currentTimeMillis()));
-                questionTagDao.insert(cMap);
-            }
+    private int insert(QuestionTagParam param) {
+        QuestionTag data = new QuestionTag();
+        data.setPid(0);
+        data.setTitle(param.getTitle());
+        data.setStatus(1);
+        data.setUpdateId(UserThreadUtil.getUserId());
+        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        data.setCreateId(UserThreadUtil.getUserId());
+        data.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        if (questionTagService.insert(data)) {
+            setChildren(data.getId(), param);
+            return data.getId();
         }
-        return attrId;
-    }
-
-    private Integer update(QuestionTagParam param) {
         return 0;
+    }
+
+    private int update(QuestionTagParam param) {
+        QuestionTag data = new QuestionTag();
+        data.setId(param.getId());
+        data.setTitle(param.getTitle());
+        data.setStatus(1);
+        data.setUpdateId(UserThreadUtil.getUserId());
+        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        if (questionTagService.updateById(data)) {
+            setChildren(data.getId(), param);
+            return data.getId();
+        }
+        return 0;
+    }
+
+    private void setChildren(int id, QuestionTagParam param) {
+        // 清理旧数据
+        Wrapper<QuestionTag> w = new EntityWrapper<>();
+        w.eq(QuestionTag.PID, id);
+        questionTagService.delete(w);
+        // 重新生产数据
+        List<QuestionTagParam> children = param.getChildren();
+        for (QuestionTagParam child : children) {
+            QuestionTag son = new QuestionTag();
+            son.setPid(id);
+            son.setTitle(child.getTitle());
+            son.setStatus(1);
+            son.setUpdateId(UserThreadUtil.getUserId());
+            son.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+            son.setCreateId(UserThreadUtil.getUserId());
+            son.setCreateTime(new Timestamp(System.currentTimeMillis()));
+            questionTagService.insert(son);
+        }
     }
 
     @Override

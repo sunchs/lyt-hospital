@@ -22,7 +22,7 @@ public interface IQuestionTagService {
     /**
      * 保存数据
      */
-    QuestionTagData save(QuestionTagParam param);
+    int save(QuestionTagParam param);
 
     /**
      * 获取 级联 数据
