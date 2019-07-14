@@ -52,7 +52,7 @@ public class QuestionTagController extends BaseController {
     @PostMapping("/updateStatus")
     public ResultData updateStatus(@RequestBody RequestData data) {
         QuestionTagParam param = data.toObject(QuestionTagParam.class);
-        optionService.updateStatus(param);
+        tagService.updateStatus(param);
         return success();
     }
 
