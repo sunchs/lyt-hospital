@@ -59,53 +59,58 @@ public class QuestionTagService implements IQuestionTagService {
     }
 
     private int insert(QuestionTagParam param) {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
         QuestionTag data = new QuestionTag();
         data.setPid(0);
         data.setTitle(param.getTitle());
         data.setStatus(1);
         data.setUpdateId(UserThreadUtil.getUserId());
-        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        data.setUpdateTime(time);
         data.setCreateId(UserThreadUtil.getUserId());
-        data.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        data.setCreateTime(time);
         if (questionTagService.insert(data)) {
-            setChildren(data.getId(), param);
+            setChildren(data.getId(), param, time);
             return data.getId();
         }
         return 0;
     }
 
     private int update(QuestionTagParam param) {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
         QuestionTag data = new QuestionTag();
         data.setId(param.getId());
         data.setTitle(param.getTitle());
         data.setStatus(1);
         data.setUpdateId(UserThreadUtil.getUserId());
-        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        data.setUpdateTime(time);
         if (questionTagService.updateById(data)) {
-            setChildren(data.getId(), param);
+            setChildren(data.getId(), param, time);
             return data.getId();
         }
         return 0;
     }
 
-    private void setChildren(int id, QuestionTagParam param) {
-        // 清理旧数据
-        Wrapper<QuestionTag> w = new EntityWrapper<>();
-        w.eq(QuestionTag.PID, id);
-        questionTagService.delete(w);
-        // 重新生产数据
+    private void setChildren(int id, QuestionTagParam param, Timestamp time) {
         List<QuestionTagParam> children = param.getChildren();
         for (QuestionTagParam child : children) {
             QuestionTag son = new QuestionTag();
+            son.setId(child.getId());
             son.setPid(id);
             son.setTitle(child.getTitle());
             son.setStatus(1);
             son.setUpdateId(UserThreadUtil.getUserId());
-            son.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-            son.setCreateId(UserThreadUtil.getUserId());
-            son.setCreateTime(new Timestamp(System.currentTimeMillis()));
-            questionTagService.insert(son);
+            son.setUpdateTime(time);
+            if (son.getId() > 0) {
+                son.setCreateId(UserThreadUtil.getUserId());
+                son.setCreateTime(time);
+            }
+            questionTagService.insertOrUpdate(son);
         }
+        // 清理无效数据
+        Wrapper<QuestionTag> w = new EntityWrapper<>();
+        w.eq(QuestionTag.PID, id);
+        w.lt(QuestionTag.UPDATE_TIME, time);
+        questionTagService.delete(w);
     }
 
     @Override
