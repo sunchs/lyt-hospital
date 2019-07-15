@@ -55,8 +55,8 @@ public class QuestionService implements IQuestionService {
         Wrapper<Question> where = new EntityWrapper<>();
         if (param.getTargetOne() > 0) {
             where.eq(Question.TARGET_ONE, param.getTargetOne());
+            where.eq(Question.STATUS, 1);
         }
-        where.eq(Question.STATUS, 1);
         where.orderBy(Question.ID, false);
         Page<Question> data = questionDao.getPaging(where, param.getPageNow(), param.getPageSize());
         List<QuestionData> list = new ArrayList<>();
