@@ -66,12 +66,6 @@ public class QuestionTag extends Model<QuestionTag> {
     @TableField("create_time")
     private Date createTime;
 
-    /**
-     * 更新码
-     */
-    @TableField("update_code")
-    private Long updateCode;
-
     public Integer getId() {
         return id;
     }
@@ -128,13 +122,6 @@ public class QuestionTag extends Model<QuestionTag> {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
-    public Long getUpdateCode() {
-        return updateCode;
-    }
-
-    public void setUpdateCode(Long updateCode) {
-        this.updateCode = updateCode;
-    }
 
     public static final String ID = "id";
 
@@ -152,8 +139,6 @@ public class QuestionTag extends Model<QuestionTag> {
 
     public static final String CREATE_TIME = "create_time";
 
-    public static final String UPDATE_CODE = "update_code";
-
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -170,7 +155,6 @@ public class QuestionTag extends Model<QuestionTag> {
         ", updateTime=" + updateTime +
         ", createId=" + createId +
         ", createTime=" + createTime +
-        ", updateCode=" + updateCode +
         "}";
     }
 }
