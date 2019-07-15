@@ -100,7 +100,7 @@ public class QuestionTagService implements IQuestionTagService {
             son.setStatus(1);
             son.setUpdateId(UserThreadUtil.getUserId());
             son.setUpdateTime(time);
-            if (son.getId() > 0) {
+            if (child.getId() == 0) {
                 son.setCreateId(UserThreadUtil.getUserId());
                 son.setCreateTime(time);
             }
