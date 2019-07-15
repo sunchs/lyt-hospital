@@ -33,7 +33,7 @@ public class QuestionTagDaoImpl implements QuestionTagDao {
                 .addValue("id", id);
         QuestionTagData targetData =  selectForObject(sql, param, (ResultSet rs, int rowNum) -> setResultToData(rs));
         if (targetData != null) {
-            String childSql = "SELECT `id`,`pid`,`title`,`status`,`remarks`,`update_time` FROM question_tag WHERE `pid`=:id ORDER BY `sort` ASC";
+            String childSql = "SELECT `id`,`pid`,`title`,`status`,`remarks`,`update_time` FROM question_tag WHERE `pid`=:id ORDER BY `id` DESC";
             MapSqlParameterSource childParam = new MapSqlParameterSource()
                     .addValue("id", targetData.id);
             List<QuestionTagData> childList = db.query(childSql, childParam, (ResultSet rs, int rowNum) -> setResultToData(rs));
@@ -44,7 +44,7 @@ public class QuestionTagDaoImpl implements QuestionTagDao {
 
     @Override
     public List<QuestionTagData> getList(int id) {
-        String childSql = "SELECT `id` FROM question_tag WHERE `pid`=:id AND `status`=1 ORDER BY `sort` ASC";
+        String childSql = "SELECT `id` FROM question_tag WHERE `pid`=:id AND `status`=1 ORDER BY `id` DESC";
         MapSqlParameterSource childParam = new MapSqlParameterSource()
                 .addValue("id", id);
         List<Integer> list = db.query(childSql, childParam, (ResultSet rs, int rowNum) -> rs.getInt("id"));
