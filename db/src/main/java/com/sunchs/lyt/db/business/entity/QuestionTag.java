@@ -14,7 +14,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-06-24
+ * @since 2019-07-15
  */
 @TableName("question_tag")
 public class QuestionTag extends Model<QuestionTag> {
@@ -43,16 +43,6 @@ public class QuestionTag extends Model<QuestionTag> {
     private Integer status;
 
     /**
-     * 备注
-     */
-    private String remarks;
-
-    /**
-     * 排序
-     */
-    private Integer sort;
-
-    /**
      * 更新人ID
      */
     @TableField("update_id")
@@ -75,6 +65,12 @@ public class QuestionTag extends Model<QuestionTag> {
      */
     @TableField("create_time")
     private Date createTime;
+
+    /**
+     * 更新码
+     */
+    @TableField("update_code")
+    private Long updateCode;
 
     public Integer getId() {
         return id;
@@ -104,20 +100,6 @@ public class QuestionTag extends Model<QuestionTag> {
     public void setStatus(Integer status) {
         this.status = status;
     }
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
-    }
-    public Integer getSort() {
-        return sort;
-    }
-
-    public void setSort(Integer sort) {
-        this.sort = sort;
-    }
     public Integer getUpdateId() {
         return updateId;
     }
@@ -146,6 +128,13 @@ public class QuestionTag extends Model<QuestionTag> {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+    public Long getUpdateCode() {
+        return updateCode;
+    }
+
+    public void setUpdateCode(Long updateCode) {
+        this.updateCode = updateCode;
+    }
 
     public static final String ID = "id";
 
@@ -155,10 +144,6 @@ public class QuestionTag extends Model<QuestionTag> {
 
     public static final String STATUS = "status";
 
-    public static final String REMARKS = "remarks";
-
-    public static final String SORT = "sort";
-
     public static final String UPDATE_ID = "update_id";
 
     public static final String UPDATE_TIME = "update_time";
@@ -166,6 +151,8 @@ public class QuestionTag extends Model<QuestionTag> {
     public static final String CREATE_ID = "create_id";
 
     public static final String CREATE_TIME = "create_time";
+
+    public static final String UPDATE_CODE = "update_code";
 
     @Override
     protected Serializable pkVal() {
@@ -179,12 +166,11 @@ public class QuestionTag extends Model<QuestionTag> {
         ", pid=" + pid +
         ", title=" + title +
         ", status=" + status +
-        ", remarks=" + remarks +
-        ", sort=" + sort +
         ", updateId=" + updateId +
         ", updateTime=" + updateTime +
         ", createId=" + createId +
         ", createTime=" + createTime +
+        ", updateCode=" + updateCode +
         "}";
     }
 }

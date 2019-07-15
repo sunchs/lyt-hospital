@@ -8,12 +8,11 @@
         <result column="pid" property="pid" />
         <result column="title" property="title" />
         <result column="status" property="status" />
-        <result column="remarks" property="remarks" />
-        <result column="sort" property="sort" />
         <result column="update_id" property="updateId" />
         <result column="update_time" property="updateTime" />
         <result column="create_id" property="createId" />
         <result column="create_time" property="createTime" />
+        <result column="update_code" property="updateCode" />
     </resultMap>
 
 </mapper>
