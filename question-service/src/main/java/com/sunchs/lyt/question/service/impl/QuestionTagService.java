@@ -97,6 +97,12 @@ public class QuestionTagService implements IQuestionTagService {
                 keepIds.add(row.id);
             }
         });
+        // 清理无效数据
+        Wrapper<QuestionTag> w = new EntityWrapper<>();
+        w.notIn(QuestionTag.ID, keepIds);
+        w.eq(QuestionTag.PID, id);
+        questionTagService.delete(w);
+        // 更新数据
         List<QuestionTagParam> children = param.getChildren();
         for (QuestionTagParam child : children) {
             QuestionTag son = new QuestionTag();
@@ -112,11 +118,6 @@ public class QuestionTagService implements IQuestionTagService {
             }
             questionTagService.insertOrUpdate(son);
         }
-        // 清理无效数据
-        Wrapper<QuestionTag> w = new EntityWrapper<>();
-        w.notIn(QuestionTag.ID, keepIds);
-        w.eq(QuestionTag.PID, id);
-        questionTagService.delete(w);
     }
 
     @Override
