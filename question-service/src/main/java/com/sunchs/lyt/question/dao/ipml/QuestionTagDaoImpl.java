@@ -28,12 +28,12 @@ public class QuestionTagDaoImpl implements QuestionTagDao {
 
     @Override
     public QuestionTagData getById(int id) {
-        String sql = "SELECT `id`,`pid`,`title`,`status`,`remarks`,`update_time` FROM question_tag WHERE `id`=:id";
+        String sql = "SELECT `id`,`pid`,`title`,`status`,`update_time` FROM question_tag WHERE `id`=:id";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("id", id);
         QuestionTagData targetData =  selectForObject(sql, param, (ResultSet rs, int rowNum) -> setResultToData(rs));
         if (targetData != null) {
-            String childSql = "SELECT `id`,`pid`,`title`,`status`,`remarks`,`update_time` FROM question_tag WHERE `pid`=:id ORDER BY `id` DESC";
+            String childSql = "SELECT `id`,`pid`,`title`,`status`,`update_time` FROM question_tag WHERE `pid`=:id ORDER BY `id` DESC";
             MapSqlParameterSource childParam = new MapSqlParameterSource()
                     .addValue("id", targetData.id);
             List<QuestionTagData> childList = db.query(childSql, childParam, (ResultSet rs, int rowNum) -> setResultToData(rs));
@@ -116,8 +116,6 @@ public class QuestionTagDaoImpl implements QuestionTagDao {
         tagData.setPid(rs.getInt("pid"));
         tagData.setTitle(rs.getString("title"));
         tagData.setStatus(rs.getInt("status"));
-        tagData.setRemarks(rs.getString("remarks"));
-
         Timestamp updateTime = rs.getTimestamp("update_time");
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         tagData.setUpdateTime(dateFormat.format(updateTime));
