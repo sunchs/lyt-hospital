@@ -91,7 +91,12 @@ public class QuestionTagService implements IQuestionTagService {
     }
 
     private void setChildren(int id, QuestionTagParam param, Timestamp time) {
-        long code = System.currentTimeMillis();
+        List<Integer> keepIds = new ArrayList<>();
+        param.getChildren().forEach(row -> {
+            if (row.id != 0) {
+                keepIds.add(row.id);
+            }
+        });
         List<QuestionTagParam> children = param.getChildren();
         for (QuestionTagParam child : children) {
             QuestionTag son = new QuestionTag();
@@ -101,7 +106,6 @@ public class QuestionTagService implements IQuestionTagService {
             son.setStatus(1);
             son.setUpdateId(UserThreadUtil.getUserId());
             son.setUpdateTime(time);
-            son.setUpdateCode(code);
             if (child.getId() == 0) {
                 son.setCreateId(UserThreadUtil.getUserId());
                 son.setCreateTime(time);
@@ -110,8 +114,8 @@ public class QuestionTagService implements IQuestionTagService {
         }
         // 清理无效数据
         Wrapper<QuestionTag> w = new EntityWrapper<>();
+        w.notIn(QuestionTag.ID, keepIds);
         w.eq(QuestionTag.PID, id);
-        w.ne(QuestionTag.UPDATE_CODE, code);
         questionTagService.delete(w);
     }
 
