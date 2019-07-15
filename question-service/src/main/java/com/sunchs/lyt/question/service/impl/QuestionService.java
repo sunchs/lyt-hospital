@@ -3,10 +3,7 @@ package com.sunchs.lyt.question.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.sunchs.lyt.db.business.entity.OptionTemplate;
-import com.sunchs.lyt.db.business.entity.Question;
-import com.sunchs.lyt.db.business.entity.QuestionOption;
-import com.sunchs.lyt.db.business.entity.QuestionTagBinding;
+import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.QuestionServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.QuestionTagBindingServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
@@ -59,6 +56,7 @@ public class QuestionService implements IQuestionService {
         if (param.getTargetOne() > 0) {
             where.eq(Question.TARGET_ONE, param.getTargetOne());
         }
+        where.eq(Question.STATUS, 1);
         where.orderBy(Question.ID, false);
         Page<Question> data = questionDao.getPaging(where, param.getPageNow(), param.getPageSize());
         List<QuestionData> list = new ArrayList<>();
