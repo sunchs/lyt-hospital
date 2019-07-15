@@ -4,19 +4,18 @@ import java.util.List;
 
 public class QuestionTargetParam {
 
-    public Integer id;
-    public Integer pid;
+    public int id;
+    public int pid;
     public String title;
-    public Integer status;
+    public int status;
     public String remarks;
-//    public String sort;
     public List<QuestionTargetParam> children;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public Integer getPid() {
+    public int getPid() {
         return pid;
     }
 
@@ -24,17 +23,13 @@ public class QuestionTargetParam {
         return title;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
     public String getRemarks() {
         return remarks;
     }
-
-    //    public String getSort() {
-//        return sort;
-//    }
 
     public List<QuestionTargetParam> getChildren() {
         return children;
