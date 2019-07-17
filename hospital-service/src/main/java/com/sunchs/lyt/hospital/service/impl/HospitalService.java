@@ -6,10 +6,13 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.PagingList;
+import com.sunchs.lyt.framework.util.FormatUtil;
 import com.sunchs.lyt.framework.util.ObjectUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
+import com.sunchs.lyt.framework.util.UserThreadUtil;
 import com.sunchs.lyt.hospital.bean.*;
 import com.sunchs.lyt.hospital.enums.ExtendTypeEnum;
+import com.sunchs.lyt.hospital.enums.HospitalStatusEnum;
 import com.sunchs.lyt.hospital.enums.OfficeTypeEnum;
 import com.sunchs.lyt.hospital.service.IHospitalService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,12 +54,10 @@ public class HospitalService implements IHospitalService {
         data.setOperationPhone(param.getOperationPhone());
         data.setOpenBeds(param.getOpenBeds());
         data.setRemarks(param.getRemarks());
-        // TODO::用户ID
-        data.setUpdateId(0);
+        data.setUpdateId(UserThreadUtil.getUserId());
         data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         if (param.getId() == 0) {
-            // TODO::用户ID
-            data.setCreateId(0);
+            data.setCreateId(UserThreadUtil.getUserId());
             data.setCreateTime(new Timestamp(System.currentTimeMillis()));
         }
         if (hospitalService.insertOrUpdate(data)) {
@@ -124,6 +125,53 @@ public class HospitalService implements IHospitalService {
         res.setOutpatientType(getHospitalExtend(res.getId(), ExtendTypeEnum.OutpatientType.value));
         // 挂号方式
         res.setRegistrationMode(getHospitalExtend(res.getId(), ExtendTypeEnum.RegistrationMode.value));
+
+        // 状态
+        res.setStatusName(HospitalStatusEnum.get(res.getStatus()));
+
+        switch (res.getHospitalType()) {
+            case 1:
+                res.setHospitalTypeName("三级综合");
+                break;
+            case 2:
+                res.setHospitalTypeName("二级综合");
+                break;
+            case 3:
+                res.setHospitalTypeName("专科医院");
+                break;
+            default:
+                res.setHospitalTypeName("无类型");
+        }
+
+        switch (res.getHospitalProperty()) {
+            case 1:
+                res.setHospitalPropertyName("公立医院");
+                break;
+            case 2:
+                res.setHospitalPropertyName("私立医院");
+                break;
+            case 3:
+                res.setHospitalPropertyName("军队医院");
+                break;
+            default:
+                res.setHospitalPropertyName("无性质");
+        }
+
+        switch (res.getSubjection()) {
+            case 1:
+                res.setSubjectionName("省属");
+                break;
+            case 2:
+                res.setSubjectionName("市属");
+                break;
+            case 3:
+                res.setSubjectionName("区/县属");
+                break;
+            default:
+                res.setSubjectionName("无");
+        }
+
+        res.setUpdateTimeName(FormatUtil.dateTime(res.getUpdateTime()));
         return res;
     }
 
@@ -195,8 +243,7 @@ public class HospitalService implements IHospitalService {
             data.setType(officeType);
             data.setName(row.getName());
             data.setYearQuantity(row.getYearQuantity());
-            // TODO::用户ID
-            data.setUpdateId(0);
+            data.setUpdateId(UserThreadUtil.getUserId());
             data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             hospitalOfficeService.insertOrUpdate(data);
         }
@@ -227,8 +274,7 @@ public class HospitalService implements IHospitalService {
             data.setType(extendType);
             data.setContent(res.getContent());
             data.setContent2(res.getContent2());
-            // TODO::用户ID
-            data.setUpdateId(0);
+            data.setUpdateId(UserThreadUtil.getUserId());
             data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             hospitalExtendService.insertOrUpdate(data);
         }

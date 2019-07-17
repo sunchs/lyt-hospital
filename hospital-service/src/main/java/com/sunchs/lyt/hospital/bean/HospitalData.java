@@ -9,37 +9,48 @@ public class HospitalData extends Hospital {
     /**
      * 地区
      */
-    public List<Integer> region;
+    private List<Integer> region;
 
     /**
      * 门诊科室
      */
-    public List<HospitalOfficeData> outpatientOffice;
+    private List<HospitalOfficeData> outpatientOffice;
 
     /**
      * 住院科室
      */
-    public List<HospitalOfficeData> inpatientOffice;
+    private List<HospitalOfficeData> inpatientOffice;
 
     /**
      * 特殊科室
      */
-    public List<HospitalOfficeData> specialOffice;
+    private List<HospitalOfficeData> specialOffice;
 
     /**
      * 分院信息
      */
-    public List<HospitalExtendData> hospitalBranch;
+    private List<HospitalExtendData> hospitalBranch;
 
     /**
      * 门诊类别
      */
-    public List<HospitalExtendData> outpatientType;
+    private List<HospitalExtendData> outpatientType;
 
     /**
      * 挂号方式
      */
-    public List<HospitalExtendData> registrationMode;
+    private List<HospitalExtendData> registrationMode;
+
+
+    private String statusName;
+
+    private String hospitalTypeName;
+
+    private String hospitalPropertyName;
+
+    private String subjectionName;
+
+    private String updateTimeName;
 
 
     public List<Integer> getRegion() {
@@ -96,5 +107,45 @@ public class HospitalData extends Hospital {
 
     public void setRegistrationMode(List<HospitalExtendData> registrationMode) {
         this.registrationMode = registrationMode;
+    }
+
+    public String getStatusName() {
+        return statusName;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
+    }
+
+    public String getHospitalTypeName() {
+        return hospitalTypeName;
+    }
+
+    public void setHospitalTypeName(String hospitalTypeName) {
+        this.hospitalTypeName = hospitalTypeName;
+    }
+
+    public String getHospitalPropertyName() {
+        return hospitalPropertyName;
+    }
+
+    public void setHospitalPropertyName(String hospitalPropertyName) {
+        this.hospitalPropertyName = hospitalPropertyName;
+    }
+
+    public String getSubjectionName() {
+        return subjectionName;
+    }
+
+    public void setSubjectionName(String subjectionName) {
+        this.subjectionName = subjectionName;
+    }
+
+    public String getUpdateTimeName() {
+        return updateTimeName;
+    }
+
+    public void setUpdateTimeName(String updateTimeName) {
+        this.updateTimeName = updateTimeName;
     }
 }
