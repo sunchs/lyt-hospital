@@ -39,6 +39,7 @@ public class RequestData {
      */
     public <T> T toObject(Class<T> clazz) {
         String json = JsonUtil.toJson(params);
+        System.out.println(json);
         return JsonUtil.toObject(json, clazz);
     }
 
