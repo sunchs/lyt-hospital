@@ -181,4 +181,29 @@ public class HospitalParam extends PagingParam {
     public List<HospitalExtendParam> getRegistrationMode() {
         return registrationMode;
     }
+
+    @Override
+    public String toString() {
+        return "HospitalParam{" +
+                "id=" + id +
+                ", hospitalName='" + hospitalName + '\'' +
+                ", hospitalType=" + hospitalType +
+                ", hospitalProperty=" + hospitalProperty +
+                ", subjection=" + subjection +
+                ", region=" + region +
+                ", address='" + address + '\'' +
+                ", contacts='" + contacts + '\'' +
+                ", contactInfo='" + contactInfo + '\'' +
+                ", operationName='" + operationName + '\'' +
+                ", operationPhone='" + operationPhone + '\'' +
+                ", openBeds=" + openBeds +
+                ", remarks='" + remarks + '\'' +
+                ", outpatientOffice=" + outpatientOffice +
+                ", inpatientOffice=" + inpatientOffice +
+                ", specialOffice=" + specialOffice +
+                ", hospitalBranch=" + hospitalBranch +
+                ", outpatientType=" + outpatientType +
+                ", registrationMode=" + registrationMode +
+                '}';
+    }
 }

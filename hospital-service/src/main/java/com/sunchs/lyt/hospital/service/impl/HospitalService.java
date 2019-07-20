@@ -41,6 +41,7 @@ public class HospitalService implements IHospitalService {
 
     @Override
     public void save(HospitalParam param) {
+        System.out.println(param);
         Hospital data = new Hospital();
         data.setId(param.getId());
         data.setHospitalName(param.getHospitalName());
