@@ -17,6 +17,7 @@ public class JsonUtil {
         try {
             return gson.fromJson(json, clazz);
         } catch (JsonSyntaxException e) {
+            System.out.println(e);
             return null;
         }
     }
