@@ -15,7 +15,7 @@ public class HospitalOfficeData {
     /**
      * 年数量
      */
-    private int yearQuantity;
+    private int quantity;
 
     public int getId() {
         return id;
@@ -33,11 +33,11 @@ public class HospitalOfficeData {
         this.name = name;
     }
 
-    public int getYearQuantity() {
-        return yearQuantity;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setYearQuantity(int yearQuantity) {
-        this.yearQuantity = yearQuantity;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

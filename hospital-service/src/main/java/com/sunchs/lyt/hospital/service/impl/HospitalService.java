@@ -185,7 +185,7 @@ public class HospitalService implements IHospitalService {
             HospitalOfficeData o = new HospitalOfficeData();
             o.setId(office.getId());
             o.setName(office.getName());
-            o.setYearQuantity(office.getYearQuantity());
+            o.setQuantity(office.getQuantity());
             list.add(o);
         });
         return list;
@@ -242,7 +242,7 @@ public class HospitalService implements IHospitalService {
             data.setHospitalId(hospitalId);
             data.setType(officeType);
             data.setName(row.getName());
-            data.setYearQuantity(row.getYearQuantity());
+            data.setQuantity(row.getQuantity());
             data.setUpdateId(UserThreadUtil.getUserId());
             data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             hospitalOfficeService.insertOrUpdate(data);

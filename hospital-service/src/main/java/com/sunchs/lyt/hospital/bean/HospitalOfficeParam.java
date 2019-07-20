@@ -20,7 +20,7 @@ public class HospitalOfficeParam {
     /**
      * 年数量
      */
-    private int yearQuantity;
+    private int quantity;
 
     public int getId() {
         return id;
@@ -34,7 +34,7 @@ public class HospitalOfficeParam {
         return name;
     }
 
-    public int getYearQuantity() {
-        return yearQuantity;
+    public int getQuantity() {
+        return quantity;
     }
 }
