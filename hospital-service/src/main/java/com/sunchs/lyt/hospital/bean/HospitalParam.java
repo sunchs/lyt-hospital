@@ -13,97 +13,97 @@ public class HospitalParam extends PagingParam {
     /**
      * 医院ID
      */
-    private int id;
+    public int id;
 
     /**
      * 医院名称
      */
-    private String hospitalName;
+    public String hospitalName;
 
     /**
      * 医院类型
      */
-    private int hospitalType;
+    public int hospitalType;
 
     /**
      * 医院性质
      */
-    private int hospitalProperty;
+    public int hospitalProperty;
 
     /**
      * 隶属
      */
-    private int subjection;
+    public int subjection;
 
     /**
      * 地区集合
      */
-    private List<Integer> region;
+    public List<Integer> region;
 
     /**
      * 地址
      */
-    private String address;
+    public String address;
 
     /**
      * 联系人
      */
-    private String contacts;
+    public String contacts;
 
     /**
      * 联系方式
      */
-    private String contactInfo;
+    public String contactInfo;
 
     /**
      * 业务领导
      */
-    private String operationName;
+    public String operationName;
 
     /**
      * 业务电话
      */
-    private String operationPhone;
+    public String operationPhone;
 
     /**
      * 开放床位
      */
-    private int openBeds;
+    public int openBeds;
 
     /**
      * 备注
      */
-    private String remarks;
+    public String remarks;
 
     /**
      * 门诊科室
      */
-    private List<HospitalOfficeParam> outpatientOffice;
+    public List<HospitalOfficeParam> outpatientOffice;
 
     /**
      * 住院科室
      */
-    private List<HospitalOfficeParam> inpatientOffice;
+    public List<HospitalOfficeParam> inpatientOffice;
 
     /**
      * 特殊科室
      */
-    private List<HospitalOfficeParam> specialOffice;
+    public List<HospitalOfficeParam> specialOffice;
 
     /**
      * 分院信息
      */
-    private List<HospitalExtendParam> hospitalBranch;
+    public List<HospitalExtendParam> hospitalBranch;
 
     /**
      * 门诊类别
      */
-    private List<HospitalExtendParam> outpatientType;
+    public List<HospitalExtendParam> outpatientType;
 
     /**
      * 挂号方式
      */
-    private List<HospitalExtendParam> registrationMode;
+    public List<HospitalExtendParam> registrationMode;
 
 
     public int getId() {
