@@ -24,6 +24,7 @@ public class HospitalController extends BaseController {
     @PostMapping("/save")
     public ResultData save(@RequestBody RequestData data) {
         HospitalParam param = data.toObject(HospitalParam.class);
+        System.out.println(param);
         hospitalService.save(param);
         return success();
     }
