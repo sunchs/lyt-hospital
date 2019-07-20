@@ -5,22 +5,22 @@ public class HospitalOfficeParam {
     /**
      * ID
      */
-    private int id;
+    public int id;
 
     /**
      * 科室类型
      */
-    private int type;
+    public int type;
 
     /**
      * 科室名称
      */
-    private String name;
+    public String name;
 
     /**
      * 年数量
      */
-    private int quantity;
+    public int quantity;
 
     public int getId() {
         return id;

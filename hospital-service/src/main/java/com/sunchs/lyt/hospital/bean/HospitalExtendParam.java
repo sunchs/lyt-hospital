@@ -5,17 +5,17 @@ public class HospitalExtendParam {
     /**
      * 自增ID
      */
-    private int id;
+    public int id;
 
     /**
      * 信息体
      */
-    private String content;
+    public String content;
 
     /**
      * 信息体2
      */
-    private String content2;
+    public String content2;
 
 
     public int getId() {
