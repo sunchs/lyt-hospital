@@ -23,6 +23,7 @@ public class HospitalController extends BaseController {
      */
     @PostMapping("/save")
     public ResultData save(@RequestBody RequestData data) {
+        System.out.println(data);
         HospitalParam param = data.toObject(HospitalParam.class);
         System.out.println(param);
         hospitalService.save(param);
