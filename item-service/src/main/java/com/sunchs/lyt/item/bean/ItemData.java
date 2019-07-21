@@ -1,4 +1,6 @@
 package com.sunchs.lyt.item.bean;
 
-public class ItemData extends Items {
+import com.sunchs.lyt.db.business.entity.Item;
+
+public class ItemData extends Item {
 }
