@@ -133,6 +133,9 @@ public class ItemService implements IItemService {
         // 状态
         res.setStatusName(ItemStatusEnum.get(res.getStatus()));
 
+        // 完成时间
+        res.setFinishTimeName(FormatUtil.dateTime(res.getEndTime()));
+
         // 创建时间
         res.setCreateTimeName(FormatUtil.dateTime(res.getCreateTime()));
 

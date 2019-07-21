@@ -6,6 +6,8 @@ public class ItemData extends Item {
 
     private String statusName;
 
+    private String finishTimeName;
+
     private String createTimeName;
 
     public String getStatusName() {
@@ -14,6 +16,14 @@ public class ItemData extends Item {
 
     public void setStatusName(String statusName) {
         this.statusName = statusName;
+    }
+
+    public String getFinishTimeName() {
+        return finishTimeName;
+    }
+
+    public void setFinishTimeName(String finishTimeName) {
+        this.finishTimeName = finishTimeName;
     }
 
     public String getCreateTimeName() {
