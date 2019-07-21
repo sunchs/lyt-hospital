@@ -1,6 +1,6 @@
 package com.sunchs.lyt.db.business.service;
 
-import com.sunchs.lyt.db.business.entity.ItemsOffice;
+import com.sunchs.lyt.db.business.entity.Item;
 import com.baomidou.mybatisplus.service.IService;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.service.IService;
  * </p>
  *
  * @author king
- * @since 2019-06-11
+ * @since 2019-07-21
  */
-public interface IItemsOfficeService extends IService<ItemsOffice> {
+public interface IItemService extends IService<Item> {
 
 }

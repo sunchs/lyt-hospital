@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sunchs.lyt.db.business.mapper.ItemsOfficeMapper">
+<mapper namespace="com.sunchs.lyt.db.business.mapper.ItemOfficeMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.sunchs.lyt.db.business.entity.ItemsOffice">
+    <resultMap id="BaseResultMap" type="com.sunchs.lyt.db.business.entity.ItemOffice">
         <id column="id" property="id" />
         <result column="item_id" property="itemId" />
         <result column="office_id" property="officeId" />

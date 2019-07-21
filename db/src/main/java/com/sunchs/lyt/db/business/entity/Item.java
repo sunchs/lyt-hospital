@@ -13,9 +13,9 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-06-11
+ * @since 2019-07-21
  */
-public class Items extends Model<Items> {
+public class Item extends Model<Item> {
 
     private static final long serialVersionUID = 1L;
 
@@ -328,7 +328,7 @@ public class Items extends Model<Items> {
 
     @Override
     public String toString() {
-        return "Items{" +
+        return "Item{" +
         "id=" + id +
         ", hospitalId=" + hospitalId +
         ", number=" + number +

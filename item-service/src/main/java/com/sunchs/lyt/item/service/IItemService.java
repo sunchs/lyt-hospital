@@ -1,9 +1,16 @@
 package com.sunchs.lyt.item.service;
 
+import com.sunchs.lyt.framework.bean.PagingList;
+import com.sunchs.lyt.item.bean.ItemData;
 import com.sunchs.lyt.item.bean.ItemParam;
 import com.sunchs.lyt.item.bean.OfficeQuestionnaireParam;
 
 public interface IItemService {
+
+    /**
+     * 项目分页列表
+     */
+    PagingList<ItemData> getPageList(ItemParam param);
 
     /**
      * 保存数据

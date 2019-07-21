@@ -1,10 +1,11 @@
 package com.sunchs.lyt.item.bean;
 
+import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.StringUtil;
 import com.sunchs.lyt.item.exception.ItemException;
 
-public class ItemParam {
+public class ItemParam extends PagingList {
 
     /**
      * ID

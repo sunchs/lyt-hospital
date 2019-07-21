@@ -13,10 +13,10 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-06-11
+ * @since 2019-07-21
  */
-@TableName("items_office")
-public class ItemsOffice extends Model<ItemsOffice> {
+@TableName("item_office")
+public class ItemOffice extends Model<ItemOffice> {
 
     private static final long serialVersionUID = 1L;
 
@@ -102,7 +102,7 @@ public class ItemsOffice extends Model<ItemsOffice> {
 
     @Override
     public String toString() {
-        return "ItemsOffice{" +
+        return "ItemOffice{" +
         "id=" + id +
         ", itemId=" + itemId +
         ", officeId=" + officeId +

@@ -1,6 +1,6 @@
 package com.sunchs.lyt.db.business.mapper;
 
-import com.sunchs.lyt.db.business.entity.ItemsOffice;
+import com.sunchs.lyt.db.business.entity.ItemOffice;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * </p>
  *
  * @author king
- * @since 2019-06-11
+ * @since 2019-07-21
  */
-public interface ItemsOfficeMapper extends BaseMapper<ItemsOffice> {
+public interface ItemOfficeMapper extends BaseMapper<ItemOffice> {
 
 }
