@@ -29,11 +29,12 @@ public class HospitalController extends BaseController {
     }
 
     /**
-     * 医院信息 删除
+     * 根据 医院ID 更新状态
      */
-    @PostMapping("/remove")
+    @PostMapping("/updateStatus")
     public ResultData remove(@RequestBody RequestData data) {
         HospitalParam param = data.toObject(HospitalParam.class);
+        hospitalService.updateStatus(param);
         return success();
     }
 

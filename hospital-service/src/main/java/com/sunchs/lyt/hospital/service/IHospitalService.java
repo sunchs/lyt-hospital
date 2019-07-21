@@ -28,4 +28,9 @@ public interface IHospitalService {
      * 获取select数据
      */
     List<Map<String, Object>> getSelectData();
+
+    /**
+     * 根据 医院ID 更新状态
+     */
+    void updateStatus(HospitalParam param);
 }

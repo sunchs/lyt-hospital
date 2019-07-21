@@ -13,97 +13,102 @@ public class HospitalParam extends PagingParam {
     /**
      * 医院ID
      */
-    public int id;
+    private int id;
 
     /**
      * 医院名称
      */
-    public String hospitalName;
+    private String hospitalName;
+
+    /**
+     * 是否开启
+     */
+    private int status;
 
     /**
      * 医院类型
      */
-    public int hospitalType;
+    private int hospitalType;
 
     /**
      * 医院性质
      */
-    public int hospitalProperty;
+    private int hospitalProperty;
 
     /**
      * 隶属
      */
-    public int subjection;
+    private int subjection;
 
     /**
      * 地区集合
      */
-    public List<Integer> region;
+    private List<Integer> region;
 
     /**
      * 地址
      */
-    public String address;
+    private String address;
 
     /**
      * 联系人
      */
-    public String contacts;
+    private String contacts;
 
     /**
      * 联系方式
      */
-    public String contactInfo;
+    private String contactInfo;
 
     /**
      * 业务领导
      */
-    public String operationName;
+    private String operationName;
 
     /**
      * 业务电话
      */
-    public String operationPhone;
+    private String operationPhone;
 
     /**
      * 开放床位
      */
-    public int openBeds;
+    private int openBeds;
 
     /**
      * 备注
      */
-    public String remarks;
+    private String remarks;
 
     /**
      * 门诊科室
      */
-    public List<HospitalOfficeParam> outpatientOffice;
+    private List<HospitalOfficeParam> outpatientOffice;
 
     /**
      * 住院科室
      */
-    public List<HospitalOfficeParam> inpatientOffice;
+    private List<HospitalOfficeParam> inpatientOffice;
 
     /**
      * 特殊科室
      */
-    public List<HospitalOfficeParam> specialOffice;
+    private List<HospitalOfficeParam> specialOffice;
 
     /**
      * 分院信息
      */
-    public List<HospitalExtendParam> hospitalBranch;
+    private List<HospitalExtendParam> hospitalBranch;
 
     /**
      * 门诊类别
      */
-    public List<HospitalExtendParam> outpatientType;
+    private List<HospitalExtendParam> outpatientType;
 
     /**
      * 挂号方式
      */
-    public List<HospitalExtendParam> registrationMode;
+    private List<HospitalExtendParam> registrationMode;
 
 
     public int getId() {
@@ -112,6 +117,10 @@ public class HospitalParam extends PagingParam {
 
     public String getHospitalName() {
         return hospitalName;
+    }
+
+    public int getStatus() {
+        return status;
     }
 
     public int getHospitalType() {
@@ -187,6 +196,7 @@ public class HospitalParam extends PagingParam {
         return "HospitalParam{" +
                 "id=" + id +
                 ", hospitalName='" + hospitalName + '\'' +
+                ", status=" + status +
                 ", hospitalType=" + hospitalType +
                 ", hospitalProperty=" + hospitalProperty +
                 ", subjection=" + subjection +

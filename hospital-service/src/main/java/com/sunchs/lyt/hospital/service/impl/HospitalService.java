@@ -110,6 +110,14 @@ public class HospitalService implements IHospitalService {
         return list;
     }
 
+    @Override
+    public void updateStatus(HospitalParam param) {
+        Hospital data = new Hospital();
+        data.setId(param.getId());
+        data.setStatus(param.getStatus());
+        hospitalService.updateById(data);
+    }
+
     private HospitalData getHospitalInfo(Hospital hospital) {
         HospitalData res = ObjectUtil.copy(hospital, HospitalData.class);
         // 地区
