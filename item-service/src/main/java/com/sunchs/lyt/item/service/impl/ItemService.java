@@ -14,6 +14,7 @@ import com.sunchs.lyt.framework.util.*;
 import com.sunchs.lyt.item.bean.ItemData;
 import com.sunchs.lyt.item.bean.ItemParam;
 import com.sunchs.lyt.item.bean.OfficeQuestionnaireParam;
+import com.sunchs.lyt.item.enums.ItemStatusEnum;
 import com.sunchs.lyt.item.exception.ItemException;
 import com.sunchs.lyt.item.service.IItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,6 +129,12 @@ public class ItemService implements IItemService {
 
     private ItemData getItemInfo(Item item) {
         ItemData res = ObjectUtil.copy(item, ItemData.class);
+
+        // 状态
+        res.setStatusName(ItemStatusEnum.get(res.getStatus()));
+
+        // 创建时间
+        res.setCreateTimeName(FormatUtil.dateTime(res.getCreateTime()));
 
         return res;
     }
