@@ -6,6 +6,7 @@ import com.sunchs.lyt.user.bean.UserParam;
 import com.sunchs.lyt.user.bean.UserRoleData;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IUserService {
 
@@ -33,4 +34,9 @@ public interface IUserService {
      * 用户绑定医院
      */
     void bindUserHospital(int userId, List<Integer> hospitalList);
+
+    /**
+     * 获取可用的用户列表
+     */
+    List<Map<String, Object>> getUsableList();
 }

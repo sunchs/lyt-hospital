@@ -37,6 +37,14 @@ public class UserController extends BaseController {
     }
 
     /**
+     * 获取可用用户列表
+     */
+    @PostMapping("/usableList")
+    public ResultData useList(@RequestBody RequestData data) {
+        return success(userService.getUsableList());
+    }
+
+    /**
      * 登录系统
      */
     @PostMapping("/login")

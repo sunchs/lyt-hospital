@@ -157,6 +157,25 @@ public class UserService implements IUserService {
         });
     }
 
+    @Override
+    public List<Map<String, Object>> getUsableList() {
+        Wrapper<User> w = new EntityWrapper<>();
+        w.setSqlSelect(User.ID, User.USERNAME, User.NAME);
+        w.eq(User.STATUS, 1);
+        w.gt(User.ID, 10);
+        w.orderBy(User.ID, false);
+        List<User> userList = userService.selectList(w);
+        List<Map<String, Object>> list = new ArrayList<>();
+        userList.forEach(row -> {
+            Map<String, Object> m = new HashMap<>();
+            m.put("id", row.getId());
+            m.put("username", row.getUsername());
+            m.put("name", row.getName());
+            list.add(m);
+        });
+        return list;
+    }
+
     /**
      * 添加用户信息
      */
