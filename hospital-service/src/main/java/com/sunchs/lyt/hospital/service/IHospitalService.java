@@ -33,4 +33,9 @@ public interface IHospitalService {
      * 根据 医院ID 更新状态
      */
     void updateStatus(HospitalParam param);
+
+    /**
+     * 获取可用医院列表
+     */
+    List<Map<String, Object>> getUsableList();
 }

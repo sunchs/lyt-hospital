@@ -40,7 +40,7 @@ public class UserController extends BaseController {
      * 获取可用用户列表
      */
     @PostMapping("/usableList")
-    public ResultData useList(@RequestBody RequestData data) {
+    public ResultData usableList(@RequestBody RequestData data) {
         return success(userService.getUsableList());
     }
 

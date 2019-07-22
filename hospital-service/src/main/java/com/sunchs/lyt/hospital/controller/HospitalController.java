@@ -63,4 +63,13 @@ public class HospitalController extends BaseController {
     public ResultData selectData(@RequestBody RequestData data) {
         return success(hospitalService.getSelectData());
     }
+
+    /**
+     * 获取可用用户列表
+     */
+    @PostMapping("/usableList")
+    public ResultData usableList(@RequestBody RequestData data) {
+        return success(hospitalService.getUsableList());
+    }
+
 }

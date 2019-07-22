@@ -118,6 +118,23 @@ public class HospitalService implements IHospitalService {
         hospitalService.updateById(data);
     }
 
+    @Override
+    public List<Map<String, Object>> getUsableList() {
+        Wrapper<Hospital> w = new EntityWrapper<>();
+        w.setSqlSelect(Hospital.ID, Hospital.HOSPITAL_NAME);
+        w.eq(User.STATUS, 1);
+        w.orderBy(User.ID, false);
+        List<Hospital> hospitalList = hospitalService.selectList(w);
+        List<Map<String, Object>> list = new ArrayList<>();
+        hospitalList.forEach(row -> {
+            Map<String, Object> m = new HashMap<>();
+            m.put("id", row.getId());
+            m.put("hospitalName", row.getHospitalName());
+            list.add(m);
+        });
+        return list;
+    }
+
     private HospitalData getHospitalInfo(Hospital hospital) {
         HospitalData res = ObjectUtil.copy(hospital, HospitalData.class);
         // 地区
