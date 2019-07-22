@@ -121,7 +121,7 @@ public class HospitalService implements IHospitalService {
     @Override
     public List<Map<String, Object>> getUsableList() {
         Wrapper<Hospital> w = new EntityWrapper<>();
-        w.setSqlSelect(Hospital.ID, Hospital.HOSPITAL_NAME);
+//        w.setSqlSelect(Hospital.ID, Hospital.HOSPITAL_NAME);
         w.eq(User.STATUS, 1);
         w.orderBy(User.ID, false);
         List<Hospital> hospitalList = hospitalService.selectList(w);
