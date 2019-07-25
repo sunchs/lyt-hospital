@@ -5,6 +5,9 @@ import com.sunchs.lyt.item.bean.ItemData;
 import com.sunchs.lyt.item.bean.ItemParam;
 import com.sunchs.lyt.item.bean.OfficeQuestionnaireParam;
 
+import java.util.List;
+import java.util.Map;
+
 public interface IItemService {
 
     /**
@@ -22,4 +25,8 @@ public interface IItemService {
      */
     void bindOfficeQuestionnaire(OfficeQuestionnaireParam param);
 
+    /**
+     * 获取项目所有科室
+     */
+    List<Map<String, Object>> getOfficeList(ItemParam param);
 }

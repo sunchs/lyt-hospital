@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-07-21
+ * @since 2019-07-25
  */
 @TableName("item_office")
 public class ItemOffice extends Model<ItemOffice> {
@@ -43,6 +43,16 @@ public class ItemOffice extends Model<ItemOffice> {
      */
     @TableField("questionnaire_id")
     private Integer questionnaireId;
+
+    /**
+     * 科室类型
+     */
+    private Integer type;
+
+    /**
+     * 科室标题
+     */
+    private String title;
 
     /**
      * 抽样量
@@ -77,6 +87,20 @@ public class ItemOffice extends Model<ItemOffice> {
     public void setQuestionnaireId(Integer questionnaireId) {
         this.questionnaireId = questionnaireId;
     }
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
     public Integer getQuantity() {
         return quantity;
     }
@@ -93,6 +117,10 @@ public class ItemOffice extends Model<ItemOffice> {
 
     public static final String QUESTIONNAIRE_ID = "questionnaire_id";
 
+    public static final String TYPE = "type";
+
+    public static final String TITLE = "title";
+
     public static final String QUANTITY = "quantity";
 
     @Override
@@ -107,6 +135,8 @@ public class ItemOffice extends Model<ItemOffice> {
         ", itemId=" + itemId +
         ", officeId=" + officeId +
         ", questionnaireId=" + questionnaireId +
+        ", type=" + type +
+        ", title=" + title +
         ", quantity=" + quantity +
         "}";
     }

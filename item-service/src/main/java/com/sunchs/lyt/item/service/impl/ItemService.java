@@ -21,9 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class ItemService implements IItemService {
@@ -105,9 +103,34 @@ public class ItemService implements IItemService {
                 data.setItemId(param.getItemId());
                 data.setOfficeId(officeId);
                 data.setQuestionnaireId(param.getQuestionnaireId());
+                // 附带科室详情
+                HospitalOffice hospitalOffice = getHospitalOfficeById(officeId);
+                if (Objects.nonNull(hospitalOffice)) {
+                    data.setType(hospitalOffice.getType());
+                    data.setTitle(hospitalOffice.getTitle());
+                    data.setQuantity(hospitalOffice.getQuantity());
+                }
                 itemOfficeService.insert(data);
             }
         });
+    }
+
+    @Override
+    public List<Map<String, Object>> getOfficeList(ItemParam param) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
+                .eq(ItemOffice.ITEM_ID, param.getId());
+        itemOfficeService.selectList(wrapper).forEach(o -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", o.getId());
+            map.put("officeId", o.getOfficeId());
+            map.put("questionnaireId", o.getQuestionnaireId());
+            map.put("type", o.getType());
+            map.put("title", o.getTitle());
+            map.put("quantity", o.getQuantity());
+            list.add(map);
+        });
+        return list;
     }
 
     private List<Integer> getHospitalOffice(OfficeQuestionnaireParam param) {
@@ -140,5 +163,11 @@ public class ItemService implements IItemService {
         res.setCreateTimeName(FormatUtil.dateTime(res.getCreateTime()));
 
         return res;
+    }
+
+    private HospitalOffice getHospitalOfficeById(int officeId) {
+        Wrapper<HospitalOffice> wrapper = new EntityWrapper<HospitalOffice>()
+                .eq(HospitalOffice.ID, officeId);
+        return hospitalOfficeService.selectOne(wrapper);
     }
 }

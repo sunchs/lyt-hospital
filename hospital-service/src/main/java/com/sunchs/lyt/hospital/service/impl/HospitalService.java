@@ -145,7 +145,7 @@ public class HospitalService implements IHospitalService {
             Map<String, Object> m = new HashMap<>();
             m.put("id", row.getId());
             m.put("type", row.getType());
-            m.put("title", row.getName());
+            m.put("title", row.getTitle());
             m.put("quantity", row.getQuantity());
             list.add(m);
         });
@@ -227,7 +227,7 @@ public class HospitalService implements IHospitalService {
         hospitalOffices.forEach(office->{
             HospitalOfficeData o = new HospitalOfficeData();
             o.setId(office.getId());
-            o.setName(office.getName());
+            o.setName(office.getTitle());
             o.setQuantity(office.getQuantity());
             list.add(o);
         });
@@ -284,7 +284,7 @@ public class HospitalService implements IHospitalService {
             data.setId(row.getId());
             data.setHospitalId(hospitalId);
             data.setType(officeType);
-            data.setName(row.getName());
+            data.setTitle(row.getName());
             data.setQuantity(row.getQuantity());
             data.setUpdateId(UserThreadUtil.getUserId());
             data.setUpdateTime(new Timestamp(System.currentTimeMillis()));

@@ -14,7 +14,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-07-20
+ * @since 2019-07-25
  */
 @TableName("hospital_office")
 public class HospitalOffice extends Model<HospitalOffice> {
@@ -39,9 +39,9 @@ public class HospitalOffice extends Model<HospitalOffice> {
     private Integer type;
 
     /**
-     * 科室名称
+     * 科室标题
      */
-    private String name;
+    private String title;
 
     /**
      * 年数量
@@ -81,12 +81,12 @@ public class HospitalOffice extends Model<HospitalOffice> {
     public void setType(Integer type) {
         this.type = type;
     }
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
     public Integer getQuantity() {
         return quantity;
@@ -116,7 +116,7 @@ public class HospitalOffice extends Model<HospitalOffice> {
 
     public static final String TYPE = "type";
 
-    public static final String NAME = "name";
+    public static final String TITLE = "title";
 
     public static final String QUANTITY = "quantity";
 
@@ -135,7 +135,7 @@ public class HospitalOffice extends Model<HospitalOffice> {
         "id=" + id +
         ", hospitalId=" + hospitalId +
         ", type=" + type +
-        ", name=" + name +
+        ", title=" + title +
         ", quantity=" + quantity +
         ", updateId=" + updateId +
         ", updateTime=" + updateTime +

@@ -46,4 +46,13 @@ public class ItemController extends BaseController {
         itemService.bindOfficeQuestionnaire(param);
         return success();
     }
+
+    /**
+     * 获取项目所有科室
+     */
+    @PostMapping("/officeList")
+    public ResultData getOfficeList(@RequestBody RequestData data) {
+        ItemParam param = data.toObject(ItemParam.class);
+        return success(itemService.getOfficeList(param));
+    }
 }

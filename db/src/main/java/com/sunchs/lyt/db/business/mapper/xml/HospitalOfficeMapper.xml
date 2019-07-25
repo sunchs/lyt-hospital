@@ -7,7 +7,7 @@
         <id column="id" property="id" />
         <result column="hospital_id" property="hospitalId" />
         <result column="type" property="type" />
-        <result column="name" property="name" />
+        <result column="title" property="title" />
         <result column="quantity" property="quantity" />
         <result column="update_id" property="updateId" />
         <result column="update_time" property="updateTime" />
