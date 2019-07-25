@@ -135,6 +135,20 @@ public class QuestionnaireService implements IQuestionnaireService {
     }
 
     @Override
+    public List<Map<String, Object>> getUsableList(int hospitalId) {
+        Wrapper<Questionnaire> wrapper = new EntityWrapper<Questionnaire>()
+                .eq(Questionnaire.STATUS, 1);
+        List<Map<String, Object>> list = new ArrayList<>();
+        questionnaireService.selectList(wrapper).forEach(q -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", q.getId());
+            map.put("title", q.getTitle());
+            list.add(map);
+        });
+        return list;
+    }
+
+    @Override
     public String createExcelFile(int id) {
         String path = "temp";
         String fileName = System.currentTimeMillis() +".xls";

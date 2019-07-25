@@ -57,6 +57,16 @@ public class QuestionnaireController extends BaseController {
     }
 
     /**
+     * 获取可用问卷
+     */
+    @PostMapping("/usableList")
+    public ResultData usableList(@RequestBody RequestData data) {
+        QuestionnaireParam param = data.toObject(QuestionnaireParam.class);
+        return success(questionnaireService.getUsableList(param.getHospitalId()));
+    }
+
+
+    /**
      * 导出文件
      */
     @PostMapping("/outputFile")

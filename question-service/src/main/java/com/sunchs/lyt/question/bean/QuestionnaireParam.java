@@ -7,6 +7,7 @@ import java.util.List;
 public class QuestionnaireParam extends PagingParam {
 
     private int id;
+    private int hospitalId;
     private String title;
     private int status;
     private int targetOne;
@@ -18,6 +19,14 @@ public class QuestionnaireParam extends PagingParam {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getHospitalId() {
+        return hospitalId;
+    }
+
+    public void setHospitalId(int hospitalId) {
+        this.hospitalId = hospitalId;
     }
 
     public String getTitle() {

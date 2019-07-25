@@ -5,6 +5,9 @@ import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.question.bean.QuestionnaireData;
 import com.sunchs.lyt.question.bean.QuestionnaireParam;
 
+import java.util.List;
+import java.util.Map;
+
 public interface IQuestionnaireService {
 
     /**
@@ -26,6 +29,11 @@ public interface IQuestionnaireService {
      * 更新状态
      */
     void updateStatus(QuestionnaireParam param);
+
+    /**
+     * 获取可用问卷
+     */
+    List<Map<String, Object>> getUsableList(int hospitalId);
 
     /**
      * 根据 问卷ID 生产xls文件
