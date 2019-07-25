@@ -145,7 +145,7 @@ public class HospitalService implements IHospitalService {
             Map<String, Object> m = new HashMap<>();
             m.put("id", row.getId());
             m.put("type", row.getType());
-            m.put("name", row.getName());
+            m.put("title", row.getName());
             m.put("quantity", row.getQuantity());
             list.add(m);
         });
