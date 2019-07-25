@@ -77,7 +77,8 @@ public class HospitalController extends BaseController {
      */
     @PostMapping("/getOfficeList")
     public ResultData getOfficeList(@RequestBody RequestData data) {
-        return success(hospitalService.getOfficeList());
+        HospitalParam param = data.toObject(HospitalParam.class);
+        return success(hospitalService.getOfficeList(param.getId()));
     }
 
 
