@@ -38,4 +38,9 @@ public interface IHospitalService {
      * 获取可用医院列表
      */
     List<Map<String, Object>> getUsableList();
+
+    /**
+     * 获取医院科室
+     */
+    List<Map<String, Object>> getOfficeList(int hospitalId);
 }

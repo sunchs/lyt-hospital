@@ -135,6 +135,23 @@ public class HospitalService implements IHospitalService {
         return list;
     }
 
+    @Override
+    public List<Map<String, Object>> getOfficeList(int hospitalId) {
+        Wrapper<HospitalOffice> wrapper = new EntityWrapper<HospitalOffice>()
+                .eq(HospitalOffice.HOSPITAL_ID, hospitalId);
+        List<HospitalOffice> officeList = hospitalOfficeService.selectList(wrapper);
+        List<Map<String, Object>> list = new ArrayList<>();
+        officeList.forEach(row -> {
+            Map<String, Object> m = new HashMap<>();
+            m.put("id", row.getId());
+            m.put("type", row.getType());
+            m.put("name", row.getName());
+            m.put("quantity", row.getQuantity());
+            list.add(m);
+        });
+        return list;
+    }
+
     private HospitalData getHospitalInfo(Hospital hospital) {
         HospitalData res = ObjectUtil.copy(hospital, HospitalData.class);
         // 地区

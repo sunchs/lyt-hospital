@@ -72,4 +72,14 @@ public class HospitalController extends BaseController {
         return success(hospitalService.getUsableList());
     }
 
+    /**
+     * 获取医院所有科室
+     */
+    @PostMapping("/getOfficeList")
+    public ResultData getOfficeList(@RequestBody RequestData data) {
+        return success(hospitalService.getOfficeList());
+    }
+
+
+
 }
