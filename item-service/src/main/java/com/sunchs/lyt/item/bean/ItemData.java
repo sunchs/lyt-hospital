@@ -1,6 +1,9 @@
 package com.sunchs.lyt.item.bean;
 
 import com.sunchs.lyt.db.business.entity.Item;
+import com.sunchs.lyt.db.business.entity.Questionnaire;
+
+import java.util.List;
 
 public class ItemData extends Item {
 
@@ -9,6 +12,8 @@ public class ItemData extends Item {
     private String finishTimeName;
 
     private String createTimeName;
+
+    private List<Questionnaire> questionnaireList;
 
     public String getStatusName() {
         return statusName;
@@ -32,5 +37,13 @@ public class ItemData extends Item {
 
     public void setCreateTimeName(String createTimeName) {
         this.createTimeName = createTimeName;
+    }
+
+    public List<Questionnaire> getQuestionnaireList() {
+        return questionnaireList;
+    }
+
+    public void setQuestionnaireList(List<Questionnaire> questionnaireList) {
+        this.questionnaireList = questionnaireList;
     }
 }

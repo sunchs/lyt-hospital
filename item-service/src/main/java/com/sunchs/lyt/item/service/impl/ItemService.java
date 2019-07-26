@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.HospitalOffice;
 import com.sunchs.lyt.db.business.entity.Item;
 import com.sunchs.lyt.db.business.entity.ItemOffice;
+import com.sunchs.lyt.db.business.entity.Questionnaire;
 import com.sunchs.lyt.db.business.service.impl.HospitalOfficeServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.ItemOfficeServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.ItemServiceImpl;
+import com.sunchs.lyt.db.business.service.impl.QuestionnaireServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.*;
 import com.sunchs.lyt.item.bean.ItemData;
@@ -35,12 +37,15 @@ public class ItemService implements IItemService {
     @Autowired
     private HospitalOfficeServiceImpl hospitalOfficeService;
 
+    @Autowired
+    private QuestionnaireServiceImpl questionnaireService;
+
     @Override
     public PagingList<ItemData> getPageList(ItemParam param) {
         List<ItemData> list = new ArrayList<>();
         Wrapper<Item> w = new EntityWrapper<>();
         Page<Item> page = itemService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), w);
-        page.getRecords().forEach(row-> list.add(getItemInfo(row)));
+        page.getRecords().forEach(row -> list.add(getItemInfo(row)));
         return PagingUtil.getData(list, page.getSize(), param.getPageNow(), param.getPageSize());
     }
 
@@ -153,6 +158,9 @@ public class ItemService implements IItemService {
     private ItemData getItemInfo(Item item) {
         ItemData res = ObjectUtil.copy(item, ItemData.class);
 
+        // 获取问卷列表
+        res.setQuestionnaireList(getQuestionnaireList(item));
+
         // 状态
         res.setStatusName(ItemStatusEnum.get(res.getStatus()));
 
@@ -169,5 +177,22 @@ public class ItemService implements IItemService {
         Wrapper<HospitalOffice> wrapper = new EntityWrapper<HospitalOffice>()
                 .eq(HospitalOffice.ID, officeId);
         return hospitalOfficeService.selectOne(wrapper);
+    }
+
+    private List<Questionnaire> getQuestionnaireList(Item item) {
+        List<Integer> ids = getQuestionnaireIds(item);
+        Wrapper<Questionnaire> wrapper = new EntityWrapper<Questionnaire>()
+                .in(Questionnaire.ID, ids);
+        return questionnaireService.selectList(wrapper);
+    }
+
+    private List<Integer> getQuestionnaireIds(Item item) {
+        List<Integer> ids = new ArrayList<>();
+        Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
+                .setSqlSelect(ItemOffice.QUESTIONNAIRE_ID)
+                .eq(ItemOffice.ITEM_ID, item.getId())
+                .groupBy(ItemOffice.QUESTIONNAIRE_ID);
+        itemOfficeService.selectList(wrapper).forEach(q -> ids.add(q.getQuestionnaireId()));
+        return ids;
     }
 }
