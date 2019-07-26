@@ -192,7 +192,10 @@ public class ItemService implements IItemService {
                 .setSqlSelect(ItemOffice.QUESTIONNAIRE_ID)
                 .eq(ItemOffice.ITEM_ID, item.getId())
                 .groupBy(ItemOffice.QUESTIONNAIRE_ID);
-        itemOfficeService.selectList(wrapper).forEach(q -> ids.add(q.getQuestionnaireId()));
+        itemOfficeService.selectList(wrapper).forEach(q -> {
+            System.out.println(q);
+            ids.add(q.getQuestionnaireId());
+        });
         return ids;
     }
 }
