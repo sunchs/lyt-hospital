@@ -180,7 +180,7 @@ public class ItemService implements IItemService {
     }
 
     private List<Questionnaire> getQuestionnaireList(Item item) {
-        List<Integer> ids = getQuestionnaireIds(item);
+        Set<Integer> ids = getQuestionnaireIds(item);
         if (ids.size() == 0) {
             return new ArrayList<>();
         }
@@ -189,12 +189,11 @@ public class ItemService implements IItemService {
         return questionnaireService.selectList(wrapper);
     }
 
-    private List<Integer> getQuestionnaireIds(Item item) {
-        List<Integer> ids = new ArrayList<>();
+    private Set<Integer> getQuestionnaireIds(Item item) {
+        Set<Integer> ids = new HashSet<>();
         Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
                 .eq(ItemOffice.ITEM_ID, item.getId());
         itemOfficeService.selectList(wrapper).forEach(q -> {
-            System.out.println("========>>>>"+q);
             ids.add(q.getQuestionnaireId());
         });
         return ids;
