@@ -192,8 +192,7 @@ public class ItemService implements IItemService {
     private List<Integer> getQuestionnaireIds(Item item) {
         List<Integer> ids = new ArrayList<>();
         Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
-                .eq(ItemOffice.ITEM_ID, item.getId())
-                .groupBy(ItemOffice.QUESTIONNAIRE_ID);
+                .eq(ItemOffice.ITEM_ID, item.getId());
         itemOfficeService.selectList(wrapper).forEach(q -> {
             System.out.println("========>>>>"+q);
             ids.add(q.getQuestionnaireId());
