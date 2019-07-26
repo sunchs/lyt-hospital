@@ -62,7 +62,7 @@ public class QuestionnaireController extends BaseController {
     @PostMapping("/usableList")
     public ResultData usableList(@RequestBody RequestData data) {
         QuestionnaireParam param = data.toObject(QuestionnaireParam.class);
-        return success(questionnaireService.getUsableList(param.getHospitalId()));
+        return success(questionnaireService.getUsableList(param));
     }
 
 
