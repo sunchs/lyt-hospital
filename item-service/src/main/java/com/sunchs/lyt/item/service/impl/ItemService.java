@@ -192,7 +192,6 @@ public class ItemService implements IItemService {
     private List<Integer> getQuestionnaireIds(Item item) {
         List<Integer> ids = new ArrayList<>();
         Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
-                .setSqlSelect(ItemOffice.QUESTIONNAIRE_ID)
                 .eq(ItemOffice.ITEM_ID, item.getId())
                 .groupBy(ItemOffice.QUESTIONNAIRE_ID);
         itemOfficeService.selectList(wrapper).forEach(q -> {
