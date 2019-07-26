@@ -135,9 +135,10 @@ public class QuestionnaireService implements IQuestionnaireService {
     }
 
     @Override
-    public List<Map<String, Object>> getUsableList(int hospitalId) {
+    public List<Map<String, Object>> getUsableList(QuestionnaireParam param) {
         Wrapper<Questionnaire> wrapper = new EntityWrapper<Questionnaire>()
-                .eq(Questionnaire.STATUS, 1);
+                .eq(Questionnaire.STATUS, 1)
+                .eq(Questionnaire.TARGET_ONE, param.getTargetOne());
         List<Map<String, Object>> list = new ArrayList<>();
         questionnaireService.selectList(wrapper).forEach(q -> {
             Map<String, Object> map = new HashMap<>();

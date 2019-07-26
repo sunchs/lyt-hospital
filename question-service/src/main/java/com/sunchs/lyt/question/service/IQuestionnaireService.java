@@ -33,7 +33,7 @@ public interface IQuestionnaireService {
     /**
      * 获取可用问卷
      */
-    List<Map<String, Object>> getUsableList(int hospitalId);
+    List<Map<String, Object>> getUsableList(QuestionnaireParam param);
 
     /**
      * 根据 问卷ID 生产xls文件
