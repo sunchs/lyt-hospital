@@ -143,6 +143,7 @@ public class QuestionnaireService implements IQuestionnaireService {
             Map<String, Object> map = new HashMap<>();
             map.put("id", q.getId());
             map.put("title", q.getTitle());
+            map.put("targetOne", q.getTargetOne());
             list.add(map);
         });
         return list;
