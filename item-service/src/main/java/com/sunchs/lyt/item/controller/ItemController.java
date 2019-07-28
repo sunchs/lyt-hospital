@@ -53,7 +53,7 @@ public class ItemController extends BaseController {
     @PostMapping("/getById")
     public ResultData getById(@RequestBody RequestData data) {
         ItemParam param = data.toObject(ItemParam.class);
-        return success(itemService.getById(param));
+        return success(itemService.getById(param.getId()));
     }
 
     /**
