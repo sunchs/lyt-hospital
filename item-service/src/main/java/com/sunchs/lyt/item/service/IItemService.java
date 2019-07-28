@@ -26,6 +26,11 @@ public interface IItemService {
     int bindOfficeQuestionnaire(BindOfficeParam param);
 
     /**
+     * 根据 项目ID 获取项目详情
+     */
+    ItemData getById(int itemId);
+
+    /**
      * 获取项目所有科室
      */
     List<Map<String, Object>> getOfficeList(ItemParam param);

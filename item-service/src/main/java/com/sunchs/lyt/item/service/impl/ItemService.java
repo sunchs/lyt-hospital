@@ -136,6 +136,16 @@ public class ItemService implements IItemService {
     }
 
     @Override
+    public ItemData getById(int itemId) {
+        Item item = itemService.selectById(itemId);
+        if (Objects.nonNull(item)) {
+            return ObjectUtil.copy(item, ItemData.class);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
     public List<Map<String, Object>> getOfficeList(ItemParam param) {
         List<Map<String, Object>> list = new ArrayList<>();
         Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()

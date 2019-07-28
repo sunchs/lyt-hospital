@@ -48,6 +48,15 @@ public class ItemController extends BaseController {
     }
 
     /**
+     * 根据 项目ID 获取项目详情
+     */
+    @PostMapping("/getById")
+    public ResultData getById(@RequestBody RequestData data) {
+        ItemParam param = data.toObject(ItemParam.class);
+        return success(itemService.getById(param));
+    }
+
+    /**
      * 获取项目所有科室
      */
     @PostMapping("/officeList")
