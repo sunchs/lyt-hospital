@@ -107,7 +107,7 @@ public class ItemService implements IItemService {
     }
 
     @Override
-    public void bindOfficeQuestionnaire(BindOfficeParam param) {
+    public int bindOfficeQuestionnaire(BindOfficeParam param) {
         // 清理历史数据
         Wrapper<ItemOffice> w = new EntityWrapper<>();
         w.eq(ItemOffice.ITEM_ID, param.getItemId());
@@ -130,6 +130,7 @@ public class ItemService implements IItemService {
                 itemOfficeService.insert(data);
             });
         });
+        return param.getItemId();
     }
 
     @Override

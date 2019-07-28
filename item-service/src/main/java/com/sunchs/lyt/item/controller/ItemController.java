@@ -3,6 +3,7 @@ package com.sunchs.lyt.item.controller;
 import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
+import com.sunchs.lyt.item.bean.BindOfficeParam;
 import com.sunchs.lyt.item.bean.ItemParam;
 import com.sunchs.lyt.item.bean.OfficeQuestionnaireParam;
 import com.sunchs.lyt.item.service.impl.ItemService;
@@ -42,9 +43,8 @@ public class ItemController extends BaseController {
      */
     @PostMapping("/bindOfficeQuestionnaire")
     public ResultData bindOfficeQuestionnaire(@RequestBody RequestData data) {
-        OfficeQuestionnaireParam param = data.toObject(OfficeQuestionnaireParam.class);
-        itemService.bindOfficeQuestionnaire(param);
-        return success();
+        BindOfficeParam param = data.toObject(BindOfficeParam.class);
+        return success(itemService.bindOfficeQuestionnaire(param));
     }
 
     /**

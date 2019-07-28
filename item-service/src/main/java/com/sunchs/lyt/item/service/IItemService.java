@@ -23,7 +23,7 @@ public interface IItemService {
     /**
      * 项目 医院科室绑定问卷
      */
-    void bindOfficeQuestionnaire(BindOfficeParam param);
+    int bindOfficeQuestionnaire(BindOfficeParam param);
 
     /**
      * 获取项目所有科室
