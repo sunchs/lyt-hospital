@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.service.IService;
 
 /**
  * <p>
- *  服务类
+ * 项目科室表 服务类
  * </p>
  *
  * @author king
- * @since 2019-07-25
+ * @since 2019-07-28
  */
 public interface IItemOfficeService extends IService<ItemOffice> {
 

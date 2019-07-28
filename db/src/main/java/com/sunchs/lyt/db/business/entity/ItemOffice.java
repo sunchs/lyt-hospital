@@ -9,11 +9,11 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 
+ * 项目科室表
  * </p>
  *
  * @author king
- * @since 2019-07-25
+ * @since 2019-07-28
  */
 @TableName("item_office")
 public class ItemOffice extends Model<ItemOffice> {
@@ -33,6 +33,12 @@ public class ItemOffice extends Model<ItemOffice> {
     private Integer itemId;
 
     /**
+     * 科室类型ID
+     */
+    @TableField("office_type_id")
+    private Integer officeTypeId;
+
+    /**
      * 科室ID
      */
     @TableField("office_id")
@@ -43,11 +49,6 @@ public class ItemOffice extends Model<ItemOffice> {
      */
     @TableField("questionnaire_id")
     private Integer questionnaireId;
-
-    /**
-     * 科室类型
-     */
-    private Integer type;
 
     /**
      * 科室标题
@@ -73,6 +74,13 @@ public class ItemOffice extends Model<ItemOffice> {
     public void setItemId(Integer itemId) {
         this.itemId = itemId;
     }
+    public Integer getOfficeTypeId() {
+        return officeTypeId;
+    }
+
+    public void setOfficeTypeId(Integer officeTypeId) {
+        this.officeTypeId = officeTypeId;
+    }
     public Integer getOfficeId() {
         return officeId;
     }
@@ -86,13 +94,6 @@ public class ItemOffice extends Model<ItemOffice> {
 
     public void setQuestionnaireId(Integer questionnaireId) {
         this.questionnaireId = questionnaireId;
-    }
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
     }
     public String getTitle() {
         return title;
@@ -113,11 +114,11 @@ public class ItemOffice extends Model<ItemOffice> {
 
     public static final String ITEM_ID = "item_id";
 
+    public static final String OFFICE_TYPE_ID = "office_type_id";
+
     public static final String OFFICE_ID = "office_id";
 
     public static final String QUESTIONNAIRE_ID = "questionnaire_id";
-
-    public static final String TYPE = "type";
 
     public static final String TITLE = "title";
 
@@ -133,9 +134,9 @@ public class ItemOffice extends Model<ItemOffice> {
         return "ItemOffice{" +
         "id=" + id +
         ", itemId=" + itemId +
+        ", officeTypeId=" + officeTypeId +
         ", officeId=" + officeId +
         ", questionnaireId=" + questionnaireId +
-        ", type=" + type +
         ", title=" + title +
         ", quantity=" + quantity +
         "}";

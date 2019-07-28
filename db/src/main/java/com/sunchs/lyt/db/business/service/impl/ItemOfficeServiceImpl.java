@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 
 /**
  * <p>
- *  服务实现类
+ * 项目科室表 服务实现类
  * </p>
  *
  * @author king
- * @since 2019-07-25
+ * @since 2019-07-28
  */
 @Service
 public class ItemOfficeServiceImpl extends ServiceImpl<ItemOfficeMapper, ItemOffice> implements IItemOfficeService {

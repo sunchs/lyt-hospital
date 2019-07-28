@@ -13,6 +13,7 @@ import com.sunchs.lyt.db.business.service.impl.ItemServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.QuestionnaireServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.*;
+import com.sunchs.lyt.item.bean.BindOfficeParam;
 import com.sunchs.lyt.item.bean.ItemData;
 import com.sunchs.lyt.item.bean.ItemParam;
 import com.sunchs.lyt.item.bean.OfficeQuestionnaireParam;
@@ -106,30 +107,28 @@ public class ItemService implements IItemService {
     }
 
     @Override
-    public void bindOfficeQuestionnaire(OfficeQuestionnaireParam param) {
-        param.filterParam();
-        List<Integer> hospitalOfficeIds = getHospitalOffice(param);
-
+    public void bindOfficeQuestionnaire(BindOfficeParam param) {
         // 清理历史数据
         Wrapper<ItemOffice> w = new EntityWrapper<>();
         w.eq(ItemOffice.ITEM_ID, param.getItemId());
         itemOfficeService.delete(w);
         // 添加新数据
-        param.getOfficeIds().forEach(officeId -> {
-            if (hospitalOfficeIds.contains(officeId)) {
+        List<OfficeQuestionnaireParam> bindList = param.getBindList();
+        bindList.forEach(o -> {
+            o.getOfficeList().forEach(officeId -> {
                 ItemOffice data = new ItemOffice();
                 data.setItemId(param.getItemId());
+                data.setOfficeTypeId(o.getOfficeTypeId());
                 data.setOfficeId(officeId);
-                data.setQuestionnaireId(param.getQuestionnaireId());
+                data.setQuestionnaireId(o.getQuestionnaireId());
                 // 附带科室详情
                 HospitalOffice hospitalOffice = getHospitalOfficeById(officeId);
                 if (Objects.nonNull(hospitalOffice)) {
-                    data.setType(hospitalOffice.getType());
                     data.setTitle(hospitalOffice.getTitle());
                     data.setQuantity(hospitalOffice.getQuantity());
                 }
                 itemOfficeService.insert(data);
-            }
+            });
         });
     }
 
@@ -141,9 +140,9 @@ public class ItemService implements IItemService {
         itemOfficeService.selectList(wrapper).forEach(o -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", o.getId());
+            map.put("officeTypeId", o.getOfficeTypeId());
             map.put("officeId", o.getOfficeId());
             map.put("questionnaireId", o.getQuestionnaireId());
-            map.put("type", o.getType());
             map.put("title", o.getTitle());
             map.put("quantity", o.getQuantity());
             list.add(map);
@@ -151,7 +150,7 @@ public class ItemService implements IItemService {
         return list;
     }
 
-    private List<Integer> getHospitalOffice(OfficeQuestionnaireParam param) {
+    private List<Integer> getHospitalOffice(BindOfficeParam param) {
         Wrapper<Item> w = new EntityWrapper<>();
         w.eq(Item.ID, param.getItemId());
         Item item = itemService.selectOne(w);

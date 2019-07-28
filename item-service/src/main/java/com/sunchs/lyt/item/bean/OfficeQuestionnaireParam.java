@@ -13,49 +13,55 @@ import java.util.List;
 public class OfficeQuestionnaireParam {
 
     /**
-     * 项目ID
+     * 科室类型
      */
-    private int itemId;
+    private int officeTypeId;
 
     /**
      * 科室ID
      */
-    private List<Integer> officeIds;
+    private List<Integer> officeList;
 
     /**
      * 问卷ID
      */
     private int questionnaireId;
 
-    /**
-     * 过滤参数
-     */
-    public void filterParam() {
-        if (NumberUtil.isZero(itemId)) {
-            throw new ItemException("项目ID不能为空");
-        }
-        if (officeIds == null || officeIds.size() == 0) {
-            throw new ItemException("请选择科室");
-        }
-        if (NumberUtil.isZero(questionnaireId)) {
-            throw new ItemException("请选择问卷");
-        }
+//    /**
+//     * 问卷ID
+//     */
+//    private int questionnaireId;
+//
+//    /**
+//     * 过滤参数
+//     */
+//    public void filterParam() {
+//        if (NumberUtil.isZero(itemId)) {
+//            throw new ItemException("项目ID不能为空");
+//        }
+//        if (officeIds == null || officeIds.size() == 0) {
+//            throw new ItemException("请选择科室");
+//        }
+//        if (NumberUtil.isZero(questionnaireId)) {
+//            throw new ItemException("请选择问卷");
+//        }
+//
+//        QuestionnaireServiceImpl questionnaireService = SpringContext.getBean(QuestionnaireServiceImpl.class);
+//        Wrapper<Questionnaire> qWhere = new EntityWrapper<>();
+//        qWhere.eq(Questionnaire.ID, questionnaireId);
+//        int qCount = questionnaireService.selectCount(qWhere);
+//        if (qCount == 0) {
+//            throw new ItemException("问卷不存在，ID：" + questionnaireId);
+//        }
+//    }
 
-        QuestionnaireServiceImpl questionnaireService = SpringContext.getBean(QuestionnaireServiceImpl.class);
-        Wrapper<Questionnaire> qWhere = new EntityWrapper<>();
-        qWhere.eq(Questionnaire.ID, questionnaireId);
-        int qCount = questionnaireService.selectCount(qWhere);
-        if (qCount == 0) {
-            throw new ItemException("问卷不存在，ID：" + questionnaireId);
-        }
+
+    public int getOfficeTypeId() {
+        return officeTypeId;
     }
 
-    public int getItemId() {
-        return itemId;
-    }
-
-    public List<Integer> getOfficeIds() {
-        return officeIds;
+    public List<Integer> getOfficeList() {
+        return officeList;
     }
 
     public int getQuestionnaireId() {
