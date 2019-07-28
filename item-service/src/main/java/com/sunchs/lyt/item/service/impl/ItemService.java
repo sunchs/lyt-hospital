@@ -44,6 +44,7 @@ public class ItemService implements IItemService {
     public PagingList<ItemData> getPageList(ItemParam param) {
         List<ItemData> list = new ArrayList<>();
         Wrapper<Item> w = new EntityWrapper<>();
+        w.orderBy(Item.ID, false);
         Page<Item> page = itemService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), w);
         page.getRecords().forEach(row -> list.add(getItemInfo(row)));
         return PagingUtil.getData(list, page.getSize(), param.getPageNow(), param.getPageSize());
