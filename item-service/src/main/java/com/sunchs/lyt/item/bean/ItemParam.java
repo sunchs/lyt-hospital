@@ -13,6 +13,11 @@ public class ItemParam extends PagingList {
     private int id;
 
     /**
+     * 状态
+     */
+    private int status;
+
+    /**
      * 医院ID
      */
     private int hospitalId;
@@ -111,6 +116,10 @@ public class ItemParam extends PagingList {
 
     public int getId() {
         return id;
+    }
+
+    public int getStatus() {
+        return status;
     }
 
     public int getHospitalId() {

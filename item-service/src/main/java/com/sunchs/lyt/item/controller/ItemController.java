@@ -64,4 +64,14 @@ public class ItemController extends BaseController {
         ItemParam param = data.toObject(ItemParam.class);
         return success(itemService.getOfficeList(param));
     }
+
+    /**
+     * 修改 项目状态
+     */
+    @PostMapping("/updateStatus")
+    public ResultData updateStatus(@RequestBody RequestData data) {
+        ItemParam param = data.toObject(ItemParam.class);
+        itemService.updateStatus(param);
+        return success();
+    }
 }

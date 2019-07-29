@@ -34,4 +34,9 @@ public interface IItemService {
      * 获取项目所有科室
      */
     List<Map<String, Object>> getOfficeList(ItemParam param);
+
+    /**
+     * 更新项目状态
+     */
+    void updateStatus(ItemParam param);
 }

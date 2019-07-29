@@ -173,6 +173,16 @@ public class ItemService implements IItemService {
         return list;
     }
 
+    @Override
+    public void updateStatus(ItemParam param) {
+        Item data = new Item();
+        data.setId(param.getId());
+        data.setStatus(param.getStatus());
+        data.setUpdateId(UserThreadUtil.getUserId());
+        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        itemService.updateById(data);
+    }
+
     private List<Integer> getHospitalOffice(BindOfficeParam param) {
         Wrapper<Item> w = new EntityWrapper<>();
         w.eq(Item.ID, param.getItemId());
