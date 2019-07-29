@@ -74,4 +74,13 @@ public class ItemController extends BaseController {
         itemService.updateStatus(param);
         return success();
     }
+
+    /**
+     * 科室进度
+     */
+    @PostMapping("/officePlan")
+    public ResultData getOfficePlan(@RequestBody RequestData data) {
+        ItemParam param = data.toObject(ItemParam.class);
+        return success(itemService.getOfficePlan(param));
+    }
 }

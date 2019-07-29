@@ -3,14 +3,8 @@ package com.sunchs.lyt.item.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.sunchs.lyt.db.business.entity.HospitalOffice;
-import com.sunchs.lyt.db.business.entity.Item;
-import com.sunchs.lyt.db.business.entity.ItemOffice;
-import com.sunchs.lyt.db.business.entity.Questionnaire;
-import com.sunchs.lyt.db.business.service.impl.HospitalOfficeServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.ItemOfficeServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.ItemServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.QuestionnaireServiceImpl;
+import com.sunchs.lyt.db.business.entity.*;
+import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.*;
 import com.sunchs.lyt.item.bean.BindOfficeParam;
@@ -40,6 +34,9 @@ public class ItemService implements IItemService {
 
     @Autowired
     private QuestionnaireServiceImpl questionnaireService;
+
+    @Autowired
+    private AnswerServiceImpl answerService;
 
     @Override
     public PagingList<ItemData> getPageList(ItemParam param) {
@@ -181,6 +178,30 @@ public class ItemService implements IItemService {
         data.setUpdateId(UserThreadUtil.getUserId());
         data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         itemService.updateById(data);
+    }
+
+    @Override
+    public List<Map<String, Object>> getOfficePlan(int itemId, int officeTypeId) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
+                .eq(ItemOffice.ITEM_ID, itemId)
+                .eq(ItemOffice.OFFICE_TYPE_ID, officeTypeId);
+        itemOfficeService.selectList(wrapper).forEach(o -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", o.getId());
+            map.put("officeTypeId", o.getOfficeTypeId());
+            map.put("title", o.getTitle());
+            map.put("quantity", o.getQuantity());
+            // 已审核的数量
+            Wrapper<Answer> w = new EntityWrapper<Answer>()
+                    .eq(Answer.ITEM_ID, itemId)
+                    .eq(Answer.OFFICE_ID, o.getId())
+                    .eq(Answer.STATUS, 1);
+            int count = answerService.selectCount(w);
+            map.put("answerQuantity", count);
+            list.add(map);
+        });
+        return list;
     }
 
     private List<Integer> getHospitalOffice(BindOfficeParam param) {

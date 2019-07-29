@@ -39,4 +39,9 @@ public interface IItemService {
      * 更新项目状态
      */
     void updateStatus(ItemParam param);
+
+    /**
+     * 科室进度
+     */
+    List<Map<String, Object>> getOfficePlan(int itemId, int officeTypeId);
 }
