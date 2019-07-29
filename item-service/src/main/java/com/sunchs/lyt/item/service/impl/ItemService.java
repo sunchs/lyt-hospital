@@ -138,11 +138,18 @@ public class ItemService implements IItemService {
     @Override
     public ItemData getById(int itemId) {
         Item item = itemService.selectById(itemId);
-        if (Objects.nonNull(item)) {
-            return ObjectUtil.copy(item, ItemData.class);
-        } else {
+        if (Objects.isNull(item)) {
             return null;
         }
+        ItemData data = ObjectUtil.copy(item, ItemData.class);
+        data.setStatusName(FormatUtil.dateTime(data.getStartTime()));
+        data.setEndTimeName(FormatUtil.dateTime(data.getEndTime()));
+        data.setApproachTimeName(FormatUtil.dateTime(data.getApproachTime()));
+        data.setDeliveryTimeName(FormatUtil.dateTime(data.getDeliveryTime()));
+        data.setDataAnalysisTimeName(FormatUtil.dateTime(data.getDataAnalysisTime()));
+        data.setReportStartTimeName(FormatUtil.dateTime(data.getReportStartTime()));
+        data.setReportEndTimeName(FormatUtil.dateTime(data.getReportEndTime()));
+        return data;
     }
 
     @Override
