@@ -53,19 +53,22 @@ public class ItemService implements IItemService {
 
     @Override
     public int save(ItemParam param) {
-        param.filterParam();
-        Wrapper<Item> w = new EntityWrapper<>();
-        w.eq(Item.NUMBER, param.getNumber());
-        int count = itemService.selectCount(w);
-        if (count > 0) {
-            throw new ItemException("项目编号已存在");
+        if (param.getId() == 0) {
+            param.filterParam();
+            Wrapper<Item> w = new EntityWrapper<>();
+            w.eq(Item.NUMBER, param.getNumber());
+            int count = itemService.selectCount(w);
+            if (count > 0) {
+                throw new ItemException("项目编号已存在");
+            }
+            Wrapper<Item> wTit = new EntityWrapper<>();
+            wTit.eq(Item.TITLE, param.getTitle());
+            int titCount = itemService.selectCount(wTit);
+            if (titCount > 0) {
+                throw new ItemException("项目标题已存在");
+            }
         }
-        Wrapper<Item> wTit = new EntityWrapper<>();
-        wTit.eq(Item.TITLE, param.getTitle());
-        int titCount = itemService.selectCount(wTit);
-        if (titCount > 0) {
-            throw new ItemException("项目标题已存在");
-        }
+
 
         Item data = new Item();
         data.setId(param.getId());
