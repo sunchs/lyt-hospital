@@ -26,6 +26,8 @@ public class ItemData extends Item {
 
     private List<Questionnaire> questionnaireList;
 
+    private List<OfficePlanData> officePlanList;
+
     public String getStartTimeName() {
         return startTimeName;
     }
@@ -112,5 +114,13 @@ public class ItemData extends Item {
 
     public void setReportEndTimeName(String reportEndTimeName) {
         this.reportEndTimeName = reportEndTimeName;
+    }
+
+    public List<OfficePlanData> getOfficePlanList() {
+        return officePlanList;
+    }
+
+    public void setOfficePlanList(List<OfficePlanData> officePlanList) {
+        this.officePlanList = officePlanList;
     }
 }

@@ -7,10 +7,7 @@ import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.*;
-import com.sunchs.lyt.item.bean.BindOfficeParam;
-import com.sunchs.lyt.item.bean.ItemData;
-import com.sunchs.lyt.item.bean.ItemParam;
-import com.sunchs.lyt.item.bean.OfficeQuestionnaireParam;
+import com.sunchs.lyt.item.bean.*;
 import com.sunchs.lyt.item.enums.ItemStatusEnum;
 import com.sunchs.lyt.item.exception.ItemException;
 import com.sunchs.lyt.item.service.IItemService;
@@ -226,6 +223,50 @@ public class ItemService implements IItemService {
 
         // 获取问卷列表
         res.setQuestionnaireList(getQuestionnaireList(item));
+
+        // 项目总进度
+        List<OfficePlanData> planList = new ArrayList<>();
+        Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
+                .eq(ItemOffice.ITEM_ID, item.getId())
+                .groupBy(ItemOffice.OFFICE_TYPE_ID);
+        itemOfficeService.selectList(wrapper).forEach(type -> {
+            OfficePlanData oData = new OfficePlanData();
+            oData.setOfficeTypeId(type.getOfficeTypeId());
+            switch (type.getOfficeTypeId()) {
+                case 1:
+                    oData.setOfficeTypeName("门诊");
+                    break;
+                case 2:
+                    oData.setOfficeTypeName("住院");
+                    break;
+                case 3:
+                    oData.setOfficeTypeName("特殊");
+                    break;
+                case 4:
+                    oData.setOfficeTypeName("员工");
+                    break;
+                default:
+                    break;
+            }
+
+            int answerQty = 0;
+            Wrapper<ItemOffice> w = new EntityWrapper<ItemOffice>()
+                    .eq(ItemOffice.ITEM_ID, item.getId())
+                    .eq(ItemOffice.OFFICE_TYPE_ID, type.getOfficeTypeId());
+            List<ItemOffice> officeList = itemOfficeService.selectList(w);
+            for (ItemOffice office : officeList) {
+                Wrapper<Answer> answerWrapper = new EntityWrapper<Answer>()
+                        .eq(Answer.ITEM_ID, item.getId())
+                        .eq(Answer.OFFICE_ID, office.getOfficeId())
+                        .eq(Answer.STATUS, 1);
+                int count = answerService.selectCount(answerWrapper);
+                answerQty += count;
+            }
+
+            oData.setQuantity(answerQty);
+            planList.add(oData);
+        });
+        res.setOfficePlanList(planList);
 
         // 状态
         res.setStatusName(ItemStatusEnum.get(res.getStatus()));
