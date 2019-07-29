@@ -142,7 +142,7 @@ public class ItemService implements IItemService {
             return null;
         }
         ItemData data = ObjectUtil.copy(item, ItemData.class);
-        data.setStatusName(FormatUtil.dateTime(data.getStartTime()));
+        data.setStartTimeName(FormatUtil.dateTime(data.getStartTime()));
         data.setEndTimeName(FormatUtil.dateTime(data.getEndTime()));
         data.setApproachTimeName(FormatUtil.dateTime(data.getApproachTime()));
         data.setDeliveryTimeName(FormatUtil.dateTime(data.getDeliveryTime()));
