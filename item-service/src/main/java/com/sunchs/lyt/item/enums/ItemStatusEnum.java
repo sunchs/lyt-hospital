@@ -5,12 +5,12 @@ public enum ItemStatusEnum {
     /**
      * 开启
      */
-    Start(1, "执行中"),
+    Start(1, "启用"),
 
     /**
      * 停用
      */
-    Stop(0, "未启动"),
+    Stop(0, "停用"),
 
     /**
      * 删除
