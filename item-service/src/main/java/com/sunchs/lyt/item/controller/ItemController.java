@@ -80,7 +80,8 @@ public class ItemController extends BaseController {
      */
     @PostMapping("/officePlan")
     public ResultData getOfficePlan(@RequestBody RequestData data) {
-        ItemParam param = data.toObject(ItemParam.class);
-        return success(itemService.getOfficePlan(param));
+        int itemId = data.getInt("id");
+        int officeTypeId = data.getInt("officeTypeId");
+        return success(itemService.getOfficePlan(itemId, officeTypeId));
     }
 }
