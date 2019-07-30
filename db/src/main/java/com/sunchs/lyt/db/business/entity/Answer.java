@@ -59,7 +59,7 @@ public class Answer extends Model<Answer> {
      * 患者编号
      */
     @TableField("patient_number")
-    private Integer patientNumber;
+    private String patientNumber;
 
     /**
      * 状态
@@ -133,11 +133,11 @@ public class Answer extends Model<Answer> {
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
-    public Integer getPatientNumber() {
+    public String getPatientNumber() {
         return patientNumber;
     }
 
-    public void setPatientNumber(Integer patientNumber) {
+    public void setPatientNumber(String patientNumber) {
         this.patientNumber = patientNumber;
     }
     public Integer getStatus() {
