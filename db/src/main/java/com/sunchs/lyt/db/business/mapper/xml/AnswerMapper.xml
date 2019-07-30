@@ -10,6 +10,7 @@
         <result column="office_id" property="officeId" />
         <result column="questionnaire_id" property="questionnaireId" />
         <result column="user_id" property="userId" />
+        <result column="patient_number" property="patientNumber" />
         <result column="status" property="status" />
         <result column="reason" property="reason" />
         <result column="timeDuration" property="timeDuration" />
