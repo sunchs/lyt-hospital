@@ -112,7 +112,7 @@ public class ItemService implements IItemService {
         // 添加新数据
         List<OfficeQuestionnaireParam> bindList = param.getBindList();
         bindList.forEach(o -> {
-            if (o.getQuestionnaireId() > 0) {
+            if (Objects.nonNull(o) && o.getQuestionnaireId() > 0) {
                 o.getOfficeList().forEach(officeId -> {
                     ItemOffice data = new ItemOffice();
                     data.setItemId(param.getItemId());
