@@ -109,26 +109,26 @@ public class ItemService implements IItemService {
         Wrapper<ItemOffice> w = new EntityWrapper<>();
         w.eq(ItemOffice.ITEM_ID, param.getItemId());
         itemOfficeService.delete(w);
-        // 添加新数据
-        List<OfficeQuestionnaireParam> bindList = param.getBindList();
-        bindList.forEach(o -> {
-            if (Objects.nonNull(o) && o.getQuestionnaireId() > 0) {
-                o.getOfficeList().forEach(officeId -> {
-                    ItemOffice data = new ItemOffice();
-                    data.setItemId(param.getItemId());
-                    data.setOfficeTypeId(o.getOfficeTypeId());
-                    data.setOfficeId(officeId);
-                    data.setQuestionnaireId(o.getQuestionnaireId());
-                    // 附带科室详情
-                    HospitalOffice hospitalOffice = getHospitalOfficeById(officeId);
-                    if (Objects.nonNull(hospitalOffice)) {
-                        data.setTitle(hospitalOffice.getTitle());
-                        data.setQuantity(hospitalOffice.getQuantity());
-                    }
-                    itemOfficeService.insert(data);
-                });
-            }
-        });
+//        // 添加新数据
+//        List<OfficeQuestionnaireParam> bindList = param.getBindList();
+//        bindList.forEach(o -> {
+//            if (Objects.nonNull(o) && o.getQuestionnaireId() > 0) {
+//                o.getOfficeList().forEach(officeId -> {
+//                    ItemOffice data = new ItemOffice();
+//                    data.setItemId(param.getItemId());
+//                    data.setOfficeTypeId(o.getOfficeTypeId());
+//                    data.setOfficeId(officeId);
+//                    data.setQuestionnaireId(o.getQuestionnaireId());
+//                    // 附带科室详情
+//                    HospitalOffice hospitalOffice = getHospitalOfficeById(officeId);
+//                    if (Objects.nonNull(hospitalOffice)) {
+//                        data.setTitle(hospitalOffice.getTitle());
+//                        data.setQuantity(hospitalOffice.getQuantity());
+//                    }
+//                    itemOfficeService.insert(data);
+//                });
+//            }
+//        });
         return param.getItemId();
     }
 
