@@ -201,6 +201,16 @@ public class ItemService implements IItemService {
         return list;
     }
 
+    @Override
+    public void updateOfficeQuantity(OfficeQuantityParam param) {
+        param.getList().forEach(o -> {
+            ItemOffice data = new ItemOffice();
+            data.setId(o.getId());
+            data.setQuantity(o.getQuantity());
+            itemOfficeService.updateById(data);
+        });
+    }
+
     private List<Integer> getHospitalOffice(BindOfficeParam param) {
         Wrapper<Item> w = new EntityWrapper<>();
         w.eq(Item.ID, param.getItemId());

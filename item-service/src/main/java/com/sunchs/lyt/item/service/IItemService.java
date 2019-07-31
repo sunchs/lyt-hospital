@@ -4,6 +4,7 @@ import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.item.bean.BindOfficeParam;
 import com.sunchs.lyt.item.bean.ItemData;
 import com.sunchs.lyt.item.bean.ItemParam;
+import com.sunchs.lyt.item.bean.OfficeQuantityParam;
 
 import java.util.List;
 import java.util.Map;
@@ -44,4 +45,9 @@ public interface IItemService {
      * 科室进度
      */
     List<Map<String, Object>> getOfficePlan(int itemId, int officeTypeId);
+
+    /**
+     * 更新科室抽样量
+     */
+    void updateOfficeQuantity(OfficeQuantityParam param);
 }

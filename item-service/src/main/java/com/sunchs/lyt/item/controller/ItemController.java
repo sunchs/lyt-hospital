@@ -5,6 +5,7 @@ import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
 import com.sunchs.lyt.item.bean.BindOfficeParam;
 import com.sunchs.lyt.item.bean.ItemParam;
+import com.sunchs.lyt.item.bean.OfficeQuantityParam;
 import com.sunchs.lyt.item.bean.OfficeQuestionnaireParam;
 import com.sunchs.lyt.item.service.impl.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,5 +84,15 @@ public class ItemController extends BaseController {
         int itemId = data.getInt("id");
         int officeTypeId = data.getInt("officeTypeId");
         return success(itemService.getOfficePlan(itemId, officeTypeId));
+    }
+
+    /**
+     * 更新科室抽样量
+     */
+    @PostMapping("/updateOfficeQuantity")
+    public ResultData updateOfficeQuantity(@RequestBody RequestData data) {
+        OfficeQuantityParam param = data.toObject(OfficeQuantityParam.class);
+        itemService.updateOfficeQuantity(param);
+        return success();
     }
 }
