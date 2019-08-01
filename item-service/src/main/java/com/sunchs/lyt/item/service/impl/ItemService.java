@@ -370,7 +370,7 @@ public class ItemService implements IItemService {
                 .eq(Questionnaire.ID, questionnaireId);
         Questionnaire row = questionnaireService.selectOne(wrapper);
         if (Objects.nonNull(row)) {
-            return row.getTitle()
+            return row.getTitle();
         }
         return "";
     }
