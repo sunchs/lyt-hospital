@@ -68,15 +68,29 @@ public class AnswerService implements IAnswerService {
 
     @Override
     public void updateStatus(AnswerParam param) {
-        Answer data = new Answer();
-        data.setId(param.getId());
-        data.setStatus(param.getStatus());
-        if (StringUtil.isNotEmpty(param.getReason())) {
-            data.setReason(param.getReason());
+        if (param.getId() == 0) {
+            param.getIdList().forEach(id -> {
+                Answer data = new Answer();
+                data.setId(id);
+                data.setStatus(param.getStatus());
+                if (StringUtil.isNotEmpty(param.getReason())) {
+                    data.setReason(param.getReason());
+                }
+                data.setUpdateId(UserThreadUtil.getUserId());
+                data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+                answerService.updateById(data);
+            });
+        } else {
+            Answer data = new Answer();
+            data.setId(param.getId());
+            data.setStatus(param.getStatus());
+            if (StringUtil.isNotEmpty(param.getReason())) {
+                data.setReason(param.getReason());
+            }
+            data.setUpdateId(UserThreadUtil.getUserId());
+            data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+            answerService.updateById(data);
         }
-        data.setUpdateId(UserThreadUtil.getUserId());
-        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-        answerService.updateById(data);
     }
 
     @Override

@@ -2,12 +2,16 @@ package com.sunchs.lyt.item.bean;
 
 import com.sunchs.lyt.framework.bean.PagingList;
 
+import java.util.List;
+
 public class AnswerParam extends PagingList {
 
     /**
-     * 自增ID
+     * 答卷ID
      */
     private int id;
+
+    private List<Integer> idList;
 
     /**
      * 医院ID
@@ -52,6 +56,14 @@ public class AnswerParam extends PagingList {
 
     public int getId() {
         return id;
+    }
+
+    public List<Integer> getIdList() {
+        return idList;
+    }
+
+    public void setIdList(List<Integer> idList) {
+        this.idList = idList;
     }
 
     public void setId(int id) {
