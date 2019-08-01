@@ -80,6 +80,7 @@ public class AnswerService implements IAnswerService {
         data.setTimeDuration(answer.getTimeDuration());
         data.setStartTime(answer.getStartTime());
         data.setEndTime(answer.getEndTime());
+        data.setCreateTime(answer.getCreateTime());
 
         data.setStatusName(AnswerStatusEnum.get(answer.getStatus()));
         data.setStartTimeName(FormatUtil.dateTime(answer.getStartTime()));
