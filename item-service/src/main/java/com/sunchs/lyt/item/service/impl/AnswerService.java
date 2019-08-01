@@ -42,6 +42,9 @@ public class AnswerService implements IAnswerService {
     @Override
     public PagingList<AnswerData> getPageList(AnswerParam param) {
         Wrapper<Answer> wrapper = new EntityWrapper<>();
+        if (param.getItemId() > 0) {
+            wrapper.eq(Answer.ITEM_ID, param.getItemId());
+        }
         Page<Answer> data = answerService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), wrapper);
         List<AnswerData> list = new ArrayList<>();
         data.getRecords().forEach(answer -> list.add(toAnswerData(answer)));
