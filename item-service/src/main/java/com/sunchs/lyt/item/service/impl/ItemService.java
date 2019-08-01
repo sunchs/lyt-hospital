@@ -35,6 +35,9 @@ public class ItemService implements IItemService {
     @Autowired
     private AnswerServiceImpl answerService;
 
+    @Autowired
+    private HospitalServiceImpl hospitalService;
+
     @Override
     public PagingList<ItemData> getPageList(ItemParam param) {
         List<ItemData> list = new ArrayList<>();
@@ -173,6 +176,24 @@ public class ItemService implements IItemService {
             list.add(map);
         });
         return list;
+    }
+
+    @Override
+    public PagingList<ItemOfficeData> getOfficePageList(ItemParam param) {
+        List<ItemOfficeData> list = new ArrayList<>();
+        Wrapper<ItemOffice> wrapper = new EntityWrapper<>();
+        if (param.getId() > 0) {
+            wrapper.eq(ItemOffice.ITEM_ID, param.getId());
+        }
+        Page<ItemOffice> page = itemOfficeService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), wrapper);
+        page.getRecords().forEach(row -> {
+            ItemOfficeData data = ObjectUtil.copy(row, ItemOfficeData.class);
+            data.setHospitalName(getHospitalNameById(row.getId()));
+            data.setOfficeName(getOfficeNameById(row.getOfficeId()));
+            data.setQuestionnaireName(getQuestionnaireNameById(row.getId()));
+            list.add(data);
+        });
+        return PagingUtil.getData(list, page.getSize(), param.getPageNow(), param.getPageSize());
     }
 
     @Override
@@ -322,5 +343,35 @@ public class ItemService implements IItemService {
             ids.add(q.getQuestionnaireId());
         });
         return ids;
+    }
+
+    private String getHospitalNameById(int hospitalId) {
+        Wrapper<Hospital> wrapper = new EntityWrapper<Hospital>()
+                .eq(Hospital.ID, hospitalId);
+        Hospital row = hospitalService.selectOne(wrapper);
+        if (Objects.nonNull(row)) {
+            return row.getHospitalName();
+        }
+        return "";
+    }
+
+    private String getOfficeNameById(int officeId) {
+        Wrapper<HospitalOffice> wrapper = new EntityWrapper<HospitalOffice>()
+                .eq(HospitalOffice.ID, officeId);
+        HospitalOffice row = hospitalOfficeService.selectOne(wrapper);
+        if (Objects.nonNull(row)) {
+            return row.getTitle();
+        }
+        return "";
+    }
+
+    private String getQuestionnaireNameById(int questionnaireId) {
+        Wrapper<Questionnaire> wrapper = new EntityWrapper<Questionnaire>()
+                .eq(Questionnaire.ID, questionnaireId);
+        Questionnaire row = questionnaireService.selectOne(wrapper);
+        if (Objects.nonNull(row)) {
+            return row.getTitle()
+        }
+        return "";
     }
 }

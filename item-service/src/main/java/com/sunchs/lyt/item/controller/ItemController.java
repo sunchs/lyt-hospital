@@ -60,7 +60,16 @@ public class ItemController extends BaseController {
     /**
      * 获取项目所有科室
      */
-    @PostMapping("/officeList")
+    @PostMapping("/officePageList")
+    public ResultData getOfficePageList(@RequestBody RequestData data) {
+        ItemParam param = data.toObject(ItemParam.class);
+        return success(itemService.getOfficePageList(param));
+    }
+
+    /**
+     * 项目科室分页
+     */
+    @PostMapping("/officePage")
     public ResultData getOfficeList(@RequestBody RequestData data) {
         ItemParam param = data.toObject(ItemParam.class);
         return success(itemService.getOfficeList(param));

@@ -1,10 +1,7 @@
 package com.sunchs.lyt.item.service;
 
 import com.sunchs.lyt.framework.bean.PagingList;
-import com.sunchs.lyt.item.bean.BindOfficeParam;
-import com.sunchs.lyt.item.bean.ItemData;
-import com.sunchs.lyt.item.bean.ItemParam;
-import com.sunchs.lyt.item.bean.OfficeQuantityParam;
+import com.sunchs.lyt.item.bean.*;
 
 import java.util.List;
 import java.util.Map;
@@ -35,6 +32,11 @@ public interface IItemService {
      * 获取项目所有科室
      */
     List<Map<String, Object>> getOfficeList(ItemParam param);
+
+    /**
+     * 项目科室
+     */
+    PagingList<ItemOfficeData> getOfficePageList(ItemParam param);
 
     /**
      * 更新项目状态
