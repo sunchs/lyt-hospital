@@ -257,10 +257,10 @@ public class ItemService implements IItemService {
                 case 2:
                     oData.setOfficeTypeName("住院");
                     break;
-                case 3:
+                case 4:
                     oData.setOfficeTypeName("特殊");
                     break;
-                case 4:
+                case 3:
                     oData.setOfficeTypeName("员工");
                     break;
                 default:
