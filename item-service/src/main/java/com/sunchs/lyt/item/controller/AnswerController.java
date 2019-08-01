@@ -4,6 +4,7 @@ import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
 import com.sunchs.lyt.item.bean.AnswerParam;
+import com.sunchs.lyt.item.bean.ItemParam;
 import com.sunchs.lyt.item.service.impl.AnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,5 +28,13 @@ public class AnswerController extends BaseController {
         return success(answerService.getPageList(param));
     }
 
-
+    /**
+     * 修改 项目状态
+     */
+    @PostMapping("/updateStatus")
+    public ResultData updateStatus(@RequestBody RequestData data) {
+        AnswerParam param = data.toObject(AnswerParam.class);
+        answerService.updateStatus(param);
+        return success();
+    }
 }

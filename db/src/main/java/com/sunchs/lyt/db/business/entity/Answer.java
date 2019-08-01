@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-07-30
+ * @since 2019-08-01
  */
 public class Answer extends Model<Answer> {
 
@@ -87,8 +87,27 @@ public class Answer extends Model<Answer> {
     private Date endTime;
 
     /**
+     * 更新人ID
+     */
+    @TableField("update_id")
+    private Integer updateId;
+
+    /**
+     * 更新时间
+     */
+    @TableField("update_time")
+    private Date updateTime;
+
+    /**
+     * 创建人ID
+     */
+    @TableField("create_id")
+    private Integer createId;
+
+    /**
      * 创建时间
      */
+    @TableField("create_time")
     private Date createTime;
 
     public Integer getId() {
@@ -175,6 +194,27 @@ public class Answer extends Model<Answer> {
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
+    public Integer getUpdateId() {
+        return updateId;
+    }
+
+    public void setUpdateId(Integer updateId) {
+        this.updateId = updateId;
+    }
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+    public Integer getCreateId() {
+        return createId;
+    }
+
+    public void setCreateId(Integer createId) {
+        this.createId = createId;
+    }
     public Date getCreateTime() {
         return createTime;
     }
@@ -207,7 +247,13 @@ public class Answer extends Model<Answer> {
 
     public static final String ENDTIME = "endTime";
 
-    public static final String CREATETIME = "createTime";
+    public static final String UPDATE_ID = "update_id";
+
+    public static final String UPDATE_TIME = "update_time";
+
+    public static final String CREATE_ID = "create_id";
+
+    public static final String CREATE_TIME = "create_time";
 
     @Override
     protected Serializable pkVal() {
@@ -229,6 +275,9 @@ public class Answer extends Model<Answer> {
         ", timeDuration=" + timeDuration +
         ", startTime=" + startTime +
         ", endTime=" + endTime +
+        ", updateId=" + updateId +
+        ", updateTime=" + updateTime +
+        ", createId=" + createId +
         ", createTime=" + createTime +
         "}";
     }

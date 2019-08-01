@@ -16,7 +16,10 @@
         <result column="timeDuration" property="timeDuration" />
         <result column="startTime" property="startTime" />
         <result column="endTime" property="endTime" />
-        <result column="createTime" property="createTime" />
+        <result column="update_id" property="updateId" />
+        <result column="update_time" property="updateTime" />
+        <result column="create_id" property="createId" />
+        <result column="create_time" property="createTime" />
     </resultMap>
 
 </mapper>

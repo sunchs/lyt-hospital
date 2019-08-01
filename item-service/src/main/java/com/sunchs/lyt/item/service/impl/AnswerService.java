@@ -5,11 +5,14 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.Answer;
 import com.sunchs.lyt.db.business.entity.AnswerImage;
+import com.sunchs.lyt.db.business.entity.Item;
 import com.sunchs.lyt.db.business.service.impl.AnswerImageServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.AnswerServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.FormatUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
+import com.sunchs.lyt.framework.util.StringUtil;
+import com.sunchs.lyt.framework.util.UserThreadUtil;
 import com.sunchs.lyt.item.bean.AnswerData;
 import com.sunchs.lyt.item.bean.AnswerImageData;
 import com.sunchs.lyt.item.bean.AnswerParam;
@@ -18,6 +21,7 @@ import com.sunchs.lyt.item.service.IAnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +45,25 @@ public class AnswerService implements IAnswerService {
 
     @Override
     public int save(AnswerParam param) {
+//        data.setUpdateId(UserThreadUtil.getUserId());
+//        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+//        data.setCreateId(UserThreadUtil.getUserId());
+//        data.setCreateTime(new Timestamp(System.currentTimeMillis()));
+
         return 0;
+    }
+
+    @Override
+    public void updateStatus(AnswerParam param) {
+        Answer data = new Answer();
+        data.setId(param.getId());
+        data.setStatus(param.getStatus());
+        if (StringUtil.isNotEmpty(param.getReason())) {
+            data.setReason(param.getReason());
+        }
+        data.setUpdateId(UserThreadUtil.getUserId());
+        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        answerService.updateById(data);
     }
 
     private AnswerData toAnswerData(Answer answer) {
@@ -58,7 +80,6 @@ public class AnswerService implements IAnswerService {
         data.setTimeDuration(answer.getTimeDuration());
         data.setStartTime(answer.getStartTime());
         data.setEndTime(answer.getEndTime());
-        data.setCreateTime(answer.getCreateTime());
 
         data.setStatusName(AnswerStatusEnum.get(answer.getStatus()));
         data.setStartTimeName(FormatUtil.dateTime(answer.getStartTime()));
