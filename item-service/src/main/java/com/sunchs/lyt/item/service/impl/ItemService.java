@@ -200,7 +200,7 @@ public class ItemService implements IItemService {
             // 已审核的数量
             Wrapper<Answer> w = new EntityWrapper<Answer>()
                     .eq(Answer.ITEM_ID, itemId)
-                    .eq(Answer.OFFICE_ID, o.getId())
+                    .eq(Answer.OFFICE_ID, o.getOfficeId())
                     .eq(Answer.STATUS, 1);
             int count = answerService.selectCount(w);
             map.put("answerQuantity", count);
@@ -257,11 +257,11 @@ public class ItemService implements IItemService {
                 case 2:
                     oData.setOfficeTypeName("住院");
                     break;
-                case 4:
-                    oData.setOfficeTypeName("特殊");
-                    break;
                 case 3:
                     oData.setOfficeTypeName("员工");
+                    break;
+                case 4:
+                    oData.setOfficeTypeName("特殊");
                     break;
                 default:
                     break;
