@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.Answer;
 import com.sunchs.lyt.db.business.entity.AnswerImage;
+import com.sunchs.lyt.db.business.entity.AnswerOption;
 import com.sunchs.lyt.db.business.entity.Item;
 import com.sunchs.lyt.db.business.service.impl.AnswerImageServiceImpl;
+import com.sunchs.lyt.db.business.service.impl.AnswerOptionServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.AnswerServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.FormatUtil;
@@ -33,6 +35,9 @@ public class AnswerService implements IAnswerService {
 
     @Autowired
     private AnswerImageServiceImpl answerImageService;
+
+    @Autowired
+    private AnswerOptionServiceImpl answerOptionService;
 
     @Override
     public PagingList<AnswerData> getPageList(AnswerParam param) {
@@ -97,17 +102,33 @@ public class AnswerService implements IAnswerService {
         data.setEndTimeName(FormatUtil.dateTime(answer.getEndTime()));
         data.setCreateTimeName(FormatUtil.dateTime(answer.getCreateTime()));
 
+        data.setQuestionOptionList(getQuestionOptionList(answer.getId()));
+        data.setImageList(getImageList(answer.getId()));
 
+        return data;
+    }
+
+    /**
+     * 获取答卷图片
+     */
+    private List<AnswerImageData> getImageList(int answerId) {
         Wrapper<AnswerImage> wrapper = new EntityWrapper<AnswerImage>()
-                .eq(AnswerImage.ANSWER_ID, answer.getId());
+                .eq(AnswerImage.ANSWER_ID, answerId);
         List<AnswerImageData> imgList = new ArrayList<>();
         answerImageService.selectList(wrapper).forEach(img -> {
             AnswerImageData imageData = new AnswerImageData();
             imageData.setPath(img.getPath());
             imgList.add(imageData);
         });
-        data.setImageList(imgList);
+        return imgList;
+    }
 
-        return data;
+    /**
+     * 获取答卷题目选项
+     */
+    private List<AnswerOption> getQuestionOptionList(int answerId) {
+        Wrapper<AnswerOption> wrapper = new EntityWrapper<AnswerOption>()
+                .eq(AnswerOption.ANSWER_ID, answerId);
+        return answerOptionService.selectList(wrapper);
     }
 }

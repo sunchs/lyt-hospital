@@ -1,6 +1,7 @@
 package com.sunchs.lyt.item.bean;
 
 import com.sunchs.lyt.db.business.entity.Answer;
+import com.sunchs.lyt.db.business.entity.AnswerOption;
 
 import java.util.List;
 
@@ -13,6 +14,8 @@ public class AnswerData extends Answer {
     private String startTimeName;
 
     private String endTimeName;
+
+    private List<AnswerOption> questionOptionList;
 
     private List<AnswerImageData> imageList;
 
@@ -46,6 +49,14 @@ public class AnswerData extends Answer {
 
     public void setEndTimeName(String endTimeName) {
         this.endTimeName = endTimeName;
+    }
+
+    public List<AnswerOption> getQuestionOptionList() {
+        return questionOptionList;
+    }
+
+    public void setQuestionOptionList(List<AnswerOption> questionOptionList) {
+        this.questionOptionList = questionOptionList;
     }
 
     public List<AnswerImageData> getImageList() {
