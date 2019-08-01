@@ -21,4 +21,9 @@ public interface IAnswerService {
      * 更新项目状态
      */
     void updateStatus(AnswerParam param);
+
+    /**
+     * 设置答卷不合格原因
+     */
+    void updateReason(AnswerParam param);
 }

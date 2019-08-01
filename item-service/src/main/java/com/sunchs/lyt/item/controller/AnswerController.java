@@ -28,12 +28,22 @@ public class AnswerController extends BaseController {
     }
 
     /**
-     * 修改 项目状态
+     * 修改答卷状态
      */
     @PostMapping("/updateStatus")
     public ResultData updateStatus(@RequestBody RequestData data) {
         AnswerParam param = data.toObject(AnswerParam.class);
         answerService.updateStatus(param);
+        return success();
+    }
+
+    /**
+     * 设置答卷不合格原因
+     */
+    @PostMapping("/updateReason")
+    public ResultData updateReason(@RequestBody RequestData data) {
+        AnswerParam param = data.toObject(AnswerParam.class);
+        answerService.updateReason(param);
         return success();
     }
 }

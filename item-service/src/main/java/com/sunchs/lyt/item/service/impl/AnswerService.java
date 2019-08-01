@@ -66,6 +66,16 @@ public class AnswerService implements IAnswerService {
         answerService.updateById(data);
     }
 
+    @Override
+    public void updateReason(AnswerParam param) {
+        Answer data = new Answer();
+        data.setId(param.getId());
+        data.setReason(param.getReason());
+        data.setUpdateId(UserThreadUtil.getUserId());
+        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        answerService.updateById(data);
+    }
+
     private AnswerData toAnswerData(Answer answer) {
         AnswerData data = new AnswerData();
         data.setId(answer.getId());
