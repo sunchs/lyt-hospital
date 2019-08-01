@@ -4,7 +4,6 @@ import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
 import com.sunchs.lyt.item.bean.AnswerParam;
-import com.sunchs.lyt.item.bean.ItemParam;
 import com.sunchs.lyt.item.service.impl.AnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

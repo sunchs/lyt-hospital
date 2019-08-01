@@ -26,7 +26,7 @@ public enum  AnswerStatusEnum {
     }
 
     public static String get(int status) {
-        for (ItemStatusEnum statusEnum : ItemStatusEnum.values()) {
+        for (AnswerStatusEnum statusEnum : AnswerStatusEnum.values()) {
             if (status == statusEnum.status) {
                 return statusEnum.title;
             }
