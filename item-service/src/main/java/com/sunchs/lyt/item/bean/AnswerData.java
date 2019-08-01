@@ -7,6 +7,8 @@ import java.util.List;
 
 public class AnswerData extends Answer {
 
+    private String itemName;
+
     private String statusName;
 
     private String createTimeName;
@@ -18,6 +20,15 @@ public class AnswerData extends Answer {
     private List<AnswerOption> questionOptionList;
 
     private List<AnswerImageData> imageList;
+
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
 
     public String getStatusName() {
         return statusName;

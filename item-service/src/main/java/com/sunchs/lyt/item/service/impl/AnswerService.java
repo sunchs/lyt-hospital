@@ -10,6 +10,7 @@ import com.sunchs.lyt.db.business.entity.Item;
 import com.sunchs.lyt.db.business.service.impl.AnswerImageServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.AnswerOptionServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.AnswerServiceImpl;
+import com.sunchs.lyt.db.business.service.impl.ItemServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.FormatUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class AnswerService implements IAnswerService {
@@ -38,6 +40,9 @@ public class AnswerService implements IAnswerService {
 
     @Autowired
     private AnswerOptionServiceImpl answerOptionService;
+
+    @Autowired
+    private ItemServiceImpl itemService;
 
     @Override
     public PagingList<AnswerData> getPageList(AnswerParam param) {
@@ -100,6 +105,7 @@ public class AnswerService implements IAnswerService {
         data.setEndTime(answer.getEndTime());
         data.setCreateTime(answer.getCreateTime());
 
+        data.setItemName(getItemName(answer.getItemId()));
         data.setStatusName(AnswerStatusEnum.get(answer.getStatus()));
         data.setStartTimeName(FormatUtil.dateTime(answer.getStartTime()));
         data.setEndTimeName(FormatUtil.dateTime(answer.getEndTime()));
@@ -133,5 +139,18 @@ public class AnswerService implements IAnswerService {
         Wrapper<AnswerOption> wrapper = new EntityWrapper<AnswerOption>()
                 .eq(AnswerOption.ANSWER_ID, answerId);
         return answerOptionService.selectList(wrapper);
+    }
+
+    /**
+     * 获取项目名称
+     */
+    private String getItemName(int itemId) {
+        Wrapper<Item> wrapper = new EntityWrapper<Item>()
+                .eq(Item.ID, itemId);
+        Item item = itemService.selectOne(wrapper);
+        if (Objects.nonNull(item)) {
+            return item.getTitle();
+        }
+        return "";
     }
 }
