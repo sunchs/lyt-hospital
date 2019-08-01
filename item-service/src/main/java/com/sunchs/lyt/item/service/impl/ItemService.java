@@ -193,7 +193,7 @@ public class ItemService implements IItemService {
             data.setQuestionnaireName(getQuestionnaireNameById(row.getId()));
             list.add(data);
         });
-        return PagingUtil.getData(list, page.getSize(), param.getPageNow(), param.getPageSize());
+        return PagingUtil.getData(list, page.getTotal(), page.getCurrent(), page.getSize());
     }
 
     @Override
