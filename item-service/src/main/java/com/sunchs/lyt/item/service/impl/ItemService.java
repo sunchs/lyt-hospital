@@ -190,9 +190,14 @@ public class ItemService implements IItemService {
         Page<ItemOffice> page = itemOfficeService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), wrapper);
         page.getRecords().forEach(row -> {
             ItemOfficeData data = ObjectUtil.copy(row, ItemOfficeData.class);
-            data.setHospitalName(getHospitalNameById(row.getId()));
+
+            ItemData item = getById(row.getId());
+            if (Objects.nonNull(item)) {
+                data.setHospitalName(getHospitalNameById(item.getHospitalId()));
+            }
+            
             data.setOfficeName(getOfficeNameById(row.getOfficeId()));
-            data.setQuestionnaireName(getQuestionnaireNameById(row.getId()));
+            data.setQuestionnaireName(getQuestionnaireNameById(row.getQuestionnaireId()));
             data.setOfficeTypeName(OfficeTypeEnum.get(row.getOfficeTypeId()));
             list.add(data);
         });
