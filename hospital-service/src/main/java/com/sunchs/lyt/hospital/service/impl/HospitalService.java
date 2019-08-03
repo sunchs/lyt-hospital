@@ -160,7 +160,7 @@ public class HospitalService implements IHospitalService {
         List<Integer> delIds = new ArrayList<>();
         Wrapper<ItemOffice> w = new EntityWrapper<ItemOffice>()
                 .eq(ItemOffice.ITEM_ID, itemId);
-        itemOfficeService.selectList(w).forEach(o -> delIds.add(o.getId()));
+        itemOfficeService.selectList(w).forEach(o -> delIds.add(o.getOfficeId()));
 
         Wrapper<HospitalOffice> wrapper = new EntityWrapper<HospitalOffice>()
                 .eq(HospitalOffice.HOSPITAL_ID, hospitalId)
