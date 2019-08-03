@@ -136,8 +136,9 @@ public class ItemController extends BaseController {
 
     @PostMapping("/removeItemUser")
     public ResultData removeItemUser(@RequestBody RequestData data) {
-        int id = data.getInt("id");
-        itemService.removeItemUser(id);
+        int itemId = data.getInt("itemId");
+        int userId = data.getInt("userId");
+        itemService.removeItemUser(itemId, userId);
         return success();
     }
 

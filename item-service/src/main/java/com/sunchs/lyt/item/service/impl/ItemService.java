@@ -306,8 +306,11 @@ public class ItemService implements IItemService {
     }
 
     @Override
-    public void removeItemUser(int id) {
-        itemUserService.deleteById(id);
+    public void removeItemUser(int itemId, int userId) {
+        Wrapper<ItemUser> wrapper = new EntityWrapper<ItemUser>()
+                .eq(ItemUser.ITEM_ID, itemId)
+                .eq(ItemUser.USER_ID, userId);
+        itemUserService.delete(wrapper);
     }
 
     @Override

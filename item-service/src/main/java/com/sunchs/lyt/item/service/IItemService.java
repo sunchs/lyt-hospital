@@ -72,7 +72,7 @@ public interface IItemService {
     /**
      * 移除项目调查员
      */
-    void removeItemUser(int id);
+    void removeItemUser(int itemId, int userId);
 
     /**
      * 项目调查员列表
