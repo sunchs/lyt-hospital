@@ -2,11 +2,14 @@ package com.sunchs.lyt.user.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.Role;
 import com.sunchs.lyt.db.business.entity.UserRole;
 import com.sunchs.lyt.db.business.service.impl.RoleServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.UserRoleServiceImpl;
+import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.NumberUtil;
+import com.sunchs.lyt.framework.util.PagingUtil;
 import com.sunchs.lyt.framework.util.StringUtil;
 import com.sunchs.lyt.user.bean.NodeActionParam;
 import com.sunchs.lyt.user.bean.RoleNodeData;
@@ -38,8 +41,18 @@ public class RoleService implements IRoleService {
     private RoleServiceImpl roleService;
 
     @Override
-    public List<RoleData> getRoleList() {
-        return roleDao.getRoleList();
+    public PagingList<RoleData> getRoleList(RoleParam param) {
+        List<RoleData> list = new ArrayList<>();
+        Wrapper<Role> w = new EntityWrapper<>();
+        w.orderBy(Role.ID, false);
+        Page<Role> page = roleService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), w);
+        page.getRecords().forEach(row -> {
+            RoleData data = new RoleData();
+            data.setRoleId(row.getId());
+            data.setTitle(row.getTitle());
+            list.add(data);
+        });
+        return PagingUtil.getData(list, page.getSize(), param.getPageNow(), param.getPageSize());
     }
 
     @Override

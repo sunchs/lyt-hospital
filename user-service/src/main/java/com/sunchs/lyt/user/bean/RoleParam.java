@@ -1,8 +1,10 @@
 package com.sunchs.lyt.user.bean;
 
+import com.sunchs.lyt.framework.bean.PagingList;
+
 import java.util.List;
 
-public class RoleParam {
+public class RoleParam extends PagingList {
 
     public Integer roleId;
     public String title;

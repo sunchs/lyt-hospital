@@ -1,5 +1,6 @@
 package com.sunchs.lyt.user.service;
 
+import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.user.bean.RoleNodeData;
 import com.sunchs.lyt.user.bean.RoleData;
 import com.sunchs.lyt.user.bean.RoleParam;
@@ -12,7 +13,7 @@ public interface IRoleService {
     /**
      * 获取 角色 列表数据
      */
-    List<RoleData> getRoleList();
+    PagingList<RoleData> getRoleList(RoleParam param);
 
     /**
      * 添加、修改账号

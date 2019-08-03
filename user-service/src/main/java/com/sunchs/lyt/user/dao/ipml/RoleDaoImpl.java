@@ -48,7 +48,7 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public List<RoleData> getRoleList() {
-        String sql = "SELECT role_id,title FROM role WHERE enabled=1 ORDER BY sort ASC";
+        String sql = "SELECT role_id,title FROM role ORDER BY sort ASC";
         return  db.query(sql, (ResultSet rs, int rowNum) -> setResultToRoleData(rs));
     }
 
