@@ -427,6 +427,6 @@ public class ItemService implements IItemService {
         if (Objects.nonNull(answer)) {
             return FormatUtil.dateTime(answer.getCreateTime());
         }
-        return "";
+        return "无";
     }
 }
