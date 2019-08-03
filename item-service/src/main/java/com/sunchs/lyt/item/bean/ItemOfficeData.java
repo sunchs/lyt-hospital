@@ -24,6 +24,11 @@ public class ItemOfficeData extends ItemOffice {
      */
     private String questionnaireName;
 
+    /**
+     * 答卷数量
+     */
+    private long answerQuantity;
+
 
     public String getHospitalName() {
         return hospitalName;
@@ -55,5 +60,13 @@ public class ItemOfficeData extends ItemOffice {
 
     public void setQuestionnaireName(String questionnaireName) {
         this.questionnaireName = questionnaireName;
+    }
+
+    public long getAnswerQuantity() {
+        return answerQuantity;
+    }
+
+    public void setAnswerQuantity(long answerQuantity) {
+        this.answerQuantity = answerQuantity;
     }
 }
