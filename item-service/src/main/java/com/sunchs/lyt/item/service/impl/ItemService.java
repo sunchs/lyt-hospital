@@ -193,7 +193,7 @@ public class ItemService implements IItemService {
 
             Item item = itemService.selectById(row.getItemId());
             if (Objects.nonNull(item)) {
-                data.setHospitalName(item.getTitle());
+                data.setHospitalName(getHospitalNameById(item.getHospitalId()));
             }
 
             data.setOfficeName(getOfficeNameById(row.getOfficeId()));
