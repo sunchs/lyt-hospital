@@ -29,6 +29,10 @@ public class ItemOfficeData extends ItemOffice {
      */
     private long answerQuantity;
 
+    /**
+     * 最新录入时间
+     */
+    private String inputTimeName;
 
     public String getHospitalName() {
         return hospitalName;
@@ -68,5 +72,13 @@ public class ItemOfficeData extends ItemOffice {
 
     public void setAnswerQuantity(long answerQuantity) {
         this.answerQuantity = answerQuantity;
+    }
+
+    public String getInputTimeName() {
+        return inputTimeName;
+    }
+
+    public void setInputTimeName(String inputTimeName) {
+        this.inputTimeName = inputTimeName;
     }
 }

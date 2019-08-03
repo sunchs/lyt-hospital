@@ -203,7 +203,8 @@ public class ItemService implements IItemService {
 
             int answerQuantity = getAnswerQuantity(row.getItemId(), row.getOfficeId(), row.getQuestionnaireId());
             data.setAnswerQuantity(answerQuantity);
-
+            String inputItemName = getInputItemName(row.getItemId(), row.getOfficeId(), row.getQuestionnaireId());
+            data.setInputTimeName(inputItemName);
             data.setOfficeName(getOfficeNameById(row.getOfficeId()));
             data.setQuestionnaireName(getQuestionnaireNameById(row.getQuestionnaireId()));
             data.setOfficeTypeName(OfficeTypeEnum.get(row.getOfficeTypeId()));
@@ -414,5 +415,18 @@ public class ItemService implements IItemService {
                 .eq(Answer.OFFICE_ID, officeId)
                 .eq(Answer.QUESTIONNAIRE_ID, questionnaireId);
         return answerService.selectCount(wrapper);
+    }
+
+    private String getInputItemName(int itemId, int officeId, int questionnaireId) {
+        Wrapper<Answer> wrapper = new EntityWrapper<Answer>()
+                .eq(Answer.ITEM_ID, itemId)
+                .eq(Answer.OFFICE_ID, officeId)
+                .eq(Answer.QUESTIONNAIRE_ID, questionnaireId)
+                .orderBy(Answer.ID, false);
+        Answer answer = answerService.selectOne(wrapper);
+        if (Objects.nonNull(answer)) {
+            return FormatUtil.dateTime(answer.getCreateTime());
+        }
+        return "";
     }
 }
