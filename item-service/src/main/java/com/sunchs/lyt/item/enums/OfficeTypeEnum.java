@@ -31,7 +31,7 @@ public enum OfficeTypeEnum {
     }
 
     public static String get(int status) {
-        for (ItemStatusEnum statusEnum : ItemStatusEnum.values()) {
+        for (OfficeTypeEnum statusEnum : OfficeTypeEnum.values()) {
             if (status == statusEnum.status) {
                 return statusEnum.title;
             }
