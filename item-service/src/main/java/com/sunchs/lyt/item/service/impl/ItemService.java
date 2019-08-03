@@ -270,6 +270,13 @@ public class ItemService implements IItemService {
         return ids;
     }
 
+    @Override
+    public void unbindItemOffice(int id) {
+        Wrapper<ItemOffice> w = new EntityWrapper<>();
+        w.eq(ItemOffice.ID, id);
+        itemOfficeService.delete(w);
+    }
+
     private ItemData getItemInfo(Item item) {
         ItemData res = ObjectUtil.copy(item, ItemData.class);
 

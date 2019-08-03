@@ -52,4 +52,9 @@ public interface IItemService {
      * 更新科室抽样量
      */
     void updateOfficeQuantity(OfficeQuantityParam param);
+
+    /**
+     * 取消项目科室绑定
+     */
+    void unbindItemOffice(int id);
 }

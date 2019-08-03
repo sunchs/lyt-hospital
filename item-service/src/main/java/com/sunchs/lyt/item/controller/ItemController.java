@@ -104,4 +104,15 @@ public class ItemController extends BaseController {
         itemService.updateOfficeQuantity(param);
         return success();
     }
+
+    /**
+     * 科室进度
+     */
+    @PostMapping("/unbindItemOffice")
+    public ResultData unbindItemOffice(@RequestBody RequestData data) {
+        int id = data.getInt("id");
+        itemService.unbindItemOffice(id);
+        return success();
+    }
+
 }
