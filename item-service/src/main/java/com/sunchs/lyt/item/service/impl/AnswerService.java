@@ -50,6 +50,9 @@ public class AnswerService implements IAnswerService {
         if (param.getItemId() > 0) {
             wrapper.eq(Answer.ITEM_ID, param.getItemId());
         }
+        if (param.getOfficeId() > 0) {
+            wrapper.eq(Answer.OFFICE_ID, param.getOfficeId());
+        }
         Page<Answer> data = answerService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), wrapper);
         List<AnswerData> list = new ArrayList<>();
         data.getRecords().forEach(answer -> list.add(toAnswerData(answer)));
