@@ -109,14 +109,19 @@ public class ItemService implements IItemService {
 
     @Override
     public int bindOfficeQuestionnaire(BindOfficeParam param) {
-        // 清理历史数据
-        Wrapper<ItemOffice> w = new EntityWrapper<>();
-        w.eq(ItemOffice.ITEM_ID, param.getItemId());
-        itemOfficeService.delete(w);
+//        // 清理历史数据
+//        Wrapper<ItemOffice> w = new EntityWrapper<>();
+//        w.eq(ItemOffice.ITEM_ID, param.getItemId());
+//        itemOfficeService.delete(w);
         // 添加新数据
         param.getBindList().forEach(row -> {
             if (Objects.nonNull(row) && row.getQuestionnaireId() > 0) {
                 if (row.getOfficeTypeId() == 3) {
+                    Wrapper<ItemOffice> w = new EntityWrapper<>();
+                    w.eq(ItemOffice.ITEM_ID, param.getItemId());
+                    w.eq(ItemOffice.OFFICE_TYPE_ID, 3);
+                    itemOfficeService.delete(w);
+
                     ItemOffice data = new ItemOffice();
                     data.setItemId(param.getItemId());
                     data.setOfficeTypeId(row.getOfficeTypeId());
