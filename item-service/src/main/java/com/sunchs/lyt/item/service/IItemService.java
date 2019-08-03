@@ -57,4 +57,9 @@ public interface IItemService {
      * 取消项目科室绑定
      */
     void unbindItemOffice(int id);
+
+    /**
+     * 更新科室数量
+     */
+    void updateItemOfficeQuantity(int id, int quantity);
 }

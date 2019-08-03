@@ -115,4 +115,14 @@ public class ItemController extends BaseController {
         return success();
     }
 
+    /**
+     * 科室进度
+     */
+    @PostMapping("/updateItemOfficeQuantity")
+    public ResultData updateItemOfficeQuantity(@RequestBody RequestData data) {
+        int id = data.getInt("id");
+        int quantity = data.getInt("quantity");
+        itemService.updateItemOfficeQuantity(id, quantity);
+        return success();
+    }
 }

@@ -253,6 +253,8 @@ public class ItemService implements IItemService {
         });
     }
 
+
+
     private List<Integer> getHospitalOffice(BindOfficeParam param) {
         Wrapper<Item> w = new EntityWrapper<>();
         w.eq(Item.ID, param.getItemId());
@@ -275,6 +277,14 @@ public class ItemService implements IItemService {
         Wrapper<ItemOffice> w = new EntityWrapper<>();
         w.eq(ItemOffice.ID, id);
         itemOfficeService.delete(w);
+    }
+
+    @Override
+    public void updateItemOfficeQuantity(int id, int quantity) {
+        ItemOffice data = new ItemOffice();
+        data.setId(id);
+        data.setQuantity(quantity);
+        itemOfficeService.updateById(data);
     }
 
     private ItemData getItemInfo(Item item) {
