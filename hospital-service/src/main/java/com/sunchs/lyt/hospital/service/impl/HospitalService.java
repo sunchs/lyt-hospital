@@ -39,6 +39,9 @@ public class HospitalService implements IHospitalService {
     @Autowired
     private HospitalRegionServiceImpl hospitalRegionService;
 
+    @Autowired
+    private ItemOfficeServiceImpl itemOfficeService;
+
     @Override
     public void save(HospitalParam param) {
         System.out.println(param);
@@ -139,6 +142,29 @@ public class HospitalService implements IHospitalService {
     public List<Map<String, Object>> getOfficeList(int hospitalId) {
         Wrapper<HospitalOffice> wrapper = new EntityWrapper<HospitalOffice>()
                 .eq(HospitalOffice.HOSPITAL_ID, hospitalId);
+        List<HospitalOffice> officeList = hospitalOfficeService.selectList(wrapper);
+        List<Map<String, Object>> list = new ArrayList<>();
+        officeList.forEach(row -> {
+            Map<String, Object> m = new HashMap<>();
+            m.put("id", row.getId());
+            m.put("type", row.getType());
+            m.put("title", row.getTitle());
+            m.put("quantity", row.getQuantity());
+            list.add(m);
+        });
+        return list;
+    }
+
+    @Override
+    public List<Map<String, Object>> getNoBindOfficeList(int itemId, int hospitalId) {
+        List<Integer> delIds = new ArrayList<>();
+        Wrapper<ItemOffice> w = new EntityWrapper<ItemOffice>()
+                .eq(ItemOffice.ITEM_ID, itemId);
+        itemOfficeService.selectList(w).forEach(o -> delIds.add(o.getId()));
+
+        Wrapper<HospitalOffice> wrapper = new EntityWrapper<HospitalOffice>()
+                .eq(HospitalOffice.HOSPITAL_ID, hospitalId)
+                .notIn(HospitalOffice.ID, delIds);
         List<HospitalOffice> officeList = hospitalOfficeService.selectList(wrapper);
         List<Map<String, Object>> list = new ArrayList<>();
         officeList.forEach(row -> {
