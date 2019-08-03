@@ -109,7 +109,7 @@ public class RoleDaoImpl implements RoleDao {
 
     private RoleData setResultToRoleData(ResultSet rs) throws SQLException {
         RoleData r = new RoleData();
-        r.setRoleId(rs.getInt("role_id"));
+        r.setId(rs.getInt("role_id"));
         r.setTitle(rs.getString("title"));
         return r;
     }

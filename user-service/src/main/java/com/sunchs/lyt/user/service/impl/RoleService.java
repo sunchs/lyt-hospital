@@ -9,6 +9,7 @@ import com.sunchs.lyt.db.business.service.impl.RoleServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.UserRoleServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.NumberUtil;
+import com.sunchs.lyt.framework.util.ObjectUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
 import com.sunchs.lyt.framework.util.StringUtil;
 import com.sunchs.lyt.user.bean.NodeActionParam;
@@ -47,9 +48,7 @@ public class RoleService implements IRoleService {
         w.orderBy(Role.ID, false);
         Page<Role> page = roleService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), w);
         page.getRecords().forEach(row -> {
-            RoleData data = new RoleData();
-            data.setRoleId(row.getId());
-            data.setTitle(row.getTitle());
+            RoleData data = ObjectUtil.copy(row, RoleData.class);
             list.add(data);
         });
         return PagingUtil.getData(list, page.getSize(), param.getPageNow(), param.getPageSize());
