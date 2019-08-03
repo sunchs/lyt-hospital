@@ -10,6 +10,11 @@ public class ItemOfficeData extends ItemOffice {
     private String hospitalName;
 
     /**
+     * 科室类型
+     */
+    private String officeTypeName;
+
+    /**
      * 科室名称
      */
     private String officeName;
@@ -26,6 +31,14 @@ public class ItemOfficeData extends ItemOffice {
 
     public void setHospitalName(String hospitalName) {
         this.hospitalName = hospitalName;
+    }
+
+    public String getOfficeTypeName() {
+        return officeTypeName;
+    }
+
+    public void setOfficeTypeName(String officeTypeName) {
+        this.officeTypeName = officeTypeName;
     }
 
     public String getOfficeName() {

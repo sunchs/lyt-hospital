@@ -9,6 +9,7 @@ import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.*;
 import com.sunchs.lyt.item.bean.*;
 import com.sunchs.lyt.item.enums.ItemStatusEnum;
+import com.sunchs.lyt.item.enums.OfficeTypeEnum;
 import com.sunchs.lyt.item.exception.ItemException;
 import com.sunchs.lyt.item.service.IItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -191,6 +192,7 @@ public class ItemService implements IItemService {
             data.setHospitalName(getHospitalNameById(row.getId()));
             data.setOfficeName(getOfficeNameById(row.getOfficeId()));
             data.setQuestionnaireName(getQuestionnaireNameById(row.getId()));
+            data.setOfficeTypeName(OfficeTypeEnum.get(row.getOfficeTypeId()));
             list.add(data);
         });
         return PagingUtil.getData(list, page.getTotal(), page.getCurrent(), page.getSize());
