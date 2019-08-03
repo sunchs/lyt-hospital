@@ -88,7 +88,8 @@ public class HospitalController extends BaseController {
     @PostMapping("/getNoBindOfficeList")
     public ResultData getNoBindOfficeList(@RequestBody RequestData data) {
         Integer itemId = data.getInt("itemId");
-        return success(hospitalService.getNoBindOfficeList(itemId));
+        Integer hospitalId = data.getInt("hospitalId");
+        return success(hospitalService.getNoBindOfficeList(itemId, hospitalId));
     }
 
 }
