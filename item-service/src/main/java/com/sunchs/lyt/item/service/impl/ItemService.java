@@ -42,6 +42,9 @@ public class ItemService implements IItemService {
     @Autowired
     private ItemUserServiceImpl itemUserService;
 
+    @Autowired
+    private UserServiceImpl userService;
+
     @Override
     public PagingList<ItemData> getPageList(ItemParam param) {
         List<ItemData> list = new ArrayList<>();
@@ -305,6 +308,19 @@ public class ItemService implements IItemService {
     @Override
     public void removeItemUser(int id) {
         itemUserService.deleteById(id);
+    }
+
+    @Override
+    public List<User> itemUserList(ItemParam param) {
+        List<Integer> ids = new ArrayList<>();
+        Wrapper<ItemUser> wrapper = new EntityWrapper<ItemUser>()
+                .eq(ItemUser.ITEM_ID, param.getId());
+        itemUserService.selectList(wrapper).forEach(u -> {
+            ids.add(u.getUserId());
+        });
+        Wrapper<User> w = new EntityWrapper<User>()
+                .in(User.ID, ids);
+        return userService.selectList(w);
     }
 
     private ItemData getItemInfo(Item item) {

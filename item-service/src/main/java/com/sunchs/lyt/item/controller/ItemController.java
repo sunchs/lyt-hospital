@@ -140,4 +140,10 @@ public class ItemController extends BaseController {
         itemService.removeItemUser(id);
         return success();
     }
+
+    @PostMapping("/itemUserList")
+    public ResultData itemUserList(@RequestBody RequestData data) {
+        ItemParam param = data.toObject(ItemParam.class);
+        return success(itemService.itemUserList(param));
+    }
 }

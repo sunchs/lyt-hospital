@@ -1,5 +1,6 @@
 package com.sunchs.lyt.item.service;
 
+import com.sunchs.lyt.db.business.entity.User;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.item.bean.*;
 
@@ -72,4 +73,10 @@ public interface IItemService {
      * 移除项目调查员
      */
     void removeItemUser(int id);
+
+    /**
+     * 项目调查员列表
+     */
+    List<User> itemUserList(ItemParam param);
+
 }
