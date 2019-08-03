@@ -185,6 +185,7 @@ public class ItemService implements IItemService {
         Wrapper<ItemOffice> wrapper = new EntityWrapper<>();
         if (param.getId() > 0) {
             wrapper.eq(ItemOffice.ITEM_ID, param.getId());
+            wrapper.orderBy(ItemOffice.OFFICE_TYPE_ID, true);
         }
         Page<ItemOffice> page = itemOfficeService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), wrapper);
         page.getRecords().forEach(row -> {
