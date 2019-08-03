@@ -23,7 +23,8 @@ public class RoleController extends BaseController {
      */
     @PostMapping("/list")
     public ResultData getList(@RequestBody RequestData data) {
-        return success(roleService.getRoleList());
+        RoleParam param = data.toObject(RoleParam.class);
+        return success(roleService.getRoleList(param));
     }
 
     /**
