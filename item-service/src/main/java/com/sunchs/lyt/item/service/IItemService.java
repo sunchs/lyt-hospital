@@ -62,4 +62,14 @@ public interface IItemService {
      * 更新科室数量
      */
     void updateItemOfficeQuantity(int id, int quantity);
+
+    /**
+     * 添加项目调查员
+     */
+    void addItemUser(int itemId, int userId);
+
+    /**
+     * 移除项目调查员
+     */
+    void removeItemUser(int id);
 }

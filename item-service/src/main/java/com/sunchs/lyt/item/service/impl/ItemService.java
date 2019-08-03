@@ -39,6 +39,9 @@ public class ItemService implements IItemService {
     @Autowired
     private HospitalServiceImpl hospitalService;
 
+    @Autowired
+    private ItemUserServiceImpl itemUserService;
+
     @Override
     public PagingList<ItemData> getPageList(ItemParam param) {
         List<ItemData> list = new ArrayList<>();
@@ -289,6 +292,19 @@ public class ItemService implements IItemService {
         data.setId(id);
         data.setQuantity(quantity);
         itemOfficeService.updateById(data);
+    }
+
+    @Override
+    public void addItemUser(int itemId, int userId) {
+        ItemUser data = new ItemUser();
+        data.setItemId(itemId);
+        data.setUserId(userId);
+        itemUserService.insert(data);
+    }
+
+    @Override
+    public void removeItemUser(int id) {
+        itemUserService.deleteById(id);
     }
 
     private ItemData getItemInfo(Item item) {

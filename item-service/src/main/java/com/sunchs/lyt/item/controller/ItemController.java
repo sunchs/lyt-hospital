@@ -125,4 +125,19 @@ public class ItemController extends BaseController {
         itemService.updateItemOfficeQuantity(id, quantity);
         return success();
     }
+
+    @PostMapping("/addItemUser")
+    public ResultData addItemUser(@RequestBody RequestData data) {
+        int itemId = data.getInt("itemId");
+        int userId = data.getInt("userId");
+        itemService.addItemUser(itemId, userId);
+        return success();
+    }
+
+    @PostMapping("/removeItemUser")
+    public ResultData removeItemUser(@RequestBody RequestData data) {
+        int id = data.getInt("id");
+        itemService.removeItemUser(id);
+        return success();
+    }
 }
