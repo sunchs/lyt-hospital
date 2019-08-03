@@ -318,6 +318,9 @@ public class ItemService implements IItemService {
         itemUserService.selectList(wrapper).forEach(u -> {
             ids.add(u.getUserId());
         });
+        if (ids.size() == 0) {
+            return new ArrayList<>();
+        }
         Wrapper<User> w = new EntityWrapper<User>()
                 .in(User.ID, ids);
         return userService.selectList(w);
