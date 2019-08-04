@@ -17,6 +17,7 @@ import com.sunchs.lyt.user.bean.RoleData;
 import com.sunchs.lyt.user.bean.RoleParam;
 import com.sunchs.lyt.user.dao.NodeDao;
 import com.sunchs.lyt.user.dao.RoleDao;
+import com.sunchs.lyt.user.enums.StatusEnum;
 import com.sunchs.lyt.user.exception.UserException;
 import com.sunchs.lyt.user.service.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,7 @@ public class RoleService implements IRoleService {
         Page<Role> page = roleService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), w);
         page.getRecords().forEach(row -> {
             RoleData data = ObjectUtil.copy(row, RoleData.class);
+            data.setStatusName(StatusEnum.getName(row.getStatus()));
             list.add(data);
         });
         return PagingUtil.getData(list, page.getSize(), param.getPageNow(), param.getPageSize());
