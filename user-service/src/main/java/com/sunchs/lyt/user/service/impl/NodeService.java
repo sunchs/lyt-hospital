@@ -100,7 +100,7 @@ public class NodeService implements INodeService {
 
         List<Integer> rnIds = new ArrayList<>();
         Wrapper<RoleNode> roleNodeWrapper = new EntityWrapper<RoleNode>()
-                .eq(RoleNode.ROLE_ID, rIds);
+                .in(RoleNode.ROLE_ID, rIds);
         roleNodeService.selectList(roleNodeWrapper).forEach(roleNode -> rnIds.add(roleNode.getNodeId()));
         if (rnIds.size() == 0) {
             return new ArrayList<>();
