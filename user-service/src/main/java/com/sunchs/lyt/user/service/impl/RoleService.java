@@ -70,7 +70,7 @@ public class RoleService implements IRoleService {
         role.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         role.setCreateId(UserThreadUtil.getUserId());
         role.setCreateTime(new Timestamp(System.currentTimeMillis()));
-        if (roleService.insert(role)) {
+        if (roleService.insertOrUpdate(role)) {
             Wrapper<RoleNode> wrapper = new EntityWrapper<RoleNode>()
                     .eq(RoleNode.ROLE_ID, role.getId());
             roleNodeService.delete(wrapper);
