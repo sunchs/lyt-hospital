@@ -27,6 +27,6 @@ public class NodeController extends BaseController {
 
     @PostMapping("/menuList")
     public ResultData getMenuList(@RequestBody RequestData data) {
-        return success(nodeService.getList());
+        return success(nodeService.getMenuList());
     }
 }
