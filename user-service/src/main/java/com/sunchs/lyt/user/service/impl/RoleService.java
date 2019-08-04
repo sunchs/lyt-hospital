@@ -61,6 +61,7 @@ public class RoleService implements IRoleService {
     public int save(RoleParam param) {
         this.checkTitle(param, true);
         Role role = new Role();
+        role.setId(param.getId());
         role.setPid(0);
         role.setTitle(param.getTitle());
         role.setStatus(1);

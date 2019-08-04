@@ -2,14 +2,14 @@ package com.sunchs.lyt.user.bean;
 
 public class NodeActionParam {
 
-    public Integer nodeId;
-    public Integer action;
+    private int nodeId;
+    private int action;
 
-    public Integer getNodeId() {
+    public int getNodeId() {
         return nodeId;
     }
 
-    public Integer getAction() {
+    public int getAction() {
         return action;
     }
 }

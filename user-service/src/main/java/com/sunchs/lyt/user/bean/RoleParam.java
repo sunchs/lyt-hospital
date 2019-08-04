@@ -6,12 +6,12 @@ import java.util.List;
 
 public class RoleParam extends PagingList {
 
-    public Integer roleId;
-    public String title;
-    public List<NodeActionParam> node;
+    private int id;
+    private String title;
+    private List<NodeActionParam> node;
 
-    public Integer getRoleId() {
-        return roleId;
+    public int getId() {
+        return id;
     }
 
     public String getTitle() {
