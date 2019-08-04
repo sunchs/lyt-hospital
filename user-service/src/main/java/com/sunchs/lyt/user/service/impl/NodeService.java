@@ -77,6 +77,7 @@ public class NodeService implements INodeService {
 
     private List<Integer> getUserNodeIds() {
         Integer userId = UserThreadUtil.getUserId();
+        System.out.println("用户ID："+userId);
 
         List<Integer> ruIds = new ArrayList<>();
         Wrapper<UserRole> userRoleWrapper = new EntityWrapper<UserRole>()
