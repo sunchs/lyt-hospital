@@ -8,6 +8,7 @@ public class RoleParam extends PagingList {
 
     private int id;
     private String title;
+    private int status;
     private List<NodeActionParam> node;
 
     public int getId() {
@@ -16,6 +17,10 @@ public class RoleParam extends PagingList {
 
     public String getTitle() {
         return title;
+    }
+
+    public int getStatus() {
+        return status;
     }
 
     public List<NodeActionParam> getNode() {
