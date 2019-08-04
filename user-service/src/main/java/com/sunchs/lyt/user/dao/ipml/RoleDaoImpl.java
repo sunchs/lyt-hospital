@@ -100,7 +100,7 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public boolean isExistTitle(Integer roleId, String title) {
-        String sql = "SELECT role_id FROM role WHERE title=:title AND role_id<>:roleId";
+        String sql = "SELECT id FROM role WHERE title=:title AND id<>:roleId";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("roleId", roleId)
                 .addValue("title", title);
