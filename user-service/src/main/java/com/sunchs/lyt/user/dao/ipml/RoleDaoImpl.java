@@ -82,7 +82,7 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public void deleteRoleNode(Integer roleId) {
-        String sql = "DELETE FROM role_node WHERE id=:roleId";
+        String sql = "DELETE FROM role_node WHERE role_id=:roleId";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("roleId", roleId);
         db.update(sql, param);
@@ -90,7 +90,7 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public void addRoleNode(Integer roleId, Integer nodeId, Integer action) {
-        String sql = "INSERT INTO role_node(id,node_id,action) VALUES(:roleId,:nodeId,:action)";
+        String sql = "INSERT INTO role_node(role_id,node_id,action) VALUES(:roleId,:nodeId,:action)";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("roleId", roleId)
                 .addValue("nodeId", nodeId)
