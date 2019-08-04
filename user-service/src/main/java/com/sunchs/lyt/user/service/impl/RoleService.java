@@ -4,14 +4,13 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.Role;
+import com.sunchs.lyt.db.business.entity.RoleNode;
 import com.sunchs.lyt.db.business.entity.UserRole;
+import com.sunchs.lyt.db.business.service.impl.RoleNodeServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.RoleServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.UserRoleServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
-import com.sunchs.lyt.framework.util.NumberUtil;
-import com.sunchs.lyt.framework.util.ObjectUtil;
-import com.sunchs.lyt.framework.util.PagingUtil;
-import com.sunchs.lyt.framework.util.StringUtil;
+import com.sunchs.lyt.framework.util.*;
 import com.sunchs.lyt.user.bean.NodeActionParam;
 import com.sunchs.lyt.user.bean.RoleNodeData;
 import com.sunchs.lyt.user.bean.RoleData;
@@ -24,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 @Service
@@ -41,6 +41,9 @@ public class RoleService implements IRoleService {
     @Autowired
     private RoleServiceImpl roleService;
 
+    @Autowired
+    private RoleNodeServiceImpl roleNodeService;
+
     @Override
     public PagingList<RoleData> getRoleList(RoleParam param) {
         List<RoleData> list = new ArrayList<>();
@@ -55,23 +58,47 @@ public class RoleService implements IRoleService {
     }
 
     @Override
-    public RoleNodeData save(RoleParam param) {
-        Integer roleId = 0;
-        if (NumberUtil.isZero(param.getRoleId())) {
-            roleId = this.insertRoleData(param);
-        } else {
-            roleId = this.updateRoleData(param);
+    public int save(RoleParam param) {
+        this.checkTitle(param, true);
+        Role role = new Role();
+        role.setPid(0);
+        role.setTitle(param.getTitle());
+        role.setStatus(1);
+        role.setSort(100);
+        role.setUpdateId(UserThreadUtil.getUserId());
+        role.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        role.setCreateId(UserThreadUtil.getUserId());
+        role.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        if (roleService.insert(role)) {
+            Wrapper<RoleNode> wrapper = new EntityWrapper<RoleNode>()
+                    .eq(RoleNode.ROLE_ID, role.getId());
+            roleNodeService.delete(wrapper);
+            param.getNode().forEach(n -> {
+                RoleNode roleNode = new RoleNode();
+                roleNode.setRoleId(role.getId());
+                roleNode.setNodeId(n.getNodeId());
+                roleNode.setAction(n.getAction());
+                roleNodeService.insert(roleNode);
+            });
         }
-        if (roleId > 0) {
-            RoleNodeData role = roleDao.getRoleById(roleId);
-            if (role == null) {
-                throw new UserException("角色ID：" + roleId + "，不存在");
-            } else {
-                role.setNodeList(nodeDao.getNodeByRoleId(roleId));
-            }
-            return role;
-        }
-        return null;
+        return role.getId();
+
+//        Integer roleId = 0;
+//        if (NumberUtil.isZero(param.getRoleId())) {
+//            roleId = this.insertRoleData(param);
+//        } else {
+//            roleId = this.updateRoleData(param);
+//        }
+//        if (roleId > 0) {
+//            RoleNodeData role = roleDao.getRoleById(roleId);
+//            if (role == null) {
+//                throw new UserException("角色ID：" + roleId + "，不存在");
+//            } else {
+//                role.setNodeList(nodeDao.getNodeByRoleId(roleId));
+//            }
+//            return role;
+//        }
+//        return null;
     }
 
     @Override

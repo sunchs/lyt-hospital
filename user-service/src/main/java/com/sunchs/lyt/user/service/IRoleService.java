@@ -18,7 +18,7 @@ public interface IRoleService {
     /**
      * 添加、修改账号
      */
-    RoleNodeData save(RoleParam param);
+    int save(RoleParam param);
 
     /**
      * 用户绑定角色
