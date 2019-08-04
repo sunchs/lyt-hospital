@@ -11,7 +11,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-06-11
+ * @since 2019-08-04
  */
 public class Node extends Model<Node> {
 
@@ -34,14 +34,19 @@ public class Node extends Model<Node> {
     private String title;
 
     /**
-     * 行为验证码
+     * 状态
      */
-    private String action;
+    private Integer status;
 
     /**
-     * 是否开启
+     * 链接
      */
-    private Integer enabled;
+    private String link;
+
+    /**
+     * 权限
+     */
+    private Integer action;
 
     /**
      * 排序
@@ -69,19 +74,26 @@ public class Node extends Model<Node> {
     public void setTitle(String title) {
         this.title = title;
     }
-    public String getAction() {
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+    public Integer getAction() {
         return action;
     }
 
-    public void setAction(String action) {
+    public void setAction(Integer action) {
         this.action = action;
-    }
-    public Integer getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Integer enabled) {
-        this.enabled = enabled;
     }
     public Integer getSort() {
         return sort;
@@ -97,9 +109,11 @@ public class Node extends Model<Node> {
 
     public static final String TITLE = "title";
 
-    public static final String ACTION = "action";
+    public static final String STATUS = "status";
 
-    public static final String ENABLED = "enabled";
+    public static final String LINK = "link";
+
+    public static final String ACTION = "action";
 
     public static final String SORT = "sort";
 
@@ -114,8 +128,9 @@ public class Node extends Model<Node> {
         "id=" + id +
         ", pid=" + pid +
         ", title=" + title +
+        ", status=" + status +
+        ", link=" + link +
         ", action=" + action +
-        ", enabled=" + enabled +
         ", sort=" + sort +
         "}";
     }
