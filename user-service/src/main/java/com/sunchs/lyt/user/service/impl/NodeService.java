@@ -86,6 +86,7 @@ public class NodeService implements INodeService {
         if (ruIds.size() == 0) {
             return new ArrayList<>();
         }
+        System.out.println("角色ID："+ruIds);
 
         List<Integer> rIds = new ArrayList<>();
         Wrapper<Role> roleWrapper = new EntityWrapper<Role>()
@@ -95,6 +96,7 @@ public class NodeService implements INodeService {
         if (rIds.size() == 0) {
             return new ArrayList<>();
         }
+        System.out.println("可用角色："+rIds);
 
         List<Integer> rnIds = new ArrayList<>();
         Wrapper<RoleNode> roleNodeWrapper = new EntityWrapper<RoleNode>()
@@ -103,6 +105,7 @@ public class NodeService implements INodeService {
         if (rnIds.size() == 0) {
             return new ArrayList<>();
         }
+        System.out.println("节点ID："+rnIds);
 
         return rnIds;
     }
