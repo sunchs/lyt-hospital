@@ -20,14 +20,14 @@ public class NodeDaoImpl implements NodeDao {
 
     @Override
     public List<NodeData> getList() {
-        String sql = "SELECT node_id,title FROM node WHERE enabled=1 ORDER BY sort ASC";
+        String sql = "SELECT id,title FROM node WHERE status=1 ORDER BY sort ASC";
         List<NodeData> list = db.query(sql, (ResultSet rs, int rowNum) -> setResultToNodeData(rs));
         return list;
     }
 
     @Override
     public List<NodeData> getNodeByRoleId(Integer roleId) {
-        String sql = "SELECT node_id,title FROM node WHERE node_id IN (SELECT node_id FROM role_node WHERE role_id=:roleId)";
+        String sql = "SELECT id,title FROM node WHERE id IN (SELECT node_id FROM role_node WHERE role_id=:roleId)";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("roleId", roleId);
         return db.query(sql, param, (ResultSet rs, int rowNum) -> setResultToNodeData(rs));
