@@ -66,7 +66,7 @@ public class RoleService implements IRoleService {
         role.setId(param.getId());
         role.setPid(0);
         role.setTitle(param.getTitle());
-        role.setStatus(1);
+        role.setStatus(param.getStatus());
         role.setSort(100);
         role.setUpdateId(UserThreadUtil.getUserId());
         role.setUpdateTime(new Timestamp(System.currentTimeMillis()));
