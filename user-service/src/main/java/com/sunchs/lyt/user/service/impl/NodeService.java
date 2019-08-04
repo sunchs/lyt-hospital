@@ -47,5 +47,6 @@ public class NodeService implements INodeService {
                 list.add(data);
             }
         });
+        return list;
     }
 }
