@@ -23,7 +23,7 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public RoleNodeData getRoleById(Integer roleId) {
-        String sql = "SELECT role_id,title FROM role WHERE role_id=:roleId";
+        String sql = "SELECT id,title FROM role WHERE id=:roleId";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("roleId", roleId);
         RoleNodeData role = db.query(sql, param, (ResultSet rs) -> {
@@ -31,7 +31,7 @@ public class RoleDaoImpl implements RoleDao {
                 return null;
             }
             RoleNodeData r = new RoleNodeData();
-            r.setRoleId(rs.getInt("role_id"));
+            r.setRoleId(rs.getInt("id"));
             r.setTitle(rs.getString("title"));
             return r;
         });
@@ -40,7 +40,7 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public List<RoleData> getRoleByUserId(Integer userId) {
-        String sql = "SELECT role_id,title FROM role WHERE role_id IN (SELECT role_id FROM user_role WHERE user_id=:userId)";
+        String sql = "SELECT id,title FROM role WHERE id IN (SELECT id FROM user_role WHERE user_id=:userId)";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("userId", userId);
         return db.query(sql, param, (ResultSet rs, int rowNum) -> setResultToRoleData(rs));
@@ -48,7 +48,7 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public List<RoleData> getRoleList() {
-        String sql = "SELECT role_id,title FROM role ORDER BY sort ASC";
+        String sql = "SELECT id,title FROM role ORDER BY sort ASC";
         return  db.query(sql, (ResultSet rs, int rowNum) -> setResultToRoleData(rs));
     }
 
@@ -67,7 +67,7 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public Integer updateRoleData(Map<String, Object> param) {
-        String sql = "UPDATE role SET title=:title WHERE role_id=:roleId";
+        String sql = "UPDATE role SET title=:title WHERE id=:roleId";
         try {
             db.update(sql, new MapSqlParameterSource(param));
             if (param.containsKey("roleId")) {
@@ -82,7 +82,7 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public void deleteRoleNode(Integer roleId) {
-        String sql = "DELETE FROM role_node WHERE role_id=:roleId";
+        String sql = "DELETE FROM role_node WHERE id=:roleId";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("roleId", roleId);
         db.update(sql, param);
@@ -90,7 +90,7 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public void addRoleNode(Integer roleId, Integer nodeId, Integer action) {
-        String sql = "INSERT INTO role_node(role_id,node_id,action) VALUES(:roleId,:nodeId,:action)";
+        String sql = "INSERT INTO role_node(id,node_id,action) VALUES(:roleId,:nodeId,:action)";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("roleId", roleId)
                 .addValue("nodeId", nodeId)
@@ -109,7 +109,7 @@ public class RoleDaoImpl implements RoleDao {
 
     private RoleData setResultToRoleData(ResultSet rs) throws SQLException {
         RoleData r = new RoleData();
-        r.setId(rs.getInt("role_id"));
+        r.setId(rs.getInt("id"));
         r.setTitle(rs.getString("title"));
         return r;
     }
