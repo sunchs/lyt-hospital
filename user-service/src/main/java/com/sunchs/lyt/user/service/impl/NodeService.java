@@ -40,10 +40,14 @@ public class NodeService implements INodeService {
         nodeList.forEach(n -> {
             if (n.getPid().equals(0)) {
                 MenuData data = ObjectUtil.copy(n, MenuData.class);
-                List<Node> nodes = nodeList.stream().filter(node -> node.getPid().equals(n.getId())).collect(Collectors.toList());
-                nodes.forEach(son -> {
-                    data.getChildren().add(ObjectUtil.copy(son, MenuData.class));
+                List<MenuData> childList = new ArrayList<>();
+                nodeList.forEach(son -> {
+                    if (son.getPid().equals(n.getId())) {
+                        MenuData sonData = ObjectUtil.copy(son, MenuData.class);
+                        childList.add(sonData);
+                    }
                 });
+                data.setChildren(childList);
                 list.add(data);
             }
         });
