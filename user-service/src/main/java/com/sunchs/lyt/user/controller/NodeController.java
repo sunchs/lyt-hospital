@@ -29,4 +29,10 @@ public class NodeController extends BaseController {
     public ResultData getMenuList(@RequestBody RequestData data) {
         return success(nodeService.getMenuList());
     }
+
+    @PostMapping("/roleNodeIds")
+    public ResultData getRoleNodeIds(@RequestBody RequestData data) {
+        int releId = data.getInt("id");
+        return success(nodeService.getRoleNodeIds(releId));
+    }
 }

@@ -75,6 +75,18 @@ public class NodeService implements INodeService {
         return list;
     }
 
+    @Override
+    public List<Integer> getRoleNodeIds(int releId) {
+        List<Integer> rnIds = new ArrayList<>();
+        Wrapper<RoleNode> roleNodeWrapper = new EntityWrapper<RoleNode>()
+                .eq(RoleNode.ROLE_ID, releId);
+        roleNodeService.selectList(roleNodeWrapper).forEach(roleNode -> rnIds.add(roleNode.getNodeId()));
+        if (rnIds.size() == 0) {
+            return new ArrayList<>();
+        }
+        return rnIds;
+    }
+
     private List<Integer> getUserNodeIds() {
         Integer userId = UserThreadUtil.getUserId();
         System.out.println("用户ID："+userId);

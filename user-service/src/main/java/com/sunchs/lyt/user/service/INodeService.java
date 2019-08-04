@@ -16,4 +16,9 @@ public interface INodeService {
      * 获取菜单列表
      */
     List<MenuData> getMenuList();
+
+    /**
+     * 获取角色节点
+     */
+    List<Integer> getRoleNodeIds(int releId);
 }
