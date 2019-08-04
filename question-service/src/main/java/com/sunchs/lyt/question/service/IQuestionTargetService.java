@@ -23,7 +23,10 @@ public interface IQuestionTargetService {
      */
     List<QuestionTargetData> getAll();
 
-
+    /**
+     * 更新状态
+     */
+    void updateStatus(QuestionTargetParam param);
 
     /**
      * 保存数据

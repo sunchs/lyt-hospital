@@ -1,6 +1,7 @@
 package com.sunchs.lyt.question.service.impl;
 
 import com.sunchs.lyt.db.business.entity.QuestionTarget;
+import com.sunchs.lyt.db.business.service.impl.QuestionTargetServiceImpl;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.ObjectUtil;
 import com.sunchs.lyt.framework.util.StringUtil;
@@ -25,6 +26,9 @@ public class QuestionTargetService implements IQuestionTargetService {
 
     @Autowired
     QuestionTargetDaoImpl questionTargetDao;
+
+    @Autowired
+    private QuestionTargetServiceImpl questionTargetService;
 
     @Override
     public QuestionTargetData getById(int id) {
@@ -74,6 +78,16 @@ public class QuestionTargetService implements IQuestionTargetService {
 //            update(param);
         }
         return 0;
+    }
+
+    @Override
+    public void updateStatus(QuestionTargetParam param) {
+        QuestionTarget data = new QuestionTarget();
+        data.setId(param.getId());
+        data.setStatus(param.getStatus());
+        data.setUpdateId(UserThreadUtil.getUserId());
+        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        questionTargetService.updateById(data);
     }
 
     @Override

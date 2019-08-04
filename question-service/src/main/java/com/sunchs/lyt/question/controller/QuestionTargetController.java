@@ -51,6 +51,16 @@ public class QuestionTargetController extends BaseController {
     }
 
     /**
+     * 根据 模版ID 更新模版状态
+     */
+    @PostMapping("/updateStatus")
+    public ResultData updateStatus(@RequestBody RequestData data) {
+        QuestionTargetParam param = data.toObject(QuestionTargetParam.class);
+        targetService.updateStatus(param);
+        return success();
+    }
+
+    /**
      * 获取 级联 数据
      */
     @PostMapping("/getCascaderData")

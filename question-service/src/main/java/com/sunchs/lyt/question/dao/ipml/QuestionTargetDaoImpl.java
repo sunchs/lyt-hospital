@@ -70,7 +70,8 @@ public class QuestionTargetDaoImpl implements QuestionTargetDao {
 
     @Override
     public List<QuestionTarget> getAll() {
-        Wrapper<QuestionTarget> where = new EntityWrapper<>();
+        Wrapper<QuestionTarget> where = new EntityWrapper<QuestionTarget>()
+                .eq(QuestionTarget.STATUS, 1);
         return questionTargetService.selectList(where);
     }
 
