@@ -133,28 +133,28 @@ public class RoleService implements IRoleService {
         return list;
     }
 
-    private Integer insertRoleData(RoleParam param) {
-        this.checkTitle(param, true);
-        Map<String, Object> opt = new HashMap<>();
-        opt.put("title", param.getTitle());
-        Integer roleId = roleDao.insertRoleData(opt);
-        if (roleId > 0) {
-            this.resetNode(roleId, param.getNode());
-        }
-        return roleId;
-    }
-
-    private Integer updateRoleData(RoleParam param) {
-        this.checkTitle(param, true);
-        Map<String, Object> opt = new HashMap<>();
-        opt.put("roleId", param.getRoleId());
-        opt.put("title", param.getTitle());
-        Integer roleId = roleDao.updateRoleData(opt);
-        if (roleId > 0) {
-            this.resetNode(roleId, param.getNode());
-        }
-        return roleId;
-    }
+//    private Integer insertRoleData(RoleParam param) {
+//        this.checkTitle(param, true);
+//        Map<String, Object> opt = new HashMap<>();
+//        opt.put("title", param.getTitle());
+//        Integer roleId = roleDao.insertRoleData(opt);
+//        if (roleId > 0) {
+//            this.resetNode(roleId, param.getNode());
+//        }
+//        return roleId;
+//    }
+//
+//    private Integer updateRoleData(RoleParam param) {
+//        this.checkTitle(param, true);
+//        Map<String, Object> opt = new HashMap<>();
+//        opt.put("roleId", param.getRoleId());
+//        opt.put("title", param.getTitle());
+//        Integer roleId = roleDao.updateRoleData(opt);
+//        if (roleId > 0) {
+//            this.resetNode(roleId, param.getNode());
+//        }
+//        return roleId;
+//    }
 
     private void resetNode(Integer roleId, List<NodeActionParam> nodeList) {
         roleDao.deleteRoleNode(roleId);
@@ -174,8 +174,8 @@ public class RoleService implements IRoleService {
         if (StringUtil.isEmpty(param.getTitle())) {
             throw new UserException("标题不能为空");
         }
-        Integer roleId = param.getRoleId() == null ? 0 : param.getRoleId();
-        if (isExist && roleDao.isExistTitle(roleId, param.getTitle())) {
+//        Integer roleId = param.getId() == null ? 0 : param.getId();
+        if (isExist && roleDao.isExistTitle(param.getId(), param.getTitle())) {
             throw new UserException("角色已存在");
         }
     }

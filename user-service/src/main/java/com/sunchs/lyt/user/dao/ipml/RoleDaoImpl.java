@@ -21,64 +21,64 @@ public class RoleDaoImpl implements RoleDao {
     @Autowired
     private NamedParameterJdbcTemplate db;
 
-    @Override
-    public RoleNodeData getRoleById(Integer roleId) {
-        String sql = "SELECT id,title FROM role WHERE id=:roleId";
-        MapSqlParameterSource param = new MapSqlParameterSource()
-                .addValue("roleId", roleId);
-        RoleNodeData role = db.query(sql, param, (ResultSet rs) -> {
-            if ( ! rs.next()) {
-                return null;
-            }
-            RoleNodeData r = new RoleNodeData();
-            r.setRoleId(rs.getInt("id"));
-            r.setTitle(rs.getString("title"));
-            return r;
-        });
-        return role;
-    }
-
-    @Override
-    public List<RoleData> getRoleByUserId(Integer userId) {
-        String sql = "SELECT id,title FROM role WHERE id IN (SELECT id FROM user_role WHERE user_id=:userId)";
-        MapSqlParameterSource param = new MapSqlParameterSource()
-                .addValue("userId", userId);
-        return db.query(sql, param, (ResultSet rs, int rowNum) -> setResultToRoleData(rs));
-    }
-
-    @Override
-    public List<RoleData> getRoleList() {
-        String sql = "SELECT id,title FROM role ORDER BY sort ASC";
-        return  db.query(sql, (ResultSet rs, int rowNum) -> setResultToRoleData(rs));
-    }
-
-    @Override
-    public Integer insertRoleData(Map<String,Object> param) {
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        String sql = "INSERT INTO role(title) VALUES(:title)";
-        try {
-            db.update(sql, new MapSqlParameterSource(param), keyHolder);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new UserException("添加角色数据，SQL异常");
-        }
-        return keyHolder.getKey().intValue();
-    }
-
-    @Override
-    public Integer updateRoleData(Map<String, Object> param) {
-        String sql = "UPDATE role SET title=:title WHERE id=:roleId";
-        try {
-            db.update(sql, new MapSqlParameterSource(param));
-            if (param.containsKey("roleId")) {
-                return (int) param.get("roleId");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new UserException("修改角色数据，SQL异常");
-        }
-        return 0;
-    }
+//    @Override
+//    public RoleNodeData getRoleById(Integer roleId) {
+//        String sql = "SELECT id,title FROM role WHERE id=:roleId";
+//        MapSqlParameterSource param = new MapSqlParameterSource()
+//                .addValue("roleId", roleId);
+//        RoleNodeData role = db.query(sql, param, (ResultSet rs) -> {
+//            if ( ! rs.next()) {
+//                return null;
+//            }
+//            RoleNodeData r = new RoleNodeData();
+//            r.setRoleId(rs.getInt("id"));
+//            r.setTitle(rs.getString("title"));
+//            return r;
+//        });
+//        return role;
+//    }
+//
+//    @Override
+//    public List<RoleData> getRoleByUserId(Integer userId) {
+//        String sql = "SELECT id,title FROM role WHERE id IN (SELECT id FROM user_role WHERE user_id=:userId)";
+//        MapSqlParameterSource param = new MapSqlParameterSource()
+//                .addValue("userId", userId);
+//        return db.query(sql, param, (ResultSet rs, int rowNum) -> setResultToRoleData(rs));
+//    }
+//
+//    @Override
+//    public List<RoleData> getRoleList() {
+//        String sql = "SELECT id,title FROM role ORDER BY sort ASC";
+//        return  db.query(sql, (ResultSet rs, int rowNum) -> setResultToRoleData(rs));
+//    }
+//
+//    @Override
+//    public Integer insertRoleData(Map<String,Object> param) {
+//        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+//        String sql = "INSERT INTO role(title) VALUES(:title)";
+//        try {
+//            db.update(sql, new MapSqlParameterSource(param), keyHolder);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new UserException("添加角色数据，SQL异常");
+//        }
+//        return keyHolder.getKey().intValue();
+//    }
+//
+//    @Override
+//    public Integer updateRoleData(Map<String, Object> param) {
+//        String sql = "UPDATE role SET title=:title WHERE id=:roleId";
+//        try {
+//            db.update(sql, new MapSqlParameterSource(param));
+//            if (param.containsKey("roleId")) {
+//                return (int) param.get("roleId");
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new UserException("修改角色数据，SQL异常");
+//        }
+//        return 0;
+//    }
 
     @Override
     public void deleteRoleNode(Integer roleId) {
@@ -99,7 +99,7 @@ public class RoleDaoImpl implements RoleDao {
     }
 
     @Override
-    public boolean isExistTitle(Integer roleId, String title) {
+    public boolean isExistTitle(int roleId, String title) {
         String sql = "SELECT id FROM role WHERE title=:title AND id<>:roleId";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("roleId", roleId)
@@ -107,10 +107,10 @@ public class RoleDaoImpl implements RoleDao {
         return db.query(sql, param, (ResultSet rs) -> rs.next());
     }
 
-    private RoleData setResultToRoleData(ResultSet rs) throws SQLException {
-        RoleData r = new RoleData();
-        r.setId(rs.getInt("id"));
-        r.setTitle(rs.getString("title"));
-        return r;
-    }
+//    private RoleData setResultToRoleData(ResultSet rs) throws SQLException {
+//        RoleData r = new RoleData();
+//        r.setId(rs.getInt("id"));
+//        r.setTitle(rs.getString("title"));
+//        return r;
+//    }
 }
