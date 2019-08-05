@@ -69,12 +69,12 @@ public class QuestionTargetService implements IQuestionTargetService {
     @Override
     public int save(QuestionTargetParam param) {
         // 检查标题
-        checkTitle(param.getTitle(), param.getPid());
-        List<QuestionTargetParam> children = param.getChildren();
-        for (QuestionTargetParam child : children) {
-            checkTitle(child.getTitle(), param.getPid());
-        }
         if (NumberUtil.isZero(param.getId())) {
+            checkTitle(param.getTitle(), param.getPid());
+            List<QuestionTargetParam> children = param.getChildren();
+            for (QuestionTargetParam child : children) {
+                checkTitle(child.getTitle(), param.getPid());
+            }
             return insert(param);
         } else {
             return update(param);
