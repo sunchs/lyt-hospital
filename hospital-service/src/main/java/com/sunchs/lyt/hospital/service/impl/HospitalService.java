@@ -196,6 +196,8 @@ public class HospitalService implements IHospitalService {
         res.setOutpatientType(getHospitalExtend(res.getId(), ExtendTypeEnum.OutpatientType.value));
         // 挂号方式
         res.setRegistrationMode(getHospitalExtend(res.getId(), ExtendTypeEnum.RegistrationMode.value));
+        // 员工信息
+        res.setEmployeeInfo(getHospitalExtend(res.getId(), ExtendTypeEnum.EmployeeInfo.value));
 
         // 状态
         res.setStatusName(HospitalStatusEnum.get(res.getStatus()));

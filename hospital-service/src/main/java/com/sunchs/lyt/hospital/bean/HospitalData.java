@@ -41,6 +41,11 @@ public class HospitalData extends Hospital {
      */
     private List<HospitalExtendData> registrationMode;
 
+    /**
+     * 员工信息
+     */
+    private List<HospitalExtendData> employeeInfo;
+
 
     private String statusName;
 
@@ -147,5 +152,13 @@ public class HospitalData extends Hospital {
 
     public void setUpdateTimeName(String updateTimeName) {
         this.updateTimeName = updateTimeName;
+    }
+
+    public List<HospitalExtendData> getEmployeeInfo() {
+        return employeeInfo;
+    }
+
+    public void setEmployeeInfo(List<HospitalExtendData> employeeInfo) {
+        this.employeeInfo = employeeInfo;
     }
 }
