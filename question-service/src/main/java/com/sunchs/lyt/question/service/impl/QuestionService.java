@@ -57,6 +57,9 @@ public class QuestionService implements IQuestionService {
             where.eq(Question.TARGET_ONE, param.getTargetOne());
             where.eq(Question.STATUS, 1);
         }
+        if (UserThreadUtil.getHospitalId() > 0) {
+            where.eq(Question.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+        }
         where.orderBy(Question.ID, false);
         Page<Question> data = questionDao.getPaging(where, param.getPageNow(), param.getPageSize());
         List<QuestionData> list = new ArrayList<>();
