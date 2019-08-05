@@ -94,6 +94,7 @@ public class QuestionnaireService implements IQuestionnaireService {
     public PagingList<QuestionnaireData> getPageList(QuestionnaireParam param) {
         Wrapper<Questionnaire> where = new EntityWrapper<>();
         if (UserThreadUtil.getHospitalId() > 0) {
+            System.out.println("通过医院ID获取问卷："+UserThreadUtil.getHospitalId());
             where.eq(Questionnaire.HOSPITAL_ID, UserThreadUtil.getHospitalId());
         }
         where.orderBy(Questionnaire.ID, false);
