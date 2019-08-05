@@ -15,7 +15,12 @@ public enum ExtendTypeEnum {
     /**
      * 挂号方式
      */
-    RegistrationMode(4, "挂号方式");
+    RegistrationMode(4, "挂号方式"),
+
+    /**
+     * 员工信息
+     */
+    EmployeeInfo(5, "员工信息");
 
     public int value;
     public String title;

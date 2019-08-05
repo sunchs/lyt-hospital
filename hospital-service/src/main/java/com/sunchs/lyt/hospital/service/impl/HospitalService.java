@@ -79,6 +79,8 @@ public class HospitalService implements IHospitalService {
             setExtend(data.getId(), ExtendTypeEnum.OutpatientType.value, param.getOutpatientType());
             // 挂号方式
             setExtend(data.getId(), ExtendTypeEnum.RegistrationMode.value, param.getRegistrationMode());
+            // 员工信息
+            setExtend(data.getId(), ExtendTypeEnum.EmployeeInfo.value, param.getEmployeeInfo());
         }
     }
 

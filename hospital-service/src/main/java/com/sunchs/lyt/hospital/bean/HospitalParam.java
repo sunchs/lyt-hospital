@@ -110,6 +110,11 @@ public class HospitalParam extends PagingParam {
      */
     private List<HospitalExtendParam> registrationMode;
 
+    /**
+     * 员工信息
+     */
+    private List<HospitalExtendParam> employeeInfo;
+
 
     public int getId() {
         return id;
@@ -191,6 +196,10 @@ public class HospitalParam extends PagingParam {
         return registrationMode;
     }
 
+    public List<HospitalExtendParam> getEmployeeInfo() {
+        return employeeInfo;
+    }
+
     @Override
     public String toString() {
         return "HospitalParam{" +
@@ -214,6 +223,7 @@ public class HospitalParam extends PagingParam {
                 ", hospitalBranch=" + hospitalBranch +
                 ", outpatientType=" + outpatientType +
                 ", registrationMode=" + registrationMode +
+                ", employeeInfo=" + employeeInfo +
                 '}';
     }
 }
