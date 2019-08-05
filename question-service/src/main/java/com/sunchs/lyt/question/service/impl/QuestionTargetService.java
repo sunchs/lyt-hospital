@@ -1,5 +1,7 @@
 package com.sunchs.lyt.question.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.sunchs.lyt.db.business.entity.QuestionTarget;
 import com.sunchs.lyt.db.business.service.impl.QuestionTargetServiceImpl;
 import com.sunchs.lyt.framework.util.NumberUtil;
@@ -75,9 +77,8 @@ public class QuestionTargetService implements IQuestionTargetService {
         if (NumberUtil.isZero(param.getId())) {
             return insert(param);
         } else {
-//            update(param);
+            return update(param);
         }
-        return 0;
     }
 
     @Override
@@ -147,9 +148,46 @@ public class QuestionTargetService implements IQuestionTargetService {
         return 0;
     }
 
-//    private Integer update(QuestionTargetParam param) {
-//        return 0;
-//    }
+    private int update(QuestionTargetParam param) {
+        QuestionTarget data = new QuestionTarget();
+        data.setId(param.getId());
+        data.setTitle(param.getTitle());
+        data.setUpdateId(UserThreadUtil.getUserId());
+        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        if (questionTargetService.updateById(data)) {
+            List<Integer> keepIds = new ArrayList<>();
+            param.getChildren().forEach(row -> {
+                if (row.id != 0) {
+                    keepIds.add(row.id);
+                }
+            });
+            // 清理无效数据
+            Wrapper<QuestionTarget> w = new EntityWrapper<>();
+            w.notIn(QuestionTarget.ID, keepIds);
+            w.eq(QuestionTarget.PID, data.getId());
+            questionTargetService.delete(w);
+            // 更新数据
+            List<QuestionTargetParam> children = param.getChildren();
+            for (QuestionTargetParam child : children) {
+                QuestionTarget son = new QuestionTarget();
+                son.setId(child.getId());
+                son.setPid(data.getId());
+                son.setTitle(child.getTitle());
+                son.setStatus(1);
+                son.setSort(100);
+                son.setRemarks("");
+                son.setUpdateId(UserThreadUtil.getUserId());
+                son.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+                if (child.getId() == 0) {
+                    son.setCreateId(UserThreadUtil.getUserId());
+                    son.setCreateTime(new Timestamp(System.currentTimeMillis()));
+                }
+                questionTargetService.insertOrUpdate(son);
+            }
+            return data.getId();
+        }
+        return 0;
+    }
 
     private void checkTitle(String title, int target) {
         if (StringUtil.isEmpty(title)) {
