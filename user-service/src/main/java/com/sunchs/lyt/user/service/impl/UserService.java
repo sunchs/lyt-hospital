@@ -119,6 +119,10 @@ public class UserService implements IUserService {
             throw new UserException("登录失败！");
         }
 
+        Wrapper<UserHospital> userHospitalWrapper = new EntityWrapper<UserHospital>()
+                .eq(UserHospital.USER_ID, user.getId());
+        UserHospital userHospital = userHospitalService.selectOne(userHospitalWrapper);
+
         // 结果集
         UserRoleData res = new UserRoleData();
         res.setId(user.getId());
@@ -126,6 +130,7 @@ public class UserService implements IUserService {
         res.setName(user.getName());
         res.setToken(token);
         res.setRoleList(getUserRoleIds(user.getId()));
+        res.setHospitalId(Objects.nonNull(userHospital) ? userHospital.getHospitalId() : 0);
 
         // 更新缓存
         RedisUtil.setValue(CacheKeys.USER_LOGIN + token, JsonUtil.toJson(res), DateTimes.DAY * 3);

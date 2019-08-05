@@ -4,6 +4,8 @@ import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.UserCacheData;
 import com.sunchs.lyt.framework.constants.CacheKeys;
 
+import java.util.Objects;
+
 public class UserThreadUtil {
 
     public static final ThreadLocal<UserCacheData> userHandle = new ThreadLocal<>();
@@ -19,19 +21,27 @@ public class UserThreadUtil {
         }
     }
 
-    public static Integer getUserId() {
+    public static int getUserId() {
         UserCacheData user = userHandle.get();
-        if (user != null) {
-            return user.getUserId();
+        if (Objects.nonNull(user)) {
+            return user.getId();
         }
         return 0;
     }
 
     public static String getUserToken() {
         UserCacheData user = userHandle.get();
-        if (user != null) {
+        if (Objects.nonNull(user)) {
             return user.getToken();
         }
         return "";
+    }
+
+    public static int getHospitalId() {
+        UserCacheData user = userHandle.get();
+        if (Objects.nonNull(user)) {
+            return user.getHospitalId();
+        }
+        return 0;
     }
 }

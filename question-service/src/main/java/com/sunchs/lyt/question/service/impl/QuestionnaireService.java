@@ -93,6 +93,9 @@ public class QuestionnaireService implements IQuestionnaireService {
     @Override
     public PagingList<QuestionnaireData> getPageList(QuestionnaireParam param) {
         Wrapper<Questionnaire> where = new EntityWrapper<>();
+        if (UserThreadUtil.getHospitalId() > 0) {
+            where.eq(Questionnaire.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+        }
         where.orderBy(Questionnaire.ID, false);
         Page<Questionnaire> page = questionnaireService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), where);
         List<QuestionnaireData> list = new ArrayList<>();

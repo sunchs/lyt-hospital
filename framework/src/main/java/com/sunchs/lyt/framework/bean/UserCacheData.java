@@ -6,30 +6,56 @@ public class UserCacheData {
     private String userName;
     private String name;
     private String token;
+    private int hospitalId;
 
-    public int getUserId() {
+    public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getUserName() {
         return userName;
     }
 
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getToken() {
         return token;
     }
 
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public int getHospitalId() {
+        return hospitalId;
+    }
+
+    public void setHospitalId(int hospitalId) {
+        this.hospitalId = hospitalId;
+    }
+
     @Override
     public String toString() {
         return "UserCacheData{" +
-                "userId=" + id +
+                "id=" + id +
                 ", userName='" + userName + '\'' +
                 ", name='" + name + '\'' +
                 ", token='" + token + '\'' +
+                ", hospitalId=" + hospitalId +
                 '}';
     }
 }

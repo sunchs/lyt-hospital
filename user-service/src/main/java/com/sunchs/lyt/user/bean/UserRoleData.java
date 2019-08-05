@@ -1,21 +1,21 @@
 package com.sunchs.lyt.user.bean;
 
-import java.util.List;
 import java.util.Set;
 
 public class UserRoleData {
 
-    private Integer id;
+    private int id;
     private String userName;
     private String name;
     private String token;
+    private int hospitalId;
     private Set<Integer> roleList;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -41,6 +41,14 @@ public class UserRoleData {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public int getHospitalId() {
+        return hospitalId;
+    }
+
+    public void setHospitalId(int hospitalId) {
+        this.hospitalId = hospitalId;
     }
 
     public Set<Integer> getRoleList() {
