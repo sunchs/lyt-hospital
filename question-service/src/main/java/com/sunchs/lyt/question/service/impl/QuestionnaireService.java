@@ -5,8 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.sunchs.lyt.db.business.entity.Hospital;
 import com.sunchs.lyt.db.business.entity.Questionnaire;
 import com.sunchs.lyt.db.business.entity.QuestionnaireExtend;
+import com.sunchs.lyt.db.business.service.impl.HospitalServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.QuestionnaireExtendServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.QuestionnaireServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
@@ -54,6 +56,9 @@ public class QuestionnaireService implements IQuestionnaireService {
     @Autowired
     private QuestionnaireExtendServiceImpl questionnaireExtendService;
 
+    @Autowired
+    private HospitalServiceImpl hospitalService;
+
     @Override
     public QuestionnaireData getById(int id) {
         // 获取问卷基本信息
@@ -94,7 +99,6 @@ public class QuestionnaireService implements IQuestionnaireService {
     public PagingList<QuestionnaireData> getPageList(QuestionnaireParam param) {
         Wrapper<Questionnaire> where = new EntityWrapper<>();
         if (UserThreadUtil.getHospitalId() > 0) {
-            System.out.println("通过医院ID获取问卷："+UserThreadUtil.getHospitalId());
             where.eq(Questionnaire.HOSPITAL_ID, UserThreadUtil.getHospitalId());
         }
         where.orderBy(Questionnaire.ID, false);
@@ -107,8 +111,12 @@ public class QuestionnaireService implements IQuestionnaireService {
             if (data.getHospitalId() == 0) {
                 data.setHospitalName("通用");
             } else {
-                // TODO:: 医院名
-                data.setHospitalName("XXX医院");
+                Hospital hospital = hospitalService.selectById(data.getHospitalId());
+                if (Objects.nonNull(hospital)) {
+                    data.setHospitalName(hospital.getHospitalName());
+                } else {
+                    data.setHospitalName("绑定的医院不存在");
+                }
             }
             data.setUpdateTimeName(FormatUtil.dateTime(data.getUpdateTime()));
 
@@ -283,8 +291,7 @@ public class QuestionnaireService implements IQuestionnaireService {
 
     private int insert(QuestionnaireParam param) {
         Questionnaire data = new Questionnaire();
-        // TODO::医院ID
-        data.setHospitalId(0);
+        data.setHospitalId(UserThreadUtil.getHospitalId());
         data.setTitle(param.getTitle());
         data.setStatus(param.getStatus());
         data.setTargetOne(param.getTargetOne());
@@ -301,7 +308,6 @@ public class QuestionnaireService implements IQuestionnaireService {
     private int update(QuestionnaireParam param) {
         Questionnaire data = new Questionnaire();
         data.setId(param.getId());
-        // TODO::医院ID
         data.setTitle(param.getTitle());
         data.setUpdateId(UserThreadUtil.getUserId());
         data.setUpdateTime(new Timestamp(System.currentTimeMillis()));

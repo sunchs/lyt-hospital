@@ -77,8 +77,7 @@ public class QuestionService implements IQuestionService {
         }
 
         Question question = new Question();
-        // TODO::医院ID
-        question.setHospitalId(0);
+        question.setHospitalId(UserThreadUtil.getHospitalId());
         question.setNumber(param.getNumber());
         question.setTitle(param.getTitle());
         question.setStatus(1);
