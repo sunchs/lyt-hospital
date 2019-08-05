@@ -89,7 +89,6 @@ public class NodeService implements INodeService {
 
     private List<Integer> getUserNodeIds() {
         Integer userId = UserThreadUtil.getUserId();
-        System.out.println("用户ID："+userId);
 
         List<Integer> ruIds = new ArrayList<>();
         Wrapper<UserRole> userRoleWrapper = new EntityWrapper<UserRole>()
@@ -98,7 +97,6 @@ public class NodeService implements INodeService {
         if (ruIds.size() == 0) {
             return new ArrayList<>();
         }
-        System.out.println("角色ID："+ruIds);
 
         List<Integer> rIds = new ArrayList<>();
         Wrapper<Role> roleWrapper = new EntityWrapper<Role>()
@@ -108,7 +106,6 @@ public class NodeService implements INodeService {
         if (rIds.size() == 0) {
             return new ArrayList<>();
         }
-        System.out.println("可用角色："+rIds);
 
         List<Integer> rnIds = new ArrayList<>();
         Wrapper<RoleNode> roleNodeWrapper = new EntityWrapper<RoleNode>()
@@ -117,7 +114,6 @@ public class NodeService implements INodeService {
         if (rnIds.size() == 0) {
             return new ArrayList<>();
         }
-        System.out.println("节点ID："+rnIds);
 
         return rnIds;
     }
