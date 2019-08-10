@@ -79,4 +79,9 @@ public interface IItemService {
      */
     List<User> itemUserList(ItemParam param);
 
+    /**
+     * 同步答卷
+     */
+    void syncAnswer(SyncAnswerParam param);
+
 }

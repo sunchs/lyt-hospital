@@ -45,6 +45,15 @@ public class ItemService implements IItemService {
     @Autowired
     private UserServiceImpl userService;
 
+    @Autowired
+    private AnswerImageServiceImpl answerImageService;
+
+    @Autowired
+    private AnswerOptionServiceImpl answerOptionService;
+
+    @Autowired
+    private QuestionnaireExtendServiceImpl questionnaireExtendService;
+
     @Override
     public PagingList<ItemData> getPageList(ItemParam param) {
         List<ItemData> list = new ArrayList<>();
@@ -72,7 +81,6 @@ public class ItemService implements IItemService {
                 throw new ItemException("项目标题已存在");
             }
         }
-
 
         Item data = new Item();
         data.setId(param.getId());
@@ -130,6 +138,7 @@ public class ItemService implements IItemService {
 
                     ItemOffice data = new ItemOffice();
                     data.setItemId(param.getItemId());
+                    data.setHospitalId(getHospitalId(param.getItemId()));
                     data.setOfficeTypeId(row.getOfficeTypeId());
                     data.setOfficeId(0);
                     data.setQuestionnaireId(row.getQuestionnaireId());
@@ -138,6 +147,7 @@ public class ItemService implements IItemService {
                     row.getOfficeList().forEach(officeId -> {
                         ItemOffice data = new ItemOffice();
                         data.setItemId(param.getItemId());
+                        data.setHospitalId(getHospitalId(param.getItemId()));
                         data.setOfficeTypeId(row.getOfficeTypeId());
                         data.setOfficeId(officeId);
                         data.setQuestionnaireId(row.getQuestionnaireId());
@@ -329,6 +339,76 @@ public class ItemService implements IItemService {
         return userService.selectList(w);
     }
 
+    @Override
+    public void syncAnswer(SyncAnswerParam param) {
+        // 检查重复
+        checkAnswer(param);
+
+        // 获取项目相关信息
+        ItemOffice itemOffice = getItemOffice(param.getItemId(), param.getOfficeId());
+
+        // 插入答卷
+        Answer data = new Answer();
+        data.setHospitalId(itemOffice.getHospitalId());
+        data.setItemId(param.getItemId());
+        data.setOfficeId(param.getOfficeId());
+        data.setQuestionnaireId(itemOffice.getQuestionnaireId());
+        data.setUserId(UserThreadUtil.getUserId());
+        data.setPatientNumber(param.getPatientNumber());
+        data.setStatus(0);
+        data.setReason("");
+        data.setTimeDuration(param.getTimeDuration());
+        data.setStartTime(FormatUtil.dateTime(param.getStartTime()));
+        data.setEndTime(FormatUtil.dateTime(param.getEndTime()));
+        data.setUpdateId(UserThreadUtil.getUserId());
+        data.setUpdateTime(new Date());
+        data.setCreateId(UserThreadUtil.getUserId());
+        data.setCreateTime(new Date());
+        if (answerService.insert(data)) {
+            // 插入图片
+            param.getImageList().forEach(img -> {
+                if (img.getPath().equals("")) {
+                    AnswerImage answerImage = new AnswerImage();
+                    answerImage.setAnswerId(data.getId());
+                    answerImage.setPath(img.getPath());
+                    answerImageService.insert(answerImage);
+                }
+            });
+            // 插入答题
+            param.getQuestionList().forEach(q -> {
+                // 检查题目
+                boolean isExist = answerQuestionIsExist(data.getQuestionnaireId(), q.getQuestionId());
+                if (isExist) {
+                    AnswerOption answerOption = new AnswerOption();
+                    answerOption.setAnswerId(data.getId());
+                    answerOption.setQuestionId(q.getQuestionId());
+                    answerOption.setQuestionName(q.getQuestionName());
+                    answerOption.setOptionId(q.getOptionId());
+                    answerOption.setOptionName(q.getOptionName());
+                    answerOptionService.insert(answerOption);
+                }
+            });
+        }
+    }
+
+    private ItemOffice getItemOffice(int itemId, int officeId) {
+        Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
+                .eq(ItemOffice.ITEM_ID, itemId)
+                .eq(ItemOffice.OFFICE_ID, officeId);
+        return itemOfficeService.selectOne(wrapper);
+    }
+
+    private void checkAnswer(SyncAnswerParam param) {
+        Wrapper<Answer> wrapper = new EntityWrapper<Answer>()
+                .eq(Answer.ITEM_ID, param.getItemId())
+                .eq(Answer.OFFICE_ID, param.getOfficeId())
+                .eq(Answer.PATIENT_NUMBER, param.getPatientNumber());
+        int count = answerService.selectCount(wrapper);
+        if (count > 0) {
+            throw new ItemException("答卷无需重复上传");
+        }
+    }
+
     private ItemData getItemInfo(Item item) {
         ItemData res = ObjectUtil.copy(item, ItemData.class);
 
@@ -466,5 +546,24 @@ public class ItemService implements IItemService {
             return FormatUtil.dateTime(answer.getCreateTime());
         }
         return "无";
+    }
+
+    private int getHospitalId(int itemId) {
+        Wrapper<Item> wrapper = new EntityWrapper<Item>()
+                .eq(Item.ID, itemId);
+        Item item = itemService.selectOne(wrapper);
+        if (Objects.nonNull(item)) {
+            return item.getHospitalId();
+        } else {
+            throw new ItemException("项目不存在：" + itemId);
+        }
+    }
+
+    private boolean answerQuestionIsExist(int questionnaireId, int questionId) {
+        Wrapper<QuestionnaireExtend> wrapper = new EntityWrapper<QuestionnaireExtend>()
+                .eq(QuestionnaireExtend.QUESTIONNAIRE_ID, questionnaireId)
+                .eq(QuestionnaireExtend.QUESTION_ID, questionId);
+        int count = questionnaireExtendService.selectCount(wrapper);
+        return (count > 0);
     }
 }

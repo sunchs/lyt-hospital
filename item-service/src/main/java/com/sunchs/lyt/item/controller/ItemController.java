@@ -3,10 +3,7 @@ package com.sunchs.lyt.item.controller;
 import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
-import com.sunchs.lyt.item.bean.BindOfficeParam;
-import com.sunchs.lyt.item.bean.ItemParam;
-import com.sunchs.lyt.item.bean.OfficeQuantityParam;
-import com.sunchs.lyt.item.bean.OfficeQuestionnaireParam;
+import com.sunchs.lyt.item.bean.*;
 import com.sunchs.lyt.item.service.impl.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -146,5 +143,15 @@ public class ItemController extends BaseController {
     public ResultData itemUserList(@RequestBody RequestData data) {
         ItemParam param = data.toObject(ItemParam.class);
         return success(itemService.itemUserList(param));
+    }
+
+    /**
+     * 同步答卷
+     */
+    @PostMapping("/syncAnswer")
+    public ResultData syncAnswer(@RequestBody RequestData data) {
+        SyncAnswerParam param = data.toObject(SyncAnswerParam.class);
+        itemService.syncAnswer(param);
+        return success();
     }
 }
