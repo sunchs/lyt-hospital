@@ -14,7 +14,11 @@ import com.sunchs.lyt.item.exception.ItemException;
 import com.sunchs.lyt.item.service.IItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.misc.BASE64Decoder;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -367,11 +371,41 @@ public class ItemService implements IItemService {
         if (answerService.insert(data)) {
             // 插入图片
             param.getImageList().forEach(img -> {
-                if (img.getPath().equals("")) {
+                if (StringUtil.isNotEmpty(img.getPath())) {
                     AnswerImage answerImage = new AnswerImage();
                     answerImage.setAnswerId(data.getId());
                     answerImage.setPath(img.getPath());
                     answerImageService.insert(answerImage);
+                } else if (StringUtil.isNotEmpty(img.getData())) {
+                    String basePath = "/lyt";
+                    buildFolder(basePath);
+                    String filePath = "/"+data.getId();
+                    buildFolder(basePath + filePath);
+                    // 文件路径
+                    String file = filePath + "/"+param.getImageList().indexOf(img)+".jpg";
+                    buildFolder(file);
+                    // 转换图片
+                    BASE64Decoder decoder = new BASE64Decoder();
+                    try {
+                        // Base64解码
+                        byte[] b = decoder.decodeBuffer(img.getData());
+                        for (int i = 0; i < b.length; ++i) {
+                            if (b[i] < 0) {// 调整异常数据
+                                b[i] += 256;
+                            }
+                        }
+                        OutputStream out = new FileOutputStream(basePath + file);
+                        out.write(b);
+                        out.flush();
+                        out.close();
+
+                        AnswerImage answerImage = new AnswerImage();
+                        answerImage.setAnswerId(data.getId());
+                        answerImage.setPath(file);
+                        answerImageService.insert(answerImage);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
             });
             // 插入答题
@@ -389,6 +423,16 @@ public class ItemService implements IItemService {
                 }
             });
         }
+    }
+
+
+    private String buildFolder(String path)
+    {
+        File file = new File(path);
+        if (!file.exists() && !file.isDirectory()) {
+            file.mkdir();
+        }
+        return path;
     }
 
     private ItemOffice getItemOffice(int itemId, int officeId) {
