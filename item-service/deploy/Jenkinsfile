@@ -3,7 +3,7 @@ pipeline {
     environment {
         module = "item-service"
         tag = "v1.0"
-        portBind = "-p 8004:8004 -v /data:/lyt"
+        portBind = "-p 8004:8004 -v /usr/html:/lyt"
     }
     stages {
         stage('Build') {
