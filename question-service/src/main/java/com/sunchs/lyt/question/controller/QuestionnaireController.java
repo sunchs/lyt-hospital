@@ -3,6 +3,7 @@ package com.sunchs.lyt.question.controller;
 import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
+import com.sunchs.lyt.question.bean.QuestionnaireDownloadParam;
 import com.sunchs.lyt.question.bean.QuestionnaireParam;
 import com.sunchs.lyt.question.service.impl.QuestionnaireService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,16 @@ public class QuestionnaireController extends BaseController {
         QuestionnaireParam param = data.toObject(QuestionnaireParam.class);
         return success(questionnaireService.getPageList(param));
     }
+
+    /**
+     * 问卷列表
+     */
+    @PostMapping("/download")
+    public ResultData download(@RequestBody RequestData data) {
+        QuestionnaireDownloadParam param = data.toObject(QuestionnaireDownloadParam.class);
+        return success(questionnaireService.getDownloadList(param));
+    }
+
 
     /**
      * 获取可用问卷

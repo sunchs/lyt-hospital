@@ -3,6 +3,7 @@ package com.sunchs.lyt.question.service;
 import com.sunchs.lyt.db.business.entity.Questionnaire;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.question.bean.QuestionnaireData;
+import com.sunchs.lyt.question.bean.QuestionnaireDownloadParam;
 import com.sunchs.lyt.question.bean.QuestionnaireParam;
 
 import java.util.List;
@@ -39,4 +40,9 @@ public interface IQuestionnaireService {
      * 根据 问卷ID 生产xls文件
      */
     String createExcelFile(int id);
+
+    /**
+     * 下载问卷
+     */
+    List<QuestionnaireData> getDownloadList(QuestionnaireDownloadParam param);
 }

@@ -244,6 +244,23 @@ public class QuestionnaireService implements IQuestionnaireService {
         return path + "/" + fileName;
     }
 
+    @Override
+    public List<QuestionnaireData> getDownloadList(QuestionnaireDownloadParam param) {
+        if (Objects.isNull(param.getQuestionnaireIds())) {
+            throw new QuestionException("请设置问卷ID集合");
+        }
+        if (param.getQuestionnaireIds().size() > 10) {
+            throw new QuestionException("一次请求不能超过10问卷");
+        }
+
+        List<QuestionnaireData> list = new ArrayList<>();
+        param.getQuestionnaireIds().forEach(id -> {
+            QuestionnaireData data = getById(id);
+            list.add(data);
+        });
+        return list;
+    }
+
     private int getTagLen(List<QuestionData> questionList) {
         int len = 0;
         for (QuestionData ext : questionList) {
