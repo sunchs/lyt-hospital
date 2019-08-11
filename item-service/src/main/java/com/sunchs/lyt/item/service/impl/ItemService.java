@@ -454,9 +454,44 @@ public class ItemService implements IItemService {
         }
     }
 
+    @Override
+    public List<UserItemData> getUserItemOfficeList() {
+        List<Integer> officeIds = getUserItemOfficeIds();
+        List<UserItemData> list = new ArrayList<>();
+        Wrapper<Item> wrapper = new EntityWrapper<Item>()
+                .in(Item.ID, officeIds)
+                .eq(Item.STATUS, 1);
+        itemService.selectList(wrapper).forEach(item -> {
+            UserItemData data = new UserItemData();
+            data.setItemId(item.getId());
+            data.setItemName(item.getTitle());
+            data.setNumber(item.getNumber());
+            data.setHospitalId(item.getHospitalId());
+            data.setHospitalName(getHospitalNameById(item.getHospitalId()));
+            data.setOfficeList(getUserItemOfficeList(item.getId()));
+            list.add(data);
+        });
+        return list;
+    }
 
-    private String buildFolder(String path)
-    {
+    private List<UserItemOfficeData> getUserItemOfficeList(int itemId) {
+        List<UserItemOfficeData> list = new ArrayList<>();
+        Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
+                .eq(ItemOffice.ITEM_ID, itemId);
+        itemOfficeService.selectList(wrapper).forEach(office -> {
+            UserItemOfficeData data = new UserItemOfficeData();
+            data.setOfficeTypeId(office.getOfficeTypeId());
+            data.setOfficeTypeName(OfficeTypeEnum.get(office.getOfficeTypeId()));
+            data.setOfficeId(office.getOfficeId());
+            data.setOfficeName(getOfficeNameById(office.getOfficeId()));
+            data.setQuestionnaireId(office.getQuestionnaireId());
+            data.setQuestionnaireName(getQuestionnaireNameById(office.getQuestionnaireId()));
+            list.add(data);
+        });
+        return list;
+    }
+
+    private String buildFolder(String path) {
         File file = new File(path);
         if (!file.exists() && !file.isDirectory()) {
             file.mkdir();
@@ -654,5 +689,13 @@ public class ItemService implements IItemService {
         Wrapper<QuestionOption> wrapper = new EntityWrapper<QuestionOption>()
                 .eq(QuestionOption.ID, optionId);
         return questionOptionService.selectOne(wrapper);
+    }
+
+    private List<Integer> getUserItemOfficeIds() {
+        List<Integer> ids = new ArrayList<>();
+        Wrapper<ItemUser> wrapper = new EntityWrapper<ItemUser>()
+                .eq(ItemUser.USER_ID, UserThreadUtil.getUserId());
+        itemUserService.selectList(wrapper).forEach(o -> ids.add(o.getItemId()));
+        return ids;
     }
 }

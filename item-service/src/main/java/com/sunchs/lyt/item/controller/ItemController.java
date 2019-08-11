@@ -154,4 +154,9 @@ public class ItemController extends BaseController {
         itemService.syncAnswer(param);
         return success();
     }
+
+    @PostMapping("/userItemOfficeList")
+    public ResultData userItemOfficeList(@RequestBody RequestData data) {
+        return success(itemService.getUserItemOfficeList());
+    }
 }

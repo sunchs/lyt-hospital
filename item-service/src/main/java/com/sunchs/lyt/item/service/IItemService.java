@@ -84,4 +84,9 @@ public interface IItemService {
      */
     void syncAnswer(SyncAnswerParam param);
 
+    /**
+     * 获取用户科室
+     */
+    List<UserItemData> getUserItemOfficeList();
+
 }
