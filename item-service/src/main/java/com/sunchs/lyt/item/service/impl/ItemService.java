@@ -58,6 +58,12 @@ public class ItemService implements IItemService {
     @Autowired
     private QuestionnaireExtendServiceImpl questionnaireExtendService;
 
+    @Autowired
+    private QuestionServiceImpl questionService;
+
+    @Autowired
+    private QuestionOptionServiceImpl questionOptionService;
+
     @Override
     public PagingList<ItemData> getPageList(ItemParam param) {
         List<ItemData> list = new ArrayList<>();
@@ -429,13 +435,20 @@ public class ItemService implements IItemService {
                 // 检查题目
                 boolean isExist = answerQuestionIsExist(data.getQuestionnaireId(), q.getQuestionId());
                 if (isExist) {
-                    AnswerOption answerOption = new AnswerOption();
-                    answerOption.setAnswerId(data.getId());
-                    answerOption.setQuestionId(q.getQuestionId());
-                    answerOption.setQuestionName(q.getQuestionName());
-                    answerOption.setOptionId(q.getOptionId());
-                    answerOption.setOptionName(q.getOptionName());
-                    answerOptionService.insert(answerOption);
+                    QuestionOption option = getQuestionOption(q.getOptionId());
+                    if (Objects.nonNull(option) && option.getQuestionId().equals(q.getQuestionId())) {
+                        AnswerOption answerOption = new AnswerOption();
+                        answerOption.setAnswerId(data.getId());
+                        answerOption.setQuestionId(q.getQuestionId());
+                        answerOption.setQuestionName(getQuestionNameById(q.getQuestionId()));
+//                    answerOption.setQuestionName(q.getQuestionName());
+                        answerOption.setOptionId(q.getOptionId());
+                        answerOption.setOptionName(option.getTitle());
+//                    answerOption.setOptionName(q.getOptionName());
+                        answerOptionService.insert(answerOption);
+                    } else {
+                        System.out.println("同步参数有误");
+                    }
                 }
             });
         }
@@ -625,5 +638,21 @@ public class ItemService implements IItemService {
                 .eq(QuestionnaireExtend.QUESTION_ID, questionId);
         int count = questionnaireExtendService.selectCount(wrapper);
         return (count > 0);
+    }
+
+    private String getQuestionNameById(int questionId) {
+        Wrapper<Question> wrapper = new EntityWrapper<Question>()
+                .eq(Question.ID, questionId);
+        Question row = questionService.selectOne(wrapper);
+        if (Objects.nonNull(row)) {
+            return row.getTitle();
+        }
+        return "";
+    }
+
+    private QuestionOption getQuestionOption(int optionId) {
+        Wrapper<QuestionOption> wrapper = new EntityWrapper<QuestionOption>()
+                .eq(QuestionOption.ID, optionId);
+        return questionOptionService.selectOne(wrapper);
     }
 }

@@ -1,7 +1,5 @@
 package com.sunchs.lyt.item.bean;
 
-import com.baomidou.mybatisplus.annotations.TableField;
-
 public class SyncAnswerOptionParam {
 
     /**
