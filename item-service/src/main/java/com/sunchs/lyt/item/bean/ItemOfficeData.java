@@ -30,6 +30,11 @@ public class ItemOfficeData extends ItemOffice {
     private long answerQuantity;
 
     /**
+     * 通过数量
+     */
+    private long passAnswerQuantity;
+
+    /**
      * 最新录入时间
      */
     private String inputTimeName;
@@ -80,5 +85,13 @@ public class ItemOfficeData extends ItemOffice {
 
     public void setInputTimeName(String inputTimeName) {
         this.inputTimeName = inputTimeName;
+    }
+
+    public long getPassAnswerQuantity() {
+        return passAnswerQuantity;
+    }
+
+    public void setPassAnswerQuantity(long passAnswerQuantity) {
+        this.passAnswerQuantity = passAnswerQuantity;
     }
 }

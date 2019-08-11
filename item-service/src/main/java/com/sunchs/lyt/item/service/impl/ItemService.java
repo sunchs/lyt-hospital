@@ -229,6 +229,9 @@ public class ItemService implements IItemService {
 
             int answerQuantity = getAnswerQuantity(row.getItemId(), row.getOfficeId(), row.getQuestionnaireId());
             data.setAnswerQuantity(answerQuantity);
+            int passAnswerQuantity = getPassAnswerQuantity(row.getItemId(), row.getOfficeId(), row.getQuestionnaireId());
+            data.setPassAnswerQuantity(passAnswerQuantity);
+
             String inputItemName = getInputItemName(row.getItemId(), row.getOfficeId(), row.getQuestionnaireId());
             data.setInputTimeName(inputItemName);
             data.setOfficeName(getOfficeNameById(row.getOfficeId()));
@@ -661,6 +664,15 @@ public class ItemService implements IItemService {
                 .eq(Answer.ITEM_ID, itemId)
                 .eq(Answer.OFFICE_ID, officeId)
                 .eq(Answer.QUESTIONNAIRE_ID, questionnaireId);
+        return answerService.selectCount(wrapper);
+    }
+
+    private int getPassAnswerQuantity(int itemId, int officeId, int questionnaireId) {
+        Wrapper<Answer> wrapper = new EntityWrapper<Answer>()
+                .eq(Answer.ITEM_ID, itemId)
+                .eq(Answer.OFFICE_ID, officeId)
+                .eq(Answer.QUESTIONNAIRE_ID, questionnaireId)
+                .eq(Answer.STATUS, 1);
         return answerService.selectCount(wrapper);
     }
 
