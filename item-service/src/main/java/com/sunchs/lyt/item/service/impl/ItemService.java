@@ -539,6 +539,12 @@ public class ItemService implements IItemService {
         if (count > 0) {
             throw new ItemException("答卷无需重复上传");
         }
+        Wrapper<Item> itemWrapper = new EntityWrapper<Item>()
+                .eq(Item.ID, param.getItemId());
+        Item item = itemService.selectOne(itemWrapper);
+        if (Objects.isNull(item) || ! item.getStatus().equals(1)) {
+            throw new ItemException("项目已停用，无法上传答卷！");
+        }
     }
 
     private ItemData getItemInfo(Item item) {
