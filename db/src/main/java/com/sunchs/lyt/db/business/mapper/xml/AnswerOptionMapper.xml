@@ -10,6 +10,9 @@
         <result column="question_name" property="questionName" />
         <result column="option_id" property="optionId" />
         <result column="option_name" property="optionName" />
+        <result column="timeDuration" property="timeDuration" />
+        <result column="startTime" property="startTime" />
+        <result column="endTime" property="endTime" />
     </resultMap>
 
 </mapper>

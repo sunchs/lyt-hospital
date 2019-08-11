@@ -1,6 +1,7 @@
 package com.sunchs.lyt.db.business.entity;
 
 import com.baomidou.mybatisplus.enums.IdType;
+import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
@@ -13,7 +14,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-07-29
+ * @since 2019-08-11
  */
 @TableName("answer_option")
 public class AnswerOption extends Model<AnswerOption> {
@@ -55,6 +56,21 @@ public class AnswerOption extends Model<AnswerOption> {
      */
     @TableField("option_name")
     private String optionName;
+
+    /**
+     * 选项使用时间
+     */
+    private Integer timeDuration;
+
+    /**
+     * 选项开始时间
+     */
+    private Date startTime;
+
+    /**
+     * 选项结束时间
+     */
+    private Date endTime;
 
     public Integer getId() {
         return id;
@@ -98,6 +114,27 @@ public class AnswerOption extends Model<AnswerOption> {
     public void setOptionName(String optionName) {
         this.optionName = optionName;
     }
+    public Integer getTimeDuration() {
+        return timeDuration;
+    }
+
+    public void setTimeDuration(Integer timeDuration) {
+        this.timeDuration = timeDuration;
+    }
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
 
     public static final String ID = "id";
 
@@ -110,6 +147,12 @@ public class AnswerOption extends Model<AnswerOption> {
     public static final String OPTION_ID = "option_id";
 
     public static final String OPTION_NAME = "option_name";
+
+    public static final String TIMEDURATION = "timeDuration";
+
+    public static final String STARTTIME = "startTime";
+
+    public static final String ENDTIME = "endTime";
 
     @Override
     protected Serializable pkVal() {
@@ -125,6 +168,9 @@ public class AnswerOption extends Model<AnswerOption> {
         ", questionName=" + questionName +
         ", optionId=" + optionId +
         ", optionName=" + optionName +
+        ", timeDuration=" + timeDuration +
+        ", startTime=" + startTime +
+        ", endTime=" + endTime +
         "}";
     }
 }

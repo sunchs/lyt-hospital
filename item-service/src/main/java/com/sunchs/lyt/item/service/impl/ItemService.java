@@ -444,6 +444,9 @@ public class ItemService implements IItemService {
 //                    answerOption.setQuestionName(q.getQuestionName());
                         answerOption.setOptionId(q.getOptionId());
                         answerOption.setOptionName(option.getTitle());
+                        answerOption.setTimeDuration(q.getTimeDuration());
+                        answerOption.setStartTime(FormatUtil.dateTime(q.getStartTime()));
+                        answerOption.setEndTime(FormatUtil.dateTime(q.getEndTime()));
 //                    answerOption.setOptionName(q.getOptionName());
                         answerOptionService.insert(answerOption);
                     } else {

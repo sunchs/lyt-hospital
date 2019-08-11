@@ -22,6 +22,21 @@ public class SyncAnswerOptionParam {
      */
     private String optionName;
 
+    /**
+     * 开始答卷时间
+     */
+    private String startTime;
+
+    /**
+     * 结束答卷时间
+     */
+    private String endTime;
+
+    /**
+     * 持续时间
+     */
+    private int timeDuration;
+
 
     public Integer getQuestionId() {
         return questionId;
@@ -53,5 +68,29 @@ public class SyncAnswerOptionParam {
 
     public void setOptionName(String optionName) {
         this.optionName = optionName;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public int getTimeDuration() {
+        return timeDuration;
+    }
+
+    public void setTimeDuration(int timeDuration) {
+        this.timeDuration = timeDuration;
     }
 }
