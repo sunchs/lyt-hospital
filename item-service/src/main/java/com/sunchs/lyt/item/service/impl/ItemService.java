@@ -386,6 +386,10 @@ public class ItemService implements IItemService {
                         fileSuffix = ".jpg";
                         String replace = img.getData().replace("data:image/jpg;base64,", "");
                         img.setData(replace);
+                    } else if (img.getData().indexOf("data:image/jpeg;base64,") != -1) {
+                        fileSuffix = ".jpg";
+                        String replace = img.getData().replace("data:image/jpeg;base64,", "");
+                        img.setData(replace);
                     }
                     if ( ! fileSuffix.equals("")) {
                         String basePath = "/lyt";
