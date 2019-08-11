@@ -377,34 +377,42 @@ public class ItemService implements IItemService {
                     answerImage.setPath(img.getPath());
                     answerImageService.insert(answerImage);
                 } else if (StringUtil.isNotEmpty(img.getData())) {
-                    String basePath = "/lyt";
-                    buildFolder(basePath);
-                    String filePath = "/"+data.getId();
-                    buildFolder(basePath + filePath);
-                    // 文件路径
-                    String file = filePath + "/"+param.getImageList().indexOf(img)+".jpg";
-                    buildFolder(file);
-                    // 转换图片
-                    BASE64Decoder decoder = new BASE64Decoder();
-                    try {
-                        // Base64解码
-                        byte[] b = decoder.decodeBuffer(img.getData());
-                        for (int i = 0; i < b.length; ++i) {
-                            if (b[i] < 0) {// 调整异常数据
-                                b[i] += 256;
+                    String fileSuffix = "";
+                    if (img.getData().indexOf("data:image/png;base64,") != -1) {
+                        fileSuffix = ".png";
+                    } else if (img.getData().indexOf("data:image/jpg;base64,") != -1) {
+                        fileSuffix = ".jpg";
+                    }
+                    if ( ! fileSuffix.equals("")) {
+                        String basePath = "/lyt";
+                        buildFolder(basePath);
+                        String filePath = "/item_"+data.getItemId();
+                        buildFolder(basePath + filePath);
+                        // 文件路径
+                        String file = filePath + "/answer_" + data.getId() + "_" + param.getImageList().indexOf(img) + fileSuffix;
+                        buildFolder(file);
+                        // 转换图片
+                        BASE64Decoder decoder = new BASE64Decoder();
+                        try {
+                            // Base64解码
+                            byte[] b = decoder.decodeBuffer(img.getData());
+                            for (int i = 0; i < b.length; ++i) {
+                                if (b[i] < 0) {// 调整异常数据
+                                    b[i] += 256;
+                                }
                             }
-                        }
-                        OutputStream out = new FileOutputStream(basePath + file);
-                        out.write(b);
-                        out.flush();
-                        out.close();
+                            OutputStream out = new FileOutputStream(basePath + file);
+                            out.write(b);
+                            out.flush();
+                            out.close();
 
-                        AnswerImage answerImage = new AnswerImage();
-                        answerImage.setAnswerId(data.getId());
-                        answerImage.setPath(file);
-                        answerImageService.insert(answerImage);
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
+                            AnswerImage answerImage = new AnswerImage();
+                            answerImage.setAnswerId(data.getId());
+                            answerImage.setPath(file);
+                            answerImageService.insert(answerImage);
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
                     }
                 }
             });
