@@ -460,6 +460,9 @@ public class ItemService implements IItemService {
     @Override
     public List<UserItemData> getUserItemOfficeList() {
         List<Integer> officeIds = getUserItemOfficeIds();
+        if (officeIds.size() == 0) {
+            return new ArrayList<>();
+        }
         List<UserItemData> list = new ArrayList<>();
         Wrapper<Item> wrapper = new EntityWrapper<Item>()
                 .in(Item.ID, officeIds)
@@ -699,7 +702,6 @@ public class ItemService implements IItemService {
         Wrapper<ItemUser> wrapper = new EntityWrapper<ItemUser>()
                 .eq(ItemUser.USER_ID, UserThreadUtil.getUserId());
         itemUserService.selectList(wrapper).forEach(o -> ids.add(o.getItemId()));
-        ids.add(0);
         return ids;
     }
 }
