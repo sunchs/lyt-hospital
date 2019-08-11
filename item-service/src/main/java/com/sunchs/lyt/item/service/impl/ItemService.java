@@ -441,7 +441,7 @@ public class ItemService implements IItemService {
                         answerOption.setQuestionId(q.getQuestionId());
                         answerOption.setQuestionName(getQuestionNameById(q.getQuestionId()));
                         answerOption.setOptionId(0);
-                        answerOption.setOptionName("填空");
+                        answerOption.setOptionName(q.getOptionValue());
                         answerOption.setTimeDuration(q.getTimeDuration());
                         answerOption.setStartTime(FormatUtil.dateTime(q.getStartTime()));
                         answerOption.setEndTime(FormatUtil.dateTime(q.getEndTime()));
