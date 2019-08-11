@@ -121,19 +121,4 @@ public class SyncAnswerOptionParam {
     public void setTimeDuration(int timeDuration) {
         this.timeDuration = timeDuration;
     }
-
-    @Override
-    public String toString() {
-        return "SyncAnswerOptionParam{" +
-                "questionId=" + questionId +
-                ", questionName='" + questionName + '\'' +
-                ", optionMode='" + optionMode + '\'' +
-                ", optionIds=" + optionIds +
-                ", optionValue='" + optionValue + '\'' +
-                ", optionName='" + optionName + '\'' +
-                ", startTime='" + startTime + '\'' +
-                ", endTime='" + endTime + '\'' +
-                ", timeDuration=" + timeDuration +
-                '}';
-    }
 }
