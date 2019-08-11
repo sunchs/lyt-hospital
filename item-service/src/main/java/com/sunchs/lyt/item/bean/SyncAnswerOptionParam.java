@@ -1,11 +1,13 @@
 package com.sunchs.lyt.item.bean;
 
+import java.util.List;
+
 public class SyncAnswerOptionParam {
 
     /**
      * 问题ID
      */
-    private Integer questionId;
+    private int questionId;
 
     /**
      * 问题名称
@@ -13,9 +15,19 @@ public class SyncAnswerOptionParam {
     private String questionName;
 
     /**
-     * 选项ID
+     * 选项类型
      */
-    private Integer optionId;
+    private String optionMode;
+
+    /**
+     * 选项ID集合
+     */
+    private List<Integer> optionIds;
+
+    /**
+     * 选项输入内容
+     */
+    private String optionValue;
 
     /**
      * 选项名称
@@ -38,11 +50,11 @@ public class SyncAnswerOptionParam {
     private int timeDuration;
 
 
-    public Integer getQuestionId() {
+    public int getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(Integer questionId) {
+    public void setQuestionId(int questionId) {
         this.questionId = questionId;
     }
 
@@ -54,12 +66,28 @@ public class SyncAnswerOptionParam {
         this.questionName = questionName;
     }
 
-    public Integer getOptionId() {
-        return optionId;
+    public String getOptionMode() {
+        return optionMode;
     }
 
-    public void setOptionId(Integer optionId) {
-        this.optionId = optionId;
+    public void setOptionMode(String optionMode) {
+        this.optionMode = optionMode;
+    }
+
+    public List<Integer> getOptionIds() {
+        return optionIds;
+    }
+
+    public void setOptionIds(List<Integer> optionIds) {
+        this.optionIds = optionIds;
+    }
+
+    public String getOptionValue() {
+        return optionValue;
+    }
+
+    public void setOptionValue(String optionValue) {
+        this.optionValue = optionValue;
     }
 
     public String getOptionName() {

@@ -435,22 +435,37 @@ public class ItemService implements IItemService {
                 // 检查题目
                 boolean isExist = answerQuestionIsExist(data.getQuestionnaireId(), q.getQuestionId());
                 if (isExist) {
-                    QuestionOption option = getQuestionOption(q.getOptionId());
-                    if (Objects.nonNull(option) && option.getQuestionId().equals(q.getQuestionId())) {
+                    if (q.getOptionMode().equals("text")) {
                         AnswerOption answerOption = new AnswerOption();
                         answerOption.setAnswerId(data.getId());
                         answerOption.setQuestionId(q.getQuestionId());
                         answerOption.setQuestionName(getQuestionNameById(q.getQuestionId()));
-//                    answerOption.setQuestionName(q.getQuestionName());
-                        answerOption.setOptionId(q.getOptionId());
-                        answerOption.setOptionName(option.getTitle());
+                        answerOption.setOptionId(0);
+                        answerOption.setOptionName("填空");
                         answerOption.setTimeDuration(q.getTimeDuration());
                         answerOption.setStartTime(FormatUtil.dateTime(q.getStartTime()));
                         answerOption.setEndTime(FormatUtil.dateTime(q.getEndTime()));
-//                    answerOption.setOptionName(q.getOptionName());
                         answerOptionService.insert(answerOption);
                     } else {
-                        System.out.println("同步参数有误");
+                        q.getOptionIds().forEach(optionId -> {
+                            QuestionOption option = getQuestionOption(optionId);
+                            if (Objects.nonNull(option) && option.getQuestionId().equals(q.getQuestionId())) {
+                                AnswerOption answerOption = new AnswerOption();
+                                answerOption.setAnswerId(data.getId());
+                                answerOption.setQuestionId(q.getQuestionId());
+                                answerOption.setQuestionName(getQuestionNameById(q.getQuestionId()));
+//                    answerOption.setQuestionName(q.getQuestionName());
+                                answerOption.setOptionId(optionId);
+                                answerOption.setOptionName(option.getTitle());
+                                answerOption.setTimeDuration(q.getTimeDuration());
+                                answerOption.setStartTime(FormatUtil.dateTime(q.getStartTime()));
+                                answerOption.setEndTime(FormatUtil.dateTime(q.getEndTime()));
+//                    answerOption.setOptionName(q.getOptionName());
+                                answerOptionService.insert(answerOption);
+                            } else {
+                                System.out.println("同步参数有误");
+                            }
+                        });
                     }
                 }
             });
