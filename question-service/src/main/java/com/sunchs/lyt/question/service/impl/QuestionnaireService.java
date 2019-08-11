@@ -249,8 +249,8 @@ public class QuestionnaireService implements IQuestionnaireService {
         if (Objects.isNull(param.getQuestionnaireIds())) {
             throw new QuestionException("请设置问卷ID集合");
         }
-        if (param.getQuestionnaireIds().size() > 10) {
-            throw new QuestionException("一次请求不能超过10问卷");
+        if (param.getQuestionnaireIds().size() > 5) {
+            throw new QuestionException("一次请求不能超过5问卷");
         }
 
         List<QuestionnaireData> list = new ArrayList<>();
