@@ -432,7 +432,6 @@ public class ItemService implements IItemService {
             });
             // 插入答题
             param.getQuestionList().forEach(q -> {
-                System.out.println(q);
                 // 检查题目
                 boolean isExist = answerQuestionIsExist(data.getQuestionnaireId(), q.getQuestionId());
                 if (isExist) {
