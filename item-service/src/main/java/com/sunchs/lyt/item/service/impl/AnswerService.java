@@ -143,7 +143,11 @@ public class AnswerService implements IAnswerService {
         List<AnswerImageData> imgList = new ArrayList<>();
         answerImageService.selectList(wrapper).forEach(img -> {
             AnswerImageData imageData = new AnswerImageData();
-            imageData.setPath(img.getPath());
+            if (img.getPath().indexOf("http://") == -1) {
+                imageData.setPath("http://47.107.255.115/" + img.getPath());
+            } else {
+                imageData.setPath(img.getPath());
+            }
             imgList.add(imageData);
         });
         return imgList;
