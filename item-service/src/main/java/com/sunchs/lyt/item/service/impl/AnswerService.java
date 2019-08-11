@@ -53,6 +53,7 @@ public class AnswerService implements IAnswerService {
         if (param.getOfficeId() > 0) {
             wrapper.eq(Answer.OFFICE_ID, param.getOfficeId());
         }
+        wrapper.orderBy(Answer.ID, false);
         Page<Answer> data = answerService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), wrapper);
         List<AnswerData> list = new ArrayList<>();
         data.getRecords().forEach(answer -> list.add(toAnswerData(answer)));
