@@ -179,10 +179,10 @@ public class AnswerService implements IAnswerService {
                     .map(QuestionTagBinding::getTagId).collect(Collectors.toList());
             data.setTagIds(tagIds);
 
-
             list.add(data);
         });
 
+        // 判断同质问题
         list.forEach(row -> {
             if (row.getTagIds().size() > 0) {
                 list.forEach(son -> {
@@ -192,6 +192,8 @@ public class AnswerService implements IAnswerService {
                         rowVal.retainAll(sonVal);
                         if (rowVal.size() > 0 && ( ! son.getOptionName().equals(row.getOptionName()))) {
                             row.setReason("同质问题");
+                        } else {
+                            row.setReason("");
                         }
                     }
                 });
