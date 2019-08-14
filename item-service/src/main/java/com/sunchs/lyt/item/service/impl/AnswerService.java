@@ -190,8 +190,8 @@ public class AnswerService implements IAnswerService {
                         Set<Integer> rowVal = new HashSet<>(row.getTagIds());
                         Set<Integer> sonVal = new HashSet<>(son.getTagIds());
                         rowVal.retainAll(sonVal);
-                        if (rowVal.size() > 0) {
-                            row.setReason("同质问题"+rowVal);
+                        if (rowVal.size() > 0 && ( ! son.getOptionId().equals(row.getOptionId()))) {
+                            row.setReason("答案不一致");
                         }
                     }
                 });
