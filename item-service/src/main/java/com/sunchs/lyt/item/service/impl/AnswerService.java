@@ -191,7 +191,7 @@ public class AnswerService implements IAnswerService {
                         Set<Integer> sonVal = new HashSet<>(son.getTagIds());
                         rowVal.retainAll(sonVal);
                         if (rowVal.size() > 0 && ( ! son.getOptionName().equals(row.getOptionName()))) {
-                            row.setReason("答案不一致");
+                            row.setReason("同质问题");
                         }
                     }
                 });
