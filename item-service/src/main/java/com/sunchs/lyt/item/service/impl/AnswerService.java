@@ -3,21 +3,13 @@ package com.sunchs.lyt.item.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.sunchs.lyt.db.business.entity.Answer;
-import com.sunchs.lyt.db.business.entity.AnswerImage;
-import com.sunchs.lyt.db.business.entity.AnswerOption;
-import com.sunchs.lyt.db.business.entity.Item;
-import com.sunchs.lyt.db.business.service.impl.AnswerImageServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.AnswerOptionServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.AnswerServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.ItemServiceImpl;
+import com.sunchs.lyt.db.business.entity.*;
+import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.PagingList;
-import com.sunchs.lyt.framework.util.FormatUtil;
-import com.sunchs.lyt.framework.util.PagingUtil;
-import com.sunchs.lyt.framework.util.StringUtil;
-import com.sunchs.lyt.framework.util.UserThreadUtil;
+import com.sunchs.lyt.framework.util.*;
 import com.sunchs.lyt.item.bean.AnswerData;
 import com.sunchs.lyt.item.bean.AnswerImageData;
+import com.sunchs.lyt.item.bean.AnswerOptionData;
 import com.sunchs.lyt.item.bean.AnswerParam;
 import com.sunchs.lyt.item.enums.AnswerStatusEnum;
 import com.sunchs.lyt.item.service.IAnswerService;
@@ -28,6 +20,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class AnswerService implements IAnswerService {
@@ -43,6 +36,9 @@ public class AnswerService implements IAnswerService {
 
     @Autowired
     private ItemServiceImpl itemService;
+
+    @Autowired
+    private QuestionTagBindingServiceImpl questionTagBindingService;
 
     @Override
     public PagingList<AnswerData> getPageList(AnswerParam param) {
@@ -157,10 +153,45 @@ public class AnswerService implements IAnswerService {
     /**
      * 获取答卷题目选项
      */
-    private List<AnswerOption> getQuestionOptionList(int answerId) {
+    private List<AnswerOptionData> getQuestionOptionList(int answerId) {
+//        Wrapper<AnswerOption> wrapper = new EntityWrapper<AnswerOption>()
+//                .eq(AnswerOption.ANSWER_ID, answerId);
+//        return answerOptionService.selectList(wrapper);
+
+        List<AnswerOptionData> list = new ArrayList<>();
         Wrapper<AnswerOption> wrapper = new EntityWrapper<AnswerOption>()
                 .eq(AnswerOption.ANSWER_ID, answerId);
-        return answerOptionService.selectList(wrapper);
+        List<AnswerOption> optionList = answerOptionService.selectList(wrapper);
+
+        // 题目ID集合
+        List<Integer> qIds = new ArrayList<>();
+        optionList.forEach(option -> {
+            qIds.add(option.getOptionId());
+        });
+        // 查询绑定的标签
+        Wrapper<QuestionTagBinding> bindingWrapper = new EntityWrapper<QuestionTagBinding>()
+                .in(QuestionTagBinding.QUESTION_ID, qIds);
+        List<QuestionTagBinding> questionTagBindings = questionTagBindingService.selectList(bindingWrapper);
+
+
+        optionList.forEach(option -> {
+            AnswerOptionData data = ObjectUtil.copy(option, AnswerOptionData.class);
+            
+//            int tagQty = 0;
+            List<Integer> tagIds = questionTagBindings.stream().filter(o -> o.getQuestionId().equals(option.getQuestionId()))
+                    .map(QuestionTagBinding::getTagId).collect(Collectors.toList());
+            data.setTagIds(tagIds);
+//            for (QuestionTagBinding bind : questionTagBindings) {
+//                if ( ! option.getQuestionId().equals(bind.getQuestionId()) && tagIds.contains(bind.getTagId())) {
+//                    tagQty += 1;
+//                }
+//            }
+//            data.setTagQuantity(tagQty);
+
+            list.add(data);
+        });
+
+        return list;
     }
 
     /**

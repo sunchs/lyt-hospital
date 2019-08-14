@@ -17,7 +17,7 @@ public class AnswerData extends Answer {
 
     private String endTimeName;
 
-    private List<AnswerOption> questionOptionList;
+    private List<AnswerOptionData> questionOptionList;
 
     private List<AnswerImageData> imageList;
 
@@ -62,11 +62,11 @@ public class AnswerData extends Answer {
         this.endTimeName = endTimeName;
     }
 
-    public List<AnswerOption> getQuestionOptionList() {
+    public List<AnswerOptionData> getQuestionOptionList() {
         return questionOptionList;
     }
 
-    public void setQuestionOptionList(List<AnswerOption> questionOptionList) {
+    public void setQuestionOptionList(List<AnswerOptionData> questionOptionList) {
         this.questionOptionList = questionOptionList;
     }
 
