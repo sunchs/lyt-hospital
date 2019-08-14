@@ -98,7 +98,7 @@ public class AnswerService implements IAnswerService {
                 data.setUpdateId(UserThreadUtil.getUserId());
                 data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
                 if (answerService.updateById(data)) {
-                    syncReportData(data.getId(), param.getStatus());
+                    syncReportData(data.getId(), data.getStatus());
                 }
             });
         } else {
@@ -111,7 +111,7 @@ public class AnswerService implements IAnswerService {
             data.setUpdateId(UserThreadUtil.getUserId());
             data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             if (answerService.updateById(data)) {
-                syncReportData(data.getId(), param.getStatus());
+                syncReportData(data.getId(), data.getStatus());
             }
         }
     }
@@ -126,8 +126,8 @@ public class AnswerService implements IAnswerService {
         answerService.updateById(data);
     }
 
-    private void syncReportData(Integer answerId, int status) {
-        if (status == 1) {
+    private void syncReportData(Integer answerId, Integer status) {
+        if (status.equals(1)) {
             insertReportData(answerId);
         } else {
             if (reportAnswerService.deleteById(answerId)) {
