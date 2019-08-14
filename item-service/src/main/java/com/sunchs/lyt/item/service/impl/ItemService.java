@@ -386,7 +386,7 @@ public class ItemService implements IItemService {
         if (Objects.nonNull(last)) {
             long tVal = data.getStartTime().getTime() - last.getEndTime().getTime();
             if (tVal < 20 * 1000) {
-                data.setFilterReason("答卷时间少于20秒");
+                data.setFilterReason("距离上次答卷时间太短");
             }
         }
 
