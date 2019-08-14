@@ -58,7 +58,11 @@ public class AnswerService implements IAnswerService {
                 long tVal = tempAnswer.getEndTime().getTime() - a.getStartTime().getTime();
                 if (tVal < 20 * 1000) {
                     a.setWarningReason("答卷时间少于20秒");
+                } else {
+                    a.setWarningReason("");
                 }
+            } else {
+                a.setWarningReason("");
             }
             tempAnswer = a;
         }
