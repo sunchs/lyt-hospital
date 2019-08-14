@@ -190,7 +190,7 @@ public class AnswerService implements IAnswerService {
                         Set<Integer> rowVal = new HashSet<>(row.getTagIds());
                         Set<Integer> sonVal = new HashSet<>(son.getTagIds());
                         rowVal.retainAll(sonVal);
-                        if (rowVal.size() > 0 && ( ! son.getOptionId().equals(row.getOptionId()))) {
+                        if (rowVal.size() > 0 && ( ! son.getOptionName().equals(row.getOptionName()))) {
                             row.setReason("答案不一致");
                         }
                     }
