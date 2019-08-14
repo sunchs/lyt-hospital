@@ -360,6 +360,10 @@ public class ItemService implements IItemService {
         // 获取项目相关信息
         ItemOffice itemOffice = getItemOffice(param.getItemId(), param.getOfficeId());
 
+        Wrapper<Answer> answerWrapper = new EntityWrapper<Answer>()
+                .orderBy(Answer.ID, false);
+        Answer last = answerService.selectOne(answerWrapper);
+
         // 插入答卷
         Answer data = new Answer();
         data.setHospitalId(itemOffice.getHospitalId());
@@ -377,6 +381,15 @@ public class ItemService implements IItemService {
         data.setUpdateTime(new Date());
         data.setCreateId(UserThreadUtil.getUserId());
         data.setCreateTime(new Date());
+
+        data.setFilterReason("");
+        if (Objects.nonNull(last)) {
+            long tVal = data.getStartTime().getTime() - last.getEndTime().getTime();
+            if (tVal < 20 * 1000) {
+                data.setFilterReason("答卷时间少于20秒");
+            }
+        }
+
         if (answerService.insert(data)) {
             // 插入图片
             param.getImageList().forEach(img -> {

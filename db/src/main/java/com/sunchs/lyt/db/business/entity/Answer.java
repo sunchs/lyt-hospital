@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-08-01
+ * @since 2019-08-14
  */
 public class Answer extends Model<Answer> {
 
@@ -109,6 +109,11 @@ public class Answer extends Model<Answer> {
      */
     @TableField("create_time")
     private Date createTime;
+
+    /**
+     * 程序过滤原因
+     */
+    private String filterReason;
 
     public Integer getId() {
         return id;
@@ -222,6 +227,13 @@ public class Answer extends Model<Answer> {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+    public String getFilterReason() {
+        return filterReason;
+    }
+
+    public void setFilterReason(String filterReason) {
+        this.filterReason = filterReason;
+    }
 
     public static final String ID = "id";
 
@@ -255,6 +267,8 @@ public class Answer extends Model<Answer> {
 
     public static final String CREATE_TIME = "create_time";
 
+    public static final String FILTERREASON = "filterReason";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -279,6 +293,7 @@ public class Answer extends Model<Answer> {
         ", updateTime=" + updateTime +
         ", createId=" + createId +
         ", createTime=" + createTime +
+        ", filterReason=" + filterReason +
         "}";
     }
 }
