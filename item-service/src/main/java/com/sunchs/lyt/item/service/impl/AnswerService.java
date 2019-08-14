@@ -131,6 +131,7 @@ public class AnswerService implements IAnswerService {
         data.setStartTime(answer.getStartTime());
         data.setEndTime(answer.getEndTime());
         data.setCreateTime(answer.getCreateTime());
+        data.setFilterReason(answer.getFilterReason());
 
         data.setItemName(getItemName(answer.getItemId()));
         data.setStatusName(AnswerStatusEnum.get(answer.getStatus()));
