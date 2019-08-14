@@ -51,6 +51,17 @@ public class AnswerService implements IAnswerService {
         Page<Answer> data = answerService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), wrapper);
         List<AnswerData> list = new ArrayList<>();
         data.getRecords().forEach(answer -> list.add(toAnswerData(answer)));
+        // 判断答卷之间的间隔
+        AnswerData tempAnswer = null;
+        for (AnswerData a : list) {
+            if (Objects.nonNull(tempAnswer)) {
+                long tVal = tempAnswer.getEndTime().getTime() - a.getStartTime().getTime();
+                if (tVal < 20 * 1000) {
+                    a.setWarningReason("答卷时间少于20秒");
+                }
+            }
+            tempAnswer = a;
+        }
         return PagingUtil.getData(list, data.getTotal(), data.getCurrent(), data.getSize());
     }
 

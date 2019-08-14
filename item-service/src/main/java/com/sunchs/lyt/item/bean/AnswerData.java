@@ -1,7 +1,6 @@
 package com.sunchs.lyt.item.bean;
 
 import com.sunchs.lyt.db.business.entity.Answer;
-import com.sunchs.lyt.db.business.entity.AnswerOption;
 
 import java.util.List;
 
@@ -21,6 +20,7 @@ public class AnswerData extends Answer {
 
     private List<AnswerImageData> imageList;
 
+    private String warningReason;
 
     public String getItemName() {
         return itemName;
@@ -76,5 +76,13 @@ public class AnswerData extends Answer {
 
     public void setImageList(List<AnswerImageData> imageList) {
         this.imageList = imageList;
+    }
+
+    public String getWarningReason() {
+        return warningReason;
+    }
+
+    public void setWarningReason(String warningReason) {
+        this.warningReason = warningReason;
     }
 }
