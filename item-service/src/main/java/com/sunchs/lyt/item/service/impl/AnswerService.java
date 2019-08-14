@@ -38,6 +38,12 @@ public class AnswerService implements IAnswerService {
     @Autowired
     private QuestionTagBindingServiceImpl questionTagBindingService;
 
+    @Autowired
+    private ReportAnswerServiceImpl reportAnswerService;
+
+    @Autowired
+    private ReportAnswerOptionServiceImpl reportAnswerOptionService;
+
     @Override
     public PagingList<AnswerData> getPageList(AnswerParam param) {
         Wrapper<Answer> wrapper = new EntityWrapper<>();
@@ -91,7 +97,9 @@ public class AnswerService implements IAnswerService {
                 }
                 data.setUpdateId(UserThreadUtil.getUserId());
                 data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-                answerService.updateById(data);
+                if (answerService.updateById(data)) {
+                    syncReportData(data.getId(), param.getStatus());
+                }
             });
         } else {
             Answer data = new Answer();
@@ -102,7 +110,9 @@ public class AnswerService implements IAnswerService {
             }
             data.setUpdateId(UserThreadUtil.getUserId());
             data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-            answerService.updateById(data);
+            if (answerService.updateById(data)) {
+                syncReportData(data.getId(), param.getStatus());
+            }
         }
     }
 
@@ -114,6 +124,57 @@ public class AnswerService implements IAnswerService {
         data.setUpdateId(UserThreadUtil.getUserId());
         data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         answerService.updateById(data);
+    }
+
+    private void syncReportData(Integer answerId, int status) {
+        if (status == 1) {
+            insertReportData(answerId);
+        } else {
+            if (reportAnswerService.deleteById(answerId)) {
+                Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
+                        .eq(ReportAnswerOption.ANSWER_ID, answerId);
+                reportAnswerOptionService.delete(wrapper);
+            }
+        }
+    }
+
+    private void insertReportData(Integer answerId) {
+        Answer answer = answerService.selectById(answerId);
+
+        ReportAnswer data = new ReportAnswer();
+        data.setId(answer.getId());
+        data.setHospitalId(answer.getHospitalId());
+        data.setItemId(answer.getItemId());
+        data.setOfficeId(answer.getOfficeId());
+        data.setQuestionnaireId(answer.getQuestionnaireId());
+        data.setUserId(answer.getUserId());
+        data.setPatientNumber(answer.getPatientNumber());
+        data.setStatus(answer.getStatus());
+        data.setReason(answer.getReason());
+        data.setTimeDuration(answer.getTimeDuration());
+        data.setStartTime(answer.getStartTime());
+        data.setEndTime(answer.getEndTime());
+        data.setUpdateId(answer.getUpdateId());
+        data.setUpdateTime(answer.getUpdateTime());
+        data.setCreateId(answer.getCreateId());
+        data.setCreateTime(answer.getCreateTime());
+        data.setFilterReason(answer.getFilterReason());
+        if (reportAnswerService.insert(data)) {
+            Wrapper<AnswerOption> wrapper = new EntityWrapper<AnswerOption>()
+                    .eq(AnswerOption.ANSWER_ID, data.getId());
+            answerOptionService.selectList(wrapper).forEach(row -> {
+                ReportAnswerOption option = new ReportAnswerOption();
+                option.setAnswerId(row.getAnswerId());
+                option.setQuestionId(row.getQuestionId());
+                option.setQuestionName(row.getQuestionName());
+                option.setOptionId(row.getOptionId());
+                option.setOptionName(row.getOptionName());
+                option.setTimeDuration(row.getTimeDuration());
+                option.setStartTime(row.getStartTime());
+                option.setEndTime(row.getEndTime());
+                reportAnswerOptionService.insert(option);
+            });
+        }
     }
 
     private AnswerData toAnswerData(Answer answer) {
