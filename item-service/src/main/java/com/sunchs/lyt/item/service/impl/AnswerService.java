@@ -127,14 +127,13 @@ public class AnswerService implements IAnswerService {
     }
 
     private void syncReportData(Integer answerId, Integer status) {
+        reportAnswerService.deleteById(answerId);
+        Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
+                .eq(ReportAnswerOption.ANSWER_ID, answerId);
+        reportAnswerOptionService.delete(wrapper);
+
         if (status.equals(1)) {
             insertReportData(answerId);
-        } else {
-            if (reportAnswerService.deleteById(answerId)) {
-                Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
-                        .eq(ReportAnswerOption.ANSWER_ID, answerId);
-                reportAnswerOptionService.delete(wrapper);
-            }
         }
     }
 
