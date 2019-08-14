@@ -166,7 +166,7 @@ public class AnswerService implements IAnswerService {
         // 题目ID集合
         List<Integer> qIds = new ArrayList<>();
         optionList.forEach(option -> {
-            qIds.add(option.getOptionId());
+            qIds.add(option.getQuestionId());
         });
         // 查询绑定的标签
         Wrapper<QuestionTagBinding> bindingWrapper = new EntityWrapper<QuestionTagBinding>()
@@ -176,7 +176,7 @@ public class AnswerService implements IAnswerService {
 
         optionList.forEach(option -> {
             AnswerOptionData data = ObjectUtil.copy(option, AnswerOptionData.class);
-            
+
 //            int tagQty = 0;
             List<Integer> tagIds = questionTagBindings.stream().filter(o -> o.getQuestionId().equals(option.getQuestionId()))
                     .map(QuestionTagBinding::getTagId).collect(Collectors.toList());
