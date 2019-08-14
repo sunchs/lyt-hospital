@@ -17,9 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -173,22 +171,31 @@ public class AnswerService implements IAnswerService {
                 .in(QuestionTagBinding.QUESTION_ID, qIds);
         List<QuestionTagBinding> questionTagBindings = questionTagBindingService.selectList(bindingWrapper);
 
-
+        // 转换对象
         optionList.forEach(option -> {
             AnswerOptionData data = ObjectUtil.copy(option, AnswerOptionData.class);
 
-//            int tagQty = 0;
             List<Integer> tagIds = questionTagBindings.stream().filter(o -> o.getQuestionId().equals(option.getQuestionId()))
                     .map(QuestionTagBinding::getTagId).collect(Collectors.toList());
             data.setTagIds(tagIds);
-//            for (QuestionTagBinding bind : questionTagBindings) {
-//                if ( ! option.getQuestionId().equals(bind.getQuestionId()) && tagIds.contains(bind.getTagId())) {
-//                    tagQty += 1;
-//                }
-//            }
-//            data.setTagQuantity(tagQty);
+
 
             list.add(data);
+        });
+
+        list.forEach(row -> {
+            if (row.getTagIds().size() > 0) {
+                list.forEach(son -> {
+                    if ( ! son.getQuestionId().equals(row.getQuestionId())) {
+                        Set<Integer> rowVal = new HashSet<>(row.getTagIds());
+                        Set<Integer> sonVal = new HashSet<>(son.getTagIds());
+                        rowVal.retainAll(sonVal);
+                        if (rowVal.size() > 0) {
+                            row.setReason("同质问题"+rowVal);
+                        }
+                    }
+                });
+            }
         });
 
         return list;
