@@ -159,7 +159,7 @@ public class AnswerService implements IAnswerService {
         data.setCreateId(answer.getCreateId());
         data.setCreateTime(answer.getCreateTime());
         data.setFilterReason(answer.getFilterReason());
-        if (reportAnswerService.insertAllColumn(data)) {
+        if (reportAnswerService.insertOrUpdate(data)) {
             Wrapper<AnswerOption> answerOptionWrapper = new EntityWrapper<AnswerOption>()
                     .eq(AnswerOption.ANSWER_ID, answerId);
             List<AnswerOption> answerOptions = answerOptionService.selectList(answerOptionWrapper);
