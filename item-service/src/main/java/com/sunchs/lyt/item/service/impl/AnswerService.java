@@ -199,6 +199,7 @@ public class AnswerService implements IAnswerService {
 
         // 判断同质问题
         list.forEach(row -> {
+            row.setReason("");
             if (row.getTagIds().size() > 0) {
                 list.forEach(son -> {
                     if ( ! son.getQuestionId().equals(row.getQuestionId())) {
@@ -207,8 +208,6 @@ public class AnswerService implements IAnswerService {
                         rowVal.retainAll(sonVal);
                         if (rowVal.size() > 0 && ( ! son.getOptionName().equals(row.getOptionName()))) {
                             row.setReason("同质问题");
-                        } else {
-                            row.setReason("");
                         }
                     }
                 });
