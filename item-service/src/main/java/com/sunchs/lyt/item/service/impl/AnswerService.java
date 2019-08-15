@@ -14,6 +14,8 @@ import com.sunchs.lyt.item.bean.AnswerParam;
 import com.sunchs.lyt.item.enums.AnswerStatusEnum;
 import com.sunchs.lyt.item.service.IAnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -43,6 +45,9 @@ public class AnswerService implements IAnswerService {
 
     @Autowired
     private ReportAnswerOptionServiceImpl reportAnswerOptionService;
+
+    @Autowired
+    private NamedParameterJdbcTemplate db;
 
     @Override
     public PagingList<AnswerData> getPageList(AnswerParam param) {
@@ -140,25 +145,30 @@ public class AnswerService implements IAnswerService {
     private void insertReportData(Integer answerId) {
         Answer answer = answerService.selectById(answerId);
 
-        ReportAnswer data = new ReportAnswer();
-        data.setId(answer.getId());
-        data.setHospitalId(answer.getHospitalId());
-        data.setItemId(answer.getItemId());
-        data.setOfficeId(answer.getOfficeId());
-        data.setQuestionnaireId(answer.getQuestionnaireId());
-        data.setUserId(answer.getUserId());
-        data.setPatientNumber(answer.getPatientNumber());
-        data.setStatus(answer.getStatus());
-        data.setReason(answer.getReason());
-        data.setTimeDuration(answer.getTimeDuration());
-        data.setStartTime(answer.getStartTime());
-        data.setEndTime(answer.getEndTime());
-        data.setUpdateId(answer.getUpdateId());
-        data.setUpdateTime(answer.getUpdateTime());
-        data.setCreateId(answer.getCreateId());
-        data.setCreateTime(answer.getCreateTime());
-        data.setFilterReason(answer.getFilterReason());
-        if (reportAnswerService.insertOrUpdate(data)) {
+        String sql = "INSERT INTO report_answer SELECT * FROM answer WHERE id=:answerId";
+        MapSqlParameterSource param = new MapSqlParameterSource()
+                .addValue("answerId", answerId);
+        db.update(sql, param);
+
+//        ReportAnswer data = new ReportAnswer();
+//        data.setId(answer.getId());
+//        data.setHospitalId(answer.getHospitalId());
+//        data.setItemId(answer.getItemId());
+//        data.setOfficeId(answer.getOfficeId());
+//        data.setQuestionnaireId(answer.getQuestionnaireId());
+//        data.setUserId(answer.getUserId());
+//        data.setPatientNumber(answer.getPatientNumber());
+//        data.setStatus(answer.getStatus());
+//        data.setReason(answer.getReason());
+//        data.setTimeDuration(answer.getTimeDuration());
+//        data.setStartTime(answer.getStartTime());
+//        data.setEndTime(answer.getEndTime());
+//        data.setUpdateId(answer.getUpdateId());
+//        data.setUpdateTime(answer.getUpdateTime());
+//        data.setCreateId(answer.getCreateId());
+//        data.setCreateTime(answer.getCreateTime());
+//        data.setFilterReason(answer.getFilterReason());
+//        if (reportAnswerService.insertOrUpdate(data)) {
             Wrapper<AnswerOption> answerOptionWrapper = new EntityWrapper<AnswerOption>()
                     .eq(AnswerOption.ANSWER_ID, answerId);
             List<AnswerOption> answerOptions = answerOptionService.selectList(answerOptionWrapper);
@@ -174,7 +184,7 @@ public class AnswerService implements IAnswerService {
                 option.setEndTime(row.getEndTime());
                 reportAnswerOptionService.insert(option);
             });
-        }
+//        }
     }
 
     private AnswerData toAnswerData(Answer answer) {
