@@ -217,7 +217,7 @@ public class ItemService implements IItemService {
         if (param.getId() > 0) {
             wrapper.eq(ItemOffice.ITEM_ID, param.getId());
         }
-//        wrapper.orderBy(ItemOffice.OFFICE_TYPE_ID, true);
+        wrapper.orderBy(ItemOffice.ID, false);
         Page<ItemOffice> page = itemOfficeService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), wrapper);
         page.getRecords().forEach(row -> {
             ItemOfficeData data = ObjectUtil.copy(row, ItemOfficeData.class);
