@@ -13,11 +13,6 @@ public interface IAnswerService {
     PagingList<AnswerData> getPageList(AnswerParam param);
 
     /**
-     * 保存数据
-     */
-    int save(AnswerParam param);
-
-    /**
      * 更新项目状态
      */
     void updateStatus(AnswerParam param);

@@ -62,32 +62,7 @@ public class AnswerService implements IAnswerService {
         Page<Answer> data = answerService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), wrapper);
         List<AnswerData> list = new ArrayList<>();
         data.getRecords().forEach(answer -> list.add(toAnswerData(answer)));
-//        // 判断答卷之间的间隔
-//        AnswerData tempAnswer = null;
-//        for (AnswerData a : list) {
-//            if (Objects.nonNull(tempAnswer)) {
-//                long tVal = tempAnswer.getEndTime().getTime() - a.getStartTime().getTime();
-//                if (tVal < 20 * 1000) {
-//                    a.setWarningReason("答卷时间少于20秒");
-//                } else {
-//                    a.setWarningReason("");
-//                }
-//            } else {
-//                a.setWarningReason("");
-//            }
-//            tempAnswer = a;
-//        }
         return PagingUtil.getData(list, data.getTotal(), data.getCurrent(), data.getSize());
-    }
-
-    @Override
-    public int save(AnswerParam param) {
-//        data.setUpdateId(UserThreadUtil.getUserId());
-//        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-//        data.setCreateId(UserThreadUtil.getUserId());
-//        data.setCreateTime(new Timestamp(System.currentTimeMillis()));
-
-        return 0;
     }
 
     @Override
@@ -143,48 +118,26 @@ public class AnswerService implements IAnswerService {
     }
 
     private void insertReportData(Integer answerId) {
-        Answer answer = answerService.selectById(answerId);
-
         String sql = "INSERT INTO report_answer SELECT * FROM answer WHERE id=:answerId";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("answerId", answerId);
         db.update(sql, param);
 
-//        ReportAnswer data = new ReportAnswer();
-//        data.setId(answer.getId());
-//        data.setHospitalId(answer.getHospitalId());
-//        data.setItemId(answer.getItemId());
-//        data.setOfficeId(answer.getOfficeId());
-//        data.setQuestionnaireId(answer.getQuestionnaireId());
-//        data.setUserId(answer.getUserId());
-//        data.setPatientNumber(answer.getPatientNumber());
-//        data.setStatus(answer.getStatus());
-//        data.setReason(answer.getReason());
-//        data.setTimeDuration(answer.getTimeDuration());
-//        data.setStartTime(answer.getStartTime());
-//        data.setEndTime(answer.getEndTime());
-//        data.setUpdateId(answer.getUpdateId());
-//        data.setUpdateTime(answer.getUpdateTime());
-//        data.setCreateId(answer.getCreateId());
-//        data.setCreateTime(answer.getCreateTime());
-//        data.setFilterReason(answer.getFilterReason());
-//        if (reportAnswerService.insertOrUpdate(data)) {
-            Wrapper<AnswerOption> answerOptionWrapper = new EntityWrapper<AnswerOption>()
-                    .eq(AnswerOption.ANSWER_ID, answerId);
-            List<AnswerOption> answerOptions = answerOptionService.selectList(answerOptionWrapper);
-            answerOptions.forEach(row -> {
-                ReportAnswerOption option = new ReportAnswerOption();
-                option.setAnswerId(row.getAnswerId());
-                option.setQuestionId(row.getQuestionId());
-                option.setQuestionName(row.getQuestionName());
-                option.setOptionId(row.getOptionId());
-                option.setOptionName(row.getOptionName());
-                option.setTimeDuration(row.getTimeDuration());
-                option.setStartTime(row.getStartTime());
-                option.setEndTime(row.getEndTime());
-                reportAnswerOptionService.insert(option);
-            });
-//        }
+        Wrapper<AnswerOption> answerOptionWrapper = new EntityWrapper<AnswerOption>()
+                .eq(AnswerOption.ANSWER_ID, answerId);
+        List<AnswerOption> answerOptions = answerOptionService.selectList(answerOptionWrapper);
+        answerOptions.forEach(row -> {
+            ReportAnswerOption option = new ReportAnswerOption();
+            option.setAnswerId(row.getAnswerId());
+            option.setQuestionId(row.getQuestionId());
+            option.setQuestionName(row.getQuestionName());
+            option.setOptionId(row.getOptionId());
+            option.setOptionName(row.getOptionName());
+            option.setTimeDuration(row.getTimeDuration());
+            option.setStartTime(row.getStartTime());
+            option.setEndTime(row.getEndTime());
+            reportAnswerOptionService.insert(option);
+        });
     }
 
     private AnswerData toAnswerData(Answer answer) {
@@ -239,10 +192,6 @@ public class AnswerService implements IAnswerService {
      * 获取答卷题目选项
      */
     private List<AnswerOptionData> getQuestionOptionList(int answerId) {
-//        Wrapper<AnswerOption> wrapper = new EntityWrapper<AnswerOption>()
-//                .eq(AnswerOption.ANSWER_ID, answerId);
-//        return answerOptionService.selectList(wrapper);
-
         List<AnswerOptionData> list = new ArrayList<>();
         Wrapper<AnswerOption> wrapper = new EntityWrapper<AnswerOption>()
                 .eq(AnswerOption.ANSWER_ID, answerId);
