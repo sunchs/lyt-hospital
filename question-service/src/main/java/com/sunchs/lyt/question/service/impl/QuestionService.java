@@ -93,6 +93,7 @@ public class QuestionService implements IQuestionService {
         question.setTargetTwo(param.getTargetTwo());
         question.setTargetThree(param.getTargetThree());
         question.setOptionType(optionTemplate.getPid());
+        question.setOptionMaxQuantity(param.getOptionMaxQuantity());
         question.setRemark(param.getRemark());
         question.setUpdateId(UserThreadUtil.getUserId());
         question.setUpdateTime(new Timestamp(System.currentTimeMillis()));

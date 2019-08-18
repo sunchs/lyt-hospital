@@ -6,16 +6,17 @@ import java.util.List;
 
 public class QuestionParam extends PagingParam {
 
-    public int id;
-    public String number;
-    public String title;
-    public int status;
-    public int targetOne;
-    public int targetTwo;
-    public int targetThree;
-    public int optionId;
-    public String remark;
-    public List<TagParam> tagList;
+    private int id;
+    private String number;
+    private String title;
+    private int status;
+    private int targetOne;
+    private int targetTwo;
+    private int targetThree;
+    private int optionId;
+    private int optionMaxQuantity;
+    private String remark;
+    private List<TagParam> tagList;
 
     public int getId() {
         return id;
@@ -47,6 +48,10 @@ public class QuestionParam extends PagingParam {
 
     public int getOptionId() {
         return optionId;
+    }
+
+    public int getOptionMaxQuantity() {
+        return optionMaxQuantity;
     }
 
     public String getRemark() {

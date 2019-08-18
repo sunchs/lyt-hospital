@@ -13,6 +13,7 @@
         <result column="target_two" property="targetTwo" />
         <result column="target_three" property="targetThree" />
         <result column="option_type" property="optionType" />
+        <result column="option_max_quantity" property="optionMaxQuantity" />
         <result column="remark" property="remark" />
         <result column="update_id" property="updateId" />
         <result column="update_time" property="updateTime" />
