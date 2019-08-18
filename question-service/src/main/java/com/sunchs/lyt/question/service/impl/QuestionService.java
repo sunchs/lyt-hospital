@@ -76,6 +76,14 @@ public class QuestionService implements IQuestionService {
             throw new QuestionException("选项模版被删除，请重新选择");
         }
 
+        Wrapper<Question> questionWrapper = new EntityWrapper<Question>()
+                .eq(Question.TARGET_ONE, param.getTargetOne())
+                .eq(Question.TITLE, param.getTitle());
+        int count = questionService.selectCount(questionWrapper);
+        if (count > 0) {
+            throw new QuestionException("题目已存在，请重新输入");
+        }
+
         Question question = new Question();
         question.setHospitalId(UserThreadUtil.getHospitalId());
         question.setNumber(param.getNumber());
