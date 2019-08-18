@@ -81,7 +81,7 @@ public class QuestionService implements IQuestionService {
                 .eq(Question.TITLE, param.getTitle());
         int count = questionService.selectCount(questionWrapper);
         if (count > 0) {
-            throw new QuestionException("题目已存在，请重新输入");
+            throw new QuestionException("题目已存在，请重新输入！");
         }
 
         Question question = new Question();
