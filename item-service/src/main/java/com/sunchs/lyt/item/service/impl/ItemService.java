@@ -505,20 +505,34 @@ public class ItemService implements IItemService {
             data.setNumber(item.getNumber());
             data.setHospitalId(item.getHospitalId());
             data.setHospitalName(getHospitalNameById(item.getHospitalId()));
-            data.setOfficeList(getUserItemOfficeList(item.getId()));
+            data.setOfficeTypeList(getUserItemOfficeTypeList(item.getId()));
             list.add(data);
         });
         return list;
     }
 
-    private List<UserItemOfficeData> getUserItemOfficeList(int itemId) {
+    private List<UserItemOfficeTypeData> getUserItemOfficeTypeList(int itemId) {
+        List<UserItemOfficeTypeData> list = new ArrayList<>();
+        Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
+                .eq(ItemOffice.ITEM_ID, itemId)
+                .groupBy(ItemOffice.OFFICE_TYPE_ID);
+        itemOfficeService.selectList(wrapper).forEach(type -> {
+            UserItemOfficeTypeData typeData = new UserItemOfficeTypeData();
+            typeData.setOfficeTypeId(type.getOfficeTypeId());
+            typeData.setOfficeTypeName(OfficeTypeEnum.get(type.getOfficeTypeId()));
+            typeData.setOfficeList(getUserItemOfficeList(itemId, type.getOfficeTypeId()));
+            list.add(typeData);
+        });
+        return list;
+    }
+
+    private List<UserItemOfficeData> getUserItemOfficeList(int itemId, int typeId) {
         List<UserItemOfficeData> list = new ArrayList<>();
         Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
-                .eq(ItemOffice.ITEM_ID, itemId);
+                .eq(ItemOffice.ITEM_ID, itemId)
+                .eq(ItemOffice.OFFICE_TYPE_ID, typeId);
         itemOfficeService.selectList(wrapper).forEach(office -> {
             UserItemOfficeData data = new UserItemOfficeData();
-            data.setOfficeTypeId(office.getOfficeTypeId());
-            data.setOfficeTypeName(OfficeTypeEnum.get(office.getOfficeTypeId()));
             data.setOfficeId(office.getOfficeId());
             data.setOfficeName(getOfficeNameById(office.getOfficeId()));
             data.setQuestionnaireId(office.getQuestionnaireId());

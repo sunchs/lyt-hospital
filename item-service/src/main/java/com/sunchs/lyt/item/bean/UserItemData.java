@@ -9,7 +9,8 @@ public class UserItemData {
     private String number;
     private int hospitalId;
     private String hospitalName;
-    private List<UserItemOfficeData> officeList;
+
+    private List<UserItemOfficeTypeData> officeTypeList;
 
     public int getItemId() {
         return itemId;
@@ -51,11 +52,11 @@ public class UserItemData {
         this.hospitalName = hospitalName;
     }
 
-    public List<UserItemOfficeData> getOfficeList() {
-        return officeList;
+    public List<UserItemOfficeTypeData> getOfficeTypeList() {
+        return officeTypeList;
     }
 
-    public void setOfficeList(List<UserItemOfficeData> officeList) {
-        this.officeList = officeList;
+    public void setOfficeTypeList(List<UserItemOfficeTypeData> officeTypeList) {
+        this.officeTypeList = officeTypeList;
     }
 }
