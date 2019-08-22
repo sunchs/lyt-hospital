@@ -10,11 +10,11 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 
+ * 医院科室表
  * </p>
  *
  * @author king
- * @since 2019-07-25
+ * @since 2019-08-22
  */
 @TableName("hospital_office")
 public class HospitalOffice extends Model<HospitalOffice> {
@@ -37,6 +37,12 @@ public class HospitalOffice extends Model<HospitalOffice> {
      * 科室类型
      */
     private Integer type;
+
+    /**
+     * 组名
+     */
+    @TableField("group_name")
+    private String groupName;
 
     /**
      * 科室标题
@@ -81,6 +87,13 @@ public class HospitalOffice extends Model<HospitalOffice> {
     public void setType(Integer type) {
         this.type = type;
     }
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
     public String getTitle() {
         return title;
     }
@@ -116,6 +129,8 @@ public class HospitalOffice extends Model<HospitalOffice> {
 
     public static final String TYPE = "type";
 
+    public static final String GROUP_NAME = "group_name";
+
     public static final String TITLE = "title";
 
     public static final String QUANTITY = "quantity";
@@ -135,6 +150,7 @@ public class HospitalOffice extends Model<HospitalOffice> {
         "id=" + id +
         ", hospitalId=" + hospitalId +
         ", type=" + type +
+        ", groupName=" + groupName +
         ", title=" + title +
         ", quantity=" + quantity +
         ", updateId=" + updateId +

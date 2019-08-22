@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 /**
  * <p>
- *  Mapper 接口
+ * 医院科室表 Mapper 接口
  * </p>
  *
  * @author king
- * @since 2019-07-25
+ * @since 2019-08-22
  */
 public interface HospitalOfficeMapper extends BaseMapper<HospitalOffice> {
 

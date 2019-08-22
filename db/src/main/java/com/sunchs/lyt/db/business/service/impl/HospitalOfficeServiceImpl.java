@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 
 /**
  * <p>
- *  服务实现类
+ * 医院科室表 服务实现类
  * </p>
  *
  * @author king
- * @since 2019-07-25
+ * @since 2019-08-22
  */
 @Service
 public class HospitalOfficeServiceImpl extends ServiceImpl<HospitalOfficeMapper, HospitalOffice> implements IHospitalOfficeService {

@@ -44,7 +44,6 @@ public class HospitalService implements IHospitalService {
 
     @Override
     public void save(HospitalParam param) {
-        System.out.println(param);
         Hospital data = new Hospital();
         data.setId(param.getId());
         data.setHospitalName(param.getHospitalName());
@@ -315,6 +314,7 @@ public class HospitalService implements IHospitalService {
             data.setId(row.getId());
             data.setHospitalId(hospitalId);
             data.setType(officeType);
+            data.setGroupName(row.getGroupName());
             data.setTitle(row.getName());
             data.setQuantity(row.getQuantity());
             data.setUpdateId(UserThreadUtil.getUserId());
