@@ -56,7 +56,7 @@ public class RoleService implements IRoleService {
             data.setStatusName(StatusEnum.getName(row.getStatus()));
             list.add(data);
         });
-        return PagingUtil.getData(list, page.getSize(), param.getPageNow(), param.getPageSize());
+        return PagingUtil.getData(list, page.getTotal(), page.getCurrent(), page.getSize());
     }
 
     @Override
