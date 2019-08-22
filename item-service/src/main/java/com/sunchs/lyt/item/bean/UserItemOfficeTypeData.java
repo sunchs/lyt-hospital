@@ -6,7 +6,7 @@ public class UserItemOfficeTypeData {
 
     private int officeTypeId;
     private String officeTypeName;
-    private List<UserItemOfficeData> officeList;
+    private List<UserItemOfficeGroupData> groupList;
 
     public int getOfficeTypeId() {
         return officeTypeId;
@@ -24,11 +24,11 @@ public class UserItemOfficeTypeData {
         this.officeTypeName = officeTypeName;
     }
 
-    public List<UserItemOfficeData> getOfficeList() {
-        return officeList;
+    public List<UserItemOfficeGroupData> getGroupList() {
+        return groupList;
     }
 
-    public void setOfficeList(List<UserItemOfficeData> officeList) {
-        this.officeList = officeList;
+    public void setGroupList(List<UserItemOfficeGroupData> groupList) {
+        this.groupList = groupList;
     }
 }
