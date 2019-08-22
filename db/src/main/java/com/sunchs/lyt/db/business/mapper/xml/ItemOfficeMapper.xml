@@ -8,6 +8,7 @@
         <result column="item_id" property="itemId" />
         <result column="hospital_id" property="hospitalId" />
         <result column="office_type_id" property="officeTypeId" />
+        <result column="group_name" property="groupName" />
         <result column="office_id" property="officeId" />
         <result column="questionnaire_id" property="questionnaireId" />
         <result column="title" property="title" />

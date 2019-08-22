@@ -2,10 +2,19 @@ package com.sunchs.lyt.item.bean;
 
 public class UserItemOfficeData {
 
+    private String groupName;
     private int officeId;
     private String officeName;
     private int questionnaireId;
     private String questionnaireName;
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
 
     public int getOfficeId() {
         return officeId;

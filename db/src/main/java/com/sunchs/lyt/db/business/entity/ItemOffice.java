@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-08-09
+ * @since 2019-08-22
  */
 @TableName("item_office")
 public class ItemOffice extends Model<ItemOffice> {
@@ -43,6 +43,12 @@ public class ItemOffice extends Model<ItemOffice> {
      */
     @TableField("office_type_id")
     private Integer officeTypeId;
+
+    /**
+     * 组名
+     */
+    @TableField("group_name")
+    private String groupName;
 
     /**
      * 科室ID
@@ -94,6 +100,13 @@ public class ItemOffice extends Model<ItemOffice> {
     public void setOfficeTypeId(Integer officeTypeId) {
         this.officeTypeId = officeTypeId;
     }
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
     public Integer getOfficeId() {
         return officeId;
     }
@@ -131,6 +144,8 @@ public class ItemOffice extends Model<ItemOffice> {
 
     public static final String OFFICE_TYPE_ID = "office_type_id";
 
+    public static final String GROUP_NAME = "group_name";
+
     public static final String OFFICE_ID = "office_id";
 
     public static final String QUESTIONNAIRE_ID = "questionnaire_id";
@@ -151,6 +166,7 @@ public class ItemOffice extends Model<ItemOffice> {
         ", itemId=" + itemId +
         ", hospitalId=" + hospitalId +
         ", officeTypeId=" + officeTypeId +
+        ", groupName=" + groupName +
         ", officeId=" + officeId +
         ", questionnaireId=" + questionnaireId +
         ", title=" + title +
