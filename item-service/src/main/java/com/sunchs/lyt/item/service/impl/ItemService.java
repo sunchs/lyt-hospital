@@ -520,17 +520,33 @@ public class ItemService implements IItemService {
             UserItemOfficeTypeData typeData = new UserItemOfficeTypeData();
             typeData.setOfficeTypeId(type.getOfficeTypeId());
             typeData.setOfficeTypeName(OfficeTypeEnum.get(type.getOfficeTypeId()));
-            typeData.setOfficeList(getUserItemOfficeList(itemId, type.getOfficeTypeId()));
+            typeData.setGroupList(getUserItemOfficeGroupList(itemId, type.getOfficeTypeId()));
             list.add(typeData);
         });
         return list;
     }
 
-    private List<UserItemOfficeData> getUserItemOfficeList(int itemId, int typeId) {
+    private List<UserItemOfficeGroupData> getUserItemOfficeGroupList(int itemId, int typeId) {
+        List<UserItemOfficeGroupData> list = new ArrayList<>();
+        Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
+                .eq(ItemOffice.ITEM_ID, itemId)
+                .eq(ItemOffice.OFFICE_TYPE_ID, typeId)
+                .groupBy(ItemOffice.GROUP_NAME);
+        itemOfficeService.selectList(wrapper).forEach(office -> {
+            UserItemOfficeGroupData data = new UserItemOfficeGroupData();
+            data.setGroupName(office.getGroupName());
+            data.setOfficeList(getUserItemOfficeList(itemId, typeId, office.getGroupName()));
+            list.add(data);
+        });
+        return list;
+    }
+
+    private List<UserItemOfficeData> getUserItemOfficeList(int itemId, int typeId, String groupName) {
         List<UserItemOfficeData> list = new ArrayList<>();
         Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
                 .eq(ItemOffice.ITEM_ID, itemId)
-                .eq(ItemOffice.OFFICE_TYPE_ID, typeId);
+                .eq(ItemOffice.OFFICE_TYPE_ID, typeId)
+                .eq(ItemOffice.GROUP_NAME, groupName);
         itemOfficeService.selectList(wrapper).forEach(office -> {
             UserItemOfficeData data = new UserItemOfficeData();
             data.setOfficeId(office.getOfficeId());
@@ -765,3 +781,32 @@ public class ItemService implements IItemService {
         return ids;
     }
 }
+
+//class aaaa
+//{
+//    int status;// 状态：1成功、0失败、2，验证失效
+//    String msg;// 提示信息
+//    List data : [
+//        {
+//            int itemId;// 项目ID
+//            int itemName;// 项目名称
+//            String number;// 项目编号
+//            int hospitalId;// 医院名称
+//            String hospitalName;// 医院名称
+//            List officeTypeList : [
+//                {
+//                    int officeTypeId;// 科室类型ID
+//                    String officeTypeName;// 科室类型名称
+//                    List officeList : [
+//                        {
+//                            int officeId;// 科室ID
+//                            String officeName;// 科室名称
+//                            int questionnaireId;// 问卷ID
+//                            int questionnaireName;// 问卷名称
+//                        }
+//                    ]
+//                }
+//            ]
+//        }
+//    ]
+//}
