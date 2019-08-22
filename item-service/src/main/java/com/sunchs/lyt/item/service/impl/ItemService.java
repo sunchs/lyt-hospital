@@ -150,6 +150,7 @@ public class ItemService implements IItemService {
                     data.setItemId(param.getItemId());
                     data.setHospitalId(getHospitalId(param.getItemId()));
                     data.setOfficeTypeId(row.getOfficeTypeId());
+                    data.setGroupName("员工");
                     data.setOfficeId(0);
                     data.setQuestionnaireId(row.getQuestionnaireId());
                     itemOfficeService.insert(data);
@@ -159,6 +160,7 @@ public class ItemService implements IItemService {
                         data.setItemId(param.getItemId());
                         data.setHospitalId(getHospitalId(param.getItemId()));
                         data.setOfficeTypeId(row.getOfficeTypeId());
+                        data.setGroupName(row.getGroupName());
                         data.setOfficeId(officeId);
                         data.setQuestionnaireId(row.getQuestionnaireId());
                         // 附带科室详情
@@ -781,32 +783,3 @@ public class ItemService implements IItemService {
         return ids;
     }
 }
-
-//class aaaa
-//{
-//    int status;// 状态：1成功、0失败、2，验证失效
-//    String msg;// 提示信息
-//    List data : [
-//        {
-//            int itemId;// 项目ID
-//            int itemName;// 项目名称
-//            String number;// 项目编号
-//            int hospitalId;// 医院名称
-//            String hospitalName;// 医院名称
-//            List officeTypeList : [
-//                {
-//                    int officeTypeId;// 科室类型ID
-//                    String officeTypeName;// 科室类型名称
-//                    List officeList : [
-//                        {
-//                            int officeId;// 科室ID
-//                            String officeName;// 科室名称
-//                            int questionnaireId;// 问卷ID
-//                            int questionnaireName;// 问卷名称
-//                        }
-//                    ]
-//                }
-//            ]
-//        }
-//    ]
-//}

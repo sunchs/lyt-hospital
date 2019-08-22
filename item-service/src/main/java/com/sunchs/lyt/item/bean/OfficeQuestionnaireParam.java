@@ -18,6 +18,11 @@ public class OfficeQuestionnaireParam {
     private int officeTypeId;
 
     /**
+     * 组名
+     */
+    private String groupName;
+
+    /**
      * 科室ID
      */
     private List<Integer> officeList;
@@ -58,6 +63,10 @@ public class OfficeQuestionnaireParam {
 
     public int getOfficeTypeId() {
         return officeTypeId;
+    }
+
+    public String getGroupName() {
+        return groupName;
     }
 
     public List<Integer> getOfficeList() {
