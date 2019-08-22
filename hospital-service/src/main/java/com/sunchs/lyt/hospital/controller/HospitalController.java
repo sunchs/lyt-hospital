@@ -1,6 +1,5 @@
 package com.sunchs.lyt.hospital.controller;
 
-import com.sunchs.lyt.db.business.entity.Item;
 import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
