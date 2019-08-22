@@ -71,7 +71,7 @@ public class ItemService implements IItemService {
         w.orderBy(Item.ID, false);
         Page<Item> page = itemService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), w);
         page.getRecords().forEach(row -> list.add(getItemInfo(row)));
-        return PagingUtil.getData(list, page.getSize(), param.getPageNow(), param.getPageSize());
+        return PagingUtil.getData(list, page.getTotal(), page.getCurrent(), page.getSize());
     }
 
     @Override
