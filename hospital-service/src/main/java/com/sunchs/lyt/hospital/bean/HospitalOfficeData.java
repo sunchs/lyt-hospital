@@ -8,6 +8,11 @@ public class HospitalOfficeData {
     private int id;
 
     /**
+     * 组名
+     */
+    private String groupName;
+
+    /**
      * 科室名称
      */
     private String name;
@@ -23,6 +28,14 @@ public class HospitalOfficeData {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     public String getName() {

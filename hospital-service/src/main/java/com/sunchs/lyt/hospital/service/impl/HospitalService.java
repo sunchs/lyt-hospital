@@ -257,6 +257,7 @@ public class HospitalService implements IHospitalService {
         hospitalOffices.forEach(office->{
             HospitalOfficeData o = new HospitalOfficeData();
             o.setId(office.getId());
+            o.setGroupName(office.getGroupName());
             o.setName(office.getTitle());
             o.setQuantity(office.getQuantity());
             list.add(o);
