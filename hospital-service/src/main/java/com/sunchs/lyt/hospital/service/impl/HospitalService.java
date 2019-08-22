@@ -90,7 +90,7 @@ public class HospitalService implements IHospitalService {
         w.orderBy(Hospital.ID, false);
         Page<Hospital> page = hospitalService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), w);
         page.getRecords().forEach(row-> list.add(getHospitalInfo(row)));
-        return PagingUtil.getData(list, page.getSize(), param.getPageNow(), param.getPageSize());
+        return PagingUtil.getData(list, page.getTotal(), page.getCurrent(), page.getSize());
     }
 
     @Override
