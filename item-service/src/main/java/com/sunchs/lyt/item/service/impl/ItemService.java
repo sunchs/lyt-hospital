@@ -133,11 +133,6 @@ public class ItemService implements IItemService {
 
     @Override
     public int bindOfficeQuestionnaire(BindOfficeParam param) {
-//        // 清理历史数据
-//        Wrapper<ItemOffice> w = new EntityWrapper<>();
-//        w.eq(ItemOffice.ITEM_ID, param.getItemId());
-//        itemOfficeService.delete(w);
-        // 添加新数据
         param.getBindList().forEach(row -> {
             if (Objects.nonNull(row) && row.getQuestionnaireId() > 0) {
                 if (row.getOfficeTypeId() == 3) {
@@ -160,12 +155,12 @@ public class ItemService implements IItemService {
                         data.setItemId(param.getItemId());
                         data.setHospitalId(getHospitalId(param.getItemId()));
                         data.setOfficeTypeId(row.getOfficeTypeId());
-                        data.setGroupName(row.getGroupName());
                         data.setOfficeId(officeId);
                         data.setQuestionnaireId(row.getQuestionnaireId());
                         // 附带科室详情
                         HospitalOffice hospitalOffice = getHospitalOfficeById(officeId);
                         if (Objects.nonNull(hospitalOffice)) {
+                            data.setGroupName(hospitalOffice.getGroupName());
                             data.setTitle(hospitalOffice.getTitle());
                             data.setQuantity(hospitalOffice.getQuantity());
                         }
