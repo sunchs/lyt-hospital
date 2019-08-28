@@ -48,6 +48,7 @@ public class PreFilter extends ZuulFilter {
         Set<String> ignoreUri = new HashSet<>();
         ignoreUri.add("/user-service/user/login");
         ignoreUri.add("/item-service/foo/getItemOfficeInfo");
+        ignoreUri.add("/question-service/questionnaire/getById");
         if (ignoreUri.contains(request.getRequestURI())) {
             return null;
         }
