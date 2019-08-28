@@ -77,6 +77,15 @@ public class QuestionnaireController extends BaseController {
         return success(questionnaireService.getUsableList(param));
     }
 
+    /**
+     * 问卷详情
+     */
+    @PostMapping("/getInfo")
+    public ResultData getInfo(@RequestBody RequestData data) {
+        QuestionnaireParam param = data.toObject(QuestionnaireParam.class);
+        return success(questionnaireService.getById(param.getId()));
+    }
+
 
     /**
      * 导出文件
