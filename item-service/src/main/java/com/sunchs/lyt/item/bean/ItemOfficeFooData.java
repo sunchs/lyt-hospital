@@ -29,4 +29,36 @@ public class ItemOfficeFooData extends ItemOffice {
 //     */
 //    private List<>
 
+
+    public String getHospitalName() {
+        return hospitalName;
+    }
+
+    public void setHospitalName(String hospitalName) {
+        this.hospitalName = hospitalName;
+    }
+
+    public String getOfficeTypeName() {
+        return officeTypeName;
+    }
+
+    public void setOfficeTypeName(String officeTypeName) {
+        this.officeTypeName = officeTypeName;
+    }
+
+    public String getOfficeName() {
+        return officeName;
+    }
+
+    public void setOfficeName(String officeName) {
+        this.officeName = officeName;
+    }
+
+    public String getQuestionnaireName() {
+        return questionnaireName;
+    }
+
+    public void setQuestionnaireName(String questionnaireName) {
+        this.questionnaireName = questionnaireName;
+    }
 }
