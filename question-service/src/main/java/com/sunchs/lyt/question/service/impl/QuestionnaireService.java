@@ -89,6 +89,19 @@ public class QuestionnaireService implements IQuestionnaireService {
                     questionList.add(questionData);
                 }
             });
+
+            // 排序
+            Collections.sort(questionList, (QuestionData o1, QuestionData o2)-> {
+                int sortVal = o1.getSort() - o2.getSort();
+                if (sortVal > 0) {
+                    return 1;
+                } else if (sortVal < 0){
+                    return -1;
+                } else {
+                    return 0;
+                }
+            });
+
             data.setQuestionList(questionList);
             return data;
         }
