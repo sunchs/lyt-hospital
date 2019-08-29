@@ -3,6 +3,8 @@ package com.sunchs.lyt.question.controller;
 import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
+import com.sunchs.lyt.question.bean.QuestionData;
+import com.sunchs.lyt.question.bean.QuestionnaireData;
 import com.sunchs.lyt.question.bean.QuestionnaireDownloadParam;
 import com.sunchs.lyt.question.bean.QuestionnaireParam;
 import com.sunchs.lyt.question.service.impl.QuestionnaireService;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -83,7 +86,25 @@ public class QuestionnaireController extends BaseController {
     @PostMapping("/getInfo")
     public ResultData getInfo(@RequestBody RequestData data) {
         QuestionnaireParam param = data.toObject(QuestionnaireParam.class);
-        return success(questionnaireService.getById(param.getId()));
+        QuestionnaireData res = questionnaireService.getById(param.getId());
+
+        List<QuestionData> questionList = new ArrayList<>();
+        int skipQuestionId = 0;
+        for (QuestionData q : res.getQuestionList()) {
+            if (skipQuestionId > 0 && ( ! q.getId().equals(skipQuestionId))) {
+                continue;
+            }
+            questionList.add(q);
+
+            if (q.getSkipMode() == 1) {
+                skipQuestionId = q.getSkipQuestionId();
+            } else {
+                skipQuestionId = 0;
+            }
+        }
+        res.setQuestionList(questionList);
+
+        return success(res);
     }
 
 
