@@ -4,6 +4,7 @@ import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
 import com.sunchs.lyt.item.bean.AnswerParam;
+import com.sunchs.lyt.item.bean.SyncAnswerParam;
 import com.sunchs.lyt.item.service.impl.AnswerFooService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,7 @@ public class FooController extends BaseController {
      */
     @PostMapping("/saveAnswer")
     public ResultData saveAnswer(@RequestBody RequestData data) {
-        AnswerParam param = data.toObject(AnswerParam.class);
+        SyncAnswerParam param = data.toObject(SyncAnswerParam.class);
         answerFooService.saveAnswer(param);
         return success();
     }

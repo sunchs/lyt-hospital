@@ -2,23 +2,27 @@ package com.sunchs.lyt.item.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.sunchs.lyt.db.business.entity.Hospital;
-import com.sunchs.lyt.db.business.entity.HospitalOffice;
-import com.sunchs.lyt.db.business.entity.ItemOffice;
-import com.sunchs.lyt.db.business.entity.Questionnaire;
-import com.sunchs.lyt.db.business.service.impl.HospitalOfficeServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.HospitalServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.ItemOfficeServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.QuestionnaireServiceImpl;
+import com.sunchs.lyt.db.business.entity.*;
+import com.sunchs.lyt.db.business.service.impl.*;
+import com.sunchs.lyt.framework.util.FormatUtil;
 import com.sunchs.lyt.framework.util.ObjectUtil;
+import com.sunchs.lyt.framework.util.StringUtil;
+import com.sunchs.lyt.framework.util.UserThreadUtil;
 import com.sunchs.lyt.item.bean.AnswerParam;
 import com.sunchs.lyt.item.bean.ItemOfficeFooData;
+import com.sunchs.lyt.item.bean.SyncAnswerParam;
 import com.sunchs.lyt.item.enums.OfficeTypeEnum;
 import com.sunchs.lyt.item.exception.ItemException;
 import com.sunchs.lyt.item.service.IAnswerFooService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.misc.BASE64Decoder;
 
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -36,8 +40,100 @@ public class AnswerFooService implements IAnswerFooService {
     @Autowired
     private HospitalServiceImpl hospitalService;
 
+    @Autowired
+    private AnswerServiceImpl answerService;
+
+    @Autowired
+    private QuestionnaireExtendServiceImpl questionnaireExtendService;
+
+    @Autowired
+    private QuestionServiceImpl questionService;
+
+    @Autowired
+    private QuestionOptionServiceImpl questionOptionService;
+
+    @Autowired
+    private AnswerOptionServiceImpl answerOptionService;
+
     @Override
-    public void saveAnswer(AnswerParam param) {
+    public void saveAnswer(SyncAnswerParam param) {
+        // 检查重复
+        checkAnswer(param);
+
+        // 获取项目相关信息
+        ItemOffice itemOffice = getItemOffice(param.getItemId(), param.getOfficeId());
+
+        Wrapper<Answer> answerWrapper = new EntityWrapper<Answer>()
+                .orderBy(Answer.ID, false);
+        Answer last = answerService.selectOne(answerWrapper);
+
+        // 插入答卷
+        Answer data = new Answer();
+        data.setHospitalId(itemOffice.getHospitalId());
+        data.setItemId(param.getItemId());
+        data.setOfficeId(param.getOfficeId());
+        data.setQuestionnaireId(itemOffice.getQuestionnaireId());
+        data.setUserId(UserThreadUtil.getUserId());
+        data.setPatientNumber(param.getPatientNumber());
+        data.setStatus(0);
+        data.setReason("");
+        data.setTimeDuration(param.getTimeDuration());
+        data.setStartTime(FormatUtil.dateTime(param.getStartTime()));
+        data.setEndTime(FormatUtil.dateTime(param.getEndTime()));
+        data.setUpdateId(-1);
+        data.setUpdateTime(new Date());
+        data.setCreateId(-1);
+        data.setCreateTime(new Date());
+
+        data.setFilterReason("");
+        if (Objects.nonNull(last)) {
+            long tVal = data.getStartTime().getTime() - last.getEndTime().getTime();
+            if (tVal < 20 * 1000) {
+                data.setFilterReason("距离上次答卷时间太短");
+            }
+        }
+
+        if (answerService.insert(data)) {
+            // 插入答题
+            param.getQuestionList().forEach(q -> {
+                // 检查题目
+                boolean isExist = answerQuestionIsExist(data.getQuestionnaireId(), q.getQuestionId());
+                if (isExist) {
+                    if (q.getOptionMode().equals("text")) {
+                        AnswerOption answerOption = new AnswerOption();
+                        answerOption.setAnswerId(data.getId());
+                        answerOption.setQuestionId(q.getQuestionId());
+                        answerOption.setQuestionName(getQuestionNameById(q.getQuestionId()));
+                        answerOption.setOptionId(0);
+                        answerOption.setOptionName(q.getOptionValue());
+                        answerOption.setTimeDuration(q.getTimeDuration());
+                        answerOption.setStartTime(FormatUtil.dateTime(q.getStartTime()));
+                        answerOption.setEndTime(FormatUtil.dateTime(q.getEndTime()));
+                        answerOptionService.insert(answerOption);
+                    } else {
+                        q.getOptionIds().forEach(optionId -> {
+                            QuestionOption option = getQuestionOption(optionId);
+                            if (Objects.nonNull(option) && option.getQuestionId().equals(q.getQuestionId())) {
+                                AnswerOption answerOption = new AnswerOption();
+                                answerOption.setAnswerId(data.getId());
+                                answerOption.setQuestionId(q.getQuestionId());
+                                answerOption.setQuestionName(getQuestionNameById(q.getQuestionId()));
+//                    answerOption.setQuestionName(q.getQuestionName());
+                                answerOption.setOptionId(optionId);
+                                answerOption.setOptionName(option.getTitle());
+                                answerOption.setTimeDuration(q.getTimeDuration());
+                                answerOption.setStartTime(FormatUtil.dateTime(q.getStartTime()));
+                                answerOption.setEndTime(FormatUtil.dateTime(q.getEndTime()));
+//                    answerOption.setOptionName(q.getOptionName());
+                                answerOptionService.insert(answerOption);
+                            } else {
+                                System.out.println("同步参数有误");
+                            }
+                        });
+                    }
+                }
+            });
+        }
 
     }
 
@@ -55,6 +151,25 @@ public class AnswerFooService implements IAnswerFooService {
         data.setQuestionnaireName(getQuestionnaireNameById(data.getQuestionnaireId()));
 
         return data;
+    }
+
+    private boolean answerQuestionIsExist(int questionnaireId, int questionId) {
+        Wrapper<QuestionnaireExtend> wrapper = new EntityWrapper<QuestionnaireExtend>()
+                .eq(QuestionnaireExtend.QUESTIONNAIRE_ID, questionnaireId)
+                .eq(QuestionnaireExtend.QUESTION_ID, questionId);
+        int count = questionnaireExtendService.selectCount(wrapper);
+        return (count > 0);
+    }
+
+    private void checkAnswer(SyncAnswerParam param) {
+        Wrapper<Answer> wrapper = new EntityWrapper<Answer>()
+                .eq(Answer.ITEM_ID, param.getItemId())
+                .eq(Answer.OFFICE_ID, param.getOfficeId())
+                .eq(Answer.PATIENT_NUMBER, param.getPatientNumber());
+        int count = answerService.selectCount(wrapper);
+        if (count > 0) {
+            throw new ItemException("答卷无需重复上传");
+        }
     }
 
     private ItemOffice getItemOffice(int itemId, int officeId) {
@@ -92,5 +207,21 @@ public class AnswerFooService implements IAnswerFooService {
             return row.getTitle();
         }
         return "";
+    }
+
+    private String getQuestionNameById(int questionId) {
+        Wrapper<Question> wrapper = new EntityWrapper<Question>()
+                .eq(Question.ID, questionId);
+        Question row = questionService.selectOne(wrapper);
+        if (Objects.nonNull(row)) {
+            return row.getTitle();
+        }
+        return "";
+    }
+
+    private QuestionOption getQuestionOption(int optionId) {
+        Wrapper<QuestionOption> wrapper = new EntityWrapper<QuestionOption>()
+                .eq(QuestionOption.ID, optionId);
+        return questionOptionService.selectOne(wrapper);
     }
 }

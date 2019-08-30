@@ -49,6 +49,7 @@ public class PreFilter extends ZuulFilter {
         ignoreUri.add("/user-service/user/login");
         ignoreUri.add("/item-service/foo/getItemOfficeInfo");
         ignoreUri.add("/question-service/questionnaire/getInfo");
+        ignoreUri.add("/item-service/foo/saveAnswer");
         if (ignoreUri.contains(request.getRequestURI())) {
             return null;
         }

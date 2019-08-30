@@ -2,13 +2,14 @@ package com.sunchs.lyt.item.service;
 
 import com.sunchs.lyt.item.bean.AnswerParam;
 import com.sunchs.lyt.item.bean.ItemOfficeFooData;
+import com.sunchs.lyt.item.bean.SyncAnswerParam;
 
 public interface IAnswerFooService {
 
     /**
      * 保存答卷
      */
-    void saveAnswer(AnswerParam param);
+    void saveAnswer(SyncAnswerParam param);
 
     /**
      * 获取项目科室详情
