@@ -571,6 +571,9 @@ public class ItemService implements IItemService {
     }
 
     private void checkAnswer(SyncAnswerParam param) {
+        if (StringUtil.isEmpty(param.getPatientNumber())) {
+            throw new ItemException("患者编号不能为空");
+        }
         Wrapper<Answer> wrapper = new EntityWrapper<Answer>()
                 .eq(Answer.ITEM_ID, param.getItemId())
                 .eq(Answer.OFFICE_ID, param.getOfficeId())
