@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-08-18
+ * @since 2019-09-04
  */
 public class Question extends Model<Question> {
 
@@ -75,6 +75,12 @@ public class Question extends Model<Question> {
      */
     @TableField("option_max_quantity")
     private Integer optionMaxQuantity;
+
+    /**
+     * 是否使用表情
+     */
+    @TableField("is_use_face")
+    private Integer isUseFace;
 
     /**
      * 备注
@@ -175,6 +181,13 @@ public class Question extends Model<Question> {
     public void setOptionMaxQuantity(Integer optionMaxQuantity) {
         this.optionMaxQuantity = optionMaxQuantity;
     }
+    public Integer getIsUseFace() {
+        return isUseFace;
+    }
+
+    public void setIsUseFace(Integer isUseFace) {
+        this.isUseFace = isUseFace;
+    }
     public String getRemark() {
         return remark;
     }
@@ -231,6 +244,8 @@ public class Question extends Model<Question> {
 
     public static final String OPTION_MAX_QUANTITY = "option_max_quantity";
 
+    public static final String IS_USE_FACE = "is_use_face";
+
     public static final String REMARK = "remark";
 
     public static final String UPDATE_ID = "update_id";
@@ -259,6 +274,7 @@ public class Question extends Model<Question> {
         ", targetThree=" + targetThree +
         ", optionType=" + optionType +
         ", optionMaxQuantity=" + optionMaxQuantity +
+        ", isUseFace=" + isUseFace +
         ", remark=" + remark +
         ", updateId=" + updateId +
         ", updateTime=" + updateTime +
