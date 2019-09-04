@@ -179,7 +179,7 @@ public class AnswerService implements IAnswerService {
         answerImageService.selectList(wrapper).forEach(img -> {
             AnswerImageData imageData = new AnswerImageData();
             if (img.getPath().indexOf("http://") == -1) {
-                imageData.setPath("http://47.107.255.115" + img.getPath());
+                imageData.setPath("http://hzty.lytyg.com/item" + img.getPath());
             } else {
                 imageData.setPath(img.getPath());
             }
