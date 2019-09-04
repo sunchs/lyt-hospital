@@ -15,6 +15,7 @@ public class QuestionParam extends PagingParam {
     private int targetThree;
     private int optionId;
     private int optionMaxQuantity;
+    private int isUseFace;
     private String remark;
     private List<TagParam> tagList;
 
@@ -60,5 +61,9 @@ public class QuestionParam extends PagingParam {
 
     public List<TagParam> getTagList() {
         return tagList;
+    }
+
+    public int getIsUseFace() {
+        return isUseFace;
     }
 }
