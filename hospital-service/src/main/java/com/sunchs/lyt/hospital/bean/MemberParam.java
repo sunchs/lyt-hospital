@@ -22,7 +22,7 @@ public class MemberParam {
     /**
      * 验证码
      */
-    private int authCode;
+    private String authCode;
 
 
     public int getId() {
@@ -41,7 +41,7 @@ public class MemberParam {
         return identityCard;
     }
 
-    public int getAuthCode() {
+    public String getAuthCode() {
         return authCode;
     }
 }

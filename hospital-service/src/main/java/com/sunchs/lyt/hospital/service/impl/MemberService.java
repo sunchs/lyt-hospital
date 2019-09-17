@@ -12,6 +12,7 @@ import com.sunchs.lyt.framework.util.StringUtil;
 import com.sunchs.lyt.hospital.bean.MemberParam;
 import com.sunchs.lyt.hospital.exception.HospitalException;
 import com.sunchs.lyt.hospital.service.IMemberService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,7 @@ public class MemberService implements IMemberService {
     private MemberServiceImpl memberService;
 
     @Override
-    public int setCodeLog(MemberParam param) {
+    public String setCodeLog(MemberParam param) {
         checkPhone(param);
         // 保存验证码
         int random = (int) (Math.random()*(9999-1111)+1111);
@@ -47,14 +48,14 @@ public class MemberService implements IMemberService {
             connection.setReadTimeout(60000);
             connection.connect();
             if (connection.getResponseCode() == 200) {
-                return random;
+                return String.valueOf(random);
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             connection.disconnect();// 关闭远程连接
         }
-        return 0;
+        return StringUtils.EMPTY;
     }
 
     @Override

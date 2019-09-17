@@ -7,7 +7,7 @@ public interface IMemberService {
 
     Member getMember(MemberParam param);
 
-    int setCodeLog(MemberParam param);
+    String setCodeLog(MemberParam param);
 
     int save(MemberParam param);
 }
