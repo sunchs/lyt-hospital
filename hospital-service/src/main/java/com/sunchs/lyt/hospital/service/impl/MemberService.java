@@ -72,7 +72,9 @@ public class MemberService implements IMemberService {
         Member member = getMember(param);
 
         String code = RedisUtil.getValue(CacheKeys.MEMBER_PHONE_CODE + param.getPhone());
-        if ( ! code.equals(param.getAuthCode())) {
+        if (Objects.isNull(code)) {
+            throw new HospitalException("验证码已失效！");
+        } else if ( ! code.equals(param.getAuthCode())) {
             throw new HospitalException("验证码不正确！");
         }
 
