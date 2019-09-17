@@ -26,9 +26,7 @@ public class MemberController extends BaseController {
     @PostMapping("/save")
     public ResultData save(@RequestBody RequestData data) {
         MemberParam param = data.toObject(MemberParam.class);
-
-
-        return success();
+        return success(memberService.save(param));
     }
 
     @PostMapping("/getCode")

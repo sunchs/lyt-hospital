@@ -19,6 +19,11 @@ public class MemberParam {
      */
     private String identityCard;
 
+    /**
+     * 验证码
+     */
+    private int authCode;
+
 
     public int getId() {
         return id;
@@ -34,5 +39,9 @@ public class MemberParam {
 
     public String getIdentityCard() {
         return identityCard;
+    }
+
+    public int getAuthCode() {
+        return authCode;
     }
 }

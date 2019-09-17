@@ -12,12 +12,13 @@ import com.sunchs.lyt.framework.util.StringUtil;
 import com.sunchs.lyt.hospital.bean.MemberParam;
 import com.sunchs.lyt.hospital.exception.HospitalException;
 import com.sunchs.lyt.hospital.service.IMemberService;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,6 +64,29 @@ public class MemberService implements IMemberService {
         Wrapper<Member> wrapper = new EntityWrapper<Member>()
                 .eq(Member.PHONE, param.getPhone());
         return memberService.selectOne(wrapper);
+    }
+
+    @Override
+    public int save(MemberParam param) {
+        Member member = getMember(param);
+
+        String code = RedisUtil.getValue(CacheKeys.MEMBER_PHONE_CODE + param.getPhone());
+        if ( ! code.equals(param.getAuthCode())) {
+            throw new HospitalException("验证码不正确！");
+        }
+
+        Member data = new Member();
+        if (Objects.nonNull(member)) {
+            data.setId(member.getId());
+        }
+        data.setPhone(param.getPhone());
+        data.setName(param.getName());
+        data.setIdentityCard(param.getIdentityCard());
+        if (Objects.isNull(member)) {
+            data.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        }
+        memberService.insertOrUpdate(data);
+        return data.getId();
     }
 
     private void checkPhone(MemberParam param) {
