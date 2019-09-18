@@ -368,6 +368,7 @@ public class ItemService implements IItemService {
         data.setOfficeId(param.getOfficeId());
         data.setQuestionnaireId(itemOffice.getQuestionnaireId());
         data.setUserId(UserThreadUtil.getUserId());
+        data.setMemberId(0);
         data.setPatientNumber(param.getPatientNumber());
         data.setStatus(0);
         data.setReason("");

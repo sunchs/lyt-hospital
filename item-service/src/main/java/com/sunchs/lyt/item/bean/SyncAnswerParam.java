@@ -5,6 +5,11 @@ import java.util.List;
 public class SyncAnswerParam {
 
     /**
+     * 答卷人ID
+     */
+    private int memberId;
+
+    /**
      * 项目ID
      */
     private int itemId;
@@ -49,6 +54,10 @@ public class SyncAnswerParam {
      */
     private List<SyncAnswerOptionParam> questionList;
 
+
+    public int getMemberId() {
+        return memberId;
+    }
 
     public int getItemId() {
         return itemId;

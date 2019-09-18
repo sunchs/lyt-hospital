@@ -74,6 +74,7 @@ public class AnswerFooService implements IAnswerFooService {
         data.setOfficeId(param.getOfficeId());
         data.setQuestionnaireId(itemOffice.getQuestionnaireId());
         data.setUserId(UserThreadUtil.getUserId());
+        data.setMemberId(param.getMemberId());
         data.setPatientNumber(param.getPatientNumber());
         data.setStatus(0);
         data.setReason("");
