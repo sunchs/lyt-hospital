@@ -71,9 +71,6 @@ public class ItemService implements IItemService {
     public PagingList<ItemData> getPageList(ItemParam param) {
         List<ItemData> list = new ArrayList<>();
         Wrapper<Item> w = new EntityWrapper<>();
-//        if (UserThreadUtil.getHospitalId() > 0) {
-//            w.eq(Item.HOSPITAL_ID, UserThreadUtil.getHospitalId());
-//        }
         if (UserThreadUtil.getHospitalId() > 0) {
             Wrapper<UserHospital> userHospitalWrapper = new EntityWrapper<UserHospital>()
                     .eq(UserHospital.HOSPITAL_ID, UserThreadUtil.getHospitalId());
@@ -231,6 +228,9 @@ public class ItemService implements IItemService {
         Wrapper<ItemOffice> wrapper = new EntityWrapper<>();
         if (param.getId() > 0) {
             wrapper.eq(ItemOffice.ITEM_ID, param.getId());
+        }
+        if (UserThreadUtil.getHospitalId() > 0) {
+            wrapper.eq(ItemOffice.HOSPITAL_ID, UserThreadUtil.getHospitalId());
         }
         wrapper.orderBy(ItemOffice.ID, false);
         Page<ItemOffice> page = itemOfficeService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), wrapper);
