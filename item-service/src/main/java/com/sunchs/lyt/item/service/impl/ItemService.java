@@ -64,10 +64,28 @@ public class ItemService implements IItemService {
     @Autowired
     private QuestionOptionServiceImpl questionOptionService;
 
+    @Autowired
+    private UserHospitalServiceImpl userHospitalService;
+
     @Override
     public PagingList<ItemData> getPageList(ItemParam param) {
         List<ItemData> list = new ArrayList<>();
         Wrapper<Item> w = new EntityWrapper<>();
+//        if (UserThreadUtil.getHospitalId() > 0) {
+//            w.eq(Item.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+//        }
+        if (UserThreadUtil.getHospitalId() > 0) {
+            Wrapper<UserHospital> userHospitalWrapper = new EntityWrapper<UserHospital>()
+                    .eq(UserHospital.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+            List<Integer> ids = new ArrayList<>();
+            List<UserHospital> userHospitals = userHospitalService.selectList(userHospitalWrapper);
+            userHospitals.forEach(h->{
+                ids.add(h.getUserId());
+            });
+            if (ids.size() > 0) {
+                w.in(Item.CREATE_ID, ids);
+            }
+        }
         w.orderBy(Item.ID, false);
         Page<Item> page = itemService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), w);
         page.getRecords().forEach(row -> list.add(getItemInfo(row)));
