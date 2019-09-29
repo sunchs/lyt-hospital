@@ -168,6 +168,18 @@ public class UserService implements IUserService {
         w.setSqlSelect(User.ID, User.USERNAME, User.NAME);
         w.eq(User.STATUS, 1);
         w.gt(User.ID, 10);
+        if (UserThreadUtil.getHospitalId() > 0) {
+            Wrapper<UserHospital> userHospitalWrapper = new EntityWrapper<UserHospital>()
+                    .eq(UserHospital.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+            List<Integer> ids = new ArrayList<>();
+            List<UserHospital> userHospitals = userHospitalService.selectList(userHospitalWrapper);
+            userHospitals.forEach(h->{
+                ids.add(h.getUserId());
+            });
+            if (ids.size() > 0) {
+                w.in(User.ID, ids);
+            }
+        }
         w.orderBy(User.ID, false);
         List<User> userList = userService.selectList(w);
         List<Map<String, Object>> list = new ArrayList<>();
