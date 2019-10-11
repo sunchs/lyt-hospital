@@ -576,8 +576,12 @@ public class ItemService implements IItemService {
 
     private String buildFolder(String path) {
         File file = new File(path);
-        if (!file.exists() && !file.isDirectory()) {
-            file.mkdir();
+        try {
+            if (!file.exists() || !file.isDirectory()) {
+                file.mkdir();
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
         return path;
     }
