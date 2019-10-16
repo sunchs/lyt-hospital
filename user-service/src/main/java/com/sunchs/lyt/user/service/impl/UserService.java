@@ -126,6 +126,7 @@ public class UserService implements IUserService {
         // 结果集
         UserRoleData res = new UserRoleData();
         res.setId(user.getId());
+        res.setType(user.getType());
         res.setUserName(user.getUsername());
         res.setName(user.getName());
         res.setToken(token);

@@ -3,6 +3,7 @@ package com.sunchs.lyt.framework.bean;
 public class UserCacheData {
 
     private int id;
+    private int type;
     private String userName;
     private String name;
     private String token;
@@ -14,6 +15,14 @@ public class UserCacheData {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public String getUserName() {
@@ -52,6 +61,7 @@ public class UserCacheData {
     public String toString() {
         return "UserCacheData{" +
                 "id=" + id +
+                ", type=" + type +
                 ", userName='" + userName + '\'' +
                 ", name='" + name + '\'' +
                 ", token='" + token + '\'' +

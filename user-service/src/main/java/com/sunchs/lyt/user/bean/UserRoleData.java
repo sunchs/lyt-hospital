@@ -5,6 +5,7 @@ import java.util.Set;
 public class UserRoleData {
 
     private int id;
+    private int type;
     private String userName;
     private String name;
     private String token;
@@ -17,6 +18,14 @@ public class UserRoleData {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public String getUserName() {

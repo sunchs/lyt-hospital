@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-06-30
+ * @since 2019-10-17
  */
 public class User extends Model<User> {
 
@@ -24,6 +24,11 @@ public class User extends Model<User> {
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+
+    /**
+     * 类型
+     */
+    private Integer type;
 
     /**
      * 用户名
@@ -86,6 +91,13 @@ public class User extends Model<User> {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
     public String getUsername() {
         return username;
@@ -160,6 +172,8 @@ public class User extends Model<User> {
 
     public static final String ID = "id";
 
+    public static final String TYPE = "type";
+
     public static final String USERNAME = "username";
 
     public static final String PASSWORD = "password";
@@ -189,6 +203,7 @@ public class User extends Model<User> {
     public String toString() {
         return "User{" +
         "id=" + id +
+        ", type=" + type +
         ", username=" + username +
         ", password=" + password +
         ", name=" + name +
