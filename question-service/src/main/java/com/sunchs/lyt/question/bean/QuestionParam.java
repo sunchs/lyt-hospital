@@ -7,7 +7,9 @@ import java.util.List;
 public class QuestionParam extends PagingParam {
 
     private int id;
+    private int hospitalId;
     private String number;
+    private int isPublic;
     private String title;
     private int status;
     private int targetOne;
@@ -23,8 +25,16 @@ public class QuestionParam extends PagingParam {
         return id;
     }
 
+    public int getHospitalId() {
+        return hospitalId;
+    }
+
     public String getNumber() {
         return number;
+    }
+
+    public int getIsPublic() {
+        return isPublic;
     }
 
     public String getTitle() {

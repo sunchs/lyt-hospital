@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-09-04
+ * @since 2019-10-18
  */
 public class Question extends Model<Question> {
 
@@ -35,6 +35,12 @@ public class Question extends Model<Question> {
      * 编号
      */
     private String number;
+
+    /**
+     * 是否公开使用
+     */
+    @TableField("is_public")
+    private Integer isPublic;
 
     /**
      * 标题
@@ -131,6 +137,13 @@ public class Question extends Model<Question> {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+    public Integer getIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(Integer isPublic) {
+        this.isPublic = isPublic;
     }
     public String getTitle() {
         return title;
@@ -230,6 +243,8 @@ public class Question extends Model<Question> {
 
     public static final String NUMBER = "number";
 
+    public static final String IS_PUBLIC = "is_public";
+
     public static final String TITLE = "title";
 
     public static final String STATUS = "status";
@@ -267,6 +282,7 @@ public class Question extends Model<Question> {
         "id=" + id +
         ", hospitalId=" + hospitalId +
         ", number=" + number +
+        ", isPublic=" + isPublic +
         ", title=" + title +
         ", status=" + status +
         ", targetOne=" + targetOne +

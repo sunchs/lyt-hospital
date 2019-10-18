@@ -3,19 +3,19 @@ package com.sunchs.lyt.question.enums;
 public enum QuestionStatusEnum {
 
     /**
-     * 开启
+     * 启用
      */
-    Start(1, "已启用"),
+    Enabled(1, "已启用"),
 
     /**
      * 停用
      */
-    Stop(0, "已停用"),
+    Disabled(0, "已停用"),
 
     /**
      * 删除
      */
-    Delete(100, "删除");
+    Delete(2, "删除");
 
     public int status;
     public String title;

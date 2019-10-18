@@ -6,12 +6,14 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.Hospital;
+import com.sunchs.lyt.db.business.entity.Question;
 import com.sunchs.lyt.db.business.entity.Questionnaire;
 import com.sunchs.lyt.db.business.entity.QuestionnaireExtend;
 import com.sunchs.lyt.db.business.service.impl.HospitalServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.QuestionnaireExtendServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.QuestionnaireServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
+import com.sunchs.lyt.framework.enums.UserTypeEnum;
 import com.sunchs.lyt.framework.util.*;
 import com.sunchs.lyt.question.bean.*;
 import com.sunchs.lyt.question.dao.QuestionDao;
@@ -108,12 +110,25 @@ public class QuestionnaireService implements IQuestionnaireService {
         return null;
     }
 
+    //TODO 权限规划
     @Override
     public PagingList<QuestionnaireData> getPageList(QuestionnaireParam param) {
         Wrapper<Questionnaire> where = new EntityWrapper<>();
-        if (UserThreadUtil.getHospitalId() > 0) {
+//        if (UserThreadUtil.getHospitalId() > 0) {
+//            where.eq(Questionnaire.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+//        }
+
+        if (UserThreadUtil.getType() == UserTypeEnum.ADMIN.value) {
+            if (NumberUtil.nonZero(param.getHospitalId())) {
+                where.eq(Questionnaire.HOSPITAL_ID, param.getHospitalId());
+            }
+        } else if (UserThreadUtil.getHospitalId() > 0){
             where.eq(Questionnaire.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+        } else {
+            // 非管理员，又没绑定医院
+            where.eq(Questionnaire.HOSPITAL_ID, -1);
         }
+
         where.orderBy(Questionnaire.ID, false);
         Page<Questionnaire> page = questionnaireService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), where);
         List<QuestionnaireData> list = new ArrayList<>();

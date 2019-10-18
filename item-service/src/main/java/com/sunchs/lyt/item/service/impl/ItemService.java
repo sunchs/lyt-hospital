@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.PagingList;
+import com.sunchs.lyt.framework.enums.UserTypeEnum;
 import com.sunchs.lyt.framework.util.*;
 import com.sunchs.lyt.item.bean.*;
 import com.sunchs.lyt.item.enums.ItemStatusEnum;
@@ -71,6 +72,18 @@ public class ItemService implements IItemService {
     public PagingList<ItemData> getPageList(ItemParam param) {
         List<ItemData> list = new ArrayList<>();
         Wrapper<Item> w = new EntityWrapper<>();
+//        if (UserThreadUtil.getType() == UserTypeEnum.ADMIN.value) {
+//            if (NumberUtil.nonZero(param.getHospitalId())) {
+//                where.eq(Question.HOSPITAL_ID, param.getHospitalId());
+//            }
+//        } else if (UserThreadUtil.getHospitalId() > 0){
+//            where.eq(Question.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+//        } else {
+//            // 非管理员，又没绑定医院
+//            where.eq(Question.HOSPITAL_ID, -1);
+//        }
+
+
         if (UserThreadUtil.getHospitalId() > 0) {
             Wrapper<UserHospital> userHospitalWrapper = new EntityWrapper<UserHospital>()
                     .eq(UserHospital.HOSPITAL_ID, UserThreadUtil.getHospitalId());

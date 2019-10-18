@@ -7,6 +7,7 @@ import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.QuestionServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.QuestionTagBindingServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
+import com.sunchs.lyt.framework.enums.UserTypeEnum;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
 import com.sunchs.lyt.framework.util.StringUtil;
@@ -16,6 +17,7 @@ import com.sunchs.lyt.question.bean.QuestionParam;
 import com.sunchs.lyt.question.bean.TagParam;
 import com.sunchs.lyt.question.dao.QuestionDao;
 import com.sunchs.lyt.question.dao.ipml.QuestionOptionDaoImpl;
+import com.sunchs.lyt.question.enums.QuestionStatusEnum;
 import com.sunchs.lyt.question.exception.QuestionException;
 import com.sunchs.lyt.question.service.IQuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,16 +52,26 @@ public class QuestionService implements IQuestionService {
         }
     }
 
+    //TODO 权限规划
     @Override
     public PagingList<QuestionData> getPageList(QuestionParam param) {
         Wrapper<Question> where = new EntityWrapper<>();
         if (param.getTargetOne() > 0) {
             where.eq(Question.TARGET_ONE, param.getTargetOne());
-            where.eq(Question.STATUS, 1);
+            where.eq(Question.STATUS, QuestionStatusEnum.Enabled.status);
         }
-        if (UserThreadUtil.getHospitalId() > 0) {
+
+        if (UserThreadUtil.getType() == UserTypeEnum.ADMIN.value) {
+            if (NumberUtil.nonZero(param.getHospitalId())) {
+                where.eq(Question.HOSPITAL_ID, param.getHospitalId());
+            }
+        } else if (UserThreadUtil.getHospitalId() > 0){
             where.eq(Question.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+        } else {
+            // 非管理员，又没绑定医院
+            where.eq(Question.HOSPITAL_ID, -1);
         }
+
         where.orderBy(Question.ID, false);
         Page<Question> data = questionDao.getPaging(where, param.getPageNow(), param.getPageSize());
         List<QuestionData> list = new ArrayList<>();
@@ -88,6 +100,7 @@ public class QuestionService implements IQuestionService {
         Question question = new Question();
         question.setHospitalId(UserThreadUtil.getHospitalId());
         question.setNumber(param.getNumber());
+        question.setIsPublic(param.getIsPublic());
         question.setTitle(param.getTitle());
         question.setStatus(1);
         question.setTargetOne(param.getTargetOne());

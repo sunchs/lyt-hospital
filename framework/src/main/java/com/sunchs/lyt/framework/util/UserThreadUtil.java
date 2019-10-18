@@ -29,6 +29,14 @@ public class UserThreadUtil {
         return 0;
     }
 
+    public static int getType() {
+        UserCacheData user = userHandle.get();
+        if (Objects.nonNull(user)) {
+            return user.getType();
+        }
+        return 0;
+    }
+
     public static String getUserToken() {
         UserCacheData user = userHandle.get();
         if (Objects.nonNull(user)) {
