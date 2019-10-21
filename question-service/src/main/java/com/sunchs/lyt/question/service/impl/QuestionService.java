@@ -3,7 +3,11 @@ package com.sunchs.lyt.question.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.sunchs.lyt.db.business.entity.*;
+import com.sunchs.lyt.db.business.entity.OptionTemplate;
+import com.sunchs.lyt.db.business.entity.Question;
+import com.sunchs.lyt.db.business.entity.QuestionOption;
+import com.sunchs.lyt.db.business.entity.QuestionTagBinding;
+import com.sunchs.lyt.db.business.mapper.QuestionMapper;
 import com.sunchs.lyt.db.business.service.impl.QuestionServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.QuestionTagBindingServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
@@ -20,9 +24,15 @@ import com.sunchs.lyt.question.dao.ipml.QuestionOptionDaoImpl;
 import com.sunchs.lyt.question.enums.QuestionStatusEnum;
 import com.sunchs.lyt.question.exception.QuestionException;
 import com.sunchs.lyt.question.service.IQuestionService;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +52,9 @@ public class QuestionService implements IQuestionService {
 
     @Autowired
     private QuestionServiceImpl questionService;
+
+//    @Autowired
+//    private QuestionMapper questionMapper;
 
     @Override
     public void save(QuestionParam param) {
@@ -63,17 +76,19 @@ public class QuestionService implements IQuestionService {
 
         if (UserThreadUtil.getType() == UserTypeEnum.ADMIN.value) {
             if (NumberUtil.nonZero(param.getHospitalId())) {
-                where.eq(Question.HOSPITAL_ID, param.getHospitalId());
+//                where.eq(Question.HOSPITAL_ID, param.getHospitalId());
+                where.andNew("hospital_id={0} OR is_public=1", param.getHospitalId());
             }
         } else if (UserThreadUtil.getHospitalId() > 0){
-            where.eq(Question.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+//            where.eq(Question.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+            where.andNew("hospital_id={0} OR is_public=1", UserThreadUtil.getHospitalId());
         } else {
             // 非管理员，又没绑定医院
             where.eq(Question.HOSPITAL_ID, -1);
         }
-
         where.orderBy(Question.ID, false);
-        Page<Question> data = questionDao.getPaging(where, param.getPageNow(), param.getPageSize());
+
+        Page<Question> data = questionService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), where);
         List<QuestionData> list = new ArrayList<>();
         for (Question question : data.getRecords()) {
             list.add(questionDao.getById(question.getId()));
