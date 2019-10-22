@@ -76,7 +76,7 @@ public class QuestionService implements IQuestionService {
 
         if (UserThreadUtil.getType() == UserTypeEnum.ADMIN.value) {
             if (NumberUtil.nonZero(param.getHospitalId())) {
-                where.andNew(Question.HOSPITAL_ID + "={0} OR "+Question.IS_PUBLIC+"=1", param.getHospitalId()).;
+                where.andNew(Question.HOSPITAL_ID + "={0} OR "+Question.IS_PUBLIC+"=1", param.getHospitalId());
             }
         } else if (UserThreadUtil.getHospitalId() > 0){
             where.andNew(Question.HOSPITAL_ID + "={0} OR "+Question.IS_PUBLIC+"=1", UserThreadUtil.getHospitalId());
