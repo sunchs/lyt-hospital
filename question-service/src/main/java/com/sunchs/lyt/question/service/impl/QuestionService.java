@@ -103,7 +103,8 @@ public class QuestionService implements IQuestionService {
         Wrapper<Question> questionWrapper = new EntityWrapper<Question>()
                 .eq(Question.TARGET_ONE, param.getTargetOne())
                 .eq(Question.TITLE, param.getTitle())
-                .eq(Question.STATUS, 1);
+                .eq(Question.STATUS, 1)
+                .andNew(Question.HOSPITAL_ID + "={0} OR "+Question.IS_PUBLIC+"=1", UserThreadUtil.getHospitalId());
         int count = questionService.selectCount(questionWrapper);
         if (count > 0) {
             throw new QuestionException("题目已存在，请重新输入！");
