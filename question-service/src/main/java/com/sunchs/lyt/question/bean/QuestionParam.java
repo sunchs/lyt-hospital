@@ -20,6 +20,7 @@ public class QuestionParam extends PagingParam {
     private int isUseFace;
     private String remark;
     private List<TagParam> tagList;
+    private String keyword;
 
     public int getId() {
         return id;
@@ -75,5 +76,9 @@ public class QuestionParam extends PagingParam {
 
     public int getIsUseFace() {
         return isUseFace;
+    }
+
+    public String getKeyword() {
+        return keyword;
     }
 }

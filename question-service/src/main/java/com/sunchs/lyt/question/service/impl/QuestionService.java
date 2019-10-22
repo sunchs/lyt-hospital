@@ -53,9 +53,6 @@ public class QuestionService implements IQuestionService {
     @Autowired
     private QuestionServiceImpl questionService;
 
-//    @Autowired
-//    private QuestionMapper questionMapper;
-
     @Override
     public void save(QuestionParam param) {
         if (NumberUtil.isZero(param.getId())) {
@@ -65,7 +62,6 @@ public class QuestionService implements IQuestionService {
         }
     }
 
-    //TODO 权限规划
     @Override
     public PagingList<QuestionData> getPageList(QuestionParam param) {
         Wrapper<Question> where = new EntityWrapper<>();
@@ -76,15 +72,16 @@ public class QuestionService implements IQuestionService {
 
         if (UserThreadUtil.getType() == UserTypeEnum.ADMIN.value) {
             if (NumberUtil.nonZero(param.getHospitalId())) {
-//                where.eq(Question.HOSPITAL_ID, param.getHospitalId());
-                where.andNew("hospital_id={0} OR is_public=1", param.getHospitalId());
+                where.andNew(Question.HOSPITAL_ID + "={0} OR "+Question.IS_PUBLIC+"=1", param.getHospitalId());
             }
         } else if (UserThreadUtil.getHospitalId() > 0){
-//            where.eq(Question.HOSPITAL_ID, UserThreadUtil.getHospitalId());
-            where.andNew("hospital_id={0} OR is_public=1", UserThreadUtil.getHospitalId());
+            where.andNew(Question.HOSPITAL_ID + "={0} OR "+Question.IS_PUBLIC+"=1", UserThreadUtil.getHospitalId());
         } else {
-            // 非管理员，又没绑定医院
-            where.eq(Question.HOSPITAL_ID, -1);
+            return PagingUtil.Empty(param.getPageNow(), param.getPageSize());
+        }
+        // 关键词搜索
+        if (StringUtil.isNotEmpty(param.getKeyword())) {
+            where.like(Question.TITLE, param.getKeyword());
         }
         where.orderBy(Question.ID, false);
 

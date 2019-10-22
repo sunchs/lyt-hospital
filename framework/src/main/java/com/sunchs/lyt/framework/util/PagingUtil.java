@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.framework.bean.PagingList;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PagingUtil {
@@ -36,6 +37,32 @@ public class PagingUtil {
         page.setPageNow(pageData.getCurrent());
         page.setPageSize(pageData.getSize());
         page.setList(pageData.getRecords());
+        return page;
+    }
+
+    /**
+     * 空分页
+     */
+    public static <T> PagingList<T> Empty(int pageNow, int pageSize) {
+        PagingList<T> page = new PagingList<>();
+        page.setTotal(0);
+        page.setPages(0);
+        page.setPageNow(pageNow);
+        page.setPageSize(pageSize);
+        page.setList(new ArrayList<>());
+        return page;
+    }
+
+    /**
+     * 空分页
+     */
+    public static <T> PagingList<T> Empty() {
+        PagingList<T> page = new PagingList<>();
+        page.setTotal(0);
+        page.setPages(0);
+        page.setPageNow(1);
+        page.setPageSize(10);
+        page.setList(new ArrayList<>());
         return page;
     }
 }
