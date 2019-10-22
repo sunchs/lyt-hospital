@@ -114,9 +114,6 @@ public class QuestionnaireService implements IQuestionnaireService {
     @Override
     public PagingList<QuestionnaireData> getPageList(QuestionnaireParam param) {
         Wrapper<Questionnaire> where = new EntityWrapper<>();
-//        if (UserThreadUtil.getHospitalId() > 0) {
-//            where.eq(Questionnaire.HOSPITAL_ID, UserThreadUtil.getHospitalId());
-//        }
 
         if (UserThreadUtil.getType() == UserTypeEnum.ADMIN.value) {
             if (NumberUtil.nonZero(param.getHospitalId())) {
@@ -125,8 +122,7 @@ public class QuestionnaireService implements IQuestionnaireService {
         } else if (UserThreadUtil.getHospitalId() > 0){
             where.eq(Questionnaire.HOSPITAL_ID, UserThreadUtil.getHospitalId());
         } else {
-            // 非管理员，又没绑定医院
-            where.eq(Questionnaire.HOSPITAL_ID, -1);
+            return PagingUtil.Empty(param.getPageNow(), param.getPageSize());
         }
 
         where.orderBy(Questionnaire.ID, false);
