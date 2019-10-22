@@ -69,20 +69,19 @@ public class QuestionService implements IQuestionService {
             where.eq(Question.TARGET_ONE, param.getTargetOne());
             where.eq(Question.STATUS, QuestionStatusEnum.Enabled.status);
         }
+        // 关键词搜索
+        if (StringUtil.isNotEmpty(param.getKeyword())) {
+            where.like(Question.TITLE, param.getKeyword());
+        }
 
         if (UserThreadUtil.getType() == UserTypeEnum.ADMIN.value) {
             if (NumberUtil.nonZero(param.getHospitalId())) {
-                where.andNew(Question.HOSPITAL_ID + "={0} OR "+Question.IS_PUBLIC+"=1", param.getHospitalId());
+                where.andNew(Question.HOSPITAL_ID + "={0} OR "+Question.IS_PUBLIC+"=1", param.getHospitalId()).;
             }
         } else if (UserThreadUtil.getHospitalId() > 0){
             where.andNew(Question.HOSPITAL_ID + "={0} OR "+Question.IS_PUBLIC+"=1", UserThreadUtil.getHospitalId());
         } else {
             return PagingUtil.Empty(param.getPageNow(), param.getPageSize());
-        }
-        // 关键词搜索
-        if (StringUtil.isNotEmpty(param.getKeyword())) {
-            where.and();
-            where.like(Question.TITLE, param.getKeyword());
         }
         where.orderBy(Question.ID, false);
 
