@@ -100,6 +100,15 @@ public class QuestionService implements IQuestionService {
             throw new QuestionException("选项模版被删除，请重新选择");
         }
 
+        Wrapper<Question> pWrapper = new EntityWrapper<Question>()
+                .eq(Question.IS_PUBLIC, 1)
+                .eq(Question.TITLE, param.getTitle())
+                .eq(Question.STATUS, 1);
+        int count0 = questionService.selectCount(pWrapper);
+        if (count0 > 0) {
+            throw new QuestionException("题目已存在，请重新输入！");
+        }
+
         Wrapper<Question> questionWrapper = new EntityWrapper<Question>()
                 .eq(Question.TARGET_ONE, param.getTargetOne())
                 .eq(Question.TITLE, param.getTitle())
