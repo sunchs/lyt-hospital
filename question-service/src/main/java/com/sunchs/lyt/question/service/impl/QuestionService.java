@@ -81,6 +81,7 @@ public class QuestionService implements IQuestionService {
         }
         // 关键词搜索
         if (StringUtil.isNotEmpty(param.getKeyword())) {
+            where.and();
             where.like(Question.TITLE, param.getKeyword());
         }
         where.orderBy(Question.ID, false);
