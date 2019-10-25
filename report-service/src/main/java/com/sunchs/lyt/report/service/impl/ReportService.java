@@ -58,24 +58,25 @@ public class ReportService implements IReportService {
             throw new ReportException("项目ID，不能为空");
         }
         List<AnswerQuestionData> result = new ArrayList<>();
-        // 答卷ID
-        List<Integer> answerIds = new ArrayList<>();
-
-        Wrapper<ReportAnswer> reportAnswerWrapper = new EntityWrapper<>();
-        reportAnswerWrapper.setSqlSelect(ReportAnswer.ID);
-        reportAnswerWrapper.eq(ReportAnswer.ITEM_ID, param.getItemId());
-        List<ReportAnswer> reportAnswers = reportAnswerService.selectList(reportAnswerWrapper);
-        reportAnswers.forEach(reportAnswer -> answerIds.add(reportAnswer.getId()));
-        if (answerIds.size() == 0) {
-            return result;
-        }
+//        // 答卷ID
+//        List<Integer> answerIds = new ArrayList<>();
+//
+//        Wrapper<ReportAnswer> reportAnswerWrapper = new EntityWrapper<>();
+//        reportAnswerWrapper.setSqlSelect(ReportAnswer.ID);
+//        reportAnswerWrapper.eq(ReportAnswer.ITEM_ID, param.getItemId());
+//        List<ReportAnswer> reportAnswers = reportAnswerService.selectList(reportAnswerWrapper);
+//        reportAnswers.forEach(reportAnswer -> answerIds.add(reportAnswer.getId()));
+//        if (answerIds.size() == 0) {
+//            return result;
+//        }
         // 题目集合
         Map<Integer, ReportAnswerOption> questionMap = new HashMap<>();
 
         Wrapper<ReportAnswerOption> reportAnswerOptionWrapper = new EntityWrapper<>();
         reportAnswerOptionWrapper.setSqlSelect(ReportAnswerOption.ID, ReportAnswerOption.ANSWER_ID, ReportAnswerOption.OPTION_ID,
                 ReportAnswerOption.OPTION_NAME, ReportAnswerOption.QUESTION_ID, ReportAnswerOption.QUESTION_NAME);
-        reportAnswerOptionWrapper.in(ReportAnswerOption.ANSWER_ID, answerIds);
+//        reportAnswerOptionWrapper.in(ReportAnswerOption.ANSWER_ID, answerIds);
+        reportAnswerOptionWrapper.addFilter("answer_id IN (SELECT id FROM report_answer WHERE item_id = ?)", param.getItemId());
         List<ReportAnswerOption> answerOptionList = reportAnswerOptionService.selectList(reportAnswerOptionWrapper);
         answerOptionList.forEach(a -> {
             if ( ! questionMap.containsKey(a.getQuestionId())) {
