@@ -17,7 +17,6 @@ import com.sunchs.lyt.report.bean.ItemTotalParam;
 import com.sunchs.lyt.report.service.IReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.dc.pr.PRError;
 
 import java.util.ArrayList;
 import java.util.List;
