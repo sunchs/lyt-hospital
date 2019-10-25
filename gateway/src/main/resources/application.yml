@@ -43,7 +43,7 @@ zuul:
 #  ribbon-isolation-strategy: thread
   max:
     host:
-      connections: 5000
+      connections: 50000
   host:
-    socket-timeout-millis: 6000
-    connect-timeout-millis: 6000
+    socket-timeout-millis: 60000
+    connect-timeout-millis: 60000
