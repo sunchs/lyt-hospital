@@ -102,7 +102,7 @@ public class ReportService implements IReportService {
             data.setAnswerId(row.getAnswerId());
             data.setQuestionId(row.getQuestionId());
             data.setQuestionName(row.getQuestionName());
-
+            System.out.println("题目ID："+row.getQuestionId());
             List<ReportAnswerOption> oqList = answerOptionList.stream().filter(q -> q.getQuestionId().equals(row.getQuestionId())).collect(Collectors.toList());
             // 题目总条数
             int questionQty = oqList.size();
