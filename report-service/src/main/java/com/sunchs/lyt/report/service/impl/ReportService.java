@@ -109,6 +109,7 @@ public class ReportService implements IReportService {
                     oqList.add(q);
                 }
             });
+            System.out.println(oqList);
             // 题目总条数
             int questionQty = oqList.size();
             System.out.println(questionQty);
