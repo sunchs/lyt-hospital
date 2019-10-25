@@ -102,23 +102,22 @@ public class ReportService implements IReportService {
             data.setQuestionRateValue(NumberUtil.format(questionQty / allQty));
 
             List<AnswerQuestionOptionData> answerQuestionOptionList = new ArrayList<>();
-            oOptionList.forEach(oo->{
-                if (oo.getQuestionId().equals(row.getQuestionId())) {
-                    AnswerQuestionOptionData answerQuestionOptionData = new AnswerQuestionOptionData();
-                    answerQuestionOptionData.setOptionId(oo.getId());
-                    answerQuestionOptionData.setOptionName(oo.getTitle());
-
-                    List<ReportAnswerOption> ooList = answerOptionList.stream().filter(q ->
-                            q.getQuestionId().equals(row.getQuestionId()) && q.getOptionId().equals(row.getOptionId())).collect(Collectors.toList());
-                    // 选项总数量
-                    int optionQty = ooList.size();
-                    answerQuestionOptionData.setOptionQuantity(optionQty);
-                    answerQuestionOptionData.setOptionRateValue(NumberUtil.format(optionQty / questionQty));
-                    answerQuestionOptionList.add(answerQuestionOptionData);
-                }
-            });
+//            oOptionList.forEach(oo->{
+//                if (oo.getQuestionId().equals(row.getQuestionId())) {
+//                    AnswerQuestionOptionData answerQuestionOptionData = new AnswerQuestionOptionData();
+//                    answerQuestionOptionData.setOptionId(oo.getId());
+//                    answerQuestionOptionData.setOptionName(oo.getTitle());
+//
+//                    List<ReportAnswerOption> ooList = answerOptionList.stream().filter(q ->
+//                            q.getQuestionId().equals(row.getQuestionId()) && q.getOptionId().equals(row.getOptionId())).collect(Collectors.toList());
+//                    // 选项总数量
+//                    int optionQty = ooList.size();
+//                    answerQuestionOptionData.setOptionQuantity(optionQty);
+//                    answerQuestionOptionData.setOptionRateValue(NumberUtil.format(optionQty / questionQty));
+//                    answerQuestionOptionList.add(answerQuestionOptionData);
+//                }
+//            });
             data.setOptionList(answerQuestionOptionList);
-            result.add(data);
         }
         System.out.println(result);
         return result;

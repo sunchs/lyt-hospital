@@ -82,4 +82,16 @@ public class AnswerQuestionData {
     public void setQuestionRateValue(double questionRateValue) {
         this.questionRateValue = questionRateValue;
     }
+
+    @Override
+    public String toString() {
+        return "AnswerQuestionData{" +
+                "answerId=" + answerId +
+                ", questionId=" + questionId +
+                ", questionName='" + questionName + '\'' +
+                ", questionQuantity=" + questionQuantity +
+                ", questionRateValue=" + questionRateValue +
+                ", optionList=" + optionList +
+                '}';
+    }
 }
