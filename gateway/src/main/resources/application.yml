@@ -39,11 +39,21 @@ eureka:
 #  eureka:
 #    enabled: false
 
+#zuul:
+#  ribbon-isolation-strategy: thread
+#  max:
+#    host:
+#      connections: 5000
+#  host:
+#    socket-timeout-millis: 6000
+#    connect-timeout-millis: 6000
+
+ribbon:
+  ReadTimeout: 12000
+  ConnectTimeout: 12000
+  eureka:
+    enabled: true
 zuul:
-  ribbon-isolation-strategy: thread
-  max:
-    host:
-      connections: 5000
   host:
-    socket-timeout-millis: 6000
-    connect-timeout-millis: 6000
+    socket-timeout-millis: 12000
+    connect-timeout-millis: 12000
