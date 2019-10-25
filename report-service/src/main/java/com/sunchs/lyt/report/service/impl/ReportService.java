@@ -73,6 +73,8 @@ public class ReportService implements IReportService {
         Map<Integer, ReportAnswerOption> questionMap = new HashMap<>();
 
         Wrapper<ReportAnswerOption> reportAnswerOptionWrapper = new EntityWrapper<>();
+        reportAnswerOptionWrapper.setSqlSelect(ReportAnswerOption.ID, ReportAnswerOption.ANSWER_ID, ReportAnswerOption.OPTION_ID,
+                ReportAnswerOption.OPTION_NAME, ReportAnswerOption.QUESTION_ID, ReportAnswerOption.QUESTION_NAME);
         reportAnswerOptionWrapper.in(ReportAnswerOption.ANSWER_ID, answerIds);
         List<ReportAnswerOption> answerOptionList = reportAnswerOptionService.selectList(reportAnswerOptionWrapper);
         answerOptionList.forEach(a -> questionMap.put(a.getQuestionId(), a));
@@ -85,6 +87,7 @@ public class ReportService implements IReportService {
         Set<Integer> qIds = questionMap.keySet();
 
         Wrapper<QuestionOption> questionOptionWrapper = new EntityWrapper<>();
+        questionOptionWrapper.setSqlSelect(QuestionOption.ID, QuestionOption.QUESTION_ID, QuestionOption.TITLE);
         questionOptionWrapper.in(QuestionOption.QUESTION_ID, qIds);
         questionOptionWrapper.orderBy(QuestionOption.SORT, true);
         List<QuestionOption> oOptionList = questionOptionService.selectList(questionOptionWrapper);
@@ -102,21 +105,21 @@ public class ReportService implements IReportService {
             data.setQuestionRateValue(NumberUtil.format(questionQty / allQty));
 
             List<AnswerQuestionOptionData> answerQuestionOptionList = new ArrayList<>();
-//            oOptionList.forEach(oo->{
-//                if (oo.getQuestionId().equals(row.getQuestionId())) {
-//                    AnswerQuestionOptionData answerQuestionOptionData = new AnswerQuestionOptionData();
-//                    answerQuestionOptionData.setOptionId(oo.getId());
-//                    answerQuestionOptionData.setOptionName(oo.getTitle());
-//
-//                    List<ReportAnswerOption> ooList = answerOptionList.stream().filter(q ->
-//                            q.getQuestionId().equals(row.getQuestionId()) && q.getOptionId().equals(row.getOptionId())).collect(Collectors.toList());
-//                    // 选项总数量
-//                    int optionQty = ooList.size();
-//                    answerQuestionOptionData.setOptionQuantity(optionQty);
-//                    answerQuestionOptionData.setOptionRateValue(NumberUtil.format(optionQty / questionQty));
-//                    answerQuestionOptionList.add(answerQuestionOptionData);
-//                }
-//            });
+            oOptionList.forEach(oo->{
+                if (oo.getQuestionId().equals(row.getQuestionId())) {
+                    AnswerQuestionOptionData answerQuestionOptionData = new AnswerQuestionOptionData();
+                    answerQuestionOptionData.setOptionId(oo.getId());
+                    answerQuestionOptionData.setOptionName(oo.getTitle());
+
+                    List<ReportAnswerOption> ooList = answerOptionList.stream().filter(q ->
+                            q.getQuestionId().equals(row.getQuestionId()) && q.getOptionId().equals(row.getOptionId())).collect(Collectors.toList());
+                    // 选项总数量
+                    int optionQty = ooList.size();
+                    answerQuestionOptionData.setOptionQuantity(optionQty);
+                    answerQuestionOptionData.setOptionRateValue(NumberUtil.format(optionQty / questionQty));
+                    answerQuestionOptionList.add(answerQuestionOptionData);
+                }
+            });
             data.setOptionList(answerQuestionOptionList);
         }
         System.out.println(result);
