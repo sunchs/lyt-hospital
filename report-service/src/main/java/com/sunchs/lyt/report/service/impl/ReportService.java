@@ -100,6 +100,7 @@ public class ReportService implements IReportService {
             data.setQuestionQuantity(questionQty);
             data.setQuestionRateValue(NumberUtil.format(questionQty / allQty));
 
+            List<AnswerQuestionOptionData> answerQuestionOptionList = new ArrayList<>();
             oOptionList.forEach(oo->{
                 if (oo.getQuestionId().equals(row.getQuestionId())) {
                     AnswerQuestionOptionData answerQuestionOptionData = new AnswerQuestionOptionData();
@@ -112,10 +113,13 @@ public class ReportService implements IReportService {
                     int optionQty = ooList.size();
                     answerQuestionOptionData.setOptionQuantity(optionQty);
                     answerQuestionOptionData.setOptionRateValue(NumberUtil.format(optionQty / questionQty));
+                    answerQuestionOptionList.add(answerQuestionOptionData);
                 }
             });
+            data.setOptionList(answerQuestionOptionList);
             result.add(data);
         }
+        System.out.println(result);
         return result;
     }
 
