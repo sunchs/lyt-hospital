@@ -3,23 +3,20 @@ package com.sunchs.lyt.report.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.sunchs.lyt.db.business.entity.Answer;
-import com.sunchs.lyt.db.business.entity.Item;
-import com.sunchs.lyt.db.business.entity.ReportAnswer;
-import com.sunchs.lyt.db.business.service.impl.AnswerServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.ItemServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.ReportAnswerServiceImpl;
+import com.sunchs.lyt.db.business.entity.*;
+import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.PagingList;
+import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.ObjectUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
-import com.sunchs.lyt.report.bean.ItemTotalData;
-import com.sunchs.lyt.report.bean.ItemTotalParam;
+import com.sunchs.lyt.report.bean.*;
+import com.sunchs.lyt.report.exception.ReportException;
 import com.sunchs.lyt.report.service.IReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportService implements IReportService {
@@ -33,6 +30,12 @@ public class ReportService implements IReportService {
     @Autowired
     private ReportAnswerServiceImpl reportAnswerService;
 
+    @Autowired
+    private ReportAnswerOptionServiceImpl reportAnswerOptionService;
+
+    @Autowired
+    private QuestionOptionServiceImpl questionOptionService;
+
     @Override
     public PagingList<ItemTotalData> getItemTotalList(ItemTotalParam param) {
         List<ItemTotalData> list = new ArrayList<>();
@@ -44,10 +47,76 @@ public class ReportService implements IReportService {
             // 待审核数里
             data.setWaitQuantity(getWaitQuantity(q.getId()));
 
-
             list.add(data);
         });
         return PagingUtil.getData(list, itemList.getTotal(), itemList.getCurrent(), itemList.getSize());
+    }
+
+    @Override
+    public List<AnswerQuestionData> getAnswerQuestionList(AnswerQuestionParam param) {
+        if (NumberUtil.isZero(param.getItemId())) {
+            throw new ReportException("项目ID，不能为空");
+        }
+        List<AnswerQuestionData> result = new ArrayList<>();
+        // 答卷ID
+        List<Integer> answerIds = new ArrayList<>();
+
+        Wrapper<ReportAnswer> reportAnswerWrapper = new EntityWrapper<>();
+        reportAnswerWrapper.eq(ReportAnswer.ITEM_ID, param.getItemId());
+        List<ReportAnswer> reportAnswers = reportAnswerService.selectList(reportAnswerWrapper);
+        reportAnswers.forEach(reportAnswer -> answerIds.add(reportAnswer.getId()));
+        if (answerIds.size() == 0) {
+            return result;
+        }
+        // 题目集合
+        Map<Integer, ReportAnswerOption> questionMap = new HashMap<>();
+
+        Wrapper<ReportAnswerOption> reportAnswerOptionWrapper = new EntityWrapper<>();
+        reportAnswerOptionWrapper.in(ReportAnswerOption.ANSWER_ID, answerIds);
+        List<ReportAnswerOption> answerOptionList = reportAnswerOptionService.selectList(reportAnswerOptionWrapper);
+        answerOptionList.forEach(a -> questionMap.put(a.getQuestionId(), a));
+        // 答卷总条数
+        int allQty = answerOptionList.size();
+
+        if (questionMap.size() == 0) {
+            return result;
+        }
+        Set<Integer> qIds = questionMap.keySet();
+
+        Wrapper<QuestionOption> questionOptionWrapper = new EntityWrapper<>();
+        questionOptionWrapper.in(QuestionOption.QUESTION_ID, qIds);
+        questionOptionWrapper.orderBy(QuestionOption.SORT, true);
+        List<QuestionOption> oOptionList = questionOptionService.selectList(questionOptionWrapper);
+
+        for (ReportAnswerOption row : questionMap.values()) {
+            AnswerQuestionData data = new AnswerQuestionData();
+            data.setAnswerId(row.getAnswerId());
+            data.setQuestionId(row.getQuestionId());
+            data.setQuestionName(row.getQuestionName());
+
+            List<ReportAnswerOption> oqList = answerOptionList.stream().filter(q -> q.getQuestionId().equals(row.getQuestionId())).collect(Collectors.toList());
+            // 题目总条数
+            int questionQty = oqList.size();
+            data.setQuestionQuantity(questionQty);
+            data.setQuestionRateValue(NumberUtil.format(questionQty / allQty));
+
+            oOptionList.forEach(oo->{
+                if (oo.getQuestionId().equals(row.getQuestionId())) {
+                    AnswerQuestionOptionData answerQuestionOptionData = new AnswerQuestionOptionData();
+                    answerQuestionOptionData.setOptionId(oo.getId());
+                    answerQuestionOptionData.setOptionName(oo.getTitle());
+
+                    List<ReportAnswerOption> ooList = answerOptionList.stream().filter(q ->
+                            q.getQuestionId().equals(row.getQuestionId()) && q.getOptionId().equals(row.getOptionId())).collect(Collectors.toList());
+                    // 选项总数量
+                    int optionQty = ooList.size();
+                    answerQuestionOptionData.setOptionQuantity(optionQty);
+                    answerQuestionOptionData.setOptionRateValue(NumberUtil.format(optionQty / questionQty));
+                }
+            });
+            result.add(data);
+        }
+        return result;
     }
 
     /**

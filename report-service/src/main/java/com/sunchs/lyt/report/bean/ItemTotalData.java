@@ -1,8 +1,8 @@
 package com.sunchs.lyt.report.bean;
 
-import com.sunchs.lyt.db.business.entity.Questionnaire;
+import com.sunchs.lyt.db.business.entity.Item;
 
-public class ItemTotalData extends Questionnaire {
+public class ItemTotalData extends Item {
 
     /**
      * 等待审核抽样量

@@ -1,5 +1,7 @@
 package com.sunchs.lyt.framework.util;
 
+import java.text.DecimalFormat;
+
 public class NumberUtil {
 
     public static boolean isZero(Object value) {
@@ -24,4 +26,12 @@ public class NumberUtil {
     public static boolean nonZero(int value) {
         return ! isZero(value);
     }
+
+    public static double format(double value) {
+        DecimalFormat df = new DecimalFormat("0.00");
+        String num = df.format(value);
+        return Double.valueOf(num).doubleValue();
+    }
+
+
 }
