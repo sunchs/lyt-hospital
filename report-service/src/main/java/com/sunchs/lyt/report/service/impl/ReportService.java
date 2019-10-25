@@ -58,22 +58,10 @@ public class ReportService implements IReportService {
             throw new ReportException("项目ID，不能为空");
         }
         List<AnswerQuestionData> result = new ArrayList<>();
-//        // 答卷ID
-//        List<Integer> answerIds = new ArrayList<>();
-//
-//        Wrapper<ReportAnswer> reportAnswerWrapper = new EntityWrapper<>();
-//        reportAnswerWrapper.setSqlSelect(ReportAnswer.ID);
-//        reportAnswerWrapper.eq(ReportAnswer.ITEM_ID, param.getItemId());
-//        List<ReportAnswer> reportAnswers = reportAnswerService.selectList(reportAnswerWrapper);
-//        reportAnswers.forEach(reportAnswer -> answerIds.add(reportAnswer.getId()));
-//        if (answerIds.size() == 0) {
-//            return result;
-//        }
+
         // 题目集合
         Map<Integer, ReportAnswerOption> questionMap = new HashMap<>();
-
         Wrapper<ReportAnswerOption> reportAnswerOptionWrapper = new EntityWrapper<>();
-//        reportAnswerOptionWrapper.in(ReportAnswerOption.ANSWER_ID, answerIds);
         reportAnswerOptionWrapper.addFilter("answer_id IN (SELECT id FROM report_answer WHERE item_id = "+param.getItemId()+")");
         List<ReportAnswerOption> answerOptionList = reportAnswerOptionService.selectList(reportAnswerOptionWrapper);
         answerOptionList.forEach(a -> {
@@ -102,19 +90,18 @@ public class ReportService implements IReportService {
             data.setAnswerId(row.getAnswerId());
             data.setQuestionId(row.getQuestionId());
             data.setQuestionName(row.getQuestionName());
-//            System.out.println("题目ID："+row.getQuestionId());
-            List<ReportAnswerOption> oqList = new ArrayList<>();
-            answerOptionList.forEach(q-> {
-                if (q.getQuestionId().equals(row.getQuestionId())) {
-                    oqList.add(q);
-                }
-            });
-            System.out.println(oqList);
-            // 题目总条数
-            int questionQty = oqList.size();
-            System.out.println(questionQty);
-            data.setQuestionQuantity(questionQty);
-            data.setQuestionRateValue(questionQty / allQty);
+////            System.out.println("题目ID："+row.getQuestionId());
+//            List<ReportAnswerOption> oqList = new ArrayList<>();
+//            answerOptionList.forEach(q-> {
+//                if (q.getQuestionId().equals(row.getQuestionId())) {
+//                    oqList.add(q);
+//                }
+//            });
+//            // 题目总条数
+//            int questionQty = oqList.size();
+//            System.out.println(questionQty);
+//            data.setQuestionQuantity(questionQty);
+//            data.setQuestionRateValue(questionQty / allQty);
 
 //            List<AnswerQuestionOptionData> answerQuestionOptionList = new ArrayList<>();
 //            oOptionList.forEach(oo->{
