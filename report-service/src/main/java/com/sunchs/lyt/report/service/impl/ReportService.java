@@ -80,17 +80,18 @@ public class ReportService implements IReportService {
         answerOptionList.forEach(a -> questionMap.put(a.getQuestionId(), a));
         // 答卷总条数
         int allQty = answerOptionList.size();
+        System.out.println("答卷总条数"+allQty);
 
         if (questionMap.size() == 0) {
             return result;
         }
-        Set<Integer> qIds = questionMap.keySet();
-
-        Wrapper<QuestionOption> questionOptionWrapper = new EntityWrapper<>();
-        questionOptionWrapper.setSqlSelect(QuestionOption.ID, QuestionOption.QUESTION_ID, QuestionOption.TITLE);
-        questionOptionWrapper.in(QuestionOption.QUESTION_ID, qIds);
-        questionOptionWrapper.orderBy(QuestionOption.SORT, true);
-        List<QuestionOption> oOptionList = questionOptionService.selectList(questionOptionWrapper);
+//        Set<Integer> qIds = questionMap.keySet();
+//
+//        Wrapper<QuestionOption> questionOptionWrapper = new EntityWrapper<>();
+//        questionOptionWrapper.setSqlSelect(QuestionOption.ID, QuestionOption.QUESTION_ID, QuestionOption.TITLE);
+//        questionOptionWrapper.in(QuestionOption.QUESTION_ID, qIds);
+//        questionOptionWrapper.orderBy(QuestionOption.SORT, true);
+//        List<QuestionOption> oOptionList = questionOptionService.selectList(questionOptionWrapper);
 
         for (ReportAnswerOption row : questionMap.values()) {
             AnswerQuestionData data = new AnswerQuestionData();
