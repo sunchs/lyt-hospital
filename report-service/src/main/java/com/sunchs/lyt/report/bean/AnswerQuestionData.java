@@ -86,7 +86,7 @@ public class AnswerQuestionData {
     @Override
     public String toString() {
         return "AnswerQuestionData{" +
-                "answerId=" + answerId +
+//                "answerId=" + answerId +
                 ", questionId=" + questionId +
                 ", questionName='" + questionName + '\'' +
                 ", questionQuantity=" + questionQuantity +
