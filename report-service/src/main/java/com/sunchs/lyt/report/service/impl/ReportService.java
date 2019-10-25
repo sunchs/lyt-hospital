@@ -77,10 +77,15 @@ public class ReportService implements IReportService {
                 ReportAnswerOption.OPTION_NAME, ReportAnswerOption.QUESTION_ID, ReportAnswerOption.QUESTION_NAME);
         reportAnswerOptionWrapper.in(ReportAnswerOption.ANSWER_ID, answerIds);
         List<ReportAnswerOption> answerOptionList = reportAnswerOptionService.selectList(reportAnswerOptionWrapper);
-        answerOptionList.forEach(a -> questionMap.put(a.getQuestionId(), a));
+        answerOptionList.forEach(a -> {
+            if ( ! questionMap.containsKey(a.getQuestionId())) {
+                questionMap.put(a.getQuestionId(), a)
+            }
+        });
         // 答卷总条数
         int allQty = answerOptionList.size();
         System.out.println("答卷总条数"+allQty);
+        System.out.println("题目数量："+questionMap.size());
 
         if (questionMap.size() == 0) {
             return result;
