@@ -76,7 +76,7 @@ public class ReportService implements IReportService {
         reportAnswerOptionWrapper.setSqlSelect(ReportAnswerOption.ID, ReportAnswerOption.ANSWER_ID, ReportAnswerOption.OPTION_ID,
                 ReportAnswerOption.OPTION_NAME, ReportAnswerOption.QUESTION_ID, ReportAnswerOption.QUESTION_NAME);
 //        reportAnswerOptionWrapper.in(ReportAnswerOption.ANSWER_ID, answerIds);
-        reportAnswerOptionWrapper.addFilter("answer_id IN (SELECT id FROM report_answer WHERE item_id = ?)", param.getItemId());
+        reportAnswerOptionWrapper.addFilter("answer_id IN (SELECT id FROM report_answer WHERE item_id = "+param.getItemId()+")");
         List<ReportAnswerOption> answerOptionList = reportAnswerOptionService.selectList(reportAnswerOptionWrapper);
         answerOptionList.forEach(a -> {
             if ( ! questionMap.containsKey(a.getQuestionId())) {
