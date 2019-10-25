@@ -40,10 +40,10 @@ eureka:
 #    enabled: false
 
 zuul:
-#  ribbon-isolation-strategy: thread
+  ribbon-isolation-strategy: thread
   max:
     host:
-      connections: 50000
+      connections: 5000
   host:
-    socket-timeout-millis: 60000
-    connect-timeout-millis: 60000
+    socket-timeout-millis: 6000
+    connect-timeout-millis: 6000
