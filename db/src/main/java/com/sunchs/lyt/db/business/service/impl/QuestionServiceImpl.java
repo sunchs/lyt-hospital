@@ -1,9 +1,9 @@
 package com.sunchs.lyt.db.business.service.impl;
 
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.sunchs.lyt.db.business.entity.Question;
 import com.sunchs.lyt.db.business.mapper.QuestionMapper;
 import com.sunchs.lyt.db.business.service.IQuestionService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
