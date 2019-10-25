@@ -207,7 +207,7 @@ public class UserService implements IUserService {
         param.checkRole();
 
         User data = new User();
-        data.setType(param.getType());
+        data.setType(param.getType()>0 ? param.getType() : 2);
         data.setUsername(param.getUserName());
         data.setPassword(MD5Util.encode(param.getPassWord()));
         data.setName(param.getName());
