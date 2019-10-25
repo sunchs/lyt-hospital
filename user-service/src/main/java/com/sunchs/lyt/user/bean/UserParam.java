@@ -9,6 +9,7 @@ import java.util.List;
 public class UserParam extends PagingParam {
 
     private int id;
+    private int type;
     private String userName;
     private String passWord;
     private String name;
@@ -42,6 +43,10 @@ public class UserParam extends PagingParam {
 
     public int getId() {
         return id;
+    }
+
+    public int getType() {
+        return type;
     }
 
     public String getUserName() {
