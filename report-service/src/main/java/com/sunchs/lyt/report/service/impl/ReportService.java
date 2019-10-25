@@ -62,6 +62,7 @@ public class ReportService implements IReportService {
         List<Integer> answerIds = new ArrayList<>();
 
         Wrapper<ReportAnswer> reportAnswerWrapper = new EntityWrapper<>();
+        reportAnswerWrapper.setSqlSelect(ReportAnswer.ID);
         reportAnswerWrapper.eq(ReportAnswer.ITEM_ID, param.getItemId());
         List<ReportAnswer> reportAnswers = reportAnswerService.selectList(reportAnswerWrapper);
         reportAnswers.forEach(reportAnswer -> answerIds.add(reportAnswer.getId()));
