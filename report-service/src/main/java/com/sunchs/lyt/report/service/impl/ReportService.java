@@ -73,8 +73,6 @@ public class ReportService implements IReportService {
         Map<Integer, ReportAnswerOption> questionMap = new HashMap<>();
 
         Wrapper<ReportAnswerOption> reportAnswerOptionWrapper = new EntityWrapper<>();
-        reportAnswerOptionWrapper.setSqlSelect(ReportAnswerOption.ID, ReportAnswerOption.ANSWER_ID, ReportAnswerOption.OPTION_ID,
-                ReportAnswerOption.OPTION_NAME, ReportAnswerOption.QUESTION_ID, ReportAnswerOption.QUESTION_NAME);
 //        reportAnswerOptionWrapper.in(ReportAnswerOption.ANSWER_ID, answerIds);
         reportAnswerOptionWrapper.addFilter("answer_id IN (SELECT id FROM report_answer WHERE item_id = "+param.getItemId()+")");
         List<ReportAnswerOption> answerOptionList = reportAnswerOptionService.selectList(reportAnswerOptionWrapper);
