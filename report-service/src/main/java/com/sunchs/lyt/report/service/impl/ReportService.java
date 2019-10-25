@@ -79,7 +79,7 @@ public class ReportService implements IReportService {
         List<ReportAnswerOption> answerOptionList = reportAnswerOptionService.selectList(reportAnswerOptionWrapper);
         answerOptionList.forEach(a -> {
             if ( ! questionMap.containsKey(a.getQuestionId())) {
-                questionMap.put(a.getQuestionId(), a)
+                questionMap.put(a.getQuestionId(), a);
             }
         });
         // 答卷总条数
