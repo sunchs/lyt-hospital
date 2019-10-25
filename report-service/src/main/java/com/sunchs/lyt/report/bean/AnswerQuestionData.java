@@ -4,10 +4,10 @@ import java.util.List;
 
 public class AnswerQuestionData {
 
-    /**
-     * 答案ID
-     */
-    private Integer answerId;
+//    /**
+//     * 答案ID
+//     */
+//    private Integer answerId;
 
     /**
      * 题目ID
@@ -34,14 +34,14 @@ public class AnswerQuestionData {
      */
     private List<AnswerQuestionOptionData> optionList;
 
-
-    public Integer getAnswerId() {
-        return answerId;
-    }
-
-    public void setAnswerId(Integer answerId) {
-        this.answerId = answerId;
-    }
+//
+//    public Integer getAnswerId() {
+//        return answerId;
+//    }
+//
+//    public void setAnswerId(Integer answerId) {
+//        this.answerId = answerId;
+//    }
 
     public Integer getQuestionId() {
         return questionId;

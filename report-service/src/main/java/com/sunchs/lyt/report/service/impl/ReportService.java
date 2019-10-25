@@ -87,7 +87,7 @@ public class ReportService implements IReportService {
 
         for (ReportAnswerOption row : questionMap.values()) {
             AnswerQuestionData data = new AnswerQuestionData();
-            data.setAnswerId(row.getAnswerId());
+//            data.setAnswerId(row.getAnswerId());
             data.setQuestionId(row.getQuestionId());
             data.setQuestionName(row.getQuestionName());
 ////            System.out.println("题目ID："+row.getQuestionId());
