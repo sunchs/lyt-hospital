@@ -15,7 +15,7 @@ public class TotalTask {
     /**
      * 统计答卷数量 - 定时器
      */
-    @Scheduled(cron = "0 15 3 * * ?")
+    @Scheduled(cron = "0 40 3 * * ?")
     public void totalReportAnswerQuantity() {
         reportFactoryService.makeAnswerQuantity();
         reportFactoryService.makeAnswerSatisfy();
