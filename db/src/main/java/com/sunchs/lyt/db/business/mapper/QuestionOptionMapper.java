@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 /**
  * <p>
- *  Mapper 接口
+ * 题目选项表 Mapper 接口
  * </p>
  *
  * @author king
- * @since 2019-05-05
+ * @since 2019-11-06
  */
 public interface QuestionOptionMapper extends BaseMapper<QuestionOption> {
 

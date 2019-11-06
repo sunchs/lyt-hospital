@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 
 /**
  * <p>
- *  服务实现类
+ * 题目选项表 服务实现类
  * </p>
  *
  * @author king
- * @since 2019-05-05
+ * @since 2019-11-06
  */
 @Service
 public class QuestionOptionServiceImpl extends ServiceImpl<QuestionOptionMapper, QuestionOption> implements IQuestionOptionService {

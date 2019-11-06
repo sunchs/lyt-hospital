@@ -9,11 +9,11 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 
+ * 题目选项表
  * </p>
  *
  * @author king
- * @since 2019-05-05
+ * @since 2019-11-06
  */
 @TableName("question_option")
 public class QuestionOption extends Model<QuestionOption> {
@@ -36,6 +36,11 @@ public class QuestionOption extends Model<QuestionOption> {
      * 标题
      */
     private String title;
+
+    /**
+     * 分数
+     */
+    private Integer score;
 
     /**
      * 排序
@@ -63,6 +68,13 @@ public class QuestionOption extends Model<QuestionOption> {
     public void setTitle(String title) {
         this.title = title;
     }
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
     public Integer getSort() {
         return sort;
     }
@@ -77,6 +89,8 @@ public class QuestionOption extends Model<QuestionOption> {
 
     public static final String TITLE = "title";
 
+    public static final String SCORE = "score";
+
     public static final String SORT = "sort";
 
     @Override
@@ -90,6 +104,7 @@ public class QuestionOption extends Model<QuestionOption> {
         "id=" + id +
         ", questionId=" + questionId +
         ", title=" + title +
+        ", score=" + score +
         ", sort=" + sort +
         "}";
     }

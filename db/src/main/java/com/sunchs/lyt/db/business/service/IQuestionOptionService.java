@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.service.IService;
 
 /**
  * <p>
- *  服务类
+ * 题目选项表 服务类
  * </p>
  *
  * @author king
- * @since 2019-05-05
+ * @since 2019-11-06
  */
 public interface IQuestionOptionService extends IService<QuestionOption> {
 
