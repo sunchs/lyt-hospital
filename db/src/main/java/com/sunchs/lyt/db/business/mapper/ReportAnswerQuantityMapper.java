@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * </p>
  *
  * @author king
- * @since 2019-11-06
+ * @since 2019-11-08
  */
 public interface ReportAnswerQuantityMapper extends BaseMapper<ReportAnswerQuantity> {
 

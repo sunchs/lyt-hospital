@@ -85,9 +85,17 @@ public class ReportFactoryService implements IReportFactoryService {
                         r.setItemId(itemOffice.getItemId());
                         r.setOfficeId(itemOffice.getOfficeId());
                         r.setQuestionnaireId(itemOffice.getQuestionnaireId());
+
                         // 插入数据
                         ReportAnswerQuantity qty = ObjectUtil.copy(r, ReportAnswerQuantity.class);
                         qty.setScore(getOptionScore(qty.getOptionId()));
+                        // 指标
+                        Question question = getQuestion(qty.getQuestionId());
+                        if (Objects.nonNull(question)) {
+                            qty.setTargetOne(question.getTargetOne());
+                            qty.setTargetTwo(question.getTargetTwo());
+                            qty.setTargetThree(question.getTargetThree());
+                        }
                         reportAnswerQuantityService.insert(qty);
                     });
                 }
@@ -147,12 +155,15 @@ public class ReportFactoryService implements IReportFactoryService {
                         data.setQuestionName(row.getQuestionName());
                     }
                     // 指标
-                    Question question = getQuestion(data.getQuestionId());
-                    if (Objects.nonNull(question)) {
-                        data.setTargetOne(question.getTargetOne());
-                        data.setTargetTwo(question.getTargetTwo());
-                        data.setTargetThree(question.getTargetThree());
-                    }
+                    data.setTargetOne(old.getTargetOne());
+                    data.setTargetTwo(old.getTargetTwo());
+                    data.setTargetThree(old.getTargetThree());
+//                    Question question = getQuestion(data.getQuestionId());
+//                    if (Objects.nonNull(question)) {
+//                        data.setTargetOne(question.getTargetOne());
+//                        data.setTargetTwo(question.getTargetTwo());
+//                        data.setTargetThree(question.getTargetThree());
+//                    }
                     // 满意度
                     if (NumberUtil.nonZero(number)) {
                         int val = (int)(score / number * 100);

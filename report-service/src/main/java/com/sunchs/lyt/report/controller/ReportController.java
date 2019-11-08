@@ -7,8 +7,10 @@ import com.sunchs.lyt.framework.controller.BaseController;
 import com.sunchs.lyt.framework.util.RedisUtil;
 import com.sunchs.lyt.report.bean.AnswerQuestionParam;
 import com.sunchs.lyt.report.bean.ItemTotalParam;
+import com.sunchs.lyt.report.bean.TotalParam;
 import com.sunchs.lyt.report.service.impl.ReportFactoryService;
 import com.sunchs.lyt.report.service.impl.ReportService;
+import com.sunchs.lyt.report.service.impl.ReportTagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +26,9 @@ public class ReportController extends BaseController {
 
     @Autowired
     private ReportFactoryService reportFactoryService;
+
+    @Autowired
+    private ReportTagService reportTagService;
 
     /**
      * 问卷抽样量统计列表
@@ -54,4 +59,21 @@ public class ReportController extends BaseController {
         return success();
     }
 
+    /**
+     * 根据 标签ID 进行统计
+     */
+    @PostMapping("/itemTotalByTag")
+    public ResultData getItemTotalByTag(@RequestBody RequestData data) {
+        TotalParam param = data.toObject(TotalParam.class);
+        return success(reportTagService.getItemQuantityByTag(param.getItemId(), param.getTagId()));
+    }
+
+    /**
+     * 根据 指标ID 进行统计
+     */
+    @PostMapping("/itemTotalByTarget")
+    public ResultData itemTotalByTarget(@RequestBody RequestData data) {
+        TotalParam param = data.toObject(TotalParam.class);
+        return success(reportTagService.getItemQuantityByTarget(param.getItemId(), param.getTargetId(), param.getPosition()));
+    }
 }

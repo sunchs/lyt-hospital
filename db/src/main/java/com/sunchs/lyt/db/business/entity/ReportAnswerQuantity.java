@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-11-06
+ * @since 2019-11-08
  */
 @TableName("report_answer_quantity")
 public class ReportAnswerQuantity extends Model<ReportAnswerQuantity> {
@@ -83,6 +83,24 @@ public class ReportAnswerQuantity extends Model<ReportAnswerQuantity> {
      * 分数
      */
     private Integer score;
+
+    /**
+     * 一级指标
+     */
+    @TableField("target_one")
+    private Integer targetOne;
+
+    /**
+     * 二级指标
+     */
+    @TableField("target_two")
+    private Integer targetTwo;
+
+    /**
+     * 三级指标
+     */
+    @TableField("target_three")
+    private Integer targetThree;
 
     public Integer getId() {
         return id;
@@ -161,6 +179,27 @@ public class ReportAnswerQuantity extends Model<ReportAnswerQuantity> {
     public void setScore(Integer score) {
         this.score = score;
     }
+    public Integer getTargetOne() {
+        return targetOne;
+    }
+
+    public void setTargetOne(Integer targetOne) {
+        this.targetOne = targetOne;
+    }
+    public Integer getTargetTwo() {
+        return targetTwo;
+    }
+
+    public void setTargetTwo(Integer targetTwo) {
+        this.targetTwo = targetTwo;
+    }
+    public Integer getTargetThree() {
+        return targetThree;
+    }
+
+    public void setTargetThree(Integer targetThree) {
+        this.targetThree = targetThree;
+    }
 
     public static final String ID = "id";
 
@@ -184,6 +223,12 @@ public class ReportAnswerQuantity extends Model<ReportAnswerQuantity> {
 
     public static final String SCORE = "score";
 
+    public static final String TARGET_ONE = "target_one";
+
+    public static final String TARGET_TWO = "target_two";
+
+    public static final String TARGET_THREE = "target_three";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -203,6 +248,9 @@ public class ReportAnswerQuantity extends Model<ReportAnswerQuantity> {
         ", optionName=" + optionName +
         ", quantity=" + quantity +
         ", score=" + score +
+        ", targetOne=" + targetOne +
+        ", targetTwo=" + targetTwo +
+        ", targetThree=" + targetThree +
         "}";
     }
 }
