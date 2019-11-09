@@ -1,7 +1,5 @@
 package com.sunchs.lyt.report.bean;
 
-import com.baomidou.mybatisplus.annotations.TableField;
-
 public class TotalSexData {
 
     /**

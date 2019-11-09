@@ -11,6 +11,7 @@ import com.sunchs.lyt.report.bean.TotalParam;
 import com.sunchs.lyt.report.service.impl.ReportFactoryService;
 import com.sunchs.lyt.report.service.impl.ReportService;
 import com.sunchs.lyt.report.service.impl.ReportTagService;
+import com.sunchs.lyt.report.service.impl.ReportTargetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +30,9 @@ public class ReportController extends BaseController {
 
     @Autowired
     private ReportTagService reportTagService;
+
+    @Autowired
+    private ReportTargetService reportTargetService;
 
     /**
      * 问卷抽样量统计列表
@@ -75,5 +79,14 @@ public class ReportController extends BaseController {
     public ResultData itemTotalByTarget(@RequestBody RequestData data) {
         TotalParam param = data.toObject(TotalParam.class);
         return success(reportTagService.getItemQuantityByTarget(param.getItemId(), param.getTargetId(), param.getPosition()));
+    }
+
+    /**
+     * 根据 指标ID 进行统计满意度
+     */
+    @PostMapping("/itemSatisfyByTarget")
+    public ResultData itemSatisfyByTarget(@RequestBody RequestData data) {
+        TotalParam param = data.toObject(TotalParam.class);
+        return success(reportTargetService.getItemSatisfyByTarget(param.getItemId(), param.getTargetId(), param.getPosition()));
     }
 }
