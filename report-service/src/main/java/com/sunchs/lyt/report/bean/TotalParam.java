@@ -5,6 +5,7 @@ public class TotalParam {
     private int itemId;
     private int tagId;
     private int targetId;
+    private int targetOne;
     private int position;
 
     public int getItemId() {
@@ -29,6 +30,14 @@ public class TotalParam {
 
     public void setTargetId(int targetId) {
         this.targetId = targetId;
+    }
+
+    public int getTargetOne() {
+        return targetOne;
+    }
+
+    public void setTargetOne(int targetOne) {
+        this.targetOne = targetOne;
     }
 
     public int getPosition() {

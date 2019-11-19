@@ -69,7 +69,7 @@ public class ReportController extends BaseController {
     @PostMapping("/itemTotalByTag")
     public ResultData getItemTotalByTag(@RequestBody RequestData data) {
         TotalParam param = data.toObject(TotalParam.class);
-        return success(reportTagService.getItemQuantityByTag(param.getItemId(), param.getTagId()));
+        return success(reportTagService.getItemQuantityByTag(param.getItemId(), param.getTagId(), param.getTargetOne()));
     }
 
     /**

@@ -20,12 +20,13 @@ public class ReportTagService implements IReportTagService {
     private ReportAnswerQuantityServiceImpl reportAnswerQuantityService;
 
     @Override
-    public List<TotalSexData> getItemQuantityByTag(int itemId, int tagId) {
+    public List<TotalSexData> getItemQuantityByTag(int itemId, int tagId, int targetOne) {
         List<TotalSexData> list = new ArrayList<>();
         // 查询
         Wrapper<ReportAnswerQuantity> wrapper = new EntityWrapper<>();
         wrapper.setSqlSelect("question_id AS questionId,question_name AS questionName,option_id AS optionId,option_name AS optionName,SUM(quantity) as quantity");
         wrapper.eq(ReportAnswerQuantity.ITEM_ID, itemId);
+        wrapper.eq(ReportAnswerQuantity.TARGET_ONE, targetOne);
         wrapper.where(ReportAnswerQuantity.QUESTION_ID+" IN (SELECT question_id FROM question_tag_binding WHERE tag_id="+tagId+")");
         wrapper.groupBy(ReportAnswerQuantity.OPTION_ID);
         List<ReportAnswerQuantity> reportAnswerQuantities = reportAnswerQuantityService.selectList(wrapper);
