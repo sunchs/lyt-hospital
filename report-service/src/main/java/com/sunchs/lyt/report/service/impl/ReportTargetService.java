@@ -42,7 +42,7 @@ public class ReportTargetService implements IReportTargetService {
         wrapper.setSqlSelect("TRUNCATE(AVG(score),0) as score", ReportAnswerSatisfy.TARGET_ONE+" as targetOne", ReportAnswerSatisfy.TARGET_TWO+" as targetTwo");
         wrapper.eq(ReportAnswerSatisfy.ITEM_ID, itemId);
         wrapper.eq(ReportAnswerSatisfy.TARGET_ONE, targetId);
-        wrapper.andNew("question_id IN (SELECT * FROM question WHERE option_type IN(1,4))");
+        wrapper.andNew("question_id IN (SELECT id FROM question WHERE option_type IN(1,4))");
         wrapper.groupBy(ReportAnswerSatisfy.TARGET_TWO);
         List<ReportAnswerSatisfy> satisfyList = reportAnswerSatisfyService.selectList(wrapper);
         satisfyList.forEach(row->{
@@ -65,7 +65,7 @@ public class ReportTargetService implements IReportTargetService {
         wrapper.setSqlSelect("TRUNCATE(AVG(score),0) as score", ReportAnswerSatisfy.TARGET_TWO+" as targetTwo", ReportAnswerSatisfy.TARGET_THREE+" as targetThree");
         wrapper.eq(ReportAnswerSatisfy.ITEM_ID, itemId);
         wrapper.eq(ReportAnswerSatisfy.TARGET_TWO, targetId);
-        wrapper.andNew("question_id IN (SELECT * FROM question WHERE option_type IN(1,4))");
+        wrapper.andNew("question_id IN (SELECT id FROM question WHERE option_type IN(1,4))");
         wrapper.groupBy(ReportAnswerSatisfy.TARGET_THREE);
         List<ReportAnswerSatisfy> satisfyList = reportAnswerSatisfyService.selectList(wrapper);
         satisfyList.forEach(row->{
