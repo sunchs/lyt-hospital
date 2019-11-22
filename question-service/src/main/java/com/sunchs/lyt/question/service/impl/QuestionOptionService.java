@@ -43,11 +43,21 @@ public class QuestionOptionService implements IQuestionOptionService {
     public int saveTemplate(OptionTemplateParam param) {
         param.checkPid();
         param.checkOption();
-        String content = StringUtils.join(param.getOptionList(), ",");
+
+        List<OptionTemplateOptionParam> oList = param.getOptionList();
+        List<String> valueList = new ArrayList<>();
+        List<Integer> scoreList = new ArrayList<>();
+        oList.forEach(row->{
+            valueList.add(row.getValue());
+            scoreList.add(row.getScore());
+        });
+        String value = StringUtils.join(valueList, ",");
+        String score = StringUtils.join(scoreList, ",");
         OptionTemplate data = new OptionTemplate();
         data.setId(param.getId());
         data.setPid(param.getPid());
-        data.setContent(content);
+        data.setContent(value);
+        data.setScore(score);
         data.setUpdateId(UserThreadUtil.getUserId());
         data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         if (param.getId() == 0) {
@@ -68,7 +78,7 @@ public class QuestionOptionService implements IQuestionOptionService {
         OptionTemplateData data = new OptionTemplateData();
         data.setId(res.getId());
         data.setPid(res.getPid());
-        data.setOptionList(Arrays.asList(res.getContent().split(",")));
+//        data.setOptionList(Arrays.asList(res.getContent().split(",")));
         return data;
     }
 

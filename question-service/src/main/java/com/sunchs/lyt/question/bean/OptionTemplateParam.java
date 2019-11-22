@@ -3,6 +3,7 @@ package com.sunchs.lyt.question.bean;
 import com.sunchs.lyt.question.exception.QuestionException;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OptionTemplateParam {
@@ -10,7 +11,7 @@ public class OptionTemplateParam {
     private int id;
     private int pid;
     private int status;
-    private List<String> optionList;
+    private List<OptionTemplateOptionParam> optionList;
 
     public void checkPid() {
         if (pid == 0) {
@@ -23,8 +24,13 @@ public class OptionTemplateParam {
             throw new QuestionException("选项内容不能为空");
         }
         for (int i = 0; i < optionList.size(); i++) {
-            String nVal = optionList.get(i).replaceAll(",", "，");
-            optionList.set(i, nVal);
+            String nVal = optionList.get(i).getValue().replaceAll(",", "，");
+            nVal.replaceAll("", " ");
+
+            OptionTemplateOptionParam data = new OptionTemplateOptionParam();
+            data.setValue(nVal);
+            data.setScore(optionList.get(i).getScore());
+            optionList.set(i, data);
         }
     }
 
@@ -52,11 +58,20 @@ public class OptionTemplateParam {
         this.status = status;
     }
 
-    public List<String> getOptionList() {
+    public List<OptionTemplateOptionParam> getOptionList() {
         return optionList;
     }
 
-    public void setOptionList(List<String> optionList) {
+    public void setOptionList(List<OptionTemplateOptionParam> optionList) {
         this.optionList = optionList;
+    }
+
+    public List<String> getOptionValueList() {
+        List<String> list = new ArrayList<>();
+        this.optionList.forEach(o -> {
+            String val = o.getValue() + "::" + o.getScore();
+            list.add(val);
+        });
+        return list;
     }
 }

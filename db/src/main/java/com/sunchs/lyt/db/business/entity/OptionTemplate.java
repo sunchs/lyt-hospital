@@ -14,7 +14,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-07-09
+ * @since 2019-11-23
  */
 @TableName("option_template")
 public class OptionTemplate extends Model<OptionTemplate> {
@@ -41,6 +41,11 @@ public class OptionTemplate extends Model<OptionTemplate> {
      * 内容
      */
     private String content;
+
+    /**
+     * 分数
+     */
+    private String score;
 
     /**
      * 排序
@@ -104,6 +109,13 @@ public class OptionTemplate extends Model<OptionTemplate> {
     public void setContent(String content) {
         this.content = content;
     }
+    public String getScore() {
+        return score;
+    }
+
+    public void setScore(String score) {
+        this.score = score;
+    }
     public Integer getSort() {
         return sort;
     }
@@ -155,6 +167,8 @@ public class OptionTemplate extends Model<OptionTemplate> {
 
     public static final String CONTENT = "content";
 
+    public static final String SCORE = "score";
+
     public static final String SORT = "sort";
 
     public static final String MODE = "mode";
@@ -179,6 +193,7 @@ public class OptionTemplate extends Model<OptionTemplate> {
         ", pid=" + pid +
         ", status=" + status +
         ", content=" + content +
+        ", score=" + score +
         ", sort=" + sort +
         ", mode=" + mode +
         ", updateId=" + updateId +

@@ -1,15 +1,12 @@
 package com.sunchs.lyt.question.bean;
 
-import com.sunchs.lyt.question.exception.QuestionException;
-import org.springframework.util.CollectionUtils;
-
 import java.util.List;
 
 public class OptionTemplateData {
 
     private int id;
     private int pid;
-    private List<String> optionList;
+    private List<OptionTemplateOptionParam> optionList;
 
     public int getId() {
         return id;
@@ -27,11 +24,11 @@ public class OptionTemplateData {
         this.pid = pid;
     }
 
-    public List<String> getOptionList() {
+    public List<OptionTemplateOptionParam> getOptionList() {
         return optionList;
     }
 
-    public void setOptionList(List<String> optionList) {
+    public void setOptionList(List<OptionTemplateOptionParam> optionList) {
         this.optionList = optionList;
     }
 }

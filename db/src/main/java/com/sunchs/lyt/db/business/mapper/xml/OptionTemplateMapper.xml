@@ -8,6 +8,7 @@
         <result column="pid" property="pid" />
         <result column="status" property="status" />
         <result column="content" property="content" />
+        <result column="score" property="score" />
         <result column="sort" property="sort" />
         <result column="mode" property="mode" />
         <result column="update_id" property="updateId" />

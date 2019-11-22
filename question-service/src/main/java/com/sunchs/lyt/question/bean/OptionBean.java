@@ -4,6 +4,7 @@ public class OptionBean {
 
     private int optionId;
     private String optionContent;
+    private String optionScore;
     private String updateTimeName;
 
     public int getOptionId() {
@@ -20,6 +21,14 @@ public class OptionBean {
 
     public void setOptionContent(String optionContent) {
         this.optionContent = optionContent;
+    }
+
+    public String getOptionScore() {
+        return optionScore;
+    }
+
+    public void setOptionScore(String optionScore) {
+        this.optionScore = optionScore;
     }
 
     public String getUpdateTimeName() {
