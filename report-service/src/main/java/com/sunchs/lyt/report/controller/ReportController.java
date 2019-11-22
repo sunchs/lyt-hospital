@@ -89,4 +89,13 @@ public class ReportController extends BaseController {
         TotalParam param = data.toObject(TotalParam.class);
         return success(reportTargetService.getItemSatisfyByTarget(param.getItemId(), param.getTargetId(), param.getPosition()));
     }
+
+    /**
+     * 获取可是满意度
+     */
+    @PostMapping("/itemOfficeSatisfy")
+    public ResultData itemOfficeSatisfy(@RequestBody RequestData data) {
+        TotalParam param = data.toObject(TotalParam.class);
+        return success(reportTargetService.getItemOfficeSatisfy(param.getItemId(), param.getTargetId()));
+    }
 }

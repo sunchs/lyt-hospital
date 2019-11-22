@@ -2,6 +2,9 @@ package com.sunchs.lyt.report.bean;
 
 public class SatisfyData {
 
+    private int officeId;
+    private String officeName;
+
     private int pId;
     private String pName;
 
@@ -9,6 +12,22 @@ public class SatisfyData {
     private String name;
 
     private Double value;
+
+    public int getOfficeId() {
+        return officeId;
+    }
+
+    public void setOfficeId(int officeId) {
+        this.officeId = officeId;
+    }
+
+    public String getOfficeName() {
+        return officeName;
+    }
+
+    public void setOfficeName(String officeName) {
+        this.officeName = officeName;
+    }
 
     public int getpId() {
         return pId;

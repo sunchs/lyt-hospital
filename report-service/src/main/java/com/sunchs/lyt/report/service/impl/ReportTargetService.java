@@ -2,8 +2,10 @@ package com.sunchs.lyt.report.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.sunchs.lyt.db.business.entity.HospitalOffice;
 import com.sunchs.lyt.db.business.entity.QuestionTarget;
 import com.sunchs.lyt.db.business.entity.ReportAnswerSatisfy;
+import com.sunchs.lyt.db.business.service.impl.HospitalOfficeServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.QuestionTargetServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.ReportAnswerSatisfyServiceImpl;
 import com.sunchs.lyt.report.bean.SatisfyData;
@@ -25,6 +27,9 @@ public class ReportTargetService implements IReportTargetService {
     @Autowired
     private QuestionTargetServiceImpl questionTargetService;
 
+    @Autowired
+    private HospitalOfficeServiceImpl hospitalOfficeService;
+
     @Override
     public List<SatisfyData> getItemSatisfyByTarget(int itemId, int targetId, int position) {
         if (position == 1) {
@@ -33,6 +38,34 @@ public class ReportTargetService implements IReportTargetService {
             return getTwoTargetSatisfyList(itemId, targetId);
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public List<SatisfyData> getItemOfficeSatisfy(int itemId, int targetId) {
+        List<SatisfyData> list = new ArrayList<>();
+        // 查询
+        Wrapper<ReportAnswerSatisfy> wrapper = new EntityWrapper<>();
+        wrapper.setSqlSelect("TRUNCATE(AVG(score),0) as score", ReportAnswerSatisfy.TARGET_ONE+" as targetOne", ReportAnswerSatisfy.TARGET_TWO+" as targetTwo");
+        wrapper.eq(ReportAnswerSatisfy.ITEM_ID, itemId);
+        wrapper.eq(ReportAnswerSatisfy.TARGET_ONE, targetId);
+        wrapper.andNew("question_id IN (SELECT id FROM question WHERE option_type IN(1,4))");
+        wrapper.groupBy(ReportAnswerSatisfy.OFFICE_ID);
+        wrapper.groupBy(ReportAnswerSatisfy.TARGET_ONE);
+        List<ReportAnswerSatisfy> satisfyList = reportAnswerSatisfyService.selectList(wrapper);
+        satisfyList.forEach(s->{
+            SatisfyData data = new SatisfyData();
+            data.setOfficeId(s.getOfficeId());
+            data.setOfficeName(getOfficeName(s.getOfficeId()));
+            data.setpId(s.getTargetOne());
+            data.setpName(getTargetName(s.getTargetOne()));
+            data.setId(s.getTargetTwo());
+            data.setName(getTargetName(s.getTargetTwo()));
+            double value = new BigDecimal((double)s.getScore() / (double)100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            data.setValue(value);
+            list.add(data);
+        });
+        System.out.println(wrapper.getSqlSelect());
+        return null;
     }
 
     private List<SatisfyData> getOneTargetSatisfyList(int itemId, int targetId) {
@@ -84,5 +117,10 @@ public class ReportTargetService implements IReportTargetService {
     private String getTargetName(int targetId) {
         QuestionTarget target = questionTargetService.selectById(targetId);
         return Objects.nonNull(target) ? target.getTitle() : "";
+    }
+
+    private String getOfficeName(int officeId) {
+        HospitalOffice office = hospitalOfficeService.selectById(officeId);
+        return Objects.nonNull(office) ? office.getTitle() : "";
     }
 }
