@@ -45,7 +45,7 @@ public class ReportTargetService implements IReportTargetService {
         List<SatisfyData> list = new ArrayList<>();
         // 查询
         Wrapper<ReportAnswerSatisfy> wrapper = new EntityWrapper<>();
-        wrapper.setSqlSelect("TRUNCATE(AVG(score),0) as score", ReportAnswerSatisfy.TARGET_ONE+" as targetOne", ReportAnswerSatisfy.TARGET_TWO+" as targetTwo");
+        wrapper.setSqlSelect("office_id as officeId,TRUNCATE(AVG(score),0) as score", ReportAnswerSatisfy.TARGET_ONE+" as targetOne", ReportAnswerSatisfy.TARGET_TWO+" as targetTwo");
         wrapper.eq(ReportAnswerSatisfy.ITEM_ID, itemId);
         wrapper.eq(ReportAnswerSatisfy.TARGET_ONE, targetId);
         wrapper.andNew("question_id IN (SELECT id FROM question WHERE option_type IN(1,4))");
