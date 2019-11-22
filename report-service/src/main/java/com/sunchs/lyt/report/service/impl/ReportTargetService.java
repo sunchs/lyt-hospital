@@ -50,7 +50,7 @@ public class ReportTargetService implements IReportTargetService {
         wrapper.eq(ReportAnswerSatisfy.TARGET_ONE, targetId);
         wrapper.andNew("question_id IN (SELECT id FROM question WHERE option_type IN(1,4))");
         wrapper.groupBy(ReportAnswerSatisfy.OFFICE_ID);
-        wrapper.groupBy(ReportAnswerSatisfy.TARGET_ONE);
+        wrapper.groupBy(ReportAnswerSatisfy.TARGET_TWO);
         List<ReportAnswerSatisfy> satisfyList = reportAnswerSatisfyService.selectList(wrapper);
         satisfyList.forEach(s->{
             SatisfyData data = new SatisfyData();
