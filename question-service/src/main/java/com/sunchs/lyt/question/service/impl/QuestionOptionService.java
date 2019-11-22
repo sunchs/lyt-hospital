@@ -48,7 +48,7 @@ public class QuestionOptionService implements IQuestionOptionService {
         List<String> valueList = new ArrayList<>();
         List<Integer> scoreList = new ArrayList<>();
         oList.forEach(row->{
-            valueList.add(row.getValue());
+            valueList.add(row.getValue().trim());
             scoreList.add(row.getScore());
         });
         String value = StringUtils.join(valueList, ",");
