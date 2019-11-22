@@ -64,8 +64,7 @@ public class ReportTargetService implements IReportTargetService {
             data.setValue(value);
             list.add(data);
         });
-        System.out.println(wrapper.getSqlSelect());
-        return null;
+        return list;
     }
 
     private List<SatisfyData> getOneTargetSatisfyList(int itemId, int targetId) {
