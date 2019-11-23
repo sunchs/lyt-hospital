@@ -56,6 +56,11 @@ public class QuestionService implements IQuestionService {
     }
 
     @Override
+    public QuestionData getById(int questionId) {
+        return questionDao.getById(questionId);
+    }
+
+    @Override
     public PagingList<QuestionData> getPageList(QuestionParam param) {
         Wrapper<Question> where = new EntityWrapper<>();
         if (param.getTargetOne() > 0) {

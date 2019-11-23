@@ -11,6 +11,8 @@ public interface IQuestionService {
      */
     void save(QuestionParam param);
 
+    QuestionData getById(int questionId);
+
     /**
      * 问题分页列表
      */

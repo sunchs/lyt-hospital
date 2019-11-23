@@ -28,6 +28,12 @@ public class QuestionController extends BaseController {
         return success();
     }
 
+    @PostMapping("/getById")
+    public ResultData getById(@RequestBody RequestData data) {
+        int id = data.getInt("id");
+        return success(questionService.getById(id));
+    }
+
     /**
      * 题目列表
      */
