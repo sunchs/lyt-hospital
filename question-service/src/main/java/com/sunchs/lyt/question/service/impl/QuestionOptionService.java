@@ -78,7 +78,15 @@ public class QuestionOptionService implements IQuestionOptionService {
         OptionTemplateData data = new OptionTemplateData();
         data.setId(res.getId());
         data.setPid(res.getPid());
-//        data.setOptionList(Arrays.asList(res.getContent().split(",")));
+        List<OptionTemplateOptionParam> oList = new ArrayList<>();
+        String[] valueArr = res.getContent().split(",");
+        String[] scoreArr = res.getScore().split(",");
+        for (int i = 0; i < valueArr.length; i++) {
+            OptionTemplateOptionParam d = new OptionTemplateOptionParam();
+            d.setValue(valueArr[i]);
+            d.setScore(Integer.parseInt(scoreArr[i]));
+        }
+        data.setOptionList(oList);
         return data;
     }
 
