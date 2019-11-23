@@ -3,10 +3,7 @@ package com.sunchs.lyt.question.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.sunchs.lyt.db.business.entity.OptionTemplate;
-import com.sunchs.lyt.db.business.entity.Question;
-import com.sunchs.lyt.db.business.entity.QuestionOption;
-import com.sunchs.lyt.db.business.entity.QuestionTagBinding;
+import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.QuestionServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.QuestionTagBindingServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
@@ -58,6 +55,26 @@ public class QuestionService implements IQuestionService {
     @Override
     public QuestionData getById(int questionId) {
         return questionDao.getById(questionId);
+    }
+
+    @Override
+    public void updateInfo(QuestionParam param) {
+        if (param.getId() == 0) {
+            throw new QuestionException("题目ID不能为空");
+        }
+
+        Question data = new Question();
+        data.setId(param.getId());
+        data.setTargetOne(param.getTargetOne());
+        data.setTargetTwo(param.getTargetTwo());
+        data.setTargetThree(param.getTargetThree());
+        data.setRemark(param.getRemark());
+        data.setUpdateId(UserThreadUtil.getUserId());
+        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        if (questionService.updateById(data)) {
+            // 插入标签
+            setQuestionAttribute(data.getId(), param.getTagList());
+        }
     }
 
     @Override
@@ -172,6 +189,10 @@ public class QuestionService implements IQuestionService {
         if (tagParam == null || tagParam.size() == 0) {
             return;
         }
+        Wrapper<QuestionTagBinding> tagWrapper = new EntityWrapper<>();
+        tagWrapper.eq(QuestionTagBinding.QUESTION_ID, questionId);
+        questionTagBindingService.delete(tagWrapper);
+
         for (TagParam param : tagParam) {
             if (Objects.nonNull(param) && NumberUtil.nonZero(param.getTagId())) {
                 QuestionTagBinding data = new QuestionTagBinding();

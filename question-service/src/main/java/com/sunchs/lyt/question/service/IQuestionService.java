@@ -13,6 +13,9 @@ public interface IQuestionService {
 
     QuestionData getById(int questionId);
 
+
+    void updateInfo(QuestionParam param);
+
     /**
      * 问题分页列表
      */

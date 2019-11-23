@@ -34,6 +34,13 @@ public class QuestionController extends BaseController {
         return success(questionService.getById(id));
     }
 
+    @PostMapping("/updateInfo")
+    public ResultData updateInfo(@RequestBody RequestData data) {
+        QuestionParam param = data.toObject(QuestionParam.class);
+        questionService.updateInfo(param);
+        return success();
+    }
+
     /**
      * 题目列表
      */
