@@ -21,6 +21,7 @@ import java.util.List;
 @Service
 public class ReportAnswerOptionServiceImpl extends ServiceImpl<ReportAnswerOptionMapper, ReportAnswerOption> implements IReportAnswerOptionService {
 
+    @Override
     public List<ReportAnswerQuantity> getReportAnswerData(List<Long> answerIds) {
         List<String> ids = new ArrayList<>();
         answerIds.forEach(id->ids.add(String.valueOf(id)));
