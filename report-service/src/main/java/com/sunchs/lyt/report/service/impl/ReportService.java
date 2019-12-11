@@ -159,7 +159,7 @@ public class ReportService implements IReportService {
     public List<TitleData> getItemUseTarget(Integer itemId) {
         List<TitleData> result = new ArrayList<>();
         Wrapper<QuestionTarget> wrapper = new EntityWrapper<QuestionTarget>()
-                .andNew("id IN(SELECT target_three FROM report_answer_quantity WHERE itemId=?)", itemId);
+                .andNew("id IN(SELECT target_three FROM report_answer_quantity WHERE item_id=?)", itemId);
         List<QuestionTarget> targetList = questionTargetService.selectList(wrapper);
         targetList.forEach(v->{
             TitleData data = new TitleData();
