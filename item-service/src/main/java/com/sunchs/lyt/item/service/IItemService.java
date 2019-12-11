@@ -89,4 +89,5 @@ public interface IItemService {
      */
     List<UserItemData> getUserItemOfficeList();
 
+    List<OfficeGroupData> getItemOfficeGroup(ItemParam param);
 }

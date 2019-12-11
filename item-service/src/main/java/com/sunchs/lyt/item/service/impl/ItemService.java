@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemService implements IItemService {
@@ -538,6 +539,34 @@ public class ItemService implements IItemService {
             list.add(data);
         });
         return list;
+    }
+
+    @Override
+    public List<OfficeGroupData> getItemOfficeGroup(ItemParam param) {
+        List<OfficeGroupData> result = new ArrayList<>();
+        Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
+                .eq(ItemOffice.ITEM_ID, param.getId());
+        List<ItemOffice> itemOfficeList = itemOfficeService.selectList(wrapper);
+        Map<Integer, List<ItemOffice>> groupList = itemOfficeList.stream().collect(Collectors.groupingBy(ItemOffice::getOfficeTypeId));
+        for (int i = 1; i <= 4; i++) {
+            List<ItemOffice> sonList = groupList.get(i);
+            if (Objects.nonNull(sonList) && sonList.size() > 0) {
+                OfficeGroupData data = new OfficeGroupData();
+                data.setId(sonList.get(0).getOfficeTypeId());
+                data.setTitle(OfficeTypeEnum.get(sonList.get(0).getOfficeTypeId()));
+                // 转为bean
+                List<OfficeGroupBean> sList = new ArrayList<>();
+                sonList.forEach(a->{
+                    OfficeGroupBean b = new OfficeGroupBean();
+                    b.setId(a.getOfficeId());
+                    b.setTitle(a.getTitle());
+                    sList.add(b);
+                });
+                data.setOfficeList(sList);
+                result.add(data);
+            }
+        }
+        return result;
     }
 
     private List<UserItemOfficeTypeData> getUserItemOfficeTypeList(int itemId) {
