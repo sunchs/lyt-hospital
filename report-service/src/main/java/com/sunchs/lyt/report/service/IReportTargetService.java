@@ -1,6 +1,7 @@
 package com.sunchs.lyt.report.service;
 
 import com.sunchs.lyt.report.bean.SatisfyData;
+import com.sunchs.lyt.report.bean.TotalParam;
 
 import java.util.List;
 
@@ -11,5 +12,5 @@ public interface IReportTargetService {
      */
     List<SatisfyData> getItemSatisfyByTarget(int itemId, int targetId, int position);
 
-    List<SatisfyData> getItemOfficeSatisfy(int itemId, int targetId);
+    List<SatisfyData> getItemOfficeSatisfy(TotalParam param);
 }

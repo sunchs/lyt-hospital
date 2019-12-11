@@ -96,7 +96,7 @@ public class ReportController extends BaseController {
     @PostMapping("/itemOfficeSatisfy")
     public ResultData itemOfficeSatisfy(@RequestBody RequestData data) {
         TotalParam param = data.toObject(TotalParam.class);
-        return success(reportTargetService.getItemOfficeSatisfy(param.getItemId(), param.getTargetId()));
+        return success(reportTargetService.getItemOfficeSatisfy(param));
     }
 
     /**

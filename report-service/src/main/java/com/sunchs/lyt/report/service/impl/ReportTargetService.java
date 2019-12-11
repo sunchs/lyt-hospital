@@ -9,6 +9,7 @@ import com.sunchs.lyt.db.business.service.impl.HospitalOfficeServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.QuestionTargetServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.ReportAnswerSatisfyServiceImpl;
 import com.sunchs.lyt.report.bean.SatisfyData;
+import com.sunchs.lyt.report.bean.TotalParam;
 import com.sunchs.lyt.report.service.IReportTargetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,13 +42,21 @@ public class ReportTargetService implements IReportTargetService {
     }
 
     @Override
-    public List<SatisfyData> getItemOfficeSatisfy(int itemId, int targetId) {
+    public List<SatisfyData> getItemOfficeSatisfy(TotalParam param) {
         List<SatisfyData> list = new ArrayList<>();
         // 查询
         Wrapper<ReportAnswerSatisfy> wrapper = new EntityWrapper<>();
         wrapper.setSqlSelect("office_id as officeId,TRUNCATE(AVG(score),0) as score", ReportAnswerSatisfy.TARGET_ONE+" as targetOne", ReportAnswerSatisfy.TARGET_TWO+" as targetTwo");
-        wrapper.eq(ReportAnswerSatisfy.ITEM_ID, itemId);
-        wrapper.eq(ReportAnswerSatisfy.TARGET_ONE, targetId);
+        wrapper.eq(ReportAnswerSatisfy.ITEM_ID, param.getItemId());
+        wrapper.eq(ReportAnswerSatisfy.TARGET_ONE, param.getTargetId());
+
+        if (Objects.nonNull(param.getOfficeList()) && param.getOfficeList().size() > 0) {
+            wrapper.in(ReportAnswerSatisfy.OFFICE_ID, param.getOfficeList());
+        }
+        if (Objects.nonNull(param.getTargetList()) && param.getTargetList().size() > 0) {
+            wrapper.in(ReportAnswerSatisfy.TARGET_THREE, param.getTargetList());
+        }
+
         wrapper.andNew("question_id IN (SELECT id FROM question WHERE option_type IN(1,4))");
         wrapper.groupBy(ReportAnswerSatisfy.OFFICE_ID);
         wrapper.groupBy(ReportAnswerSatisfy.TARGET_TWO);
