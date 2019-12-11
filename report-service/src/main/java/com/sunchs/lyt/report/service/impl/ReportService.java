@@ -142,7 +142,7 @@ public class ReportService implements IReportService {
     public List<TitleData> getItemUseOffice(Integer itemId) {
         List<TitleData> result = new ArrayList<>();
         Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
-                .andNew("id IN(SELECT office_id FROM report_answer WHERE item_id="+itemId+")")
+                .andNew("office_id IN(SELECT office_id FROM report_answer WHERE item_id="+itemId+")")
                 .eq(ItemOffice.ITEM_ID, itemId);
         List<ItemOffice> itemList = itemOfficeService.selectList(wrapper);
         itemList.forEach(v->{
