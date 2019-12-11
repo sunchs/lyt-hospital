@@ -98,4 +98,22 @@ public class ReportController extends BaseController {
         TotalParam param = data.toObject(TotalParam.class);
         return success(reportTargetService.getItemOfficeSatisfy(param.getItemId(), param.getTargetId()));
     }
+
+    /**
+     * 项目已使用的科室
+     */
+    @PostMapping("/itemUseOffice")
+    public ResultData getItemUseOffice(@RequestBody RequestData data) {
+        Integer itemId = data.getInt("itemId");
+        return success(reportService.getItemUseOffice(itemId));
+    }
+
+    /**
+     * 项目已使用的科室
+     */
+    @PostMapping("/itemUseTarget")
+    public ResultData getItemUseTarget(@RequestBody RequestData data) {
+        Integer itemId = data.getInt("itemId");
+        return success(reportService.getItemUseTarget(itemId));
+    }
 }

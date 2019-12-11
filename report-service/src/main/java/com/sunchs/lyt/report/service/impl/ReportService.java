@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.PagingList;
+import com.sunchs.lyt.framework.bean.TitleData;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.framework.util.ObjectUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
@@ -35,6 +36,12 @@ public class ReportService implements IReportService {
 
     @Autowired
     private QuestionOptionServiceImpl questionOptionService;
+
+    @Autowired
+    private ItemOfficeServiceImpl itemOfficeService;
+
+    @Autowired
+    private QuestionTargetServiceImpl questionTargetService;
 
     @Override
     public PagingList<ItemTotalData> getItemTotalList(ItemTotalParam param) {
@@ -128,6 +135,39 @@ public class ReportService implements IReportService {
             result.add(data);
         }
 
+        return result;
+    }
+
+    @Override
+    public List<TitleData> getItemUseOffice(Integer itemId) {
+        List<TitleData> result = new ArrayList<>();
+        Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
+                .andNew("id IN(SELECT office_id FROM report_answer WHERE itemId=?)", itemId)
+                .eq(ItemOffice.ITEM_ID, itemId);
+        List<ItemOffice> itemList = itemOfficeService.selectList(wrapper);
+        itemList.forEach(v->{
+            TitleData data = new TitleData();
+            data.setId(v.getOfficeId());
+            data.setTitle(v.getTitle());
+            data.setSelected(false);
+            result.add(data);
+        });
+        return result;
+    }
+
+    @Override
+    public List<TitleData> getItemUseTarget(Integer itemId) {
+        List<TitleData> result = new ArrayList<>();
+        Wrapper<QuestionTarget> wrapper = new EntityWrapper<QuestionTarget>()
+                .andNew("id IN(SELECT target_three FROM report_answer_quantity WHERE itemId=?)", itemId);
+        List<QuestionTarget> targetList = questionTargetService.selectList(wrapper);
+        targetList.forEach(v->{
+            TitleData data = new TitleData();
+            data.setId(v.getId());
+            data.setTitle(v.getTitle());
+            data.setSelected(false);
+            result.add(data);
+        });
         return result;
     }
 
