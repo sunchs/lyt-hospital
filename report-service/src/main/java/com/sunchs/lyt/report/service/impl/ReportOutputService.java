@@ -57,7 +57,7 @@ public class ReportOutputService implements IReportOutputService {
                 .le(ReportAnswer.STARTTIME, param.getEndTime());
         List<ReportAnswer> reportAnswerList = reportAnswerService.selectList(reportAnswerWrapper);
         if (reportAnswerList.size() == 0) {
-            throw new ReportException("无数据");
+            throw new ReportException("无数据，无法导出！");
         }
         List<Integer> reportAnswerIds = reportAnswerList.stream().map(ReportAnswer::getId).collect(Collectors.toList());
 
