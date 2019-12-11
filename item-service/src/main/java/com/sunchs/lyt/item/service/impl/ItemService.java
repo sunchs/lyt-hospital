@@ -560,6 +560,9 @@ public class ItemService implements IItemService {
                     OfficeGroupBean b = new OfficeGroupBean();
                     b.setId(a.getOfficeId());
                     b.setTitle(a.getTitle());
+                    if (a.getOfficeTypeId().equals(3) && a.getTitle().equals("")) {
+                        b.setTitle("员工");
+                    }
                     sList.add(b);
                 });
                 data.setOfficeList(sList);
