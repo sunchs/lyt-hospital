@@ -13,4 +13,6 @@ public interface IReportTargetService {
     List<SatisfyData> getItemSatisfyByTarget(int itemId, int targetId, int position);
 
     List<SatisfyData> getItemOfficeSatisfy(TotalParam param);
+
+    List<SatisfyData> getItemOfficeTargetSatisfy(TotalParam param);
 }

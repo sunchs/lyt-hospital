@@ -99,6 +99,13 @@ public class ReportController extends BaseController {
         return success(reportTargetService.getItemOfficeSatisfy(param));
     }
 
+    @PostMapping("/itemOfficeTargetSatisfy")
+    public ResultData getItemOfficeTargetSatisfy(@RequestBody RequestData data) {
+        TotalParam param = data.toObject(TotalParam.class);
+        return success(reportTargetService.getItemOfficeTargetSatisfy(param));
+    }
+
+
     /**
      * 项目已使用的科室
      */

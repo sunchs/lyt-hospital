@@ -76,6 +76,44 @@ public class ReportTargetService implements IReportTargetService {
         return list;
     }
 
+    @Override
+    public List<SatisfyData> getItemOfficeTargetSatisfy(TotalParam param) {
+        List<SatisfyData> list = new ArrayList<>();
+        // 查询
+        Wrapper<ReportAnswerSatisfy> wrapper = new EntityWrapper<>();
+        wrapper.setSqlSelect("office_id as officeId,TRUNCATE(AVG(score),0) as score",
+                ReportAnswerSatisfy.TARGET_ONE+" as targetOne",
+                ReportAnswerSatisfy.TARGET_TWO+" as targetTwo",
+                ReportAnswerSatisfy.TARGET_THREE+" as targetThree");
+        wrapper.eq(ReportAnswerSatisfy.ITEM_ID, param.getItemId());
+        wrapper.eq(ReportAnswerSatisfy.TARGET_ONE, param.getTargetId());
+
+        if (Objects.nonNull(param.getOfficeList()) && param.getOfficeList().size() > 0) {
+            wrapper.in(ReportAnswerSatisfy.OFFICE_ID, param.getOfficeList());
+        }
+        if (Objects.nonNull(param.getTargetList()) && param.getTargetList().size() > 0) {
+            wrapper.in(ReportAnswerSatisfy.TARGET_THREE, param.getTargetList());
+        }
+
+        wrapper.andNew("question_id IN (SELECT id FROM question WHERE option_type IN(1,4))");
+        wrapper.groupBy(ReportAnswerSatisfy.OFFICE_ID);
+        wrapper.groupBy(ReportAnswerSatisfy.TARGET_THREE);
+        List<ReportAnswerSatisfy> satisfyList = reportAnswerSatisfyService.selectList(wrapper);
+        satisfyList.forEach(s->{
+            SatisfyData data = new SatisfyData();
+            data.setOfficeId(s.getOfficeId());
+            data.setOfficeName(getOfficeName(s.getOfficeId()));
+            data.setpId(s.getTargetTwo());
+            data.setpName(getTargetName(s.getTargetTwo()));
+            data.setId(s.getTargetThree());
+            data.setName(getTargetName(s.getTargetThree()));
+            double value = new BigDecimal((double)s.getScore() / (double)100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            data.setValue(value);
+            list.add(data);
+        });
+        return list;
+    }
+
     private List<SatisfyData> getOneTargetSatisfyList(int itemId, int targetId) {
         List<SatisfyData> list = new ArrayList<>();
         // 查询
