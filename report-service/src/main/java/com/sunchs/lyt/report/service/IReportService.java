@@ -24,10 +24,10 @@ public interface IReportService {
     /**
      * 项目已使用的科室
      */
-    List<TitleData> getItemUseOffice(Integer itemId);
+    List<TitleData> getItemUseOffice(Integer itemId, Integer officeType);
 
     /**
      * 项目已使用的指标
      */
-    List<TitleData> getItemUseTarget(Integer itemId);
+    List<TitleData> getItemUseTarget(Integer itemId, Integer officeType);
 }

@@ -105,7 +105,8 @@ public class ReportController extends BaseController {
     @PostMapping("/itemUseOffice")
     public ResultData getItemUseOffice(@RequestBody RequestData data) {
         Integer itemId = data.getInt("itemId");
-        return success(reportService.getItemUseOffice(itemId));
+        Integer officeType = data.getInt("officeType");
+        return success(reportService.getItemUseOffice(itemId, officeType));
     }
 
     /**
@@ -114,6 +115,7 @@ public class ReportController extends BaseController {
     @PostMapping("/itemUseTarget")
     public ResultData getItemUseTarget(@RequestBody RequestData data) {
         Integer itemId = data.getInt("itemId");
-        return success(reportService.getItemUseTarget(itemId));
+        Integer officeType = data.getInt("officeType");
+        return success(reportService.getItemUseTarget(itemId, officeType));
     }
 }

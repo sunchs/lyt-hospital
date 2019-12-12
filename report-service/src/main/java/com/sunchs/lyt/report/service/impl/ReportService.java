@@ -139,11 +139,12 @@ public class ReportService implements IReportService {
     }
 
     @Override
-    public List<TitleData> getItemUseOffice(Integer itemId) {
+    public List<TitleData> getItemUseOffice(Integer itemId, Integer officeType) {
         List<TitleData> result = new ArrayList<>();
         Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
                 .andNew("office_id IN(SELECT office_id FROM report_answer WHERE item_id="+itemId+")")
-                .eq(ItemOffice.ITEM_ID, itemId);
+                .eq(ItemOffice.ITEM_ID, itemId)
+                .eq(ItemOffice.OFFICE_TYPE_ID, officeType);
         List<ItemOffice> itemList = itemOfficeService.selectList(wrapper);
         itemList.forEach(v->{
             TitleData data = new TitleData();
@@ -156,10 +157,10 @@ public class ReportService implements IReportService {
     }
 
     @Override
-    public List<TitleData> getItemUseTarget(Integer itemId) {
+    public List<TitleData> getItemUseTarget(Integer itemId, Integer officeType) {
         List<TitleData> result = new ArrayList<>();
         Wrapper<QuestionTarget> wrapper = new EntityWrapper<QuestionTarget>()
-                .andNew("id IN(SELECT target_three FROM report_answer_quantity WHERE item_id="+itemId+")");
+                .andNew("id IN(SELECT target_three FROM report_answer_quantity WHERE item_id="+itemId+" AND target_one="+officeType+")");
         List<QuestionTarget> targetList = questionTargetService.selectList(wrapper);
         targetList.forEach(v->{
             TitleData data = new TitleData();
