@@ -90,9 +90,13 @@ public class ReportTargetService implements IReportTargetService {
 
         if (Objects.nonNull(param.getOfficeList()) && param.getOfficeList().size() > 0) {
             wrapper.in(ReportAnswerSatisfy.OFFICE_ID, param.getOfficeList());
+        } else {
+            return list;
         }
         if (Objects.nonNull(param.getTargetList()) && param.getTargetList().size() > 0) {
             wrapper.in(ReportAnswerSatisfy.TARGET_THREE, param.getTargetList());
+        } else {
+            return list;
         }
 
         wrapper.andNew("question_id IN (SELECT id FROM question WHERE option_type IN(1,4))");
