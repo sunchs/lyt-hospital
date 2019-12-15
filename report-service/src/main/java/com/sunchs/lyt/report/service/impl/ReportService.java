@@ -147,6 +147,12 @@ public class ReportService implements IReportService {
     @Override
     public List<TitleData> getItemUseOffice(Integer itemId, Integer officeType) {
         List<TitleData> result = new ArrayList<>();
+        Wrapper<SettingItemOfficeShow> showWrapper = new EntityWrapper<>();
+        showWrapper.setSqlSelect(SettingItemOfficeShow.OFFICE_ID+" as officeId");
+        showWrapper.eq(SettingItemOfficeShow.ITEM_ID, itemId);
+        showWrapper.eq(SettingItemTargetShow.POSITION, 1);
+        List<Integer> selectIds = (List<Integer>)(List)settingItemOfficeShowService.selectObjs(showWrapper);
+
         Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
                 .andNew("office_id IN(SELECT office_id FROM report_answer WHERE item_id="+itemId+")")
                 .eq(ItemOffice.ITEM_ID, itemId)
@@ -156,7 +162,7 @@ public class ReportService implements IReportService {
             TitleData data = new TitleData();
             data.setId(v.getOfficeId());
             data.setTitle(v.getTitle());
-            data.setSelected(false);
+            data.setSelected(selectIds.contains(v.getOfficeId()));
             result.add(data);
         });
         return result;
