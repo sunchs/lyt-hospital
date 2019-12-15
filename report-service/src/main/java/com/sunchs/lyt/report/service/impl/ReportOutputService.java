@@ -48,6 +48,9 @@ public class ReportOutputService implements IReportOutputService {
     @Autowired
     private QuestionTagServiceImpl questionTagService;
 
+    @Autowired
+    private QuestionnaireServiceImpl questionnaireService;
+
     @Override
     public String getItemOfficeAnswer(OutputParam param) {
         Wrapper<ReportAnswer> reportAnswerWrapper = new EntityWrapper<ReportAnswer>()
@@ -90,8 +93,10 @@ public class ReportOutputService implements IReportOutputService {
 
             int columnPos = 0;
             int linePos = 0;
+            sheet.addCell(new Label(columnPos++, linePos, "病人ID", format));
             sheet.addCell(new Label(columnPos++, linePos, "调查医院", format));
             sheet.addCell(new Label(columnPos++, linePos, "调查科室", format));
+            sheet.addCell(new Label(columnPos++, linePos, "调查问卷", format));
             sheet.addCell(new Label(columnPos++, linePos, "调查开始", format));
             sheet.addCell(new Label(columnPos++, linePos, "调查结束", format));
             for (ReportAnswerOption answerOption : reportAnswerOptionGroupList) {
@@ -106,9 +111,10 @@ public class ReportOutputService implements IReportOutputService {
             for (ReportAnswer answer : reportAnswerList) {
                 columnPos = 0;
                 linePos++;
-
+                sheet.addCell(new Label(columnPos++, linePos, answer.getPatientNumber()));
                 sheet.addCell(new Label(columnPos++, linePos, hospitalName));
                 sheet.addCell(new Label(columnPos++, linePos, hospitalOfficeName));
+                sheet.addCell(new Label(columnPos++, linePos, getQuestionnaireNameById(answer.getQuestionnaireId())));
                 sheet.addCell(new Label(columnPos++, linePos, FormatUtil.dateTime(answer.getStartTime())));
                 sheet.addCell(new Label(columnPos++, linePos, FormatUtil.dateTime(answer.getEndTime())));
 
@@ -214,6 +220,16 @@ public class ReportOutputService implements IReportOutputService {
         Wrapper<HospitalOffice> wrapper = new EntityWrapper<HospitalOffice>()
                 .eq(HospitalOffice.ID, officeId);
         HospitalOffice row = hospitalOfficeService.selectOne(wrapper);
+        if (Objects.nonNull(row)) {
+            return row.getTitle();
+        }
+        return "";
+    }
+
+    private String getQuestionnaireNameById(int questionnaireId) {
+        Wrapper<Questionnaire> wrapper = new EntityWrapper<Questionnaire>()
+                .eq(Questionnaire.ID, questionnaireId);
+        Questionnaire row = questionnaireService.selectOne(wrapper);
         if (Objects.nonNull(row)) {
             return row.getTitle();
         }
