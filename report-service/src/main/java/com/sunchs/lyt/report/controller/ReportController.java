@@ -7,6 +7,7 @@ import com.sunchs.lyt.framework.controller.BaseController;
 import com.sunchs.lyt.framework.util.RedisUtil;
 import com.sunchs.lyt.report.bean.AnswerQuestionParam;
 import com.sunchs.lyt.report.bean.ItemTotalParam;
+import com.sunchs.lyt.report.bean.SettingParam;
 import com.sunchs.lyt.report.bean.TotalParam;
 import com.sunchs.lyt.report.service.impl.ReportFactoryService;
 import com.sunchs.lyt.report.service.impl.ReportService;
@@ -123,5 +124,25 @@ public class ReportController extends BaseController {
         Integer itemId = data.getInt("itemId");
         Integer officeType = data.getInt("officeType");
         return success(reportService.getItemUseTarget(itemId, officeType));
+    }
+
+    /**
+     * 科室显示字段设置
+     */
+    @PostMapping("/saveSettingItemOffice")
+    public ResultData saveSettingItemOffice(@RequestBody RequestData data) {
+        SettingParam param = data.toObject(SettingParam.class);
+        reportService.saveSettingItemOffice(param);
+        return success();
+    }
+
+    /**
+     * 指标显示字段设置
+     */
+    @PostMapping("/saveSettingItemTarget")
+    public ResultData saveSettingItemTarget(@RequestBody RequestData data) {
+        SettingParam param = data.toObject(SettingParam.class);
+        reportService.saveSettingItemTarget(param);
+        return success();
     }
 }

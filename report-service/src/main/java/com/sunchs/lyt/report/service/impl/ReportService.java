@@ -43,6 +43,12 @@ public class ReportService implements IReportService {
     @Autowired
     private QuestionTargetServiceImpl questionTargetService;
 
+    @Autowired
+    private SettingItemOfficeShowServiceImpl settingItemOfficeShowService;
+
+    @Autowired
+    private SettingItemTargetShowServiceImpl settingItemTargetShowService;
+
     @Override
     public PagingList<ItemTotalData> getItemTotalList(ItemTotalParam param) {
         List<ItemTotalData> list = new ArrayList<>();
@@ -170,6 +176,44 @@ public class ReportService implements IReportService {
             result.add(data);
         });
         return result;
+    }
+
+    @Override
+    public void saveSettingItemOffice(SettingParam param) {
+        if (Objects.isNull(param.getOfficeList()) || param.getOfficeList().size() == 0) {
+            throw new ReportException("最少需要一个科室");
+        }
+        Wrapper<SettingItemOfficeShow> wrapper = new EntityWrapper<>();
+        wrapper.eq(SettingItemOfficeShow.ITEM_ID, param.getItemId());
+        wrapper.eq(SettingItemOfficeShow.POSITION, param.getPosition());
+        settingItemOfficeShowService.delete(wrapper);
+
+        param.getOfficeList().forEach(id -> {
+            SettingItemOfficeShow data = new SettingItemOfficeShow();
+            data.setItemId(param.getItemId());
+            data.setOfficeId(id);
+            data.setPosition(param.getPosition());
+            settingItemOfficeShowService.insert(data);
+        });
+    }
+
+    @Override
+    public void saveSettingItemTarget(SettingParam param) {
+        if (Objects.isNull(param.getTargetList()) || param.getTargetList().size() == 0) {
+            throw new ReportException("最少需要一个指标");
+        }
+        Wrapper<SettingItemTargetShow> wrapper = new EntityWrapper<>();
+        wrapper.eq(SettingItemTargetShow.ITEM_ID, param.getItemId());
+        wrapper.eq(SettingItemTargetShow.POSITION, param.getPosition());
+        settingItemTargetShowService.delete(wrapper);
+
+        param.getTargetList().forEach(id -> {
+            SettingItemTargetShow data = new SettingItemTargetShow();
+            data.setItemId(param.getItemId());
+            data.setTargetId(id);
+            data.setPosition(param.getPosition());
+            settingItemTargetShowService.insert(data);
+        });
     }
 
     /**

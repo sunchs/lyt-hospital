@@ -2,10 +2,7 @@ package com.sunchs.lyt.report.service;
 
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.bean.TitleData;
-import com.sunchs.lyt.report.bean.AnswerQuestionData;
-import com.sunchs.lyt.report.bean.AnswerQuestionParam;
-import com.sunchs.lyt.report.bean.ItemTotalData;
-import com.sunchs.lyt.report.bean.ItemTotalParam;
+import com.sunchs.lyt.report.bean.*;
 
 import java.util.List;
 
@@ -30,4 +27,14 @@ public interface IReportService {
      * 项目已使用的指标
      */
     List<TitleData> getItemUseTarget(Integer itemId, Integer officeType);
+
+    /**
+     * 保存项目科室显示设置
+     */
+    void saveSettingItemOffice(SettingParam param);
+
+    /**
+     * 保存项目指标显示设置
+     */
+    void saveSettingItemTarget(SettingParam param);
 }
