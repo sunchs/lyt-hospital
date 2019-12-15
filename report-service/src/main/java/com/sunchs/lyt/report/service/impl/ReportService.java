@@ -147,10 +147,11 @@ public class ReportService implements IReportService {
     @Override
     public List<TitleData> getItemUseOffice(Integer itemId, Integer officeType) {
         List<TitleData> result = new ArrayList<>();
+        // 获取默认选择项
         Wrapper<SettingItemOfficeShow> showWrapper = new EntityWrapper<>();
         showWrapper.setSqlSelect(SettingItemOfficeShow.OFFICE_ID+" as officeId");
         showWrapper.eq(SettingItemOfficeShow.ITEM_ID, itemId);
-        showWrapper.eq(SettingItemTargetShow.POSITION, 1);
+        showWrapper.eq(SettingItemOfficeShow.POSITION, 1);
         List<Integer> selectIds = (List<Integer>)(List)settingItemOfficeShowService.selectObjs(showWrapper);
 
         Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
@@ -171,6 +172,13 @@ public class ReportService implements IReportService {
     @Override
     public List<TitleData> getItemUseTarget(Integer itemId, Integer officeType) {
         List<TitleData> result = new ArrayList<>();
+        // 获取默认选择项
+        Wrapper<SettingItemTargetShow> showWrapper = new EntityWrapper<>();
+        showWrapper.setSqlSelect(SettingItemTargetShow.TARGET_ID+" as targetId");
+        showWrapper.eq(SettingItemTargetShow.ITEM_ID, itemId);
+        showWrapper.eq(SettingItemTargetShow.POSITION, 1);
+        List<Integer> selectIds = (List<Integer>)(List)settingItemTargetShowService.selectObjs(showWrapper);
+
         Wrapper<QuestionTarget> wrapper = new EntityWrapper<QuestionTarget>()
                 .andNew("id IN(SELECT target_three FROM report_answer_quantity WHERE item_id="+itemId+" AND target_one="+officeType+")");
         List<QuestionTarget> targetList = questionTargetService.selectList(wrapper);
@@ -178,7 +186,7 @@ public class ReportService implements IReportService {
             TitleData data = new TitleData();
             data.setId(v.getId());
             data.setTitle(v.getTitle());
-            data.setSelected(false);
+            data.setSelected(selectIds.contains(v.getId()));
             result.add(data);
         });
         return result;
