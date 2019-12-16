@@ -103,6 +103,8 @@ public class AnswerFooService implements IAnswerFooService {
                     if (q.getOptionMode().equals("text")) {
                         AnswerOption answerOption = new AnswerOption();
                         answerOption.setAnswerId(data.getId());
+                        answerOption.setItemId(param.getItemId());
+                        answerOption.setQuestionnaireId(data.getQuestionnaireId());
                         answerOption.setQuestionId(q.getQuestionId());
                         answerOption.setQuestionName(getQuestionNameById(q.getQuestionId()));
                         answerOption.setOptionId(0);
@@ -117,6 +119,8 @@ public class AnswerFooService implements IAnswerFooService {
                             if (Objects.nonNull(option) && option.getQuestionId().equals(q.getQuestionId())) {
                                 AnswerOption answerOption = new AnswerOption();
                                 answerOption.setAnswerId(data.getId());
+                                answerOption.setItemId(param.getItemId());
+                                answerOption.setQuestionnaireId(data.getQuestionnaireId());
                                 answerOption.setQuestionId(q.getQuestionId());
                                 answerOption.setQuestionName(getQuestionNameById(q.getQuestionId()));
 //                    answerOption.setQuestionName(q.getQuestionName());

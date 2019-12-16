@@ -6,6 +6,8 @@
     <resultMap id="BaseResultMap" type="com.sunchs.lyt.db.business.entity.AnswerOption">
         <id column="id" property="id" />
         <result column="answer_id" property="answerId" />
+        <result column="item_id" property="itemId" />
+        <result column="questionnaire_id" property="questionnaireId" />
         <result column="question_id" property="questionId" />
         <result column="question_name" property="questionName" />
         <result column="option_id" property="optionId" />

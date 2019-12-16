@@ -14,7 +14,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-08-14
+ * @since 2019-12-17
  */
 @TableName("report_answer_option")
 public class ReportAnswerOption extends Model<ReportAnswerOption> {
@@ -32,6 +32,18 @@ public class ReportAnswerOption extends Model<ReportAnswerOption> {
      */
     @TableField("answer_id")
     private Integer answerId;
+
+    /**
+     * 项目ID
+     */
+    @TableField("item_id")
+    private Integer itemId;
+
+    /**
+     * 问卷ID
+     */
+    @TableField("questionnaire_id")
+    private Integer questionnaireId;
 
     /**
      * 问题ID
@@ -85,6 +97,20 @@ public class ReportAnswerOption extends Model<ReportAnswerOption> {
 
     public void setAnswerId(Integer answerId) {
         this.answerId = answerId;
+    }
+    public Integer getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(Integer itemId) {
+        this.itemId = itemId;
+    }
+    public Integer getQuestionnaireId() {
+        return questionnaireId;
+    }
+
+    public void setQuestionnaireId(Integer questionnaireId) {
+        this.questionnaireId = questionnaireId;
     }
     public Integer getQuestionId() {
         return questionId;
@@ -140,6 +166,10 @@ public class ReportAnswerOption extends Model<ReportAnswerOption> {
 
     public static final String ANSWER_ID = "answer_id";
 
+    public static final String ITEM_ID = "item_id";
+
+    public static final String QUESTIONNAIRE_ID = "questionnaire_id";
+
     public static final String QUESTION_ID = "question_id";
 
     public static final String QUESTION_NAME = "question_name";
@@ -164,6 +194,8 @@ public class ReportAnswerOption extends Model<ReportAnswerOption> {
         return "ReportAnswerOption{" +
         "id=" + id +
         ", answerId=" + answerId +
+        ", itemId=" + itemId +
+        ", questionnaireId=" + questionnaireId +
         ", questionId=" + questionId +
         ", questionName=" + questionName +
         ", optionId=" + optionId +

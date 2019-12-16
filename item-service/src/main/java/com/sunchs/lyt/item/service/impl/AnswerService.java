@@ -129,6 +129,8 @@ public class AnswerService implements IAnswerService {
         answerOptions.forEach(row -> {
             ReportAnswerOption option = new ReportAnswerOption();
             option.setAnswerId(row.getAnswerId());
+            option.setItemId(row.getItemId());
+            option.setQuestionnaireId(row.getQuestionnaireId());
             option.setQuestionId(row.getQuestionId());
             option.setQuestionName(row.getQuestionName());
             option.setOptionId(row.getOptionId());
