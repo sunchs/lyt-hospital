@@ -51,6 +51,9 @@ public class ReportOutputService implements IReportOutputService {
     @Autowired
     private QuestionnaireServiceImpl questionnaireService;
 
+    @Autowired
+    private UserServiceImpl userService;
+
     @Override
     public String getItemOfficeAnswer(OutputParam param) {
         Wrapper<ReportAnswer> reportAnswerWrapper = new EntityWrapper<ReportAnswer>()
@@ -93,6 +96,7 @@ public class ReportOutputService implements IReportOutputService {
 
             int columnPos = 0;
             int linePos = 0;
+            sheet.addCell(new Label(columnPos++, linePos, "调查员账号", format));
             sheet.addCell(new Label(columnPos++, linePos, "病人ID", format));
             sheet.addCell(new Label(columnPos++, linePos, "调查医院", format));
             sheet.addCell(new Label(columnPos++, linePos, "调查科室", format));
@@ -111,6 +115,7 @@ public class ReportOutputService implements IReportOutputService {
             for (ReportAnswer answer : reportAnswerList) {
                 columnPos = 0;
                 linePos++;
+                sheet.addCell(new Label(columnPos++, linePos, getUserNameById(answer.getCreateId())));
                 sheet.addCell(new Label(columnPos++, linePos, answer.getPatientNumber()));
                 sheet.addCell(new Label(columnPos++, linePos, hospitalName));
                 sheet.addCell(new Label(columnPos++, linePos, hospitalOfficeName));
@@ -232,6 +237,16 @@ public class ReportOutputService implements IReportOutputService {
         Questionnaire row = questionnaireService.selectOne(wrapper);
         if (Objects.nonNull(row)) {
             return row.getTitle();
+        }
+        return "";
+    }
+
+    private String getUserNameById(int userId) {
+        Wrapper<User> wrapper = new EntityWrapper<User>()
+                .eq(User.ID, userId);
+        User row = userService.selectOne(wrapper);
+        if (Objects.nonNull(row)) {
+            return row.getName();
         }
         return "";
     }
