@@ -242,6 +242,9 @@ public class ReportOutputService implements IReportOutputService {
     }
 
     private String getUserNameById(int userId) {
+        if (userId <= 0) {
+            return "无";
+        }
         Wrapper<User> wrapper = new EntityWrapper<User>()
                 .eq(User.ID, userId);
         User row = userService.selectOne(wrapper);
