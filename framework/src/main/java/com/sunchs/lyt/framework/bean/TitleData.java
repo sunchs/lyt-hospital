@@ -3,6 +3,7 @@ package com.sunchs.lyt.framework.bean;
 public class TitleData {
 
     private Integer id;
+    private Integer type;
     private String title;
     private boolean isSelected;
 
@@ -12,6 +13,14 @@ public class TitleData {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public String getTitle() {
