@@ -21,10 +21,19 @@ public class ReportSettingController extends BaseController {
     /**
      * 获取项目已使用的问卷
      */
-    @PostMapping("/itemTotalList")
-    public ResultData getItemTotalList(@RequestBody RequestData data) {
+    @PostMapping("/getItemUseQuestionnaireList")
+    public ResultData getItemUseQuestionnaireList(@RequestBody RequestData data) {
         ItemSettingParam param = data.toObject(ItemSettingParam.class);
         return success(reportSettingService.getItemUseQuestionnaireList(param.getItemId()));
+    }
+
+    /**
+     * 获取问卷-题目-答案，三级联动
+     */
+    @PostMapping("/getItemUseAllList")
+    public ResultData getItemUseAllList(@RequestBody RequestData data) {
+        ItemSettingParam param = data.toObject(ItemSettingParam.class);
+        return success(reportSettingService.getItemUseAllList(param.getItemId()));
     }
 
 }
