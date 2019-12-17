@@ -15,10 +15,7 @@ import com.sunchs.lyt.report.service.IReportSettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,20 +52,18 @@ public class ReportSettingService implements IReportSettingService {
     }
 
     @Override
-    public List<SelectChildData> getItemUseAllList(Integer itemId) {
-        List<SelectChildData> result = new ArrayList<>();
+    public List<Map<String, Object>> getItemUseAllList(Integer itemId) {
+        List<Map<String, Object>> result = new ArrayList<>();
         List<TitleData> itemUseQuestionnaireList = getItemUseQuestionnaireList(itemId);
         Map<Integer, List<TitleData>> groupList = itemUseQuestionnaireList.stream().collect(Collectors.groupingBy(TitleData::getType));
         for (Integer type : groupList.keySet()) {
-            SelectChildData pData = new SelectChildData();
-            pData.setId(type);
-            pData.setPid(0);
-            pData.setTitle(OfficeTypeEnum.get(type));
-            pData.setSelected(false);
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", type);
+            map.put("title", OfficeTypeEnum.get(type));
             // 获取列表
             List<TitleData> sonList = groupList.get(type);
-            pData.setChildren(getQuestionList(itemId, sonList));
-            result.add(pData);
+            map.put("children", getQuestionList(itemId, sonList));
+            result.add(map);
         }
         return result;
     }
@@ -84,36 +79,31 @@ public class ReportSettingService implements IReportSettingService {
         return null;
     }
 
-    private List<SelectChildData> getQuestionList(Integer itemId, List<TitleData> list) {
-        List<SelectChildData> result = new ArrayList<>();
+    private List<Map<String, Object>> getQuestionList(Integer itemId, List<TitleData> list) {
+        List<Map<String, Object>> result = new ArrayList<>();
         list.forEach(wj->{
-            SelectChildData pData = new SelectChildData();
-            pData.setId(wj.getId());
-            pData.setPid(wj.getType());
-            pData.setTitle(wj.getTitle());
-            pData.setSelected(false);
-
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", wj.getId());
+            map.put("title", wj.getTitle());
             Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
                     .eq(ReportAnswerOption.ITEM_ID, itemId)
                     .eq(ReportAnswerOption.QUESTIONNAIRE_ID, wj.getId())
                     .groupBy(ReportAnswerOption.QUESTION_ID);
             List<ReportAnswerOption> answerOptionList = reportAnswerOptionService.selectList(wrapper);
-            pData.setChildren(getOptionList(itemId, answerOptionList));
-            result.add(pData);
+            map.put("children", getOptionList(itemId, answerOptionList));
+            result.add(map);
         });
         return result;
     }
 
-    private List<SelectChildData> getOptionList(Integer itemId, List<ReportAnswerOption> answerOptionList) {
-        List<SelectChildData> result = new ArrayList<>();
+    private List<Map<String, Object>> getOptionList(Integer itemId, List<ReportAnswerOption> answerOptionList) {
+        List<Map<String, Object>> result = new ArrayList<>();
         answerOptionList.forEach(a->{
-            SelectChildData pData = new SelectChildData();
-            pData.setId(a.getQuestionId());
-            pData.setPid(a.getQuestionnaireId());
-            pData.setTitle(a.getQuestionName());
-            pData.setSelected(false);
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", a.getQuestionId());
+            map.put("title", a.getQuestionName());
 
-            List<SelectChildData> oList = new ArrayList<>();
+            List<Map<String, Object>> oList = new ArrayList<>();
             Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
                     .eq(ReportAnswerOption.ITEM_ID, itemId)
                     .eq(ReportAnswerOption.QUESTIONNAIRE_ID, a.getQuestionnaireId())
@@ -121,16 +111,13 @@ public class ReportSettingService implements IReportSettingService {
                     .groupBy(ReportAnswerOption.OPTION_ID);
             List<ReportAnswerOption> optionList = reportAnswerOptionService.selectList(wrapper);
             optionList.forEach(b->{
-                SelectChildData oSon = new SelectChildData();
-                oSon.setId(b.getOptionId());
-                oSon.setPid(b.getQuestionId());
-                oSon.setTitle(b.getOptionName());
-                oSon.setSelected(false);
-                oSon.setChildren(new ArrayList<>());
-                oList.add(oSon);
+                Map<String, Object> m = new HashMap<>();
+                m.put("id", b.getOptionId());
+                m.put("title", b.getOptionName());
+                oList.add(m);
             });
-            pData.setChildren(oList);
-            result.add(pData);
+            map.put("children", oList);
+            result.add(map);
         });
         return result;
     }

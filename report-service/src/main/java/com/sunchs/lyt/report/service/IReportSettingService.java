@@ -4,6 +4,7 @@ import com.sunchs.lyt.framework.bean.SelectChildData;
 import com.sunchs.lyt.framework.bean.TitleData;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IReportSettingService {
 
@@ -15,5 +16,5 @@ public interface IReportSettingService {
     /**
      *
      */
-    List<SelectChildData> getItemUseAllList(Integer itemId);
+    List<Map<String, Object>> getItemUseAllList(Integer itemId);
 }
