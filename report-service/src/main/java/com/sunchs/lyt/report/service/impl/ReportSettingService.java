@@ -99,6 +99,7 @@ public class ReportSettingService implements IReportSettingService {
                     .groupBy(ReportAnswerOption.QUESTION_ID);
             List<ReportAnswerOption> answerOptionList = reportAnswerOptionService.selectList(wrapper);
             pData.setChildren(getOptionList(itemId, answerOptionList));
+            result.add(pData);
         });
         return result;
     }
