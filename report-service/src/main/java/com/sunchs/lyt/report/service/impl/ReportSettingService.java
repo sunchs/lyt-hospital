@@ -6,6 +6,7 @@ import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.TitleData;
 import com.sunchs.lyt.framework.enums.OfficeTypeEnum;
+import com.sunchs.lyt.report.bean.CustomItemOfficeSettingParam;
 import com.sunchs.lyt.report.service.IReportSettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,12 @@ public class ReportSettingService implements IReportSettingService {
 
     @Autowired
     private QuestionTargetServiceImpl questionTargetService;
+
+    @Autowired
+    private CustomItemOfficeServiceImpl customItemOfficeService;
+
+    @Autowired
+    private CustomItemTargetServiceImpl customItemTargetService;
 
     @Override
     public List<TitleData> getItemUseQuestionnaireList(Integer itemId) {
@@ -100,6 +107,45 @@ public class ReportSettingService implements IReportSettingService {
             result.add(map);
         }
         return result;
+    }
+
+    @Override
+    public void saveCustomItemOfficeSetting(CustomItemOfficeSettingParam param) {
+        // 清理历史数据
+        Wrapper<CustomItemOffice> customItemOfficeWrapper = new EntityWrapper<CustomItemOffice>()
+                .eq(CustomItemOffice.ITEM_ID, param.getItemId());
+        customItemOfficeService.delete(customItemOfficeWrapper);
+        // 清理历史数据
+        Wrapper<CustomItemTarget> customItemTargetWrapper = new EntityWrapper<CustomItemTarget>()
+                .eq(CustomItemTarget.ITEM_ID, param.getItemId());
+        customItemTargetService.delete(customItemTargetWrapper);
+
+        // 写入新数据
+        param.getCustomList().forEach(row->{
+            if ( ! row.getTitle().equals("") && row.getOptionId() > 0 && row.getQuestionId() > 0 &&
+                    row.getQuestionnaireId() > 0 && Objects.nonNull(row.getTargetList()) && row.getTargetList().size() > 0) {
+                CustomItemOffice data = new CustomItemOffice();
+                data.setItemId(param.getItemId());
+                data.setOfficeType(param.getOfficeType());
+                data.setTitle(row.getTitle());
+                data.setQuestionnaireId(row.getQuestionnaireId());
+                data.setQuestionId(row.getQuestionId());
+                data.setOptionId(row.getOptionId());
+                if (customItemOfficeService.insert(data)) {
+                    row.getTargetList().forEach(t -> {
+                        if (t.getTargetThree() > 0) {
+                            CustomItemTarget target = new CustomItemTarget();
+                            target.setCustomId(data.getId());
+                            target.setItemId(data.getItemId());
+                            target.setTargetOne(t.getTargetOne());
+                            target.setTargetTwo(t.getTargetTwo());
+                            target.setTargetThree(t.getTargetThree());
+                            customItemTargetService.insert(target);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private List<Map<String, Object>> getTwoTarget(List<ReportAnswerQuantity> twoTempList, Map<Integer, String> targetMap) {

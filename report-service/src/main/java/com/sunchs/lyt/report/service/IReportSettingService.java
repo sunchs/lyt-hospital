@@ -2,6 +2,7 @@ package com.sunchs.lyt.report.service;
 
 import com.sunchs.lyt.framework.bean.SelectChildData;
 import com.sunchs.lyt.framework.bean.TitleData;
+import com.sunchs.lyt.report.bean.CustomItemOfficeSettingParam;
 
 import java.util.List;
 import java.util.Map;
@@ -22,4 +23,9 @@ public interface IReportSettingService {
      * 根据 问卷ID 获取答卷中的指标
      */
     List<Map<String, Object>> getItemQuestionnaireUseTarget(Integer itemId, Integer id);
+
+    /**
+     *
+     */
+    void saveCustomItemOfficeSetting(CustomItemOfficeSettingParam param);
 }

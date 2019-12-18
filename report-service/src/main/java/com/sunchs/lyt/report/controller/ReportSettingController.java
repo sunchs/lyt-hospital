@@ -3,6 +3,7 @@ package com.sunchs.lyt.report.controller;
 import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
+import com.sunchs.lyt.report.bean.CustomItemOfficeSettingParam;
 import com.sunchs.lyt.report.bean.ItemSettingParam;
 import com.sunchs.lyt.report.service.impl.ReportSettingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,5 +45,15 @@ public class ReportSettingController extends BaseController {
         Integer itemId = data.getInt("itemId");
         Integer questionnaireId = data.getInt("questionnaireId");
         return success(reportSettingService.getItemQuestionnaireUseTarget(itemId, questionnaireId));
+    }
+
+    /**
+     * 保存自定义科室配置
+     */
+    @PostMapping("/saveCustomItemOfficeSetting")
+    public ResultData saveCustomItemOfficeSetting(@RequestBody RequestData data) {
+        CustomItemOfficeSettingParam param = data.toObject(CustomItemOfficeSettingParam.class);
+        reportSettingService.saveCustomItemOfficeSetting(param);
+        return success();
     }
 }

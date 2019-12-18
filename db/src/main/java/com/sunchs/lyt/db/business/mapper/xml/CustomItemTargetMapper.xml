@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sunchs.lyt.db.business.mapper.CustomItemTargetMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sunchs.lyt.db.business.entity.CustomItemTarget">
+        <id column="id" property="id" />
+        <result column="custom_id" property="customId" />
+        <result column="item_id" property="itemId" />
+        <result column="target_one" property="targetOne" />
+        <result column="target_two" property="targetTwo" />
+        <result column="target_three" property="targetThree" />
+    </resultMap>
+
+</mapper>
