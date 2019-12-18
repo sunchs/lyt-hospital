@@ -36,4 +36,13 @@ public class ReportSettingController extends BaseController {
         return success(reportSettingService.getItemUseAllList(param.getItemId()));
     }
 
+    /**
+     * 根据 问卷ID 获取答卷中的指标
+     */
+    @PostMapping("/getQuestionnaireUseTarget")
+    public ResultData getQuestionnaireUseTarget(@RequestBody RequestData data) {
+        Integer itemId = data.getInt("itemId");
+        Integer questionnaireId = data.getInt("questionnaireId");
+        return success(reportSettingService.getItemQuestionnaireUseTarget(itemId, questionnaireId));
+    }
 }

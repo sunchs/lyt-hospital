@@ -17,4 +17,9 @@ public interface IReportSettingService {
      *
      */
     List<Map<String, Object>> getItemUseAllList(Integer itemId);
+
+    /**
+     * 根据 问卷ID 获取答卷中的指标
+     */
+    List<Map<String, Object>> getItemQuestionnaireUseTarget(Integer itemId, Integer id);
 }

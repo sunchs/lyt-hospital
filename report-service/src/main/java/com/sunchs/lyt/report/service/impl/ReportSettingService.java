@@ -2,13 +2,8 @@ package com.sunchs.lyt.report.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.sunchs.lyt.db.business.entity.Questionnaire;
-import com.sunchs.lyt.db.business.entity.ReportAnswer;
-import com.sunchs.lyt.db.business.entity.ReportAnswerOption;
-import com.sunchs.lyt.db.business.service.impl.QuestionnaireServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.ReportAnswerOptionServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.ReportAnswerServiceImpl;
-import com.sunchs.lyt.framework.bean.SelectChildData;
+import com.sunchs.lyt.db.business.entity.*;
+import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.TitleData;
 import com.sunchs.lyt.framework.enums.OfficeTypeEnum;
 import com.sunchs.lyt.report.service.IReportSettingService;
@@ -29,6 +24,12 @@ public class ReportSettingService implements IReportSettingService {
 
     @Autowired
     private QuestionnaireServiceImpl questionnaireService;
+
+    @Autowired
+    private ReportAnswerQuantityServiceImpl reportAnswerQuantityService;
+
+    @Autowired
+    private QuestionTargetServiceImpl questionTargetService;
 
     @Override
     public List<TitleData> getItemUseQuestionnaireList(Integer itemId) {
@@ -65,6 +66,66 @@ public class ReportSettingService implements IReportSettingService {
             map.put("children", getQuestionList(itemId, sonList));
             result.add(map);
         }
+        return result;
+    }
+
+    @Override
+    public List<Map<String, Object>> getItemQuestionnaireUseTarget(Integer itemId, Integer questionnaireId) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        Wrapper<ReportAnswerQuantity> wrapper = new EntityWrapper<ReportAnswerQuantity>()
+                .eq(ReportAnswerQuantity.ITEM_ID, itemId)
+                .eq(ReportAnswerQuantity.QUESTIONNAIRE_ID, questionnaireId);
+        List<ReportAnswerQuantity> list = reportAnswerQuantityService.selectList(wrapper);
+        Set<Integer> targetIds = new HashSet<>();
+        list.forEach(t->{
+            targetIds.add(t.getTargetOne());
+            targetIds.add(t.getTargetTwo());
+            targetIds.add(t.getTargetThree());
+        });
+        Wrapper<QuestionTarget> targetWrapper = new EntityWrapper<QuestionTarget>()
+                .setSqlSelect(QuestionTarget.ID, QuestionTarget.TITLE)
+                .in(QuestionTarget.ID, targetIds);
+        List<QuestionTarget> targetList = questionTargetService.selectList(targetWrapper);
+        Map<Integer, String> targetMap = targetList.stream().collect(Collectors.toMap(QuestionTarget::getId, QuestionTarget::getTitle));
+
+        Map<Integer, List<ReportAnswerQuantity>> oneList = list.stream().collect(Collectors.groupingBy(ReportAnswerQuantity::getTargetOne));
+        for (Integer oneId : oneList.keySet()) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", oneId);
+            map.put("title", targetMap.get(oneId));
+            List<ReportAnswerQuantity> twoTempList = oneList.get(oneId);
+            if (Objects.nonNull(twoTempList) && twoTempList.size() > 0) {
+                map.put("children", getTwoTarget(twoTempList, targetMap));
+            }
+            result.add(map);
+        }
+        return result;
+    }
+
+    private List<Map<String, Object>> getTwoTarget(List<ReportAnswerQuantity> twoTempList, Map<Integer, String> targetMap) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        Map<Integer, List<ReportAnswerQuantity>> twoList = twoTempList.stream().collect(Collectors.groupingBy(ReportAnswerQuantity::getTargetTwo));
+        for (Integer towId : twoList.keySet()) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", towId);
+            map.put("title", targetMap.get(towId));
+            List<ReportAnswerQuantity> threeList = twoList.get(towId);
+            if (Objects.nonNull(threeList) && threeList.size() > 0) {
+                map.put("children", getThreeTarget(threeList, targetMap));
+            }
+            result.add(map);
+        }
+        return result;
+    }
+
+    private List<Map<String, Object>> getThreeTarget(List<ReportAnswerQuantity> list, Map<Integer, String> targetMap) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        list.forEach(t->{
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", t.getTargetThree());
+            map.put("title", targetMap.get(t.getTargetThree()));
+            result.add(map);
+        });
         return result;
     }
 
