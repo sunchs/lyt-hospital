@@ -119,13 +119,14 @@ public class ReportSettingService implements IReportSettingService {
     }
 
     private List<Map<String, Object>> getThreeTarget(List<ReportAnswerQuantity> list, Map<Integer, String> targetMap) {
+        Map<Integer, List<ReportAnswerQuantity>> groupList = list.stream().collect(Collectors.groupingBy(ReportAnswerQuantity::getTargetThree));
         List<Map<String, Object>> result = new ArrayList<>();
-        list.forEach(t->{
+        for (Integer threeId : groupList.keySet()) {
             Map<String, Object> map = new HashMap<>();
-            map.put("id", t.getTargetThree());
-            map.put("title", targetMap.get(t.getTargetThree()));
+            map.put("id", threeId);
+            map.put("title", targetMap.get(threeId));
             result.add(map);
-        });
+        }
         return result;
     }
 
