@@ -74,7 +74,7 @@ public class PostmanController extends BaseController {
             optionTemplateWrapper.eq(OptionTemplate.CONTENT, value);
             optionTemplateWrapper.eq(OptionTemplate.STATUS, 1);
             OptionTemplate optionTemplate = optionTemplateService.selectOne(optionTemplateWrapper);
-            if (Objects.nonNull(optionTemplate)) {
+            if (Objects.nonNull(optionTemplate) && (optionTemplate.getMode().equals(1) || optionTemplate.getMode().equals(4))) {
                 String[] scoreArr = optionTemplate.getScore().split(",");
                 String[] contentArr = optionTemplate.getContent().split(",");
                 questionOptionList.forEach(a->{
