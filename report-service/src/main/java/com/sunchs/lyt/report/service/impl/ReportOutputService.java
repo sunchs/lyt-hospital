@@ -22,6 +22,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -67,6 +68,7 @@ public class ReportOutputService implements IReportOutputService {
         }
         List<Integer> reportAnswerIds = reportAnswerList.stream().map(ReportAnswer::getId).collect(Collectors.toList());
 
+        // 获取题目
         Wrapper<ReportAnswerOption> reportAnswerOptionWrapper = new EntityWrapper<ReportAnswerOption>()
                 .in(ReportAnswerOption.ANSWER_ID, reportAnswerIds)
                 .groupBy(ReportAnswerOption.QUESTION_ID);
@@ -75,6 +77,7 @@ public class ReportOutputService implements IReportOutputService {
         Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
                 .in(ReportAnswerOption.ANSWER_ID, reportAnswerIds);
         List<ReportAnswerOption> reportAnswerOptionList = reportAnswerOptionService.selectList(wrapper);
+//        Map<Integer, List<ReportAnswerOption>> questionMap = reportAnswerOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
 
         String hospitalName = getHospitalNameById(reportAnswerList.get(0).getHospitalId());
         String hospitalOfficeName = getOfficeNameById(param.getOfficeId());
@@ -124,12 +127,15 @@ public class ReportOutputService implements IReportOutputService {
                 sheet.addCell(new Label(columnPos++, linePos, FormatUtil.dateTime(answer.getEndTime())));
 
                 for (ReportAnswerOption answerOption : reportAnswerOptionGroupList) {
-                    Optional<ReportAnswerOption> value = reportAnswerOptionList.stream().filter(v ->
+                    List<ReportAnswerOption> optionList = reportAnswerOptionList.stream().filter(v ->
                             v.getAnswerId().equals(answer.getId()) && v.getQuestionId().equals(answerOption.getQuestionId())
-                    ).findFirst();
-                    if (value.isPresent()) {
-                        ReportAnswerOption o = value.get();
-                        sheet.addCell(new Label(columnPos, linePos, o.getOptionName()));
+                    ).collect(Collectors.toList());
+                    if (Objects.nonNull(optionList) && optionList.size() > 0) {
+                        String value = "";
+                        for (ReportAnswerOption option : optionList) {
+                            value += value.equals("") ? option.getOptionName() : ","+option.getOptionName();
+                        }
+                        sheet.addCell(new Label(columnPos, linePos, value));
                     } else {
                         sheet.addCell(new Label(columnPos, linePos, " "));
                     }
