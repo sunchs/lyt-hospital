@@ -34,6 +34,7 @@ public class PostmanController extends BaseController {
     public ResultData updateOptionTemp(@RequestBody RequestData data) {
         Wrapper<QuestionOption> wrapper = new EntityWrapper<>();
         wrapper.orderBy(QuestionOption.SORT, true);
+        wrapper.eq(QuestionOption.TEMPLATE_ID, 0);
         List<QuestionOption> optionList = questionOptionService.selectList(wrapper);
         Map<Integer, List<QuestionOption>> questionGroup = optionList.stream().collect(Collectors.groupingBy(QuestionOption::getQuestionId));
         for (Integer questionId : questionGroup.keySet()) {
@@ -44,7 +45,7 @@ public class PostmanController extends BaseController {
             }
             Wrapper<OptionTemplate> optionTemplateWrapper = new EntityWrapper<>();
             optionTemplateWrapper.eq(OptionTemplate.CONTENT, value);
-            optionTemplateWrapper.eq(OptionTemplate.STATUS, 1);
+            optionTemplateWrapper.eq(OptionTemplate.STATUS, 2);
             OptionTemplate optionTemplate = optionTemplateService.selectOne(optionTemplateWrapper);
             if (Objects.nonNull(optionTemplate)) {
                 QuestionOption qOption = new QuestionOption();
@@ -88,7 +89,6 @@ public class PostmanController extends BaseController {
                             e.printStackTrace();
                             System.out.println(a.getQuestionId() + "--->" + optionTemplate.getContent() + " | "+ optionTemplate.getScore());
                         }
-
 
                         Wrapper<QuestionOption> uWrapper = new EntityWrapper<>();
                         uWrapper.eq(QuestionOption.QUESTION_ID, a.getQuestionId());
