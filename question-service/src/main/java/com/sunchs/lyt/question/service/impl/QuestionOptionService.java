@@ -143,7 +143,17 @@ public class QuestionOptionService implements IQuestionOptionService {
         for (OptionTemplate row : filterList) {
             Map<String, Object> map = new HashMap<>();
             map.put("id", row.getId());
-            map.put("title", row.getContent());
+            String[] contentArr = row.getContent().split(",");
+            String[] scoreArr = row.getScore().split(",");
+            if (contentArr.length == scoreArr.length && (row.getPid().equals(1) || row.getPid().equals(4))) {
+                String value = "";
+                for (int i = 0; i < contentArr.length; i++) {
+                    value += value.equals("") ? contentArr[i]+"("+scoreArr[i]+")" : ","+contentArr[i]+"("+scoreArr[i]+")";
+                }
+                map.put("title", value);
+            } else {
+                map.put("title", row.getContent());
+            }
             list.add(map);
         }
         return list;

@@ -9,6 +9,7 @@
         <result column="title" property="title" />
         <result column="score" property="score" />
         <result column="sort" property="sort" />
+        <result column="template_id" property="templateId" />
     </resultMap>
 
 </mapper>

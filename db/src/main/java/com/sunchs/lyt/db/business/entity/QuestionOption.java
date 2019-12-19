@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-11-06
+ * @since 2019-12-20
  */
 @TableName("question_option")
 public class QuestionOption extends Model<QuestionOption> {
@@ -46,6 +46,12 @@ public class QuestionOption extends Model<QuestionOption> {
      * 排序
      */
     private Integer sort;
+
+    /**
+     * 模版ID
+     */
+    @TableField("template_id")
+    private Integer templateId;
 
     public Integer getId() {
         return id;
@@ -82,6 +88,13 @@ public class QuestionOption extends Model<QuestionOption> {
     public void setSort(Integer sort) {
         this.sort = sort;
     }
+    public Integer getTemplateId() {
+        return templateId;
+    }
+
+    public void setTemplateId(Integer templateId) {
+        this.templateId = templateId;
+    }
 
     public static final String ID = "id";
 
@@ -92,6 +105,8 @@ public class QuestionOption extends Model<QuestionOption> {
     public static final String SCORE = "score";
 
     public static final String SORT = "sort";
+
+    public static final String TEMPLATE_ID = "template_id";
 
     @Override
     protected Serializable pkVal() {
@@ -106,6 +121,7 @@ public class QuestionOption extends Model<QuestionOption> {
         ", title=" + title +
         ", score=" + score +
         ", sort=" + sort +
+        ", templateId=" + templateId +
         "}";
     }
 }
