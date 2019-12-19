@@ -82,7 +82,13 @@ public class PostmanController extends BaseController {
                     // 更新模版ID
                     if (scoreArr.length == contentArr.length) {
                         QuestionOption qOption = new QuestionOption();
-                        qOption.setScore(Integer.parseInt(scoreArr[index]));
+                        try {
+                            qOption.setScore(Integer.parseInt(scoreArr[index]));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            System.out.println(a.getQuestionId() + "--->" + optionTemplate.getContent() + " | "+ optionTemplate.getScore());
+                        }
+
 
                         Wrapper<QuestionOption> uWrapper = new EntityWrapper<>();
                         uWrapper.eq(QuestionOption.QUESTION_ID, a.getQuestionId());
