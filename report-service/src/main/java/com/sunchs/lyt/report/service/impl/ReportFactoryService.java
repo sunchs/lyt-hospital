@@ -149,10 +149,12 @@ public class ReportFactoryService implements IReportFactoryService {
                     data.setQuestionnaireId(old.getQuestionnaireId());
                     // 累计
                     for (ReportAnswerQuantity row : group) {
-                        number += row.getQuantity();
-                        score += row.getQuantity() * row.getScore();
-                        data.setQuestionId(row.getQuestionId());
-                        data.setQuestionName(row.getQuestionName());
+                        if (row.getScore() > 0) {
+                            number += row.getQuantity();
+                            score += row.getQuantity() * row.getScore();
+                            data.setQuestionId(row.getQuestionId());
+                            data.setQuestionName(row.getQuestionName());
+                        }
                     }
                     // 指标
                     data.setTargetOne(old.getTargetOne());
