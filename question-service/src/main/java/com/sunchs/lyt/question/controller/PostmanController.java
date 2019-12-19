@@ -75,11 +75,12 @@ public class PostmanController extends BaseController {
             optionTemplateWrapper.eq(OptionTemplate.STATUS, 1);
             OptionTemplate optionTemplate = optionTemplateService.selectOne(optionTemplateWrapper);
             if (Objects.nonNull(optionTemplate)) {
+                String[] scoreArr = optionTemplate.getScore().split(",");
+                String[] contentArr = optionTemplate.getContent().split(",");
                 questionOptionList.forEach(a->{
                     Integer index = a.getSort() - 1;
                     // 更新模版ID
-                    String[] scoreArr = optionTemplate.getScore().split(",");
-                    if (scoreArr.length == optionTemplate.getContent().split(",").length) {
+                    if (scoreArr.length == contentArr.length) {
                         QuestionOption qOption = new QuestionOption();
                         qOption.setScore(Integer.parseInt(scoreArr[index]));
 
