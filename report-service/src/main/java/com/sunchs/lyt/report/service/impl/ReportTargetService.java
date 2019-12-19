@@ -48,6 +48,7 @@ public class ReportTargetService implements IReportTargetService {
         Wrapper<ReportAnswerSatisfy> wrapper = new EntityWrapper<>();
         wrapper.setSqlSelect("office_id as officeId,TRUNCATE(AVG(score),0) as score", ReportAnswerSatisfy.TARGET_ONE+" as targetOne", ReportAnswerSatisfy.TARGET_TWO+" as targetTwo");
         wrapper.eq(ReportAnswerSatisfy.ITEM_ID, param.getItemId());
+        wrapper.ne(ReportAnswerSatisfy.SCORE, 0);
         wrapper.eq(ReportAnswerSatisfy.TARGET_ONE, param.getTargetId());
 
         if (Objects.nonNull(param.getOfficeList()) && param.getOfficeList().size() > 0) {
@@ -86,6 +87,7 @@ public class ReportTargetService implements IReportTargetService {
                 ReportAnswerSatisfy.TARGET_TWO+" as targetTwo",
                 ReportAnswerSatisfy.TARGET_THREE+" as targetThree");
         wrapper.eq(ReportAnswerSatisfy.ITEM_ID, param.getItemId());
+        wrapper.ne(ReportAnswerSatisfy.SCORE, 0);
         wrapper.eq(ReportAnswerSatisfy.TARGET_ONE, param.getTargetId());
 
         if (Objects.nonNull(param.getOfficeList()) && param.getOfficeList().size() > 0) {
