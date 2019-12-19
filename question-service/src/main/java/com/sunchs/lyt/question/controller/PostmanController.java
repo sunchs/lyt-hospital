@@ -31,7 +31,7 @@ public class PostmanController extends BaseController {
     private OptionTemplateServiceImpl optionTemplateService;
 
     @PostMapping("/updateOptionTemp")
-    public ResultData save(@RequestBody RequestData data) {
+    public ResultData updateOptionTemp(@RequestBody RequestData data) {
         Wrapper<QuestionOption> wrapper = new EntityWrapper<>();
         wrapper.orderBy(QuestionOption.SORT, true);
         List<QuestionOption> optionList = questionOptionService.selectList(wrapper);
@@ -53,6 +53,42 @@ public class PostmanController extends BaseController {
                 Wrapper<QuestionOption> uWrapper = new EntityWrapper<>();
                 uWrapper.eq(QuestionOption.QUESTION_ID, questionId);
                 questionOptionService.update(qOption, uWrapper);
+            }
+        }
+        return success();
+    }
+
+    @PostMapping("/updateOptionScore")
+    public ResultData updateOptionScore(@RequestBody RequestData data) {
+        Wrapper<QuestionOption> wrapper = new EntityWrapper<>();
+        wrapper.orderBy(QuestionOption.SORT, true);
+        List<QuestionOption> optionList = questionOptionService.selectList(wrapper);
+        Map<Integer, List<QuestionOption>> questionGroup = optionList.stream().collect(Collectors.groupingBy(QuestionOption::getQuestionId));
+        for (Integer questionId : questionGroup.keySet()) {
+            List<QuestionOption> questionOptionList = questionGroup.get(questionId);
+            String value = "";
+            for (QuestionOption option : questionOptionList) {
+                value += value.equals("") ? option.getTitle() : ","+option.getTitle();
+            }
+            Wrapper<OptionTemplate> optionTemplateWrapper = new EntityWrapper<>();
+            optionTemplateWrapper.eq(OptionTemplate.CONTENT, value);
+            optionTemplateWrapper.eq(OptionTemplate.STATUS, 1);
+            OptionTemplate optionTemplate = optionTemplateService.selectOne(optionTemplateWrapper);
+            if (Objects.nonNull(optionTemplate)) {
+                questionOptionList.forEach(a->{
+                    Integer index = a.getSort() - 1;
+                    // 更新模版ID
+                    String[] scoreArr = optionTemplate.getScore().split(",");
+                    if (scoreArr.length == optionTemplate.getContent().split(",").length) {
+                        QuestionOption qOption = new QuestionOption();
+                        qOption.setScore(Integer.parseInt(scoreArr[index]));
+
+                        Wrapper<QuestionOption> uWrapper = new EntityWrapper<>();
+                        uWrapper.eq(QuestionOption.QUESTION_ID, a.getQuestionId());
+                        uWrapper.eq(QuestionOption.SORT, a.getSort());
+                        questionOptionService.update(qOption, uWrapper);
+                    }
+                });
             }
         }
         return success();
