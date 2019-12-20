@@ -7,9 +7,11 @@
         <id column="id" property="id" />
         <result column="hospital_id" property="hospitalId" />
         <result column="item_id" property="itemId" />
+        <result column="office_type_id" property="officeTypeId" />
         <result column="office_id" property="officeId" />
         <result column="questionnaire_id" property="questionnaireId" />
         <result column="user_id" property="userId" />
+        <result column="member_id" property="memberId" />
         <result column="patient_number" property="patientNumber" />
         <result column="status" property="status" />
         <result column="reason" property="reason" />

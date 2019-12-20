@@ -130,6 +130,7 @@ public class AnswerService implements IAnswerService {
             ReportAnswerOption option = new ReportAnswerOption();
             option.setAnswerId(row.getAnswerId());
             option.setItemId(row.getItemId());
+            option.setOfficeTypeId(row.getOfficeTypeId());
             option.setQuestionnaireId(row.getQuestionnaireId());
             option.setQuestionId(row.getQuestionId());
             option.setQuestionName(row.getQuestionName());
@@ -147,6 +148,7 @@ public class AnswerService implements IAnswerService {
         data.setId(answer.getId());
         data.setHospitalId(answer.getHospitalId());
         data.setItemId(answer.getItemId());
+        data.setOfficeTypeId(answer.getOfficeTypeId());
         data.setOfficeId(answer.getOfficeId());
         data.setQuestionnaireId(answer.getQuestionnaireId());
         data.setUserId(answer.getUserId());

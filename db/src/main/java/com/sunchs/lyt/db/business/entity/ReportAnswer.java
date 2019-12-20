@@ -14,7 +14,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-08-14
+ * @since 2019-12-21
  */
 @TableName("report_answer")
 public class ReportAnswer extends Model<ReportAnswer> {
@@ -40,6 +40,12 @@ public class ReportAnswer extends Model<ReportAnswer> {
     private Integer itemId;
 
     /**
+     * 科室类型ID
+     */
+    @TableField("office_type_id")
+    private Integer officeTypeId;
+
+    /**
      * 科室ID，取项目科室ID
      */
     @TableField("office_id")
@@ -56,6 +62,12 @@ public class ReportAnswer extends Model<ReportAnswer> {
      */
     @TableField("user_id")
     private Integer userId;
+
+    /**
+     * 答卷人ID
+     */
+    @TableField("member_id")
+    private Integer memberId;
 
     /**
      * 患者编号
@@ -138,6 +150,13 @@ public class ReportAnswer extends Model<ReportAnswer> {
     public void setItemId(Integer itemId) {
         this.itemId = itemId;
     }
+    public Integer getOfficeTypeId() {
+        return officeTypeId;
+    }
+
+    public void setOfficeTypeId(Integer officeTypeId) {
+        this.officeTypeId = officeTypeId;
+    }
     public Integer getOfficeId() {
         return officeId;
     }
@@ -158,6 +177,13 @@ public class ReportAnswer extends Model<ReportAnswer> {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+    public Integer getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(Integer memberId) {
+        this.memberId = memberId;
     }
     public String getPatientNumber() {
         return patientNumber;
@@ -243,11 +269,15 @@ public class ReportAnswer extends Model<ReportAnswer> {
 
     public static final String ITEM_ID = "item_id";
 
+    public static final String OFFICE_TYPE_ID = "office_type_id";
+
     public static final String OFFICE_ID = "office_id";
 
     public static final String QUESTIONNAIRE_ID = "questionnaire_id";
 
     public static final String USER_ID = "user_id";
+
+    public static final String MEMBER_ID = "member_id";
 
     public static final String PATIENT_NUMBER = "patient_number";
 
@@ -282,9 +312,11 @@ public class ReportAnswer extends Model<ReportAnswer> {
         "id=" + id +
         ", hospitalId=" + hospitalId +
         ", itemId=" + itemId +
+        ", officeTypeId=" + officeTypeId +
         ", officeId=" + officeId +
         ", questionnaireId=" + questionnaireId +
         ", userId=" + userId +
+        ", memberId=" + memberId +
         ", patientNumber=" + patientNumber +
         ", status=" + status +
         ", reason=" + reason +
