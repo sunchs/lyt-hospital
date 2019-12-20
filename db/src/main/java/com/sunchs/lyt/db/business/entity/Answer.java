@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-09-18
+ * @since 2019-12-21
  */
 public class Answer extends Model<Answer> {
 
@@ -36,6 +36,12 @@ public class Answer extends Model<Answer> {
      */
     @TableField("item_id")
     private Integer itemId;
+
+    /**
+     * 科室类型ID
+     */
+    @TableField("office_type_id")
+    private Integer officeTypeId;
 
     /**
      * 科室ID，取项目科室ID
@@ -141,6 +147,13 @@ public class Answer extends Model<Answer> {
 
     public void setItemId(Integer itemId) {
         this.itemId = itemId;
+    }
+    public Integer getOfficeTypeId() {
+        return officeTypeId;
+    }
+
+    public void setOfficeTypeId(Integer officeTypeId) {
+        this.officeTypeId = officeTypeId;
     }
     public Integer getOfficeId() {
         return officeId;
@@ -254,6 +267,8 @@ public class Answer extends Model<Answer> {
 
     public static final String ITEM_ID = "item_id";
 
+    public static final String OFFICE_TYPE_ID = "office_type_id";
+
     public static final String OFFICE_ID = "office_id";
 
     public static final String QUESTIONNAIRE_ID = "questionnaire_id";
@@ -295,6 +310,7 @@ public class Answer extends Model<Answer> {
         "id=" + id +
         ", hospitalId=" + hospitalId +
         ", itemId=" + itemId +
+        ", officeTypeId=" + officeTypeId +
         ", officeId=" + officeId +
         ", questionnaireId=" + questionnaireId +
         ", userId=" + userId +

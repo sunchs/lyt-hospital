@@ -397,6 +397,7 @@ public class ItemService implements IItemService {
         Answer data = new Answer();
         data.setHospitalId(itemOffice.getHospitalId());
         data.setItemId(param.getItemId());
+        data.setOfficeTypeId(itemOffice.getOfficeTypeId());
         data.setOfficeId(param.getOfficeId());
         data.setQuestionnaireId(itemOffice.getQuestionnaireId());
         data.setUserId(UserThreadUtil.getUserId());
@@ -485,6 +486,7 @@ public class ItemService implements IItemService {
                         AnswerOption answerOption = new AnswerOption();
                         answerOption.setAnswerId(data.getId());
                         answerOption.setItemId(param.getItemId());
+                        answerOption.setOfficeTypeId(data.getOfficeTypeId());
                         answerOption.setQuestionnaireId(data.getQuestionnaireId());
                         answerOption.setQuestionId(q.getQuestionId());
                         answerOption.setQuestionName(getQuestionNameById(q.getQuestionId()));
@@ -501,6 +503,7 @@ public class ItemService implements IItemService {
                                 AnswerOption answerOption = new AnswerOption();
                                 answerOption.setAnswerId(data.getId());
                                 answerOption.setItemId(param.getItemId());
+                                answerOption.setOfficeTypeId(data.getOfficeTypeId());
                                 answerOption.setQuestionnaireId(data.getQuestionnaireId());
                                 answerOption.setQuestionId(q.getQuestionId());
                                 answerOption.setQuestionName(getQuestionNameById(q.getQuestionId()));

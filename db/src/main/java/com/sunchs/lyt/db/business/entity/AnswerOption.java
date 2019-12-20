@@ -14,7 +14,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-12-17
+ * @since 2019-12-21
  */
 @TableName("answer_option")
 public class AnswerOption extends Model<AnswerOption> {
@@ -38,6 +38,12 @@ public class AnswerOption extends Model<AnswerOption> {
      */
     @TableField("item_id")
     private Integer itemId;
+
+    /**
+     * 科室类型ID
+     */
+    @TableField("office_type_id")
+    private Integer officeTypeId;
 
     /**
      * 问卷ID
@@ -105,6 +111,13 @@ public class AnswerOption extends Model<AnswerOption> {
     public void setItemId(Integer itemId) {
         this.itemId = itemId;
     }
+    public Integer getOfficeTypeId() {
+        return officeTypeId;
+    }
+
+    public void setOfficeTypeId(Integer officeTypeId) {
+        this.officeTypeId = officeTypeId;
+    }
     public Integer getQuestionnaireId() {
         return questionnaireId;
     }
@@ -168,6 +181,8 @@ public class AnswerOption extends Model<AnswerOption> {
 
     public static final String ITEM_ID = "item_id";
 
+    public static final String OFFICE_TYPE_ID = "office_type_id";
+
     public static final String QUESTIONNAIRE_ID = "questionnaire_id";
 
     public static final String QUESTION_ID = "question_id";
@@ -195,6 +210,7 @@ public class AnswerOption extends Model<AnswerOption> {
         "id=" + id +
         ", answerId=" + answerId +
         ", itemId=" + itemId +
+        ", officeTypeId=" + officeTypeId +
         ", questionnaireId=" + questionnaireId +
         ", questionId=" + questionId +
         ", questionName=" + questionName +
