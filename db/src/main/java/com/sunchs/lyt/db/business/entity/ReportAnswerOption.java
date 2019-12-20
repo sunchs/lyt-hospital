@@ -114,6 +114,14 @@ public class ReportAnswerOption extends Model<ReportAnswerOption> {
     @TableField("option_type")
     private Integer optionType;
 
+    /**
+     * 分数
+     */
+    private Integer score;
+
+    @TableField(exist = false)
+    private Integer quantity;
+
     public Integer getId() {
         return id;
     }
@@ -227,6 +235,22 @@ public class ReportAnswerOption extends Model<ReportAnswerOption> {
         this.optionType = optionType;
     }
 
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
     public static final String ID = "id";
 
     public static final String ANSWER_ID = "answer_id";
@@ -259,6 +283,8 @@ public class ReportAnswerOption extends Model<ReportAnswerOption> {
 
     public static final String OPTION_TYPE = "option_type";
 
+    public static final String SCORE = "score";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -283,6 +309,7 @@ public class ReportAnswerOption extends Model<ReportAnswerOption> {
         ", targetTwo=" + targetTwo +
         ", targetThree=" + targetThree +
         ", optionType=" + optionType +
+        ", score=" + score +
         "}";
     }
 }

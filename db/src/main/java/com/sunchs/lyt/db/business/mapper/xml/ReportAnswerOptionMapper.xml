@@ -20,6 +20,7 @@
         <result column="target_two" property="targetTwo" />
         <result column="target_three" property="targetThree" />
         <result column="option_type" property="optionType" />
+        <result column="score" property="score" />
     </resultMap>
 
     <select id="getReportAnswer">

@@ -119,6 +119,7 @@ public class AnswerFooService implements IAnswerFooService {
                         answerOption.setTargetTwo(question.getTargetTwo());
                         answerOption.setTargetThree(question.getTargetThree());
                         answerOption.setOptionType(question.getOptionType());
+                        answerOption.setScore(0);
                         answerOptionService.insert(answerOption);
                     } else {
                         q.getOptionIds().forEach(optionId -> {
@@ -142,6 +143,7 @@ public class AnswerFooService implements IAnswerFooService {
                                 answerOption.setTargetTwo(question.getTargetTwo());
                                 answerOption.setTargetThree(question.getTargetThree());
                                 answerOption.setOptionType(question.getOptionType());
+                                answerOption.setScore(option.getScore());
                                 answerOptionService.insert(answerOption);
                             } else {
                                 System.out.println("同步参数有误");
