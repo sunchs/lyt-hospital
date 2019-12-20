@@ -22,4 +22,7 @@
         <result column="option_type" property="optionType" />
     </resultMap>
 
+    <select id="getReportAnswer">
+        select * from report_answer_option limit 2
+    </select>
 </mapper>
