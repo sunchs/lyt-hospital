@@ -139,6 +139,11 @@ public class AnswerService implements IAnswerService {
             option.setTimeDuration(row.getTimeDuration());
             option.setStartTime(row.getStartTime());
             option.setEndTime(row.getEndTime());
+            option.setTargetOne(row.getTargetOne());
+            option.setTargetTwo(row.getTargetTwo());
+            option.setTargetThree(row.getTargetThree());
+            option.setOptionType(row.getOptionType());
+            option.setScore(row.getScore());
             reportAnswerOptionService.insert(option);
         });
     }
