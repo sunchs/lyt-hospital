@@ -481,7 +481,8 @@ public class ItemService implements IItemService {
             param.getQuestionList().forEach(q -> {
                 // 检查题目
                 boolean isExist = answerQuestionIsExist(data.getQuestionnaireId(), q.getQuestionId());
-                if (isExist) {
+                Question question = getQuestionById(q.getQuestionId());
+                if (isExist && Objects.nonNull(question)) {
                     if (q.getOptionMode().equals("text")) {
                         AnswerOption answerOption = new AnswerOption();
                         answerOption.setAnswerId(data.getId());
@@ -489,12 +490,16 @@ public class ItemService implements IItemService {
                         answerOption.setOfficeTypeId(data.getOfficeTypeId());
                         answerOption.setQuestionnaireId(data.getQuestionnaireId());
                         answerOption.setQuestionId(q.getQuestionId());
-                        answerOption.setQuestionName(getQuestionNameById(q.getQuestionId()));
+                        answerOption.setQuestionName(question.getTitle());
                         answerOption.setOptionId(0);
                         answerOption.setOptionName(q.getOptionValue());
                         answerOption.setTimeDuration(q.getTimeDuration());
                         answerOption.setStartTime(FormatUtil.dateTime(q.getStartTime()));
                         answerOption.setEndTime(FormatUtil.dateTime(q.getEndTime()));
+                        answerOption.setTargetOne(question.getTargetOne());
+                        answerOption.setTargetTwo(question.getTargetTwo());
+                        answerOption.setTargetThree(question.getTargetThree());
+                        answerOption.setOptionType(question.getOptionType());
                         answerOptionService.insert(answerOption);
                     } else {
                         q.getOptionIds().forEach(optionId -> {
@@ -506,7 +511,7 @@ public class ItemService implements IItemService {
                                 answerOption.setOfficeTypeId(data.getOfficeTypeId());
                                 answerOption.setQuestionnaireId(data.getQuestionnaireId());
                                 answerOption.setQuestionId(q.getQuestionId());
-                                answerOption.setQuestionName(getQuestionNameById(q.getQuestionId()));
+                                answerOption.setQuestionName(question.getTitle());
 //                    answerOption.setQuestionName(q.getQuestionName());
                                 answerOption.setOptionId(optionId);
                                 answerOption.setOptionName(option.getTitle());
@@ -514,6 +519,10 @@ public class ItemService implements IItemService {
                                 answerOption.setStartTime(FormatUtil.dateTime(q.getStartTime()));
                                 answerOption.setEndTime(FormatUtil.dateTime(q.getEndTime()));
 //                    answerOption.setOptionName(q.getOptionName());
+                                answerOption.setTargetOne(question.getTargetOne());
+                                answerOption.setTargetTwo(question.getTargetTwo());
+                                answerOption.setTargetThree(question.getTargetThree());
+                                answerOption.setOptionType(question.getOptionType());
                                 answerOptionService.insert(answerOption);
                             } else {
                                 System.out.println("同步参数有误");
@@ -832,14 +841,10 @@ public class ItemService implements IItemService {
         return (count > 0);
     }
 
-    private String getQuestionNameById(int questionId) {
+    private Question getQuestionById(int questionId) {
         Wrapper<Question> wrapper = new EntityWrapper<Question>()
                 .eq(Question.ID, questionId);
-        Question row = questionService.selectOne(wrapper);
-        if (Objects.nonNull(row)) {
-            return row.getTitle();
-        }
-        return "";
+        return questionService.selectOne(wrapper);
     }
 
     private QuestionOption getQuestionOption(int optionId) {

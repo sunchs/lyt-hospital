@@ -90,6 +90,30 @@ public class ReportAnswerOption extends Model<ReportAnswerOption> {
      */
     private Date endTime;
 
+    /**
+     * 一级指标
+     */
+    @TableField("target_one")
+    private Integer targetOne;
+
+    /**
+     * 二级指标
+     */
+    @TableField("target_two")
+    private Integer targetTwo;
+
+    /**
+     * 三级指标
+     */
+    @TableField("target_three")
+    private Integer targetThree;
+
+    /**
+     * 选项类型，选项模版的父ID
+     */
+    @TableField("option_type")
+    private Integer optionType;
+
     public Integer getId() {
         return id;
     }
@@ -174,6 +198,34 @@ public class ReportAnswerOption extends Model<ReportAnswerOption> {
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
+    public Integer getTargetOne() {
+        return targetOne;
+    }
+
+    public void setTargetOne(Integer targetOne) {
+        this.targetOne = targetOne;
+    }
+    public Integer getTargetTwo() {
+        return targetTwo;
+    }
+
+    public void setTargetTwo(Integer targetTwo) {
+        this.targetTwo = targetTwo;
+    }
+    public Integer getTargetThree() {
+        return targetThree;
+    }
+
+    public void setTargetThree(Integer targetThree) {
+        this.targetThree = targetThree;
+    }
+    public Integer getOptionType() {
+        return optionType;
+    }
+
+    public void setOptionType(Integer optionType) {
+        this.optionType = optionType;
+    }
 
     public static final String ID = "id";
 
@@ -199,6 +251,14 @@ public class ReportAnswerOption extends Model<ReportAnswerOption> {
 
     public static final String ENDTIME = "endTime";
 
+    public static final String TARGET_ONE = "target_one";
+
+    public static final String TARGET_TWO = "target_two";
+
+    public static final String TARGET_THREE = "target_three";
+
+    public static final String OPTION_TYPE = "option_type";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -219,6 +279,10 @@ public class ReportAnswerOption extends Model<ReportAnswerOption> {
         ", timeDuration=" + timeDuration +
         ", startTime=" + startTime +
         ", endTime=" + endTime +
+        ", targetOne=" + targetOne +
+        ", targetTwo=" + targetTwo +
+        ", targetThree=" + targetThree +
+        ", optionType=" + optionType +
         "}";
     }
 }

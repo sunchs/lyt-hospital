@@ -16,6 +16,10 @@
         <result column="timeDuration" property="timeDuration" />
         <result column="startTime" property="startTime" />
         <result column="endTime" property="endTime" />
+        <result column="target_one" property="targetOne" />
+        <result column="target_two" property="targetTwo" />
+        <result column="target_three" property="targetThree" />
+        <result column="option_type" property="optionType" />
     </resultMap>
 
 </mapper>
