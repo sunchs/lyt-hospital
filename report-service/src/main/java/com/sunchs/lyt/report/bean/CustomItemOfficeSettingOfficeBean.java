@@ -4,11 +4,20 @@ import java.util.List;
 
 public class CustomItemOfficeSettingOfficeBean {
 
+    private int officeType;
     private String title;
     private int questionnaireId;
     private int questionId;
     private int optionId;
     private List<TargetBean> targetList;
+
+    public int getOfficeType() {
+        return officeType;
+    }
+
+    public void setOfficeType(int officeType) {
+        this.officeType = officeType;
+    }
 
     public String getTitle() {
         return title;

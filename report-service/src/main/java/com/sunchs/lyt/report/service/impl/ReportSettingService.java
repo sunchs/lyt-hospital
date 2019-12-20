@@ -126,7 +126,7 @@ public class ReportSettingService implements IReportSettingService {
                     row.getQuestionnaireId() > 0 && Objects.nonNull(row.getTargetList()) && row.getTargetList().size() > 0) {
                 CustomItemOffice data = new CustomItemOffice();
                 data.setItemId(param.getItemId());
-                data.setOfficeType(param.getOfficeType());
+                data.setOfficeType(row.getOfficeType());
                 data.setTitle(row.getTitle());
                 data.setQuestionnaireId(row.getQuestionnaireId());
                 data.setQuestionId(row.getQuestionId());
