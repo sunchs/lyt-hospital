@@ -117,16 +117,21 @@ public class ReportCustomOfficeService implements IReportCustomOfficeService {
     private List<ReportAnswerOption> getTargetQuestionList(List<Integer> answerIds, List<Integer> targetIds) {
         // 获取指标题目
         Wrapper<ReportAnswerOption> targetWrapper = new EntityWrapper<ReportAnswerOption>()
-                .setSqlSelect("COUNT(1) quantity", ReportAnswerOption.QUESTION_ID,
-                        ReportAnswerOption.OPTION_ID, ReportAnswerOption.SCORE, ReportAnswerOption.TARGET_ONE,
-                        ReportAnswerOption.TARGET_THREE)
+                .setSqlSelect("COUNT(1) quantity",
+                        ReportAnswerOption.QUESTION_ID + " as questionId",
+                        ReportAnswerOption.OPTION_ID + " as optionId",
+                        ReportAnswerOption.SCORE,
+                        ReportAnswerOption.TARGET_ONE + " as targetOne",
+                        ReportAnswerOption.TARGET_THREE + " as targetThree")
                 .in(ReportAnswerOption.ANSWER_ID, answerIds)
-                .eq(ReportAnswerOption.TARGET_THREE, targetIds)
+                .in(ReportAnswerOption.TARGET_THREE, targetIds)
                 .in(ReportAnswerOption.OPTION_TYPE, new Integer[]{1,4})
                 .groupBy(ReportAnswerOption.QUESTIONNAIRE_ID)
                 .groupBy(ReportAnswerOption.QUESTION_ID)
                 .groupBy(ReportAnswerOption.OPTION_ID);
-        return reportAnswerOptionService.selectList(targetWrapper);
+        List<ReportAnswerOption> optionList = reportAnswerOptionService.selectList(targetWrapper);
+        System.out.println(targetWrapper.getSqlSegment());
+        return optionList;
     }
 
     /**
