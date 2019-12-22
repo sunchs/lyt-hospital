@@ -2,8 +2,7 @@ package com.sunchs.lyt.report.service;
 
 import com.sunchs.lyt.framework.bean.SelectChildData;
 import com.sunchs.lyt.framework.bean.TitleData;
-import com.sunchs.lyt.report.bean.CustomItemOfficeSettingParam;
-import com.sunchs.lyt.report.bean.TempItemOfficeSettingParam;
+import com.sunchs.lyt.report.bean.*;
 
 import java.util.List;
 import java.util.Map;
@@ -34,4 +33,9 @@ public interface IReportSettingService {
      * 保存临时科室配置
      */
     void saveTempItemOfficeSetting(TempItemOfficeSettingParam param);
+
+    /**
+     * 获取临时科室列表
+     */
+    List<TempOfficeData> getItemTempOfficeList(Integer itemId, Integer officeType);
 }

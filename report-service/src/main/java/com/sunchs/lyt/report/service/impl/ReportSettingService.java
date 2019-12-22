@@ -6,8 +6,7 @@ import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.TitleData;
 import com.sunchs.lyt.framework.enums.OfficeTypeEnum;
-import com.sunchs.lyt.report.bean.CustomItemOfficeSettingParam;
-import com.sunchs.lyt.report.bean.TempItemOfficeSettingParam;
+import com.sunchs.lyt.report.bean.*;
 import com.sunchs.lyt.report.service.IReportSettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +40,9 @@ public class ReportSettingService implements IReportSettingService {
 
     @Autowired
     private SettingItemTempShowServiceImpl settingItemTempShowService;
+
+    @Autowired
+    private ReportTargetService reportTargetService;
 
     @Override
     public List<TitleData> getItemUseQuestionnaireList(Integer itemId) {
@@ -171,6 +173,69 @@ public class ReportSettingService implements IReportSettingService {
                 settingItemTempShowService.insert(data);
             }
         });
+    }
+
+    @Override
+    public List<TempOfficeData> getItemTempOfficeList(Integer itemId, Integer officeType) {
+        List<TempOfficeData> result =  new ArrayList<>();
+        Wrapper<SettingItemTempShow> wrapper = new EntityWrapper<SettingItemTempShow>()
+                .eq(SettingItemTempShow.ITEM_ID, itemId)
+                .eq(SettingItemTempShow.OFFICE_TYPE, officeType);
+        List<SettingItemTempShow> settingList = settingItemTempShowService.selectList(wrapper);
+        settingList.forEach(setting -> {
+            TempOfficeData data = new TempOfficeData();
+            List<String> officeIdsString = Arrays.asList(setting.getOfficeIds().split(","));
+            List<Integer> officeIds = officeIdsString.stream().map(v -> Integer.parseInt(v)).collect(Collectors.toList());
+            List<String> targetIdsString = Arrays.asList(setting.getTargetIds().split(","));
+            List<Integer> targetIds = targetIdsString.stream().map(v -> Integer.parseInt(v)).collect(Collectors.toList());
+
+            // 查询数据
+            TotalParam param = new TotalParam();
+            param.setItemId(itemId);
+            param.setTargetId(officeType);
+            param.setOfficeList(officeIds);
+            param.setTargetList(targetIds);
+            List<SatisfyData> satisfyList = reportTargetService.getItemOfficeTargetSatisfy(param);
+            // 科室名称MAP
+            Map<Integer, String> officeMap = new HashMap<>();
+            // 科室名称MAP
+            Map<Integer, String> targetMap = new HashMap<>();
+
+            List<OfficeTargetSatisfyData> valueList = new ArrayList<>();
+            satisfyList.forEach(s->{
+                // 抽取科室名称
+                officeMap.put(s.getOfficeId(), s.getOfficeName());
+                // 抽取指标名称
+                targetMap.put(s.getId(), s.getName());
+                // 构建新对象
+                OfficeTargetSatisfyData row = new OfficeTargetSatisfyData();
+                row.setOfficeId(s.getOfficeId());
+                row.setTargetId(s.getId());
+                row.setValue(s.getValue());
+                valueList.add(row);
+            });
+            data.setSatisfyList(valueList);
+
+            List<TitleData> officeList = new ArrayList<>();
+            for (Integer oId : officeMap.keySet()) {
+                TitleData d = new TitleData();
+                d.setId(oId);
+                d.setTitle(officeMap.get(oId));
+                officeList.add(d);
+            }
+            data.setOfficeList(officeList);
+
+            List<TitleData> targetList = new ArrayList<>();
+            for (Integer oId : targetMap.keySet()) {
+                TitleData d = new TitleData();
+                d.setId(oId);
+                d.setTitle(officeMap.get(oId));
+                officeList.add(d);
+            }
+            data.setTargetList(targetList);
+            result.add(data);
+        });
+        return result;
     }
 
     private List<Map<String, Object>> getTwoTarget(List<ReportAnswerQuantity> twoTempList, Map<Integer, String> targetMap) {

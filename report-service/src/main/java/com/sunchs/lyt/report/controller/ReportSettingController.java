@@ -67,4 +67,14 @@ public class ReportSettingController extends BaseController {
         reportSettingService.saveTempItemOfficeSetting(param);
         return success();
     }
+
+    /**
+     * 获取临时科室列表
+     */
+    @PostMapping("/getItemTempOfficeList")
+    public ResultData getItemTempOfficeList(@RequestBody RequestData data) {
+        Integer itemId = data.getInt("itemId");
+        Integer officeType = data.getInt("officeType");
+        return success(reportSettingService.getItemTempOfficeList(itemId, officeType));
+    }
 }
