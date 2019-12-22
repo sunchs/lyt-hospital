@@ -7,6 +7,7 @@ import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.TitleData;
 import com.sunchs.lyt.framework.enums.OfficeTypeEnum;
 import com.sunchs.lyt.report.bean.CustomItemOfficeSettingParam;
+import com.sunchs.lyt.report.bean.TempItemOfficeSettingParam;
 import com.sunchs.lyt.report.service.IReportSettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,9 @@ public class ReportSettingService implements IReportSettingService {
 
     @Autowired
     private CustomItemTargetServiceImpl customItemTargetService;
+
+    @Autowired
+    private SettingItemTempShowServiceImpl settingItemTempShowService;
 
     @Override
     public List<TitleData> getItemUseQuestionnaireList(Integer itemId) {
@@ -144,6 +148,27 @@ public class ReportSettingService implements IReportSettingService {
                         }
                     });
                 }
+            }
+        });
+    }
+
+    @Override
+    public void saveTempItemOfficeSetting(TempItemOfficeSettingParam param) {
+        // 清理历史数据
+        Wrapper<SettingItemTempShow> settingItemTempShowWrapper = new EntityWrapper<SettingItemTempShow>()
+                .eq(SettingItemTempShow.ITEM_ID, param.getItemId());
+        settingItemTempShowService.delete(settingItemTempShowWrapper);
+
+        // 写入新数据
+        param.getValueList().forEach(row->{
+            if (Objects.nonNull(row.getOfficeList()) && row.getOfficeList().size() > 0 &&
+                    Objects.nonNull(row.getTargetList()) && row.getTargetList().size() > 0) {
+                SettingItemTempShow data = new SettingItemTempShow();
+                data.setItemId(param.getItemId());
+                data.setOfficeType(row.getOfficeType());
+                data.setOfficeIds(String.join(",", row.getOfficeList().stream().map(v->v+"").collect(Collectors.toList())));
+                data.setTargetIds(String.join(",", row.getTargetList().stream().map(v->v+"").collect(Collectors.toList())));
+                settingItemTempShowService.insert(data);
             }
         });
     }
