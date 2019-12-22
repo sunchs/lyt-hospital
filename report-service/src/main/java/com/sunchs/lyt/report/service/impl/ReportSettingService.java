@@ -230,7 +230,7 @@ public class ReportSettingService implements IReportSettingService {
                 TitleData d = new TitleData();
                 d.setId(oId);
                 d.setTitle(targetMap.get(oId));
-                officeList.add(d);
+                targetList.add(d);
             }
             data.setTargetList(targetList);
             result.add(data);
