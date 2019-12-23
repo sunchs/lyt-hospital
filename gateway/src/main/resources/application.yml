@@ -22,38 +22,38 @@ eureka:
 #    user-service: /user/** #路由映射
 #  ignored-services: user-service #取消代理
 
-hystrix:
-  command:
-    default:
-      execution:
-        timeout:
-          enabled: false
-        isolation:
-          thread:
-            timeoutInMilliseconds: 60000
-ribbon:
-  ReadTimeout: 60000
-  ConnectTimeout: 60000
-  MaxAutoRetries: 0
-  MaxAutoRetriesNextServer: 1
-  eureka:
-    enabled: false
-
-zuul:
-  ribbon-isolation-strategy: thread
-  max:
-    host:
-      connections: 5000
-  host:
-    socket-timeout-millis: 6000
-    connect-timeout-millis: 6000
-
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        timeout:
+#          enabled: false
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 60000
 #ribbon:
-#  ReadTimeout: 12000
-#  ConnectTimeout: 12000
+#  ReadTimeout: 60000
+#  ConnectTimeout: 60000
+#  MaxAutoRetries: 0
+#  MaxAutoRetriesNextServer: 1
 #  eureka:
-#    enabled: true
+#    enabled: false
+#
 #zuul:
+#  ribbon-isolation-strategy: thread
+#  max:
+#    host:
+#      connections: 5000
 #  host:
-#    socket-timeout-millis: 12000
-#    connect-timeout-millis: 12000
+#    socket-timeout-millis: 6000
+#    connect-timeout-millis: 6000
+
+ribbon:
+  ReadTimeout: 12000
+  ConnectTimeout: 12000
+  eureka:
+    enabled: true
+zuul:
+  host:
+    socket-timeout-millis: 12000
+    connect-timeout-millis: 12000
