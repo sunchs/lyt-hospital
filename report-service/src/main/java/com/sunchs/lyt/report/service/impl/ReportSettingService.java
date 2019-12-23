@@ -258,9 +258,11 @@ public class ReportSettingService implements IReportSettingService {
         List<Map<String, Object>> result = new ArrayList<>();
         Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
                 .eq(ReportAnswerOption.ITEM_ID, itemId)
-//                .eq(ReportAnswerOption.OFFICE_TYPE_ID, officeType)
                 .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1,4))
                 .groupBy(ReportAnswerOption.TARGET_THREE);
+        if (Objects.nonNull(officeType) && officeType > 0) {
+            wrapper.eq(ReportAnswerOption.OFFICE_TYPE_ID, officeType);
+        }
         List<ReportAnswerOption> optionList = reportAnswerOptionService.selectList(wrapper);
         Map<Integer, List<ReportAnswerOption>> oneGroup = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetOne));
         for (Integer oneId : oneGroup.keySet()) {
