@@ -247,11 +247,10 @@ public class ReportSettingService implements IReportSettingService {
                 .groupBy(ReportAnswerOption.TARGET_THREE);
         List<ReportAnswerOption> optionList = reportAnswerOptionService.selectList(wrapper);
         Map<Integer, List<ReportAnswerOption>> oneGroup = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetOne));
-        Map<Integer, String> targetNameMap = getTargetNameByIds(optionList.stream().map(ReportAnswerOption::getTargetOne).collect(Collectors.toSet()));
         for (Integer oneId : oneGroup.keySet()) {
             Map<String, Object> map = new HashMap<>();
             map.put("id", oneId);
-            map.put("title", targetNameMap.get(oneId));
+            map.put("title", OfficeTypeEnum.get(oneId));
             List<ReportAnswerOption> threeList = oneGroup.get(oneId);
             if (Objects.nonNull(oneGroup) && oneGroup.size() > 0) {
                 map.put("children", getTwoTargetMap(threeList));
