@@ -129,4 +129,15 @@ public class ReportSettingController extends BaseController {
         reportSettingService.deleteItemAllSatisfySetting(id);
         return success();
     }
+
+    /**
+     * 获取总体满意度设置
+     */
+    @PostMapping("/getItemAllSatisfySettingList")
+    public ResultData getItemAllSatisfySettingList(@RequestBody RequestData data) {
+        Integer itemId = data.getInt("itemId");
+        Integer officeType = data.getInt("officeType");
+        return success(reportSettingService.getItemAllSatisfySettingList(itemId, officeType));
+    }
+
 }

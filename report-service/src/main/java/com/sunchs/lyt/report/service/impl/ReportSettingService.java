@@ -303,6 +303,47 @@ public class ReportSettingService implements IReportSettingService {
         settingItemWeightService.deleteById(id);
     }
 
+    @Override
+    public List<Map<String, Object>> getItemAllSatisfySettingList(Integer itemId, Integer officeType) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        Wrapper<SettingItemWeight> weightWrapper = new EntityWrapper<SettingItemWeight>()
+                .eq(SettingItemWeight.ITEM_ID, itemId)
+                .eq(SettingItemWeight.OFFICE_TYPE, officeType);
+        List<SettingItemWeight> itemWeightList = settingItemWeightService.selectList(weightWrapper);
+        List<Integer> targetIds = new ArrayList<>();
+        itemWeightList.forEach(row->{
+            targetIds.add(row.getTargetTwo());
+            List<String> threeList = Arrays.asList(row.getTargetThree().split(","));
+            threeList.forEach(id->{
+                targetIds.add(Integer.parseInt(id));
+            });
+        });
+        Wrapper<QuestionTarget> targetWrapper = new EntityWrapper<QuestionTarget>()
+                .eq(QuestionTarget.ID, targetIds);
+        List<QuestionTarget> targetList = questionTargetService.selectList(targetWrapper);
+        Map<Integer, String> targetTitleMap = targetList.stream().collect(Collectors.toMap(QuestionTarget::getId, QuestionTarget::getTitle));
+        itemWeightList.forEach(row->{
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", row.getId());
+            map.put("title", targetTitleMap.get(row.getId()));
+            map.put("officeType", row.getOfficeType());
+            map.put("weight", row.getWeight());
+            List<Map<String, Object>> sList = new ArrayList<>();
+            List<String> threeList = Arrays.asList(row.getTargetThree().split(","));
+            threeList.forEach(id->{
+                Map<String, Object> m = new HashMap<>();
+                m.put("id", Integer.parseInt(id));
+                m.put("title", targetTitleMap.get(Integer.parseInt(id)));
+                sList.add(m);
+            });
+            if (Objects.nonNull(threeList) && threeList.size() > 0) {
+                map.put("children", sList);
+            }
+            result.add(map);
+        });
+        return result;
+    }
+
     private List<Map<String, Object>> getTwoTargetMap(List<ReportAnswerOption> twoTempList) {
         List<Map<String, Object>> result = new ArrayList<>();
         Map<Integer, List<ReportAnswerOption>> twoList = twoTempList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetTwo));
