@@ -325,7 +325,7 @@ public class ReportSettingService implements IReportSettingService {
         itemWeightList.forEach(row->{
             Map<String, Object> map = new HashMap<>();
             map.put("id", row.getId());
-            map.put("title", targetTitleMap.get(row.getId()));
+            map.put("title", targetTitleMap.get(row.getTargetTwo()));
             map.put("officeType", row.getOfficeType());
             map.put("weight", row.getWeight());
             List<Map<String, Object>> sList = new ArrayList<>();
