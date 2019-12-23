@@ -280,7 +280,7 @@ public class ReportSettingService implements IReportSettingService {
 
     private List<Map<String, Object>> getThreeTargetMap(List<ReportAnswerOption> list) {
         Map<Integer, List<ReportAnswerOption>> groupList = list.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetThree));
-        Map<Integer, String> targetNameMap = getTargetNameByIds(list.stream().map(ReportAnswerOption::getTargetTwo).collect(Collectors.toSet()));
+        Map<Integer, String> targetNameMap = getTargetNameByIds(list.stream().map(ReportAnswerOption::getTargetThree).collect(Collectors.toSet()));
         List<Map<String, Object>> result = new ArrayList<>();
         for (Integer threeId : groupList.keySet()) {
             Map<String, Object> map = new HashMap<>();
