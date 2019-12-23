@@ -247,43 +247,45 @@ public class ReportSettingService implements IReportSettingService {
                 .groupBy(ReportAnswerOption.TARGET_THREE);
         List<ReportAnswerOption> optionList = reportAnswerOptionService.selectList(wrapper);
         Map<Integer, List<ReportAnswerOption>> oneGroup = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetOne));
-        Map<Integer, String> targetNameMap = getTargetNameByIds(optionList.stream().map(ReportAnswerOption::getTargetThree).collect(Collectors.toSet()));
+        Map<Integer, String> targetNameMap = getTargetNameByIds(optionList.stream().map(ReportAnswerOption::getTargetOne).collect(Collectors.toSet()));
         for (Integer oneId : oneGroup.keySet()) {
             Map<String, Object> map = new HashMap<>();
             map.put("id", oneId);
             map.put("title", targetNameMap.get(oneId));
             List<ReportAnswerOption> threeList = oneGroup.get(oneId);
             if (Objects.nonNull(oneGroup) && oneGroup.size() > 0) {
-                map.put("children", getTwoTargetMap(threeList, targetNameMap));
+                map.put("children", getTwoTargetMap(threeList));
             }
             result.add(map);
         }
         return result;
     }
 
-    private List<Map<String, Object>> getTwoTargetMap(List<ReportAnswerOption> twoTempList, Map<Integer, String> targetNameMap) {
+    private List<Map<String, Object>> getTwoTargetMap(List<ReportAnswerOption> twoTempList) {
         List<Map<String, Object>> result = new ArrayList<>();
         Map<Integer, List<ReportAnswerOption>> twoList = twoTempList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetTwo));
+        Map<Integer, String> targetNameMap = getTargetNameByIds(twoTempList.stream().map(ReportAnswerOption::getTargetTwo).collect(Collectors.toSet()));
         for (Integer towId : twoList.keySet()) {
             Map<String, Object> map = new HashMap<>();
             map.put("id", towId);
             map.put("title", targetNameMap.get(towId));
             List<ReportAnswerOption> threeList = twoList.get(towId);
             if (Objects.nonNull(threeList) && threeList.size() > 0) {
-                map.put("children", getThreeTargetMap(threeList, targetNameMap));
+                map.put("children", getThreeTargetMap(threeList));
             }
             result.add(map);
         }
         return result;
     }
 
-    private List<Map<String, Object>> getThreeTargetMap(List<ReportAnswerOption> list, Map<Integer, String> targetMap) {
+    private List<Map<String, Object>> getThreeTargetMap(List<ReportAnswerOption> list) {
         Map<Integer, List<ReportAnswerOption>> groupList = list.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetThree));
+        Map<Integer, String> targetNameMap = getTargetNameByIds(list.stream().map(ReportAnswerOption::getTargetTwo).collect(Collectors.toSet()));
         List<Map<String, Object>> result = new ArrayList<>();
         for (Integer threeId : groupList.keySet()) {
             Map<String, Object> map = new HashMap<>();
             map.put("id", threeId);
-            map.put("title", targetMap.get(threeId));
+            map.put("title", targetNameMap.get(threeId));
             result.add(map);
         }
         return result;
