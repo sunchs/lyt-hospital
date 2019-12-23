@@ -44,6 +44,9 @@ public class ReportSettingService implements IReportSettingService {
     @Autowired
     private ReportTargetService reportTargetService;
 
+    @Autowired
+    private SettingItemWeightServiceImpl settingItemWeightService;
+
     @Override
     public List<TitleData> getItemUseQuestionnaireList(Integer itemId) {
         List<TitleData> result = new ArrayList<>();
@@ -276,6 +279,28 @@ public class ReportSettingService implements IReportSettingService {
             result.add(map);
         }
         return result;
+    }
+
+    @Override
+    public void saveItemAllSatisfySetting(ItemAllSatisfySettingParam param) {
+        if (Objects.nonNull(param.getValueList()) && param.getValueList().size() > 0) {
+            param.getValueList().forEach(item->{
+                if (Objects.nonNull(item.getTargetThree()) && item.getTargetThree().size() > 0) {
+                    SettingItemWeight data = new SettingItemWeight();
+                    data.setItemId(param.getItemId());
+                    data.setOfficeType(item.getOfficeType());
+                    data.setTargetTwo(item.getTargetTwo());
+                    data.setWeight(item.getWeight());
+                    data.setTargetThree(String.join(",", item.getTargetThree().stream().map(v->v+"").collect(Collectors.toList())));
+                    settingItemWeightService.insert(data);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void deleteItemAllSatisfySetting(Integer id) {
+        settingItemWeightService.deleteById(id);
     }
 
     private List<Map<String, Object>> getTwoTargetMap(List<ReportAnswerOption> twoTempList) {

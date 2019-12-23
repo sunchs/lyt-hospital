@@ -2,6 +2,7 @@ package com.sunchs.lyt.report.service;
 
 import com.sunchs.lyt.framework.bean.TitleData;
 import com.sunchs.lyt.report.bean.CustomItemOfficeSettingParam;
+import com.sunchs.lyt.report.bean.ItemAllSatisfySettingParam;
 import com.sunchs.lyt.report.bean.TempItemOfficeSettingParam;
 import com.sunchs.lyt.report.bean.TempOfficeData;
 
@@ -54,4 +55,14 @@ public interface IReportSettingService {
      * 获取指标
      */
     List<Map<String, Object>> getItemTargetList(Integer itemId, Integer officeType);
+
+    /**
+     * 保存总体满意度设置
+     */
+    void saveItemAllSatisfySetting(ItemAllSatisfySettingParam param);
+
+    /**
+     * 删除总体满意度设置
+     */
+    void deleteItemAllSatisfySetting(Integer id);
 }

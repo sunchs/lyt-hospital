@@ -4,6 +4,7 @@ import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
 import com.sunchs.lyt.report.bean.CustomItemOfficeSettingParam;
+import com.sunchs.lyt.report.bean.ItemAllSatisfySettingParam;
 import com.sunchs.lyt.report.bean.ItemSettingParam;
 import com.sunchs.lyt.report.bean.TempItemOfficeSettingParam;
 import com.sunchs.lyt.report.service.impl.ReportSettingService;
@@ -109,5 +110,23 @@ public class ReportSettingController extends BaseController {
         return success(reportSettingService.getItemTargetList(itemId, officeType));
     }
 
+    /**
+     * 保存总体满意度设置
+     */
+    @PostMapping("/saveItemAllSatisfySetting")
+    public ResultData saveItemAllSatisfySetting(@RequestBody RequestData data) {
+        ItemAllSatisfySettingParam param = data.toObject(ItemAllSatisfySettingParam.class);
+        reportSettingService.saveItemAllSatisfySetting(param);
+        return success();
+    }
 
+    /**
+     * 删除总体满意度设置
+     */
+    @PostMapping("/deleteItemAllSatisfySetting")
+    public ResultData deleteItemAllSatisfySetting(@RequestBody RequestData data) {
+        Integer id = data.getInt("id");
+        reportSettingService.deleteItemAllSatisfySetting(id);
+        return success();
+    }
 }
