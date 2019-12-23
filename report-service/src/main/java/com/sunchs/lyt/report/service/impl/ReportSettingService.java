@@ -319,7 +319,7 @@ public class ReportSettingService implements IReportSettingService {
             });
         });
         Wrapper<QuestionTarget> targetWrapper = new EntityWrapper<QuestionTarget>()
-                .eq(QuestionTarget.ID, targetIds);
+                .in(QuestionTarget.ID, targetIds);
         List<QuestionTarget> targetList = questionTargetService.selectList(targetWrapper);
         Map<Integer, String> targetTitleMap = targetList.stream().collect(Collectors.toMap(QuestionTarget::getId, QuestionTarget::getTitle));
         itemWeightList.forEach(row->{
