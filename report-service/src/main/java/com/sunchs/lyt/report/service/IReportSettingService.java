@@ -1,8 +1,9 @@
 package com.sunchs.lyt.report.service;
 
-import com.sunchs.lyt.framework.bean.SelectChildData;
 import com.sunchs.lyt.framework.bean.TitleData;
-import com.sunchs.lyt.report.bean.*;
+import com.sunchs.lyt.report.bean.CustomItemOfficeSettingParam;
+import com.sunchs.lyt.report.bean.TempItemOfficeSettingParam;
+import com.sunchs.lyt.report.bean.TempOfficeData;
 
 import java.util.List;
 import java.util.Map;
@@ -25,9 +26,14 @@ public interface IReportSettingService {
     List<Map<String, Object>> getItemQuestionnaireUseTarget(Integer itemId, Integer id);
 
     /**
-     *
+     * 保存自定义科室配置
      */
     void saveCustomItemOfficeSetting(CustomItemOfficeSettingParam param);
+
+    /**
+     * 删除自定义科室配置
+     */
+    void deleteCustomItemOfficeSetting(Integer id);
 
     /**
      * 保存临时科室配置
@@ -38,6 +44,11 @@ public interface IReportSettingService {
      * 获取临时科室列表
      */
     List<TempOfficeData> getItemTempOfficeList(Integer itemId, Integer officeType);
+
+    /**
+     * 删除临时科室
+     */
+    void deleteItemTempOffice(Integer id);
 
     /**
      * 获取指标

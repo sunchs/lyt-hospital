@@ -117,14 +117,14 @@ public class ReportSettingService implements IReportSettingService {
 
     @Override
     public void saveCustomItemOfficeSetting(CustomItemOfficeSettingParam param) {
-        // 清理历史数据
-        Wrapper<CustomItemOffice> customItemOfficeWrapper = new EntityWrapper<CustomItemOffice>()
-                .eq(CustomItemOffice.ITEM_ID, param.getItemId());
-        customItemOfficeService.delete(customItemOfficeWrapper);
-        // 清理历史数据
-        Wrapper<CustomItemTarget> customItemTargetWrapper = new EntityWrapper<CustomItemTarget>()
-                .eq(CustomItemTarget.ITEM_ID, param.getItemId());
-        customItemTargetService.delete(customItemTargetWrapper);
+//        // 清理历史数据
+//        Wrapper<CustomItemOffice> customItemOfficeWrapper = new EntityWrapper<CustomItemOffice>()
+//                .eq(CustomItemOffice.ITEM_ID, param.getItemId());
+//        customItemOfficeService.delete(customItemOfficeWrapper);
+//        // 清理历史数据
+//        Wrapper<CustomItemTarget> customItemTargetWrapper = new EntityWrapper<CustomItemTarget>()
+//                .eq(CustomItemTarget.ITEM_ID, param.getItemId());
+//        customItemTargetService.delete(customItemTargetWrapper);
 
         // 写入新数据
         param.getCustomList().forEach(row->{
@@ -155,11 +155,20 @@ public class ReportSettingService implements IReportSettingService {
     }
 
     @Override
+    public void deleteCustomItemOfficeSetting(Integer id) {
+        if (customItemOfficeService.deleteById(id)) {
+            Wrapper<CustomItemTarget> customItemTargetWrapper = new EntityWrapper<CustomItemTarget>()
+                    .eq(CustomItemTarget.CUSTOM_ID, id);
+            customItemTargetService.delete(customItemTargetWrapper);
+        }
+    }
+
+    @Override
     public void saveTempItemOfficeSetting(TempItemOfficeSettingParam param) {
-        // 清理历史数据
-        Wrapper<SettingItemTempShow> settingItemTempShowWrapper = new EntityWrapper<SettingItemTempShow>()
-                .eq(SettingItemTempShow.ITEM_ID, param.getItemId());
-        settingItemTempShowService.delete(settingItemTempShowWrapper);
+//        // 清理历史数据
+//        Wrapper<SettingItemTempShow> settingItemTempShowWrapper = new EntityWrapper<SettingItemTempShow>()
+//                .eq(SettingItemTempShow.ITEM_ID, param.getItemId());
+//        settingItemTempShowService.delete(settingItemTempShowWrapper);
 
         // 写入新数据
         param.getValueList().forEach(row->{
@@ -184,6 +193,7 @@ public class ReportSettingService implements IReportSettingService {
         List<SettingItemTempShow> settingList = settingItemTempShowService.selectList(wrapper);
         settingList.forEach(setting -> {
             TempOfficeData data = new TempOfficeData();
+            data.setId(setting.getId());
             List<String> officeIdsString = Arrays.asList(setting.getOfficeIds().split(","));
             List<Integer> officeIds = officeIdsString.stream().map(v -> Integer.parseInt(v)).collect(Collectors.toList());
             List<String> targetIdsString = Arrays.asList(setting.getTargetIds().split(","));
@@ -236,6 +246,11 @@ public class ReportSettingService implements IReportSettingService {
             result.add(data);
         });
         return result;
+    }
+
+    @Override
+    public void deleteItemTempOffice(Integer id) {
+        settingItemTempShowService.deleteById(id);
     }
 
     @Override

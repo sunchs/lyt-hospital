@@ -59,6 +59,17 @@ public class ReportSettingController extends BaseController {
     }
 
     /**
+     * 删除自定义科室配置
+     */
+    @PostMapping("/deleteCustomItemOfficeSetting")
+    public ResultData deleteCustomItemOfficeSetting(@RequestBody RequestData data) {
+        Integer id = data.getInt("id");
+        reportSettingService.deleteCustomItemOfficeSetting(id);
+        return success();
+    }
+
+
+    /**
      * 保存临时科室配置
      */
     @PostMapping("/saveTempItemOfficeSetting")
@@ -81,10 +92,22 @@ public class ReportSettingController extends BaseController {
     /**
      * 获取指标
      */
+    @PostMapping("/deleteItemTempOffice")
+    public ResultData deleteItemTempOffice(@RequestBody RequestData data) {
+        Integer id = data.getInt("id");
+        reportSettingService.deleteItemTempOffice(id);
+        return success();
+    }
+
+    /**
+     * 获取指标
+     */
     @PostMapping("/getItemTargetList")
     public ResultData getItemTargetList(@RequestBody RequestData data) {
         Integer itemId = data.getInt("itemId");
         Integer officeType = data.getInt("officeType");
         return success(reportSettingService.getItemTargetList(itemId, officeType));
     }
+
+
 }

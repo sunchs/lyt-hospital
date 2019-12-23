@@ -6,9 +6,18 @@ import java.util.List;
 
 public class TempOfficeData {
 
+    private Integer id;
     private List<TitleData> officeList;
     private List<TitleData> targetList;
     private List<OfficeTargetSatisfyData> satisfyList;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public List<TitleData> getOfficeList() {
         return officeList;
