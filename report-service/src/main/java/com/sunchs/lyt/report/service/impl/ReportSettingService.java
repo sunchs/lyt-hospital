@@ -238,6 +238,57 @@ public class ReportSettingService implements IReportSettingService {
         return result;
     }
 
+    @Override
+    public List<Map<String, Object>> getItemTargetList(Integer itemId, Integer officeType) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
+                .eq(ReportAnswerOption.ITEM_ID, itemId)
+                .eq(ReportAnswerOption.OFFICE_TYPE_ID, officeType)
+                .groupBy(ReportAnswerOption.TARGET_THREE);
+        List<ReportAnswerOption> optionList = reportAnswerOptionService.selectList(wrapper);
+        Map<Integer, List<ReportAnswerOption>> oneGroup = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetOne));
+        Map<Integer, String> targetNameMap = getTargetNameByIds(optionList.stream().map(ReportAnswerOption::getTargetThree).collect(Collectors.toSet()));
+        for (Integer oneId : oneGroup.keySet()) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", oneId);
+            map.put("title", targetNameMap.get(oneId));
+            List<ReportAnswerOption> threeList = oneGroup.get(oneId);
+            if (Objects.nonNull(oneGroup) && oneGroup.size() > 0) {
+                map.put("children", getTwoTargetMap(threeList, targetNameMap));
+            }
+            result.add(map);
+        }
+        return result;
+    }
+
+    private List<Map<String, Object>> getTwoTargetMap(List<ReportAnswerOption> twoTempList, Map<Integer, String> targetNameMap) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        Map<Integer, List<ReportAnswerOption>> twoList = twoTempList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetTwo));
+        for (Integer towId : twoList.keySet()) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", towId);
+            map.put("title", targetNameMap.get(towId));
+            List<ReportAnswerOption> threeList = twoList.get(towId);
+            if (Objects.nonNull(threeList) && threeList.size() > 0) {
+                map.put("children", getThreeTargetMap(threeList, targetNameMap));
+            }
+            result.add(map);
+        }
+        return result;
+    }
+
+    private List<Map<String, Object>> getThreeTargetMap(List<ReportAnswerOption> list, Map<Integer, String> targetMap) {
+        Map<Integer, List<ReportAnswerOption>> groupList = list.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetThree));
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Integer threeId : groupList.keySet()) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", threeId);
+            map.put("title", targetMap.get(threeId));
+            result.add(map);
+        }
+        return result;
+    }
+
     private List<Map<String, Object>> getTwoTarget(List<ReportAnswerQuantity> twoTempList, Map<Integer, String> targetMap) {
         List<Map<String, Object>> result = new ArrayList<>();
         Map<Integer, List<ReportAnswerQuantity>> twoList = twoTempList.stream().collect(Collectors.groupingBy(ReportAnswerQuantity::getTargetTwo));
@@ -318,5 +369,14 @@ public class ReportSettingService implements IReportSettingService {
             result.add(map);
         });
         return result;
+    }
+
+    private Map<Integer, String> getTargetNameByIds(Set<Integer> targetIds) {
+        Wrapper<QuestionTarget> targetWrapper = new EntityWrapper<QuestionTarget>()
+                .setSqlSelect(QuestionTarget.ID, QuestionTarget.TITLE)
+                .in(QuestionTarget.ID, targetIds);
+        List<QuestionTarget> targetList = questionTargetService.selectList(targetWrapper);
+        Map<Integer, String> targetMap = targetList.stream().collect(Collectors.toMap(QuestionTarget::getId, QuestionTarget::getTitle));
+        return targetMap;
     }
 }

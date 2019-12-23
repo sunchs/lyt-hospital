@@ -38,4 +38,9 @@ public interface IReportSettingService {
      * 获取临时科室列表
      */
     List<TempOfficeData> getItemTempOfficeList(Integer itemId, Integer officeType);
+
+    /**
+     * 获取指标
+     */
+    List<Map<String, Object>> getItemTargetList(Integer itemId, Integer officeType);
 }

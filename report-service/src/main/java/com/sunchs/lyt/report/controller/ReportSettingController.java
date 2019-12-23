@@ -77,4 +77,14 @@ public class ReportSettingController extends BaseController {
         Integer officeType = data.getInt("officeType");
         return success(reportSettingService.getItemTempOfficeList(itemId, officeType));
     }
+
+    /**
+     * 获取指标
+     */
+    @PostMapping("/getItemTargetList")
+    public ResultData getItemTargetList(@RequestBody RequestData data) {
+        Integer itemId = data.getInt("itemId");
+        Integer officeType = data.getInt("officeType");
+        return success(reportSettingService.getItemTargetList(itemId, officeType));
+    }
 }
