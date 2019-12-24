@@ -92,6 +92,16 @@ public class ReportController extends BaseController {
     }
 
     /**
+     * 获取总体满意度
+     */
+    @PostMapping("/getItemAllSatisfy")
+    public ResultData getItemAllSatisfy(@RequestBody RequestData data) {
+        Integer itemId = data.getInt("itemId");
+        Integer officeType = data.getInt("officeType");
+        return success(reportTargetService.getItemAllSatisfy(itemId, officeType));
+    }
+
+    /**
      * 获取可是满意度
      */
     @PostMapping("/itemOfficeSatisfy")

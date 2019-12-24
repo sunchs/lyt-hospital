@@ -15,4 +15,9 @@ public interface IReportTargetService {
     List<SatisfyData> getItemOfficeSatisfy(TotalParam param);
 
     List<SatisfyData> getItemOfficeTargetSatisfy(TotalParam param);
+
+    /**
+     * 获取总体满意度
+     */
+    Double getItemAllSatisfy(Integer itemId, Integer officeType);
 }
