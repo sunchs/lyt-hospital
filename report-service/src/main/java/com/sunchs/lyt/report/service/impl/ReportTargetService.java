@@ -163,7 +163,7 @@ public class ReportTargetService implements IReportTargetService {
         for (ReportAnswerSatisfy reportAnswerSatisfy : satisfyList) {
             score += reportAnswerSatisfy.getScore().doubleValue();
         }
-        return score / (double) satisfyList.size();
+        return score / (double) satisfyList.size() / (double) 100;
     }
 
     private List<SatisfyData> getOneTargetSatisfyList(int itemId, int targetId) {
