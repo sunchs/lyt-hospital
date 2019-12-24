@@ -26,7 +26,7 @@ public class ReportCompareService implements IReportCompareService {
     public List<Item> getItemListByOfficeType(Integer officeType) {
         // 查询项目ID
         Wrapper<ReportAnswerSatisfy> satisfyWrapper = new EntityWrapper<ReportAnswerSatisfy>()
-                .setSqlSelect(ReportAnswerSatisfy.ITEM_ID + "as itemId")
+                .setSqlSelect(ReportAnswerSatisfy.ITEM_ID + " as itemId")
                 .eq(ReportAnswerSatisfy.TARGET_ONE, officeType)
                 .groupBy(ReportAnswerSatisfy.ITEM_ID);
         List<ReportAnswerSatisfy> satisfyList = reportAnswerSatisfyService.selectList(satisfyWrapper);
