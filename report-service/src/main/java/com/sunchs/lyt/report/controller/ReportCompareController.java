@@ -20,7 +20,7 @@ public class ReportCompareController extends BaseController {
     /**
      * 根据 科室类型ID 获取题目满意度表的项目列表
      */
-    @PostMapping("/itemTotalList")
+    @PostMapping("/getItemListByOfficeType")
     public ResultData getItemListByOfficeType(@RequestBody RequestData data) {
         Integer officeType = data.getInt("officeType");
         return success(reportCompareService.getItemListByOfficeType(officeType));
