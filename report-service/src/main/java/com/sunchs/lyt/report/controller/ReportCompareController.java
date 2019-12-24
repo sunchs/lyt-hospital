@@ -3,6 +3,7 @@ package com.sunchs.lyt.report.controller;
 import com.sunchs.lyt.framework.bean.RequestData;
 import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
+import com.sunchs.lyt.report.bean.ItemCompareParam;
 import com.sunchs.lyt.report.service.impl.ReportCompareService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,5 +25,14 @@ public class ReportCompareController extends BaseController {
     public ResultData getItemListByOfficeType(@RequestBody RequestData data) {
         Integer officeType = data.getInt("officeType");
         return success(reportCompareService.getItemListByOfficeType(officeType));
+    }
+
+    /**
+     *
+     */
+    @PostMapping("/getItemCompareInfo")
+    public ResultData getItemCompareInfo(@RequestBody RequestData data) {
+        ItemCompareParam param = data.toObject(ItemCompareParam.class);
+        return success(reportCompareService.getItemCompareInfo(param));
     }
 }
