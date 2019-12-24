@@ -63,7 +63,7 @@ public class ReportCompareService implements IReportCompareService {
 
 //            List<ReportAnswerSatisfy> itemAnswerInfo = getItemAnswerInfo(item.getItemId(), item.getStartTime(), item.getEndTime());
 //            itemAnswerInfo
-
+            result.add(data);
         });
         return result;
     }
