@@ -143,7 +143,7 @@ public class ReportTargetService implements IReportTargetService {
             double score = getSatisfyByTargetIds(itemId, officeType, targetThreeIds);
             allScore += weight.getWeight().doubleValue() * score;
         }
-        allScore = allScore / (double) weightList.size();
+//        allScore = allScore / (double) weightList.size();
         return new BigDecimal(allScore).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
