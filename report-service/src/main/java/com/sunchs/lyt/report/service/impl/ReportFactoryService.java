@@ -168,8 +168,8 @@ public class ReportFactoryService implements IReportFactoryService {
 //                    }
                     // 满意度
                     if (NumberUtil.nonZero(number)) {
-                        int val = (int)(score / number * 100);
-                        data.setScore(val);
+                        double val = (double)score / (double)number * (double)100;
+                        data.setScore(Integer.parseInt(String.format("%.0f",val)));
                     } else {
                         data.setScore(0);
                     }
