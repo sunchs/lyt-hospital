@@ -120,12 +120,13 @@ public class ReportCompareService implements IReportCompareService {
                         ItemCompareValue vObj = new ItemCompareValue();
                         vObj.setRowId(questionGroup.get(0).getQuestionId());
                         vObj.setColId(col.getId());
-                        vObj.setValue(new BigDecimal(value / (double) number / 100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                        vObj.setValue(new BigDecimal(value / (double) number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
                         vList.add(vObj);
                     }
                 }
             }
         }
+        data.setRowList(rowList);
         data.setValueList(vList);
         return data;
     }
