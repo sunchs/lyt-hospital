@@ -192,6 +192,9 @@ public class ReportTargetService implements IReportTargetService {
 
     private List<SatisfyData> getTwoTargetSatisfyList(int itemId, int targetId) {
         List<SatisfyData> list = new ArrayList<>();
+        if (targetId == 288) {
+            System.out.println("========================>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        }
         // 查询
         Wrapper<ReportAnswerSatisfy> wrapper = new EntityWrapper<>();
         wrapper.setSqlSelect("TRUNCATE(AVG(score),2) as score", ReportAnswerSatisfy.TARGET_TWO+" as targetTwo", ReportAnswerSatisfy.TARGET_THREE+" as targetThree");
@@ -211,6 +214,9 @@ public class ReportTargetService implements IReportTargetService {
             data.setValue(value);
             list.add(data);
         });
+        if (targetId == 288) {
+            System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<========================>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        }
         return list;
     }
 
