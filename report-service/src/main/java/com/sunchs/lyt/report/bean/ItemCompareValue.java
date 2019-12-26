@@ -3,7 +3,7 @@ package com.sunchs.lyt.report.bean;
 public class ItemCompareValue {
 
     private Integer rowId;
-    private String colId;
+    private Integer colId;
     private Double value;
 
     public Integer getRowId() {
@@ -14,11 +14,11 @@ public class ItemCompareValue {
         this.rowId = rowId;
     }
 
-    public String getColId() {
+    public Integer getColId() {
         return colId;
     }
 
-    public void setColId(String colId) {
+    public void setColId(Integer colId) {
         this.colId = colId;
     }
 
