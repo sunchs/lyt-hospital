@@ -16,10 +16,7 @@ import com.sunchs.lyt.report.service.IReportCompareService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,6 +56,8 @@ public class ReportCompareService implements IReportCompareService {
         List<Integer> itemIds = valueList.stream().map(ItemCompareBean::getItemId).collect(Collectors.toList());
         Map<Integer, String> itemNameMap = getItemNameByIds(itemIds);
 
+        List<SatisfyData> satisfyDataList = new ArrayList<>();
+        List<IdTitleData> colList = new ArrayList<>();
         // 设置列值
         valueList.forEach(item->{
             // 设置满意度列和值
@@ -67,13 +66,17 @@ public class ReportCompareService implements IReportCompareService {
             satisfyData.setId(item.getItemId());
             satisfyData.setName(itemNameMap.get(item.getItemId()));
             satisfyData.setValue(satisfyValue);
-            data.getAllSatisfyList().add(satisfyData);
+            satisfyDataList.add(satisfyData);
+
             // 设置题目列
             IdTitleData questionColData = new IdTitleData();
             questionColData.setId(item.getItemId());
             questionColData.setTitle(itemNameMap.get(item.getItemId()));
-            data.getColList().add(questionColData);
+            colList.add(questionColData);
         });
+        data.setAllSatisfyList(satisfyDataList);
+        data.setColList(colList);
+
 
 //        data.setRowList();
 //        data.setValueList();
