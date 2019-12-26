@@ -170,7 +170,7 @@ public class ReportTargetService implements IReportTargetService {
         List<SatisfyData> list = new ArrayList<>();
         // 查询
         Wrapper<ReportAnswerSatisfy> wrapper = new EntityWrapper<>();
-        wrapper.setSqlSelect("TRUNCATE(AVG(score),0) as score", ReportAnswerSatisfy.TARGET_ONE+" as targetOne", ReportAnswerSatisfy.TARGET_TWO+" as targetTwo");
+        wrapper.setSqlSelect("TRUNCATE(AVG(score),2) as score", ReportAnswerSatisfy.TARGET_ONE+" as targetOne", ReportAnswerSatisfy.TARGET_TWO+" as targetTwo");
         wrapper.eq(ReportAnswerSatisfy.ITEM_ID, itemId);
         wrapper.ne(ReportAnswerSatisfy.SCORE, 0);
         wrapper.eq(ReportAnswerSatisfy.TARGET_ONE, targetId);
@@ -194,7 +194,7 @@ public class ReportTargetService implements IReportTargetService {
         List<SatisfyData> list = new ArrayList<>();
         // 查询
         Wrapper<ReportAnswerSatisfy> wrapper = new EntityWrapper<>();
-        wrapper.setSqlSelect("TRUNCATE(AVG(score),0) as score", ReportAnswerSatisfy.TARGET_TWO+" as targetTwo", ReportAnswerSatisfy.TARGET_THREE+" as targetThree");
+        wrapper.setSqlSelect("TRUNCATE(AVG(score),2) as score", ReportAnswerSatisfy.TARGET_TWO+" as targetTwo", ReportAnswerSatisfy.TARGET_THREE+" as targetThree");
         wrapper.eq(ReportAnswerSatisfy.ITEM_ID, itemId);
         wrapper.ne(ReportAnswerSatisfy.SCORE, 0);
         wrapper.eq(ReportAnswerSatisfy.TARGET_TWO, targetId);
