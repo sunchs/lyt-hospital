@@ -2,24 +2,24 @@ package com.sunchs.lyt.report.bean;
 
 public class ItemCompareValue {
 
-    private Integer id;
-    private String title;
+    private Integer rowId;
+    private String colId;
     private Double value;
 
-    public Integer getId() {
-        return id;
+    public Integer getRowId() {
+        return rowId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setRowId(Integer rowId) {
+        this.rowId = rowId;
     }
 
-    public String getTitle() {
-        return title;
+    public String getColId() {
+        return colId;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setColId(String colId) {
+        this.colId = colId;
     }
 
     public Double getValue() {

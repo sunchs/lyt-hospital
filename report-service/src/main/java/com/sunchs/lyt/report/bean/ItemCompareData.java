@@ -1,27 +1,52 @@
 package com.sunchs.lyt.report.bean;
 
+import com.sunchs.lyt.framework.bean.IdTitleData;
+
 import java.util.List;
 
 public class ItemCompareData {
 
-    private Integer id;
-    private String title;
+    /**
+     * 总体满意度列表
+     */
+    private List<SatisfyData> allSatisfyList;
+
+    /**
+     * 列
+     */
+    private List<IdTitleData> colList;
+    /**
+     * 行
+     */
+    private List<IdTitleData> rowList;
+    /**
+     * 值
+     */
     private List<ItemCompareValue> valueList;
 
-    public Integer getId() {
-        return id;
+
+    public List<SatisfyData> getAllSatisfyList() {
+        return allSatisfyList;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setAllSatisfyList(List<SatisfyData> allSatisfyList) {
+        this.allSatisfyList = allSatisfyList;
     }
 
-    public String getTitle() {
-        return title;
+    public List<IdTitleData> getColList() {
+        return colList;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setColList(List<IdTitleData> colList) {
+        this.colList = colList;
+    }
+
+    public List<IdTitleData> getRowList() {
+        return rowList;
+    }
+
+    public void setRowList(List<IdTitleData> rowList) {
+        this.rowList = rowList;
     }
 
     public List<ItemCompareValue> getValueList() {

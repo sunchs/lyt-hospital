@@ -3,6 +3,7 @@ package com.sunchs.lyt.report.bean;
 public class ItemCompareBean {
 
     private int itemId;
+    private int officeType;
     private String startTime;
     private String endTime;
 
@@ -12,6 +13,14 @@ public class ItemCompareBean {
 
     public void setItemId(int itemId) {
         this.itemId = itemId;
+    }
+
+    public int getOfficeType() {
+        return officeType;
+    }
+
+    public void setOfficeType(int officeType) {
+        this.officeType = officeType;
     }
 
     public String getStartTime() {

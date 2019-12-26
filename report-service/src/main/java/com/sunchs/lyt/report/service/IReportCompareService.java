@@ -16,5 +16,5 @@ public interface IReportCompareService {
     /**
      * 获取项目对比信息
      */
-    List<ItemCompareData> getItemCompareInfo(ItemCompareParam param);
+    ItemCompareData getItemCompareInfo(ItemCompareParam param);
 }

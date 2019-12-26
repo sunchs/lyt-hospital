@@ -6,10 +6,12 @@ import com.sunchs.lyt.db.business.entity.Item;
 import com.sunchs.lyt.db.business.entity.ReportAnswerSatisfy;
 import com.sunchs.lyt.db.business.service.impl.ItemServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.ReportAnswerSatisfyServiceImpl;
+import com.sunchs.lyt.framework.bean.IdTitleData;
 import com.sunchs.lyt.framework.util.FormatUtil;
 import com.sunchs.lyt.report.bean.ItemCompareBean;
 import com.sunchs.lyt.report.bean.ItemCompareData;
 import com.sunchs.lyt.report.bean.ItemCompareParam;
+import com.sunchs.lyt.report.bean.SatisfyData;
 import com.sunchs.lyt.report.service.IReportCompareService;
 import freemarker.template.utility.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class ReportCompareService implements IReportCompareService {
     @Autowired
     private ItemServiceImpl itemService;
 
+    @Autowired
+    private ReportTargetService reportTargetService;
+
     @Override
     public List<Item> getItemListByOfficeType(Integer officeType) {
         // 查询项目ID
@@ -43,29 +48,35 @@ public class ReportCompareService implements IReportCompareService {
     }
 
     @Override
-    public List<ItemCompareData> getItemCompareInfo(ItemCompareParam param) {
-        List<ItemCompareData> result = new ArrayList<>();
+    public ItemCompareData getItemCompareInfo(ItemCompareParam param) {
+        ItemCompareData data = new ItemCompareData();
         if (Objects.isNull(param.getValueList()) || param.getValueList().size() == 0) {
-            return result;
+            return data;
         }
-
-
-
         List<ItemCompareBean> valueList = param.getValueList();
         List<Integer> itemIds = valueList.stream().map(ItemCompareBean::getItemId).collect(Collectors.toList());
         Map<Integer, String> itemNameMap = getItemNameByIds(itemIds);
 
+        // 设置列值
         valueList.forEach(item->{
-            ItemCompareData data = new ItemCompareData();
-            data.setId(item.getItemId());
-            data.setTitle(itemNameMap.get(item.getItemId()));
-//            data.setValueList();
-
-//            List<ReportAnswerSatisfy> itemAnswerInfo = getItemAnswerInfo(item.getItemId(), item.getStartTime(), item.getEndTime());
-//            itemAnswerInfo
-            result.add(data);
+            // 设置满意度列和值
+            Double satisfyValue = reportTargetService.getItemAllSatisfy(item.getItemId(), item.getOfficeType());
+            SatisfyData satisfyData = new SatisfyData();
+            satisfyData.setId(item.getItemId());
+            satisfyData.setName(itemNameMap.get(item.getItemId());
+            satisfyData.setValue(satisfyValue);
+            data.getAllSatisfyList().add(satisfyData);
+            // 设置题目列
+            IdTitleData questionColData = new IdTitleData();
+            questionColData.setId(item.getItemId());
+            questionColData.setTitle(itemNameMap.get(item.getItemId()));
+            data.getColList().add(questionColData);
         });
-        return result;
+
+//        data.setRowList();
+//        data.setValueList();
+
+        return data;
     }
 
     private List<ReportAnswerSatisfy> getItemAnswerInfo(Integer itemId, String startTime, String endTime) {
