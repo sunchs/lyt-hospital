@@ -13,11 +13,13 @@ import com.sunchs.lyt.report.bean.ItemCompareData;
 import com.sunchs.lyt.report.bean.ItemCompareParam;
 import com.sunchs.lyt.report.bean.SatisfyData;
 import com.sunchs.lyt.report.service.IReportCompareService;
-import freemarker.template.utility.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,7 +65,7 @@ public class ReportCompareService implements IReportCompareService {
             Double satisfyValue = reportTargetService.getItemAllSatisfy(item.getItemId(), item.getOfficeType());
             SatisfyData satisfyData = new SatisfyData();
             satisfyData.setId(item.getItemId());
-            satisfyData.setName(itemNameMap.get(item.getItemId());
+            satisfyData.setName(itemNameMap.get(item.getItemId()));
             satisfyData.setValue(satisfyValue);
             data.getAllSatisfyList().add(satisfyData);
             // 设置题目列
