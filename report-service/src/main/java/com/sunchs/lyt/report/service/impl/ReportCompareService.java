@@ -78,6 +78,8 @@ public class ReportCompareService implements IReportCompareService {
             questionColData.setId(item.getItemId());
             questionColData.setTitle(itemNameMap.get(item.getItemId()));
             colList.add(questionColData);
+            // 列索引
+            item.setColIndex(valueList.indexOf(item));
 
             List<ReportAnswerOption> tempOptionList = getItemAnswerOption(item.getItemId(), item.getOfficeType(), item.getStartTime(), item.getEndTime());
             item.setTempOptionList(tempOptionList);
@@ -114,6 +116,7 @@ public class ReportCompareService implements IReportCompareService {
                     ItemCompareValue vObj = new ItemCompareValue();
                     vObj.setRowId(questionId);
                     vObj.setColId(item.getItemId());
+                    vObj.setColIndex(item.getColIndex());
                     vObj.setValue(new BigDecimal(value / (double) number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
                     vList.add(vObj);
                 }

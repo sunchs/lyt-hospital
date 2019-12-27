@@ -14,7 +14,9 @@ public class ItemCompareBean {
     /**
      * 临时数据
      */
-    List<ReportAnswerOption> tempOptionList;
+    private List<ReportAnswerOption> tempOptionList;
+
+    private int colIndex;
 
     public int getItemId() {
         return itemId;
@@ -54,5 +56,13 @@ public class ItemCompareBean {
 
     public void setTempOptionList(List<ReportAnswerOption> tempOptionList) {
         this.tempOptionList = tempOptionList;
+    }
+
+    public int getColIndex() {
+        return colIndex;
+    }
+
+    public void setColIndex(int colIndex) {
+        this.colIndex = colIndex;
     }
 }

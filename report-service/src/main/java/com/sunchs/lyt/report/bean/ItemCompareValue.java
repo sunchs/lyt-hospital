@@ -4,6 +4,7 @@ public class ItemCompareValue {
 
     private Integer rowId;
     private Integer colId;
+    private Integer colIndex;
     private Double value;
 
     public Integer getRowId() {
@@ -20,6 +21,14 @@ public class ItemCompareValue {
 
     public void setColId(Integer colId) {
         this.colId = colId;
+    }
+
+    public Integer getColIndex() {
+        return colIndex;
+    }
+
+    public void setColIndex(Integer colIndex) {
+        this.colIndex = colIndex;
     }
 
     public Double getValue() {
