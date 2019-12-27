@@ -165,7 +165,7 @@ public class ReportCompareService implements IReportCompareService {
             return false;
         }
         List<IdTitleData> list = rowList.stream().filter(v -> v.getId().equals(questionId)).collect(Collectors.toList());
-        if (Objects.nonNull(rowList) && rowList.size() > 0) {
+        if (Objects.nonNull(list) && list.size() > 0) {
             return true;
         }
         return false;
