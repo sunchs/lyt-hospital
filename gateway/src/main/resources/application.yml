@@ -26,22 +26,11 @@ eureka:
 #    socket-timeout-millis: 12000
 #    connect-timeout-millis: 12000
 
-
-
 zuul:
   host:
-    socket-timeout-millis: 60000
-    connect-timeout-millis: 60000
-  routes:
-    echo:
-      path: /report-service/**
-      serviceId: report-service
+    connect-timeout-millis: 10000
+    socket-timeout-millis: 10000
 
-
-hystrix:
-  command:
-    default:
-      execution:
-        isolation:
-          thread:
-            timeoutInMilliseconds: 60000
+ribbon:
+  ReadTimeout: 60000
+  ConnectTimeout: 60000
