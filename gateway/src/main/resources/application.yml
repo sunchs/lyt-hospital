@@ -27,10 +27,17 @@ eureka:
 #    connect-timeout-millis: 12000
 
 
+
 zuul:
   host:
     socket-timeout-millis: 60000
     connect-timeout-millis: 60000
+  routes:
+    echo:
+      path: /compare/**
+      serviceId: report-service
+      stripPrefix: true
+
 
 hystrix:
   command:
