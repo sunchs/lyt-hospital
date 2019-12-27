@@ -28,8 +28,8 @@ eureka:
 
 zuul:
   host:
-    connect-timeout-millis: 10000
-    socket-timeout-millis: 10000
+    connect-timeout-millis: 30000
+    socket-timeout-millis: 30000
 
 ribbon:
   ReadTimeout: 60000
