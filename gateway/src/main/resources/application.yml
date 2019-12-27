@@ -34,9 +34,8 @@ zuul:
     connect-timeout-millis: 60000
   routes:
     echo:
-      path: /compare/**
+      path: /report-service/**
       serviceId: report-service
-      stripPrefix: true
 
 
 hystrix:
