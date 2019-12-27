@@ -1,5 +1,6 @@
 server:
   port: 8008
+  connection-timeout: 30000
 spring:
   application:
     name: report-service
