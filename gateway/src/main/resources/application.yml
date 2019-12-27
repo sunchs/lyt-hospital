@@ -3,6 +3,10 @@ server:
 spring:
   application:
     name: gateway
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: true   #重试机制
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     username: root
@@ -16,12 +20,39 @@ eureka:
     serviceUrl:
       defaultZone: http://47.107.255.115:6006/eureka/
 
+#ribbon:
+#  ReadTimeout: 12000
+#  ConnectTimeout: 12000
+#  eureka:
+#    enabled: true
+#zuul:
+#  host:
+#    socket-timeout-millis: 12000
+#    connect-timeout-millis: 12000
+
+
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 15000
+  threadpool:
+    default:
+      coreSize: 100
+
 ribbon:
-  ReadTimeout: 12000
-  ConnectTimeout: 12000
-  eureka:
-    enabled: true
+  ConnectTimeout: 10000
+  ReadTimeout: 10000
+
 zuul:
+  ribbon-isolation-strategy: thread
+  max:
+    host:
+      connections: 5000
   host:
-    socket-timeout-millis: 12000
-    connect-timeout-millis: 12000
+    socket-timeout-millis: 6000
+    connect-timeout-millis: 6000
