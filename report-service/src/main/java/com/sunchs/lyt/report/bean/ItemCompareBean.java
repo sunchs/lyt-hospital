@@ -1,11 +1,20 @@
 package com.sunchs.lyt.report.bean;
 
+import com.sunchs.lyt.db.business.entity.ReportAnswerOption;
+
+import java.util.List;
+
 public class ItemCompareBean {
 
     private int itemId;
     private int officeType;
     private String startTime;
     private String endTime;
+
+    /**
+     * 临时数据
+     */
+    List<ReportAnswerOption> tempOptionList;
 
     public int getItemId() {
         return itemId;
@@ -37,5 +46,13 @@ public class ItemCompareBean {
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    public List<ReportAnswerOption> getTempOptionList() {
+        return tempOptionList;
+    }
+
+    public void setTempOptionList(List<ReportAnswerOption> tempOptionList) {
+        this.tempOptionList = tempOptionList;
     }
 }
