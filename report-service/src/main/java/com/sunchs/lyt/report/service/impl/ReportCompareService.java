@@ -119,7 +119,7 @@ public class ReportCompareService implements IReportCompareService {
                 }
             }
         });
-        
+
 //        Map<Integer, List<ReportAnswerOption>> questionMap = tempQuestionOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
 //        for (List<ReportAnswerOption> questionGroup : questionMap.values()) {
 //            Map<Integer, List<ReportAnswerOption>> itemQuestionList = questionGroup.stream().collect(Collectors.groupingBy(ReportAnswerOption::getItemId));
@@ -166,7 +166,7 @@ public class ReportCompareService implements IReportCompareService {
         }
         List<IdTitleData> list = rowList.stream().filter(v -> v.getId().equals(questionId)).collect(Collectors.toList());
         if (Objects.nonNull(rowList) && rowList.size() > 0) {
-            return true
+            return true;
         }
         return false;
     }
