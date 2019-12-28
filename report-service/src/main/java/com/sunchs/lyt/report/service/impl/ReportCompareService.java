@@ -1,14 +1,15 @@
 package com.sunchs.lyt.report.service.impl;
 
-import com.baomidou.mybatisplus.entity.Columns;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.sunchs.lyt.db.business.entity.Item;
 import com.sunchs.lyt.db.business.entity.ReportAnswerOption;
 import com.sunchs.lyt.db.business.entity.ReportAnswerSatisfy;
+import com.sunchs.lyt.db.business.entity.SettingItemWeight;
 import com.sunchs.lyt.db.business.service.impl.ItemServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.ReportAnswerOptionServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.ReportAnswerSatisfyServiceImpl;
+import com.sunchs.lyt.db.business.service.impl.SettingItemWeightServiceImpl;
 import com.sunchs.lyt.framework.bean.IdTitleData;
 import com.sunchs.lyt.framework.util.FormatUtil;
 import com.sunchs.lyt.report.bean.*;
@@ -34,6 +35,9 @@ public class ReportCompareService implements IReportCompareService {
 
     @Autowired
     private ReportAnswerOptionServiceImpl reportAnswerOptionService;
+
+    @Autowired
+    private SettingItemWeightServiceImpl settingItemWeightService;
 
     @Override
     public List<Item> getItemListByOfficeType(Integer officeType) {
@@ -67,7 +71,7 @@ public class ReportCompareService implements IReportCompareService {
         // 设置列值
         valueList.forEach(item->{
             // 设置满意度列和值
-            Double satisfyValue = reportTargetService.getItemAllSatisfy(item.getItemId(), item.getOfficeType());
+            Double satisfyValue = getItemAllSatisfy(item.getItemId(), item.getOfficeType(), item.getStartTime(), item.getEndTime());
             SatisfyData satisfyData = new SatisfyData();
             satisfyData.setId(item.getItemId());
             satisfyData.setName(itemNameMap.get(item.getItemId()));
@@ -109,15 +113,6 @@ public class ReportCompareService implements IReportCompareService {
                     value += option.getScore().doubleValue() * option.getQuantity().doubleValue();
                     number += option.getQuantity().intValue();
                 }
-
-//                Map<Integer, List<ReportAnswerOption>> tempOptionMap = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getOptionId));
-//                for (Integer oid : tempOptionMap.keySet()) {
-//                    List<ReportAnswerOption> opList = tempOptionMap.get(oid);
-//                    if (Objects.nonNull(opList)) {
-//                        value += opList.get(0).getScore().doubleValue() * (double) opList.size();
-//                        number += opList.size();
-//                    }
-//                }
                 if (number > 0) {
                     ItemCompareValue vObj = new ItemCompareValue();
                     vObj.setRowId(questionId);
@@ -128,45 +123,64 @@ public class ReportCompareService implements IReportCompareService {
                 }
             }
         });
-
-//        Map<Integer, List<ReportAnswerOption>> questionMap = tempQuestionOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
-//        for (List<ReportAnswerOption> questionGroup : questionMap.values()) {
-//            Map<Integer, List<ReportAnswerOption>> itemQuestionList = questionGroup.stream().collect(Collectors.groupingBy(ReportAnswerOption::getItemId));
-//            // 添加行的基本信息
-//            if (questionGroup.size() > 0) {
-//                IdTitleData tData = new IdTitleData();
-//                tData.setId(questionGroup.get(0).getQuestionId());
-//                tData.setTitle(questionGroup.get(0).getQuestionName());
-//                rowList.add(tData);
-//            }
-//            // 最终值
-//            for (IdTitleData col : data.getColList()) {
-//                List<ReportAnswerOption> optionList = itemQuestionList.get(col.getId());
-//                if (Objects.nonNull(optionList)) {
-//                    // 计算满意度
-//                    double value = 0;
-//                    int number = 0;
-//                    Map<Integer, List<ReportAnswerOption>> tempOptionMap = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getOptionId));
-//                    for (Integer oid : tempOptionMap.keySet()) {
-//                        List<ReportAnswerOption> opList = tempOptionMap.get(oid);
-//                        if (Objects.nonNull(opList)) {
-//                            value += opList.get(0).getScore().doubleValue() * (double) opList.size();
-//                            number += opList.size();
-//                        }
-//                    }
-//                    if (number > 0) {
-//                        ItemCompareValue vObj = new ItemCompareValue();
-//                        vObj.setRowId(questionGroup.get(0).getQuestionId());
-//                        vObj.setColId(col.getId());
-//                        vObj.setValue(new BigDecimal(value / (double) number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-//                        vList.add(vObj);
-//                    }
-//                }
-//            }
-//        }
         data.setRowList(rowList);
         data.setValueList(vList);
         return data;
+    }
+
+    public Double getItemAllSatisfy(Integer itemId, Integer officeType, String startTime, String endTime) {
+        double allScore = 0;
+        Wrapper<SettingItemWeight> weightWrapper = new EntityWrapper<SettingItemWeight>()
+                .eq(SettingItemWeight.ITEM_ID, itemId)
+                .eq(SettingItemWeight.OFFICE_TYPE, officeType);
+        List<SettingItemWeight> weightList = settingItemWeightService.selectList(weightWrapper);
+        if (Objects.isNull(weightList) || weightList.size() == 0) {
+            return allScore;
+        }
+        for (SettingItemWeight weight : weightList) {
+            List<String> targetThreeStringList = Arrays.asList(weight.getTargetThree().split(","));
+            List<Integer> targetThreeIds = targetThreeStringList.stream().map(v -> Integer.parseInt(v)).collect(Collectors.toList());
+            double score = getSatisfyByTargetIds(itemId, officeType, targetThreeIds, startTime, endTime);
+            allScore += weight.getWeight().doubleValue() * score;
+        }
+        return new BigDecimal(allScore).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
+
+    private double getSatisfyByTargetIds(Integer itemId, Integer officeType, List<Integer> targetThreeIds, String startTime, String endTime) {
+        Date sTime = FormatUtil.dateTime(startTime);
+        Date eTime = FormatUtil.dateTime(endTime);
+        double score = 0;
+        Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
+                .setSqlSelect("question_id AS questionId,option_id AS optionId,score,COUNT(1) quantity")
+                .eq(ReportAnswerOption.ITEM_ID, itemId)
+                .eq(ReportAnswerOption.OFFICE_TYPE_ID, officeType)
+                .ge(ReportAnswerOption.ENDTIME, sTime)
+                .le(ReportAnswerOption.ENDTIME, eTime)
+                .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
+                .in(ReportAnswerOption.TARGET_THREE, targetThreeIds)
+                .ne(ReportAnswerOption.SCORE, 0)
+                .groupBy(ReportAnswerOption.QUESTION_ID)
+                .groupBy(ReportAnswerOption.OPTION_ID);
+        List<ReportAnswerOption> list = reportAnswerOptionService.selectList(wrapper);
+        if (Objects.isNull(list) || list.size() == 0) {
+            return score;
+        }
+        // 计算满意度
+        Map<Integer, List<ReportAnswerOption>> questionMap = list.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
+        for (Integer questionId : questionMap.keySet()) {
+            List<ReportAnswerOption> optionList = questionMap.get(questionId);
+            // 计算满意度
+            double value = 0;
+            int number = 0;
+            for (ReportAnswerOption option : optionList) {
+                value += option.getScore().doubleValue() * option.getQuantity().doubleValue();
+                number += option.getQuantity().intValue();
+            }
+            if (number > 0) {
+                score += new BigDecimal(value / (double) number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            }
+        }
+        return score / (double) questionMap.size();
     }
 
     private boolean isInRowList(Integer questionId, List<IdTitleData> rowList) {
@@ -185,10 +199,8 @@ public class ReportCompareService implements IReportCompareService {
         Date eTime = FormatUtil.dateTime(endTime);
         Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
                 .setSqlSelect(
-                        "item_id AS itemId,office_type_id AS officeTypeId,question_id AS questionId," +
-                                "question_name AS questionName,option_id AS optionId,option_name AS optionName," +
-                                "target_one AS targetOne,target_two AS targetTwo,target_three AS targetThree, " +
-                                "score,COUNT(1) quantity"
+                        "question_id AS questionId,question_name AS questionName,option_id AS optionId,score,COUNT(1) quantity"
+//                                "option_name AS optionName,target_one AS targetOne,target_two AS targetTwo,target_three AS targetThree, " +
                 )
                 .eq(ReportAnswerOption.ITEM_ID, itemId)
                 .eq(ReportAnswerOption.OFFICE_TYPE_ID, optionType)
@@ -198,22 +210,6 @@ public class ReportCompareService implements IReportCompareService {
                 .groupBy(ReportAnswerOption.QUESTION_ID)
                 .groupBy(ReportAnswerOption.OPTION_ID);
         return reportAnswerOptionService.selectList(wrapper);
-    }
-
-    private List<ReportAnswerSatisfy> getItemAnswerInfo(Integer itemId, String startTime, String endTime) {
-        Date sTime = FormatUtil.dateTime(startTime);
-        Date eTime = FormatUtil.dateTime(endTime);
-        Wrapper<ReportAnswerSatisfy> satisfyWrapper = new EntityWrapper<ReportAnswerSatisfy>()
-                .setSqlSelect(
-                        ReportAnswerSatisfy.QUESTION_ID + " as questionId",
-                        ReportAnswerSatisfy.QUESTION_NAME + " as questionName",
-                        ReportAnswerSatisfy.TARGET_THREE + " as targetThree",
-                        "AVG(score as score)"
-                )
-                .eq(ReportAnswerSatisfy.ITEM_ID, itemId)
-//                .lt(ReportAnswerSatisfy.)
-                .groupBy(ReportAnswerSatisfy.QUESTION_ID);
-        return reportAnswerSatisfyService.selectList(satisfyWrapper);
     }
 
     /**
