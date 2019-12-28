@@ -1,5 +1,6 @@
 package com.sunchs.lyt.report.service.impl;
 
+import com.baomidou.mybatisplus.entity.Columns;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.sunchs.lyt.db.business.entity.Item;
@@ -104,14 +105,19 @@ public class ReportCompareService implements IReportCompareService {
                 // 计算满意度
                 double value = 0;
                 int number = 0;
-                Map<Integer, List<ReportAnswerOption>> tempOptionMap = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getOptionId));
-                for (Integer oid : tempOptionMap.keySet()) {
-                    List<ReportAnswerOption> opList = tempOptionMap.get(oid);
-                    if (Objects.nonNull(opList)) {
-                        value += opList.get(0).getScore().doubleValue() * (double) opList.size();
-                        number += opList.size();
-                    }
+                for (ReportAnswerOption option : optionList) {
+                    value += option.getScore().doubleValue() * option.getQuantity().doubleValue();
+                    number += option.getQuantity().intValue();
                 }
+
+//                Map<Integer, List<ReportAnswerOption>> tempOptionMap = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getOptionId));
+//                for (Integer oid : tempOptionMap.keySet()) {
+//                    List<ReportAnswerOption> opList = tempOptionMap.get(oid);
+//                    if (Objects.nonNull(opList)) {
+//                        value += opList.get(0).getScore().doubleValue() * (double) opList.size();
+//                        number += opList.size();
+//                    }
+//                }
                 if (number > 0) {
                     ItemCompareValue vObj = new ItemCompareValue();
                     vObj.setRowId(questionId);
@@ -178,11 +184,19 @@ public class ReportCompareService implements IReportCompareService {
         Date sTime = FormatUtil.dateTime(startTime);
         Date eTime = FormatUtil.dateTime(endTime);
         Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
+                .setSqlSelect(
+                        "item_id AS itemId,office_type_id AS officeTypeId,question_id AS questionId," +
+                                "question_name AS questionName,option_id AS optionId,option_name AS optionName," +
+                                "target_one AS targetOne,target_two AS targetTwo,target_three AS targetThree, " +
+                                "score,COUNT(1) quantity"
+                )
                 .eq(ReportAnswerOption.ITEM_ID, itemId)
                 .eq(ReportAnswerOption.OFFICE_TYPE_ID, optionType)
                 .ge(ReportAnswerOption.ENDTIME, sTime)
                 .le(ReportAnswerOption.ENDTIME, eTime)
-                .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4));
+                .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
+                .groupBy(ReportAnswerOption.QUESTION_ID)
+                .groupBy(ReportAnswerOption.OPTION_ID);
         return reportAnswerOptionService.selectList(wrapper);
     }
 
