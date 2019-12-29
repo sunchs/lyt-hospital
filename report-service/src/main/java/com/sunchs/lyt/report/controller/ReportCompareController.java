@@ -28,7 +28,17 @@ public class ReportCompareController extends BaseController {
     }
 
     /**
-     *
+     * 根据 项目ID、科室类型ID 获取题目满意度表的三级指标列表
+     */
+    @PostMapping("/getItemTargetThreeByOfficeType")
+    public ResultData getItemTargetThreeByOfficeType(@RequestBody RequestData data) {
+        Integer itemId = data.getInt("itemId");
+        Integer officeType = data.getInt("officeType");
+        return success(reportCompareService.getItemTargetThreeByOfficeType(itemId, officeType));
+    }
+
+    /**
+     * 获取对比数据
      */
     @PostMapping("/getItemCompareInfo")
     public ResultData getItemCompareInfo(@RequestBody RequestData data) {

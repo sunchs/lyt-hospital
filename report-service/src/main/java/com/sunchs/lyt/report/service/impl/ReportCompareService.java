@@ -2,18 +2,13 @@ package com.sunchs.lyt.report.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.sunchs.lyt.db.business.entity.Item;
-import com.sunchs.lyt.db.business.entity.ReportAnswerOption;
-import com.sunchs.lyt.db.business.entity.ReportAnswerSatisfy;
-import com.sunchs.lyt.db.business.entity.SettingItemWeight;
-import com.sunchs.lyt.db.business.service.impl.ItemServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.ReportAnswerOptionServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.ReportAnswerSatisfyServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.SettingItemWeightServiceImpl;
+import com.sunchs.lyt.db.business.entity.*;
+import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.IdTitleData;
 import com.sunchs.lyt.framework.util.FormatUtil;
 import com.sunchs.lyt.report.bean.*;
 import com.sunchs.lyt.report.service.IReportCompareService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,13 +26,13 @@ public class ReportCompareService implements IReportCompareService {
     private ItemServiceImpl itemService;
 
     @Autowired
-    private ReportTargetService reportTargetService;
-
-    @Autowired
     private ReportAnswerOptionServiceImpl reportAnswerOptionService;
 
     @Autowired
     private SettingItemWeightServiceImpl settingItemWeightService;
+
+    @Autowired
+    private QuestionTargetServiceImpl questionTargetService;
 
     @Override
     public List<Item> getItemListByOfficeType(Integer officeType) {
@@ -52,6 +47,23 @@ public class ReportCompareService implements IReportCompareService {
         Wrapper<Item> itemWrapper = new EntityWrapper<Item>()
                 .in(Item.ID, itemIds);
         return itemService.selectList(itemWrapper);
+    }
+
+    @Override
+    public List<QuestionTarget> getItemTargetThreeByOfficeType(Integer itemId, Integer officeType) {
+        Wrapper<ReportAnswerOption> optionWrapper = new EntityWrapper<ReportAnswerOption>()
+                .setSqlSelect(ReportAnswerOption.TARGET_THREE + " as targetThree")
+                .eq(ReportAnswerOption.ITEM_ID, itemId)
+                .eq(ReportAnswerOption.OFFICE_TYPE_ID, officeType)
+                .groupBy(ReportAnswerOption.TARGET_THREE);
+        List<ReportAnswerOption> targetThreeList = reportAnswerOptionService.selectList(optionWrapper);
+        if (CollectionUtils.isEmpty(targetThreeList)) {
+            return new ArrayList<>();
+        }
+        List<Integer> targetIds = targetThreeList.stream().map(ReportAnswerOption::getTargetThree).collect(Collectors.toList());
+        Wrapper<QuestionTarget> targetWrapper = new EntityWrapper<QuestionTarget>()
+                .in(QuestionTarget.ID, targetIds);
+        return questionTargetService.selectList(targetWrapper);
     }
 
     @Override
