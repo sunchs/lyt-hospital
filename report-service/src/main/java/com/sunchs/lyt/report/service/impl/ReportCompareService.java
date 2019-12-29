@@ -55,6 +55,7 @@ public class ReportCompareService implements IReportCompareService {
                 .setSqlSelect(ReportAnswerOption.TARGET_THREE + " as targetThree")
                 .eq(ReportAnswerOption.ITEM_ID, itemId)
                 .eq(ReportAnswerOption.OFFICE_TYPE_ID, officeType)
+                .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
                 .groupBy(ReportAnswerOption.TARGET_THREE);
         List<ReportAnswerOption> targetThreeList = reportAnswerOptionService.selectList(optionWrapper);
         if (CollectionUtils.isEmpty(targetThreeList)) {
