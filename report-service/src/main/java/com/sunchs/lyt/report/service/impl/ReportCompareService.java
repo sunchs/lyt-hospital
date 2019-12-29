@@ -186,6 +186,7 @@ public class ReportCompareService implements IReportCompareService {
                 result.add(data);
             } else {
                 // 计算满意度
+                double allVal = 0;
                 Map<Integer, List<ReportAnswerOption>> questionMap = questionOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
                 for (Integer questionId : questionMap.keySet()) {
                     List<ReportAnswerOption> optionList = questionMap.get(questionId);
@@ -197,11 +198,11 @@ public class ReportCompareService implements IReportCompareService {
                         number += option.getQuantity().intValue();
                     }
                     if (number > 0) {
-                        double val = new BigDecimal(value / (double) number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                        data.setValue(val);
-                        result.add(data);
+                        allVal += new BigDecimal(value / (double) number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                     }
                 }
+                data.setValue(new BigDecimal(allVal / (double) questionMap.size()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                result.add(data);
             }
         });
         return result;
