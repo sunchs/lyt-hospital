@@ -164,9 +164,9 @@ public class ReportCompareService implements IReportCompareService {
                 .groupBy(ReportAnswerOption.QUESTION_ID)
                 .groupBy(ReportAnswerOption.OPTION_ID);
         List<ReportAnswerOption> officeOptionList = reportAnswerOptionService.selectList(wrapper);
-        if (CollectionUtils.isEmpty(officeOptionList)) {
-            return result;
-        }
+//        if (CollectionUtils.isEmpty(officeOptionList)) {
+//            return result;
+//        }
         Map<Integer, List<ReportAnswerOption>> officeMap = officeOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getOfficeId));
         // 查询所有科室
         Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<ItemOffice>()
