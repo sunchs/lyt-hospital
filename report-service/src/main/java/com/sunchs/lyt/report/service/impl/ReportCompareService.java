@@ -172,6 +172,9 @@ public class ReportCompareService implements IReportCompareService {
         Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<ItemOffice>()
                 .eq(ItemOffice.ITEM_ID, param.getItemId())
                 .eq(ItemOffice.OFFICE_TYPE_ID, param.getOfficeType());
+        if (param.getOfficeType() == 3) {
+            wrapper.groupBy(ItemOffice.OFFICE_ID);
+        }
         List<ItemOffice> itemOfficeList = itemOfficeService.selectList(itemOfficeWrapper);
         itemOfficeList.forEach(office->{
             TitleValueData data = new TitleValueData();
