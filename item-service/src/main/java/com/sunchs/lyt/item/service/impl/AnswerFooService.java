@@ -107,6 +107,7 @@ public class AnswerFooService implements IAnswerFooService {
                         answerOption.setAnswerId(data.getId());
                         answerOption.setItemId(param.getItemId());
                         answerOption.setOfficeTypeId(data.getOfficeTypeId());
+                        answerOption.setOfficeId(data.getOfficeId());
                         answerOption.setQuestionnaireId(data.getQuestionnaireId());
                         answerOption.setQuestionId(q.getQuestionId());
                         answerOption.setQuestionName(question.getTitle());
@@ -129,6 +130,7 @@ public class AnswerFooService implements IAnswerFooService {
                                 answerOption.setAnswerId(data.getId());
                                 answerOption.setItemId(param.getItemId());
                                 answerOption.setOfficeTypeId(data.getOfficeTypeId());
+                                answerOption.setOfficeId(data.getOfficeId());
                                 answerOption.setQuestionnaireId(data.getQuestionnaireId());
                                 answerOption.setQuestionId(q.getQuestionId());
                                 answerOption.setQuestionName(question.getTitle());

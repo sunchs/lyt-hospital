@@ -14,7 +14,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-12-21
+ * @since 2019-12-30
  */
 @TableName("answer_option")
 public class AnswerOption extends Model<AnswerOption> {
@@ -44,6 +44,12 @@ public class AnswerOption extends Model<AnswerOption> {
      */
     @TableField("office_type_id")
     private Integer officeTypeId;
+
+    /**
+     * 科室ID
+     */
+    @TableField("office_id")
+    private Integer officeId;
 
     /**
      * 问卷ID
@@ -150,6 +156,13 @@ public class AnswerOption extends Model<AnswerOption> {
     public void setOfficeTypeId(Integer officeTypeId) {
         this.officeTypeId = officeTypeId;
     }
+    public Integer getOfficeId() {
+        return officeId;
+    }
+
+    public void setOfficeId(Integer officeId) {
+        this.officeId = officeId;
+    }
     public Integer getQuestionnaireId() {
         return questionnaireId;
     }
@@ -234,7 +247,6 @@ public class AnswerOption extends Model<AnswerOption> {
     public void setOptionType(Integer optionType) {
         this.optionType = optionType;
     }
-
     public Integer getScore() {
         return score;
     }
@@ -258,6 +270,8 @@ public class AnswerOption extends Model<AnswerOption> {
     public static final String ITEM_ID = "item_id";
 
     public static final String OFFICE_TYPE_ID = "office_type_id";
+
+    public static final String OFFICE_ID = "office_id";
 
     public static final String QUESTIONNAIRE_ID = "questionnaire_id";
 
@@ -297,6 +311,7 @@ public class AnswerOption extends Model<AnswerOption> {
         ", answerId=" + answerId +
         ", itemId=" + itemId +
         ", officeTypeId=" + officeTypeId +
+        ", officeId=" + officeId +
         ", questionnaireId=" + questionnaireId +
         ", questionId=" + questionId +
         ", questionName=" + questionName +

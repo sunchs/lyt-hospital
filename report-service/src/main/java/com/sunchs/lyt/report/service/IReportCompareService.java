@@ -2,6 +2,7 @@ package com.sunchs.lyt.report.service;
 
 import com.sunchs.lyt.db.business.entity.Item;
 import com.sunchs.lyt.db.business.entity.QuestionTarget;
+import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.report.bean.ItemCompareData;
 import com.sunchs.lyt.report.bean.ItemCompareParam;
 
@@ -23,4 +24,9 @@ public interface IReportCompareService {
      * 获取项目对比信息
      */
     ItemCompareData getItemCompareInfo(ItemCompareParam param);
+
+    /**
+     * 获取指标对比信息
+     */
+    List<TitleValueData> getItemTargetCompareInfo(ItemCompareParam param);
 }

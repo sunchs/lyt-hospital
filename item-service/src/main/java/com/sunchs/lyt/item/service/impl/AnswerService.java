@@ -131,6 +131,7 @@ public class AnswerService implements IAnswerService {
             option.setAnswerId(row.getAnswerId());
             option.setItemId(row.getItemId());
             option.setOfficeTypeId(row.getOfficeTypeId());
+            option.setOfficeId(row.getOfficeId());
             option.setQuestionnaireId(row.getQuestionnaireId());
             option.setQuestionId(row.getQuestionId());
             option.setQuestionName(row.getQuestionName());

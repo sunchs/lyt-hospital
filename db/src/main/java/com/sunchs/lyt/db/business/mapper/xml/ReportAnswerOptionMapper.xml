@@ -8,6 +8,7 @@
         <result column="answer_id" property="answerId" />
         <result column="item_id" property="itemId" />
         <result column="office_type_id" property="officeTypeId" />
+        <result column="office_id" property="officeId" />
         <result column="questionnaire_id" property="questionnaireId" />
         <result column="question_id" property="questionId" />
         <result column="question_name" property="questionName" />

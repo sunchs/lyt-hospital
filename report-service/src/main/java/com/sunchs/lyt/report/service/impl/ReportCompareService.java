@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.IdTitleData;
+import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.framework.util.FormatUtil;
 import com.sunchs.lyt.report.bean.*;
 import com.sunchs.lyt.report.service.IReportCompareService;
@@ -33,6 +34,9 @@ public class ReportCompareService implements IReportCompareService {
 
     @Autowired
     private QuestionTargetServiceImpl questionTargetService;
+
+    @Autowired
+    private ItemOfficeServiceImpl itemOfficeService;
 
     @Override
     public List<Item> getItemListByOfficeType(Integer officeType) {
@@ -141,7 +145,66 @@ public class ReportCompareService implements IReportCompareService {
         return data;
     }
 
-    public Double getItemAllSatisfy(Integer itemId, Integer officeType, String startTime, String endTime) {
+    @Override
+    public List<TitleValueData> getItemTargetCompareInfo(ItemCompareParam param) {
+        List<TitleValueData> result = new ArrayList<>();
+        Date sTime = FormatUtil.dateTime(param.getStartTime());
+        Date eTime = FormatUtil.dateTime(param.getEndTime());
+        Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
+                .setSqlSelect(
+                        "office_id AS officeId,question_id AS questionId,option_id AS optionId,score,COUNT(1) quantity"
+                )
+                .eq(ReportAnswerOption.ITEM_ID, param.getItemId())
+                .eq(ReportAnswerOption.OFFICE_TYPE_ID, param.getOfficeType())
+                .ge(ReportAnswerOption.ENDTIME, sTime)
+                .le(ReportAnswerOption.ENDTIME, eTime)
+                .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
+                .eq(ReportAnswerOption.TARGET_THREE, param.getTargetThree())
+                .groupBy(ReportAnswerOption.OFFICE_ID)
+                .groupBy(ReportAnswerOption.QUESTION_ID)
+                .groupBy(ReportAnswerOption.OPTION_ID);
+        List<ReportAnswerOption> officeOptionList = reportAnswerOptionService.selectList(wrapper);
+        if (CollectionUtils.isEmpty(officeOptionList)) {
+            return result;
+        }
+        Map<Integer, List<ReportAnswerOption>> officeMap = officeOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getOfficeId));
+        // 查询所有科室
+        Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<ItemOffice>()
+                .eq(ItemOffice.ITEM_ID, param.getItemId())
+                .eq(ItemOffice.OFFICE_TYPE_ID, param.getOfficeType());
+        List<ItemOffice> itemOfficeList = itemOfficeService.selectList(itemOfficeWrapper);
+        itemOfficeList.forEach(office->{
+            TitleValueData data = new TitleValueData();
+            data.setId(office.getOfficeId());
+            data.setTitle(office.getTitle());
+            List<ReportAnswerOption> questionOptionList = officeMap.get(office.getOfficeId());
+            if (CollectionUtils.isEmpty(questionOptionList)) {
+                data.setValue(-1d);
+                result.add(data);
+            } else {
+                // 计算满意度
+                Map<Integer, List<ReportAnswerOption>> questionMap = questionOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
+                for (Integer questionId : questionMap.keySet()) {
+                    List<ReportAnswerOption> optionList = questionMap.get(questionId);
+                    // 计算满意度
+                    double value = 0;
+                    int number = 0;
+                    for (ReportAnswerOption option : optionList) {
+                        value += option.getScore().doubleValue() * option.getQuantity().doubleValue();
+                        number += option.getQuantity().intValue();
+                    }
+                    if (number > 0) {
+                        double val = new BigDecimal(value / (double) number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                        data.setValue(val);
+                        result.add(data);
+                    }
+                }
+            }
+        });
+        return result;
+    }
+
+    private Double getItemAllSatisfy(Integer itemId, Integer officeType, String startTime, String endTime) {
         double allScore = 0;
         Wrapper<SettingItemWeight> weightWrapper = new EntityWrapper<SettingItemWeight>()
                 .eq(SettingItemWeight.ITEM_ID, itemId)

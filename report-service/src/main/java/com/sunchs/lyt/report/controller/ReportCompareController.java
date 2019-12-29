@@ -45,4 +45,13 @@ public class ReportCompareController extends BaseController {
         ItemCompareParam param = data.toObject(ItemCompareParam.class);
         return success(reportCompareService.getItemCompareInfo(param));
     }
+
+    /**
+     * 获取指标对比数据
+     */
+    @PostMapping("/getItemTargetCompareInfo")
+    public ResultData getItemTargetCompareInfo(@RequestBody RequestData data) {
+        ItemCompareParam param = data.toObject(ItemCompareParam.class);
+        return success(reportCompareService.getItemTargetCompareInfo(param));
+    }
 }
