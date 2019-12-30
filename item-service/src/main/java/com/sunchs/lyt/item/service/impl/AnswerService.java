@@ -49,6 +49,9 @@ public class AnswerService implements IAnswerService {
     @Autowired
     private NamedParameterJdbcTemplate db;
 
+    @Autowired
+    private QuestionnaireExtendServiceImpl questionnaireExtendService;
+
     @Override
     public PagingList<AnswerData> getPageList(AnswerParam param) {
         Wrapper<Answer> wrapper = new EntityWrapper<>();
@@ -173,10 +176,34 @@ public class AnswerService implements IAnswerService {
         data.setEndTimeName(FormatUtil.dateTime(answer.getEndTime()));
         data.setCreateTimeName(FormatUtil.dateTime(answer.getCreateTime()));
 
-        data.setQuestionOptionList(getQuestionOptionList(answer.getId()));
-        data.setImageList(getImageList(answer.getId()));
+        // 答题排序
+        List<Integer> questionIds = new ArrayList<>();
+        List<AnswerOptionData> optionList = new ArrayList<>();
+        List<AnswerOptionData> questionOptionList = getQuestionOptionList(answer.getId());
+        Wrapper<QuestionnaireExtend> extendWrapper = new EntityWrapper<QuestionnaireExtend>()
+                .eq(QuestionnaireExtend.QUESTIONNAIRE_ID, answer.getQuestionnaireId())
+                .orderBy(QuestionnaireExtend.ID, true);
+        List<QuestionnaireExtend> questionnaireExtends = questionnaireExtendService.selectList(extendWrapper);
+        questionnaireExtends.forEach(ext->{
+            questionIds.add(ext.getQuestionId());
+            getAnswerOptionSortData(questionOptionList, ext.getQuestionId(), optionList);
+        });
+        if (optionList.size() != questionOptionList.size()) {
+            List<AnswerOptionData> otherData = questionOptionList.stream().filter(v -> ! questionIds.contains(v.getQuestionId())).collect(Collectors.toList());
+            optionList.addAll(otherData);
+        }
 
+        data.setQuestionOptionList(optionList);
+        data.setImageList(getImageList(answer.getId()));
         return data;
+    }
+
+    private void getAnswerOptionSortData(List<AnswerOptionData> questionOptionList, Integer questionId, List<AnswerOptionData> optionList) {
+        for (AnswerOptionData answerOptionData : questionOptionList) {
+            if (answerOptionData.getQuestionId().equals(questionId)) {
+                optionList.add(answerOptionData);
+            }
+        }
     }
 
     /**
