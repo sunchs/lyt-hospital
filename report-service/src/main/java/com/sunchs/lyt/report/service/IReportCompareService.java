@@ -29,4 +29,9 @@ public interface IReportCompareService {
      * 获取指标对比信息
      */
     List<TitleValueData> getItemTargetCompareInfo(ItemCompareParam param);
+
+    /**
+     * 获取临时科室对比信息
+     */
+    ItemCompareData getItemTempOfficeCompareInfo(ItemCompareParam param);
 }

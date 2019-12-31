@@ -38,6 +38,9 @@ public class ReportCompareService implements IReportCompareService {
     @Autowired
     private ItemOfficeServiceImpl itemOfficeService;
 
+    @Autowired
+    private SettingItemTempShowServiceImpl settingItemTempShowService;
+
     @Override
     public List<Item> getItemListByOfficeType(Integer officeType) {
         // 查询项目ID
@@ -208,6 +211,108 @@ public class ReportCompareService implements IReportCompareService {
         return result;
     }
 
+    @Override
+    public ItemCompareData getItemTempOfficeCompareInfo(ItemCompareParam param) {
+        ItemCompareData data = new ItemCompareData();
+        if (Objects.isNull(param.getValueList()) || param.getValueList().size() == 0) {
+            return data;
+        }
+
+        List<ItemCompareBean> valueList = param.getValueList();
+        List<Integer> itemIds = valueList.stream().map(ItemCompareBean::getItemId).collect(Collectors.toList());
+        Map<Integer, String> itemNameMap = getItemNameByIds(itemIds);
+
+        List<IdTitleData> colList = new ArrayList<>();
+        List<IdTitleData> rowList = new ArrayList<>();
+        List<ItemCompareValue> vList = new ArrayList<>();
+
+        // 设置列值
+        valueList.forEach(item->{
+            // 设置题目列
+            IdTitleData questionColData = new IdTitleData();
+            questionColData.setId(item.getItemId());
+            questionColData.setTitle(itemNameMap.get(item.getItemId()));
+            colList.add(questionColData);
+            // 列索引
+            item.setColIndex(valueList.indexOf(item));
+
+            // 收集指标ID
+            List<Integer> targetIds = new ArrayList<>();
+            Wrapper<SettingItemTempShow> settingItemTempShowWrapper = new EntityWrapper<SettingItemTempShow>()
+                    .eq(SettingItemTempShow.ITEM_ID, item.getItemId())
+                    .eq(SettingItemTempShow.OFFICE_TYPE, item.getOfficeType());
+            List<SettingItemTempShow> settingItemTempShowList = settingItemTempShowService.selectList(settingItemTempShowWrapper);
+            for (SettingItemTempShow temp : settingItemTempShowList) {
+                List<String> tempOfficeIds = Arrays.asList(temp.getOfficeIds().split(","));
+                for (String officeId : tempOfficeIds) {
+                    if (Integer.parseInt(officeId) == item.getOfficeId()) {
+                        List<String> list = Arrays.asList(temp.getTargetIds().split(","));
+                        list.forEach(id->{
+                            targetIds.add(Integer.parseInt(id));
+                        });
+                    }
+                }
+            }
+            item.setTempTargetIds(targetIds);
+
+            // 查询需要统计的数据
+            List<ReportAnswerOption> tempOptionList = getItemAnswerOption(item.getItemId(), item.getOfficeType(), item.getStartTime(), item.getEndTime(), targetIds);
+            item.setTempOptionList(tempOptionList);
+        });
+        data.setColList(colList);
+
+        valueList.forEach(item->{
+            if (CollectionUtils.isNotEmpty(item.getTempTargetIds())) {
+                Map<Integer, String> targetNameMap = getTargetNameByIds(item.getTempTargetIds());
+                item.getTempTargetIds().forEach(tId->{
+                    // 插入新行
+                    if (isInRowList(tId, rowList) == false) {
+                        IdTitleData tData = new IdTitleData();
+                        tData.setId(tId);
+                        tData.setTitle(targetNameMap.get(tId));
+                        rowList.add(tData);
+                    }
+
+                    // 记录每道题的满意度
+                    Map<Integer, Double> questionSatisfyMap = new HashMap<>();
+                    // 计算题目满意度
+                    List<ReportAnswerOption> questionOptionList = item.getTempOptionList().stream().filter(v -> v.getTargetThree().equals(tId)).collect(Collectors.toList());
+                    Map<Integer, List<ReportAnswerOption>> questionMap = questionOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
+                    for (Integer questionId : questionMap.keySet()) {
+                        List<ReportAnswerOption> optionList = questionMap.get(questionId);
+                        // 计算满意度
+                        double value = 0;
+                        int number = 0;
+                        for (ReportAnswerOption option : optionList) {
+                            value += option.getScore().doubleValue() * option.getQuantity().doubleValue();
+                            number += option.getQuantity().intValue();
+                        }
+                        if (number > 0) {
+                            questionSatisfyMap.put(questionId, new BigDecimal(value / (double) number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                        }
+                    }
+                    // 计算指标满意度
+                    double satisfyValue = 0;
+                    for (Double value : questionSatisfyMap.values()) {
+                        satisfyValue += value.doubleValue();
+                    }
+                    if (questionSatisfyMap.size() > 0) {
+                        ItemCompareValue vObj = new ItemCompareValue();
+                        vObj.setRowId(tId);
+                        vObj.setColId(item.getItemId());
+                        vObj.setColIndex(item.getColIndex());
+                        vObj.setValue(new BigDecimal(satisfyValue / (double) questionSatisfyMap.size()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                        vList.add(vObj);
+                    }
+                });
+            }
+        });
+
+        data.setRowList(rowList);
+        data.setValueList(vList);
+        return data;
+    }
+
     private Double getItemAllSatisfy(Integer itemId, Integer officeType, String startTime, String endTime) {
         double allScore = 0;
         Wrapper<SettingItemWeight> weightWrapper = new EntityWrapper<SettingItemWeight>()
@@ -292,6 +397,25 @@ public class ReportCompareService implements IReportCompareService {
         return reportAnswerOptionService.selectList(wrapper);
     }
 
+    private List<ReportAnswerOption> getItemAnswerOption(Integer itemId, Integer optionType, String startTime, String endTime, List<Integer> officeIds) {
+        Date sTime = FormatUtil.dateTime(startTime);
+        Date eTime = FormatUtil.dateTime(endTime);
+        Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
+                .setSqlSelect(
+                        "question_id AS questionId,option_id AS optionId,score,COUNT(1) quantity"
+//                                "option_name AS optionName,target_one AS targetOne,target_two AS targetTwo,target_three AS targetThree, " +
+                )
+                .eq(ReportAnswerOption.ITEM_ID, itemId)
+                .eq(ReportAnswerOption.OFFICE_TYPE_ID, optionType)
+                .ge(ReportAnswerOption.ENDTIME, sTime)
+                .le(ReportAnswerOption.ENDTIME, eTime)
+                .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
+                .in(ReportAnswerOption.TARGET_THREE, officeIds)
+                .groupBy(ReportAnswerOption.QUESTION_ID)
+                .groupBy(ReportAnswerOption.OPTION_ID);
+        return reportAnswerOptionService.selectList(wrapper);
+    }
+
     /**
      * 根据 项目ID集合 获取项目名称
      */
@@ -301,5 +425,16 @@ public class ReportCompareService implements IReportCompareService {
                 .in(Item.ID, itemIds);
         List<Item> itemList = itemService.selectList(wrapper);
         return itemList.stream().collect(Collectors.toMap(Item::getId, Item::getTitle));
+    }
+
+    /**
+     * 根据 指标ID集合 获取指标名称
+     */
+    private Map<Integer, String> getTargetNameByIds(List<Integer> targetIds) {
+        Wrapper<QuestionTarget> wrapper = new EntityWrapper<QuestionTarget>()
+                .setSqlSelect(QuestionTarget.ID, QuestionTarget.TITLE)
+                .in(QuestionTarget.ID, targetIds);
+        List<QuestionTarget> itemList = questionTargetService.selectList(wrapper);
+        return itemList.stream().collect(Collectors.toMap(QuestionTarget::getId, QuestionTarget::getTitle));
     }
 }

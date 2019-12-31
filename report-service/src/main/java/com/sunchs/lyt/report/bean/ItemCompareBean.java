@@ -11,10 +11,13 @@ public class ItemCompareBean {
     private String startTime;
     private String endTime;
 
+    private int officeId;
+
     /**
      * 临时数据
      */
     private List<ReportAnswerOption> tempOptionList;
+    private List<Integer> tempTargetIds;
 
     private int colIndex;
 
@@ -56,6 +59,22 @@ public class ItemCompareBean {
 
     public void setTempOptionList(List<ReportAnswerOption> tempOptionList) {
         this.tempOptionList = tempOptionList;
+    }
+
+    public List<Integer> getTempTargetIds() {
+        return tempTargetIds;
+    }
+
+    public void setTempTargetIds(List<Integer> tempTargetIds) {
+        this.tempTargetIds = tempTargetIds;
+    }
+
+    public int getOfficeId() {
+        return officeId;
+    }
+
+    public void setOfficeId(int officeId) {
+        this.officeId = officeId;
     }
 
     public int getColIndex() {
