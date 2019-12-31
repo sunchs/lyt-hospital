@@ -45,6 +45,9 @@ public class ReportCompareService implements IReportCompareService {
     @Autowired
     private HospitalOfficeServiceImpl hospitalOfficeService;
 
+    @Autowired
+    private CustomItemOfficeServiceImpl customItemOfficeService;
+
     @Override
     public List<Item> getItemListByOfficeType(Integer officeType) {
         // 查询项目ID
@@ -352,6 +355,30 @@ public class ReportCompareService implements IReportCompareService {
             data.setId(o.getId());
             data.setType(o.getType());
             data.setTitle(o.getTitle());
+            result.add(data);
+        });
+        return result;
+    }
+
+    @Override
+    public List<TitleData> getCustomOfficeByItemIds(ItemCompareParam param) {
+        List<TitleData> result = new ArrayList<>();
+        if (Objects.isNull(param.getValueList()) || param.getValueList().size() == 0) {
+            return result;
+        }
+        // 提取科室
+        Set<String> titleList = new HashSet<>();
+        param.getValueList().forEach(item->{
+            Wrapper<CustomItemOffice> settingItemTempShowWrapper = new EntityWrapper<CustomItemOffice>()
+                    .setSqlSelect(CustomItemOffice.TITLE)
+                    .eq(CustomItemOffice.ITEM_ID, item.getItemId())
+                    .eq(CustomItemOffice.OFFICE_TYPE, item.getOfficeType());
+            List<CustomItemOffice> customItemOfficeList = customItemOfficeService.selectList(settingItemTempShowWrapper);
+            customItemOfficeList.forEach(custom-> titleList.add(custom.getTitle()));
+        });
+        titleList.forEach(title->{
+            TitleData data = new TitleData();
+            data.setTitle(title);
             result.add(data);
         });
         return result;

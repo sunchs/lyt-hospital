@@ -72,4 +72,14 @@ public class ReportCompareController extends BaseController {
         ItemCompareParam param = data.toObject(ItemCompareParam.class);
         return success(reportCompareService.getTempOfficeByItemIds(param));
     }
+
+    /**
+     * 根据 项目ID集合 获取自定义科室列表
+     */
+    @PostMapping("/getCustomOfficeByItemIds")
+    public ResultData getCustomOfficeByItemIds(@RequestBody RequestData data) {
+        ItemCompareParam param = data.toObject(ItemCompareParam.class);
+        return success(reportCompareService.getCustomOfficeByItemIds(param));
+    }
+
 }

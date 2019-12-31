@@ -40,4 +40,9 @@ public interface IReportCompareService {
      * 根据 项目ID集合 获取临时科室列表
      */
     List<TitleData> getTempOfficeByItemIds(ItemCompareParam param);
+
+    /**
+     * 根据 项目ID集合 获取自定义科室列表
+     */
+    List<TitleData> getCustomOfficeByItemIds(ItemCompareParam param);
 }
