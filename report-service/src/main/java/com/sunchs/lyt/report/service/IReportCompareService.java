@@ -45,4 +45,9 @@ public interface IReportCompareService {
      * 根据 项目ID集合 获取自定义科室列表
      */
     List<TitleData> getCustomOfficeByItemIds(ItemCompareParam param);
+
+    /**
+     * 获取自定义科室对比信息
+     */
+    ItemCompareData getItemCustomOfficeCompareInfo(ItemCompareParam param);
 }

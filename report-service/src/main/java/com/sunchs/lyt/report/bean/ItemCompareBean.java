@@ -12,6 +12,7 @@ public class ItemCompareBean {
     private String endTime;
 
     private int officeId;
+    private String customOfficeTitle;
 
     /**
      * 临时数据
@@ -75,6 +76,14 @@ public class ItemCompareBean {
 
     public void setOfficeId(int officeId) {
         this.officeId = officeId;
+    }
+
+    public String getCustomOfficeTitle() {
+        return customOfficeTitle;
+    }
+
+    public void setCustomOfficeTitle(String customOfficeTitle) {
+        this.customOfficeTitle = customOfficeTitle;
     }
 
     public int getColIndex() {

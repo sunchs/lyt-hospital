@@ -82,4 +82,13 @@ public class ReportCompareController extends BaseController {
         return success(reportCompareService.getCustomOfficeByItemIds(param));
     }
 
+    /**
+     * 获取自定义科室对比数据
+     */
+    @PostMapping("/getItemCustomOfficeCompareInfo")
+    public ResultData getItemCustomOfficeCompareInfo(@RequestBody RequestData data) {
+        ItemCompareParam param = data.toObject(ItemCompareParam.class);
+        return success(reportCompareService.getItemCustomOfficeCompareInfo(param));
+    }
+
 }
