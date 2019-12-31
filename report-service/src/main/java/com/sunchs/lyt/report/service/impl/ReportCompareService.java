@@ -443,7 +443,7 @@ public class ReportCompareService implements IReportCompareService {
         Date eTime = FormatUtil.dateTime(endTime);
         Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
                 .setSqlSelect(
-                        "question_id AS questionId,option_id AS optionId,score,COUNT(1) quantity"
+                        "question_id AS questionId,option_id AS optionId,target_three AS targetThree,score,COUNT(1) quantity"
 //                                "option_name AS optionName,target_one AS targetOne,target_two AS targetTwo,target_three AS targetThree, " +
                 )
                 .eq(ReportAnswerOption.ITEM_ID, itemId)
