@@ -282,32 +282,34 @@ public class ReportCompareService implements IReportCompareService {
                     // 计算题目满意度
                     if (CollectionUtils.isNotEmpty(item.getTempOptionList())) {
                         List<ReportAnswerOption> questionOptionList = item.getTempOptionList().stream().filter(v -> v.getTargetThree().equals(tId)).collect(Collectors.toList());
-                        Map<Integer, List<ReportAnswerOption>> questionMap = questionOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
-                        for (Integer questionId : questionMap.keySet()) {
-                            List<ReportAnswerOption> optionList = questionMap.get(questionId);
-                            // 计算满意度
-                            double value = 0;
-                            int number = 0;
-                            for (ReportAnswerOption option : optionList) {
-                                value += option.getScore().doubleValue() * option.getQuantity().doubleValue();
-                                number += option.getQuantity().intValue();
+                        if (CollectionUtils.isNotEmpty(questionOptionList)) {
+                            Map<Integer, List<ReportAnswerOption>> questionMap = questionOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
+                            for (Integer questionId : questionMap.keySet()) {
+                                List<ReportAnswerOption> optionList = questionMap.get(questionId);
+                                // 计算满意度
+                                double value = 0;
+                                int number = 0;
+                                for (ReportAnswerOption option : optionList) {
+                                    value += option.getScore().doubleValue() * option.getQuantity().doubleValue();
+                                    number += option.getQuantity().intValue();
+                                }
+                                if (number > 0) {
+                                    questionSatisfyMap.put(questionId, new BigDecimal(value / (double) number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                                }
                             }
-                            if (number > 0) {
-                                questionSatisfyMap.put(questionId, new BigDecimal(value / (double) number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                            // 计算指标满意度
+                            double satisfyValue = 0;
+                            for (Double value : questionSatisfyMap.values()) {
+                                satisfyValue += value.doubleValue();
                             }
-                        }
-                        // 计算指标满意度
-                        double satisfyValue = 0;
-                        for (Double value : questionSatisfyMap.values()) {
-                            satisfyValue += value.doubleValue();
-                        }
-                        if (questionSatisfyMap.size() > 0) {
-                            ItemCompareValue vObj = new ItemCompareValue();
-                            vObj.setRowId(tId);
-                            vObj.setColId(item.getItemId());
-                            vObj.setColIndex(item.getColIndex());
-                            vObj.setValue(new BigDecimal(satisfyValue / (double) questionSatisfyMap.size()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-                            vList.add(vObj);
+                            if (questionSatisfyMap.size() > 0) {
+                                ItemCompareValue vObj = new ItemCompareValue();
+                                vObj.setRowId(tId);
+                                vObj.setColId(item.getItemId());
+                                vObj.setColIndex(item.getColIndex());
+                                vObj.setValue(new BigDecimal(satisfyValue / (double) questionSatisfyMap.size()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                                vList.add(vObj);
+                            }
                         }
                     }
                 });
