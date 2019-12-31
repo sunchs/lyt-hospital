@@ -2,6 +2,7 @@ package com.sunchs.lyt.report.service;
 
 import com.sunchs.lyt.db.business.entity.Item;
 import com.sunchs.lyt.db.business.entity.QuestionTarget;
+import com.sunchs.lyt.framework.bean.TitleData;
 import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.report.bean.ItemCompareData;
 import com.sunchs.lyt.report.bean.ItemCompareParam;
@@ -34,4 +35,9 @@ public interface IReportCompareService {
      * 获取临时科室对比信息
      */
     ItemCompareData getItemTempOfficeCompareInfo(ItemCompareParam param);
+
+    /**
+     * 根据 项目ID集合 获取临时科室列表
+     */
+    List<TitleData> getTempOfficeByItemIds(ItemCompareParam param);
 }

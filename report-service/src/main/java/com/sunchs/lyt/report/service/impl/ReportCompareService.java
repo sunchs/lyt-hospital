@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.IdTitleData;
+import com.sunchs.lyt.framework.bean.TitleData;
 import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.framework.util.FormatUtil;
 import com.sunchs.lyt.report.bean.*;
@@ -40,6 +41,9 @@ public class ReportCompareService implements IReportCompareService {
 
     @Autowired
     private SettingItemTempShowServiceImpl settingItemTempShowService;
+
+    @Autowired
+    private HospitalOfficeServiceImpl hospitalOfficeService;
 
     @Override
     public List<Item> getItemListByOfficeType(Integer officeType) {
@@ -311,6 +315,39 @@ public class ReportCompareService implements IReportCompareService {
         data.setRowList(rowList);
         data.setValueList(vList);
         return data;
+    }
+
+    @Override
+    public List<TitleData> getTempOfficeByItemIds(ItemCompareParam param) {
+        List<TitleData> result = new ArrayList<>();
+        if (Objects.isNull(param.getValueList()) || param.getValueList().size() == 0) {
+            return result;
+        }
+        // 提取科室ID集合
+        Set<Integer> ids = new HashSet<>();
+        param.getValueList().forEach(item->{
+            Wrapper<SettingItemTempShow> settingItemTempShowWrapper = new EntityWrapper<SettingItemTempShow>()
+                    .eq(SettingItemTempShow.ITEM_ID, item.getItemId())
+                    .eq(SettingItemTempShow.OFFICE_TYPE, item.getOfficeType());
+            List<SettingItemTempShow> settingItemTempShowList = settingItemTempShowService.selectList(settingItemTempShowWrapper);
+            for (SettingItemTempShow temp : settingItemTempShowList) {
+                List<String> tempOfficeIds = Arrays.asList(temp.getOfficeIds().split(","));
+                tempOfficeIds.forEach(id -> ids.add(Integer.parseInt(id)));
+            }
+        });
+        // 根据 科室ID集合查询数据
+        Wrapper<HospitalOffice> officeWrapper = new EntityWrapper<HospitalOffice>()
+                .setSqlSelect(HospitalOffice.ID, HospitalOffice.TITLE)
+                .in(HospitalOffice.ID, ids);
+        List<HospitalOffice> hospitalOfficeList = hospitalOfficeService.selectList(officeWrapper);
+        hospitalOfficeList.forEach(o->{
+            TitleData data = new TitleData();
+            data.setId(o.getId());
+            data.setType(o.getType());
+            data.setTitle(o.getTitle());
+            result.add(data);
+        });
+        return result;
     }
 
     private Double getItemAllSatisfy(Integer itemId, Integer officeType, String startTime, String endTime) {
