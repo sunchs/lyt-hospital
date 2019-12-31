@@ -339,6 +339,9 @@ public class ReportCompareService implements IReportCompareService {
                 tempOfficeIds.forEach(id -> ids.add(Integer.parseInt(id)));
             }
         });
+        if (ids.size() == 0) {
+            return result;
+        }
         // 根据 科室ID集合查询数据
         Wrapper<HospitalOffice> officeWrapper = new EntityWrapper<HospitalOffice>()
                 .setSqlSelect(HospitalOffice.ID, HospitalOffice.TITLE)
