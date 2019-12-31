@@ -421,7 +421,7 @@ public class ReportCompareService implements IReportCompareService {
             List<CustomItemOffice> customItemOfficeList = customItemOfficeService.selectList(customItemOfficeWrapper);
             for (CustomItemOffice custom : customItemOfficeList) {
                 Wrapper<CustomItemTarget> customItemTargetWrapper = new EntityWrapper<CustomItemTarget>()
-                        .eq(CustomItemTarget.CUSTOM_ID, custom.getId())
+                        .eq(CustomItemTarget.CUSTOM_ID, custom.getId());
                 List<CustomItemTarget> customItemTargetList = customItemTargetService.selectList(customItemTargetWrapper);
                 customItemTargetList.forEach(t->targetIds.add(t.getTargetThree()));
             }
@@ -430,7 +430,7 @@ public class ReportCompareService implements IReportCompareService {
             // 查询需要统计的数据
             List<ReportAnswerOption> tempOptionList = new ArrayList<>();
             for (CustomItemOffice custom : customItemOfficeList) {
-                List<ReportAnswerOption> itemAnswerOption = getItemAnswerOption(item.getItemId(), item.getOfficeType(), item.getStartTime(), item.getEndTime(), targetIds
+                List<ReportAnswerOption> itemAnswerOption = getItemAnswerOption(item.getItemId(), item.getOfficeType(), item.getStartTime(), item.getEndTime(), targetIds,
                         custom.getQuestionnaireId(), custom.getQuestionId(), custom.getOptionId());
                 tempOptionList.addAll(itemAnswerOption);
             }
@@ -612,6 +612,8 @@ public class ReportCompareService implements IReportCompareService {
                 .le(ReportAnswerOption.ENDTIME, eTime)
                 .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
                 .in(ReportAnswerOption.TARGET_THREE, officeIds)
+                .eq(ReportAnswerOption.QUESTIONNAIRE_ID, questionnaireId)
+                .eq(ReportAnswerOption.QUESTION_ID, questionId)
                 .groupBy(ReportAnswerOption.QUESTION_ID)
                 .groupBy(ReportAnswerOption.OPTION_ID);
         return reportAnswerOptionService.selectList(wrapper);
