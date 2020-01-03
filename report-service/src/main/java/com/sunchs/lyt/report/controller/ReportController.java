@@ -9,10 +9,7 @@ import com.sunchs.lyt.report.bean.AnswerQuestionParam;
 import com.sunchs.lyt.report.bean.ItemTotalParam;
 import com.sunchs.lyt.report.bean.SettingParam;
 import com.sunchs.lyt.report.bean.TotalParam;
-import com.sunchs.lyt.report.service.impl.ReportFactoryService;
-import com.sunchs.lyt.report.service.impl.ReportService;
-import com.sunchs.lyt.report.service.impl.ReportTagService;
-import com.sunchs.lyt.report.service.impl.ReportTargetService;
+import com.sunchs.lyt.report.service.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +31,9 @@ public class ReportController extends BaseController {
 
     @Autowired
     private ReportTargetService reportTargetService;
+
+    @Autowired
+    private ReportRelatedService reportRelatedService;
 
     /**
      * 问卷抽样量统计列表
@@ -155,4 +155,12 @@ public class ReportController extends BaseController {
         reportService.saveSettingItemTarget(param);
         return success();
     }
+
+    @PostMapping("/getItemRelatedData")
+    public ResultData getItemRelatedData(@RequestBody RequestData data) {
+        Integer itemId = data.getInt("itemId");
+        Integer officeType = data.getInt("officeType");
+        return success(reportRelatedService.getItemRelatedData(itemId, officeType));
+    }
+
 }
