@@ -13,6 +13,7 @@ import com.sunchs.lyt.report.service.IReportRelatedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -124,6 +125,7 @@ public class ReportRelatedService implements IReportRelatedService {
         }
         int n = setItem.size();
         double pearson = (sumXY - sumX * sumY / n) / Math.sqrt((sumPowX - Math.pow(sumX, 2) / n) * (sumPowY - Math.pow(sumY, 2) / n));
-        return pearson;
+        double value = new BigDecimal(pearson).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return value;
     }
 }
