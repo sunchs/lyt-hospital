@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
+import com.sunchs.lyt.framework.bean.IdTitleData;
 import com.sunchs.lyt.framework.util.FormatUtil;
+import com.sunchs.lyt.report.bean.ItemRelatedData;
 import com.sunchs.lyt.report.bean.OutputParam;
 import com.sunchs.lyt.report.bean.TotalSexData;
 import com.sunchs.lyt.report.exception.ReportException;
@@ -15,6 +17,7 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import jxl.write.Label;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +57,9 @@ public class ReportOutputService implements IReportOutputService {
 
     @Autowired
     private UserServiceImpl userService;
+
+    @Autowired
+    private ReportRelatedService reportRelatedService;
 
     @Override
     public String getItemOfficeAnswer(OutputParam param) {
@@ -198,6 +204,65 @@ public class ReportOutputService implements IReportOutputService {
             for (int i = 0; i < list.size(); i++) {
                 sheet.addCell(new Label(i+1, 2, list.get(i).getRate()+""));
             }
+
+            wb.write();
+            wb.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (WriteException e) {
+            e.printStackTrace();
+        }
+        return path + "/" + fileName;
+    }
+
+    @Override
+    public String getItemRelatedData(OutputParam param) {
+        ItemRelatedData list = reportRelatedService.getItemRelatedData(param.getItemId(), param.getOfficeType());
+
+        if (CollectionUtils.isEmpty(list.getColList()) || CollectionUtils.isEmpty(list.getRowList())) {
+            throw new ReportException("无数据");
+        }
+
+        String path = "temp";
+        initPath(path);
+        String fileName = System.currentTimeMillis() +".xls";
+
+        try {
+            File file = new File(path + "/" + fileName);
+            WritableWorkbook wb = jxl.Workbook.createWorkbook(file);
+            // 改变默认颜色
+            Color color = Color.decode("#EEA9B8");
+            wb.setColourRGB(Colour.RED, color.getRed(), color.getGreen(), color.getBlue());
+            WritableSheet sheet = wb.createSheet("相关系数", 0);
+            // 写表头
+            WritableCellFormat format = new WritableCellFormat();
+            format.setBackground(Colour.RED);
+
+            int columnPos = 1;
+            sheet.addCell(new Label(0, 0, " ", format));
+            for (IdTitleData data : list.getColList()) {
+                sheet.addCell(new Label(columnPos++, 0, data.getTitle(), format));
+            }
+
+            // 列宽度
+            for (int i = 0; i < columnPos; i++) {
+                sheet.setColumnView(i, 8);
+            }
+
+            // 列数据
+            for (int i = 0; i < list.getRowList().size(); i++) {
+                List<IdTitleData> rowList = list.getRowList();
+                sheet.addCell(new Label(i+1, 0, rowList.get(i).getTitle()));
+            }
+
+//
+//            for (int i = 0; i < list.size(); i++) {
+//                sheet.addCell(new Label(i+1, 1, list.get(i).getQuantity()+""));
+//            }
+//            for (int i = 0; i < list.size(); i++) {
+//                sheet.addCell(new Label(i+1, 2, list.get(i).getRate()+""));
+//            }
 
             wb.write();
             wb.close();

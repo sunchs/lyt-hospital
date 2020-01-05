@@ -13,4 +13,9 @@ public interface IReportOutputService {
      * 导出项目指标的对应标签数据
      */
     String getItemTargetTag(OutputParam param);
+
+    /**
+     * 导出项目相关系数
+     */
+    String getItemRelatedData(OutputParam param);
 }

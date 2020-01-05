@@ -40,6 +40,16 @@ public class ReportOutputController extends BaseController {
         return success("http://47.107.255.115:8008/output/download/?fileName="+path);
     }
 
+    /**
+     * 导出项目相关系数
+     */
+    @PostMapping("/itemRelatedData")
+    public ResultData itemRelatedData(@RequestBody RequestData data) {
+        OutputParam param = data.toObject(OutputParam.class);
+        String path = reportOutputService.getItemRelatedData(param);
+        return success("http://47.107.255.115:8008/output/download/?fileName="+path);
+    }
+
     @GetMapping("/download")
     public String downloadFile(@RequestParam("fileName") String fileName, HttpServletResponse response ) {
         // 获取指定目录下的第一个文件

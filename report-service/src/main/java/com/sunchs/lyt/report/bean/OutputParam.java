@@ -8,6 +8,7 @@ public class OutputParam {
     private int targetOne;
     private String startTime;
     private String endTime;
+    private int officeType;
 
     public int getItemId() {
         return itemId;
@@ -55,5 +56,13 @@ public class OutputParam {
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    public int getOfficeType() {
+        return officeType;
+    }
+
+    public void setOfficeType(int officeType) {
+        this.officeType = officeType;
     }
 }
