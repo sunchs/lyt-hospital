@@ -66,12 +66,23 @@ public class ReportRelatedService implements IReportRelatedService {
                 // 求相关系数
                 Map<Integer, Double> mapX = new HashMap<>();
                 Map<Integer, Double> mapY = new HashMap<>();
-                optionGroupMap.get(targetId).forEach(t1->{
-                    mapX.put(t1.getId(), t1.getOptionId().doubleValue());
-                });
-                optionGroupMap.get(tId).forEach(t2->{
-                    mapY.put(t2.getId(), t2.getOptionId().doubleValue());
-                });
+
+                List<ReportAnswerOption> oneAnswerOptionList = optionGroupMap.get(targetId);
+                for (int i = 0; i < oneAnswerOptionList.size(); i++) {
+                    mapX.put(i, oneAnswerOptionList.get(i).getOptionId().doubleValue());
+                }
+
+                List<ReportAnswerOption> twoAnswerOptionList = optionGroupMap.get(tId);
+                for (int i = 0; i < twoAnswerOptionList.size(); i++) {
+                    mapY.put(i, twoAnswerOptionList.get(i).getOptionId().doubleValue());
+                }
+
+//                optionGroupMap.get(targetId).forEach(t1->{
+//                    mapX.put(t1.getId(), t1.getOptionId().doubleValue());
+//                });
+//                optionGroupMap.get(tId).forEach(t2->{
+//                    mapY.put(t2.getId(), t2.getOptionId().doubleValue());
+//                });
                 double value = caculatePearson(mapX, mapY);
                 row.setValue(value);
                 valueList.add(row);
