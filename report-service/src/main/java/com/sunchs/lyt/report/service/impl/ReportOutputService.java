@@ -6,6 +6,7 @@ import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.IdTitleData;
 import com.sunchs.lyt.framework.util.FormatUtil;
+import com.sunchs.lyt.report.bean.ItemCompareValue;
 import com.sunchs.lyt.report.bean.ItemRelatedData;
 import com.sunchs.lyt.report.bean.OutputParam;
 import com.sunchs.lyt.report.bean.TotalSexData;
@@ -239,8 +240,8 @@ public class ReportOutputService implements IReportOutputService {
             WritableCellFormat format = new WritableCellFormat();
             format.setBackground(Colour.RED);
 
+            // 列标题
             int columnPos = 1;
-            sheet.addCell(new Label(0, 0, " ", format));
             for (IdTitleData data : list.getColList()) {
                 sheet.addCell(new Label(columnPos++, 0, data.getTitle(), format));
             }
@@ -250,19 +251,22 @@ public class ReportOutputService implements IReportOutputService {
                 sheet.setColumnView(i, 8);
             }
 
-            // 列数据
-            for (int i = 0; i < list.getRowList().size(); i++) {
-                List<IdTitleData> rowList = list.getRowList();
-                sheet.addCell(new Label(i+1, 0, rowList.get(i).getTitle()));
+            // 行标题
+            int line = 1;
+            for (IdTitleData row : list.getRowList()) {
+                sheet.addCell(new Label(0, line++, row.getTitle()));
             }
 
-//
-//            for (int i = 0; i < list.size(); i++) {
-//                sheet.addCell(new Label(i+1, 1, list.get(i).getQuantity()+""));
-//            }
-//            for (int i = 0; i < list.size(); i++) {
-//                sheet.addCell(new Label(i+1, 2, list.get(i).getRate()+""));
-//            }
+            // 值
+            line = 1;
+            for (IdTitleData row : list.getRowList()) {
+                columnPos = 1;
+                line++;
+                for (IdTitleData col : list.getColList()) {
+                    List<ItemCompareValue> valueList = list.getValueList();
+                    sheet.addCell(new Label(columnPos++, line, getRelatedValue(valueList, col.getId(), row.getId())));
+                }
+            }
 
             wb.write();
             wb.close();
@@ -273,6 +277,17 @@ public class ReportOutputService implements IReportOutputService {
             e.printStackTrace();
         }
         return path + "/" + fileName;
+    }
+
+    /**
+     * 获取相关系数值
+     */
+    private String getRelatedValue(List<ItemCompareValue> valueList, Integer colId, Integer rowId) {
+        Optional<ItemCompareValue> value = valueList.stream().filter(v -> v.getColId().equals(colId) && v.getRowId().equals(rowId)).findFirst();
+        if (value.isPresent()) {
+            return value.get().getValue().doubleValue() + "";
+        }
+        return "";
     }
 
     private void initPath(String path) {
