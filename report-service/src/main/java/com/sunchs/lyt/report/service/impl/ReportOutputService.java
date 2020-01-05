@@ -261,11 +261,11 @@ public class ReportOutputService implements IReportOutputService {
             line = 1;
             for (IdTitleData row : list.getRowList()) {
                 columnPos = 1;
-                line++;
                 for (IdTitleData col : list.getColList()) {
                     List<ItemCompareValue> valueList = list.getValueList();
                     sheet.addCell(new Label(columnPos++, line, getRelatedValue(valueList, col.getId(), row.getId())));
                 }
+                line++;
             }
 
             wb.write();
