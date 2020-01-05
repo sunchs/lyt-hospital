@@ -255,6 +255,7 @@ public class ReportOutputService implements IReportOutputService {
             int line = 1;
             for (IdTitleData row : list.getRowList()) {
                 sheet.addCell(new Label(0, line++, row.getTitle(), format));
+                sheet.setRowView(line, 30);
             }
 
             // 值
