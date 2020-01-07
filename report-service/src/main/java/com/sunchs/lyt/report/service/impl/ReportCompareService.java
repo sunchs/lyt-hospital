@@ -104,7 +104,13 @@ public class ReportCompareService implements IReportCompareService {
             Double satisfyValue = getItemAllSatisfy(item.getItemId(), item.getOfficeType(), item.getStartTime(), item.getEndTime());
             SatisfyData satisfyData = new SatisfyData();
             satisfyData.setId(item.getItemId());
-            satisfyData.setName(itemNameMap.get(item.getItemId()));
+            String name = itemNameMap.get(item.getItemId());
+            if (item.getStartTime().length() == 0) {
+                name += "(全部)";
+            } else {
+                name += "("+item.getStartTime()+" 至 "+item.getEndTime()+")";
+            }
+            satisfyData.setName(name);
             satisfyData.setValue(satisfyValue);
             satisfyDataList.add(satisfyData);
 
