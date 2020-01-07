@@ -577,8 +577,8 @@ public class ReportCompareService implements IReportCompareService {
     }
 
     private List<ReportAnswerOption> getItemAnswerOption(Integer itemId, Integer optionType, String startTime, String endTime) {
-        Date sTime = FormatUtil.dateTime(startTime);
-        Date eTime = FormatUtil.dateTime(endTime);
+        Date sTime = FormatUtil.dateTime(startTime + " 00:00:00");
+        Date eTime = FormatUtil.dateTime(endTime + " 23:59:59");
         Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
                 .setSqlSelect(
                         "question_id AS questionId,question_name AS questionName,option_id AS optionId,score,COUNT(1) quantity"
