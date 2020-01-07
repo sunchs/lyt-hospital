@@ -117,7 +117,13 @@ public class ReportCompareService implements IReportCompareService {
             // 设置题目列
             IdTitleData questionColData = new IdTitleData();
             questionColData.setId(item.getItemId());
-            questionColData.setTitle(itemNameMap.get(item.getItemId()));
+            String colName = itemNameMap.get(item.getItemId());
+            if (item.getStartTime().length() == 0) {
+                colName += "(全部)";
+            } else {
+                colName += "("+item.getStartTime()+" 至 "+item.getEndTime()+")";
+            }
+            questionColData.setTitle(colName);
             colList.add(questionColData);
             // 列索引
             item.setColIndex(valueList.indexOf(item));
