@@ -528,13 +528,15 @@ public class ReportCompareService implements IReportCompareService {
                 .setSqlSelect("question_id AS questionId,option_id AS optionId,score,COUNT(1) quantity")
                 .eq(ReportAnswerOption.ITEM_ID, itemId)
                 .eq(ReportAnswerOption.OFFICE_TYPE_ID, officeType)
-                .ge(ReportAnswerOption.ENDTIME, sTime)
-                .le(ReportAnswerOption.ENDTIME, eTime)
                 .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
                 .in(ReportAnswerOption.TARGET_THREE, targetThreeIds)
                 .ne(ReportAnswerOption.SCORE, 0)
                 .groupBy(ReportAnswerOption.QUESTION_ID)
                 .groupBy(ReportAnswerOption.OPTION_ID);
+        if (startTime.length() > 0) {
+            wrapper.ge(ReportAnswerOption.ENDTIME, sTime)
+                    .le(ReportAnswerOption.ENDTIME, eTime);
+        }
         List<ReportAnswerOption> list = reportAnswerOptionService.selectList(wrapper);
         if (Objects.isNull(list) || list.size() == 0) {
             return score;
