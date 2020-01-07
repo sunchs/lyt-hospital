@@ -585,7 +585,7 @@ public class ReportCompareService implements IReportCompareService {
                 .groupBy(ReportAnswerOption.OPTION_ID);
         if (startTime.length() > 0) {
             wrapper.ge(ReportAnswerOption.ENDTIME, sTime)
-                    .le(ReportAnswerOption.ENDTIME, eTime)
+                    .le(ReportAnswerOption.ENDTIME, eTime);
         }
         return reportAnswerOptionService.selectList(wrapper);
     }
