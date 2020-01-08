@@ -609,8 +609,8 @@ public class ReportCompareService implements IReportCompareService {
     }
 
     private List<ReportAnswerOption> getItemAnswerOption(Integer itemId, Integer optionType, String startTime, String endTime, List<Integer> officeIds) {
-        Date sTime = FormatUtil.dateTime(startTime);
-        Date eTime = FormatUtil.dateTime(endTime);
+        Date sTime = FormatUtil.dateTime(startTime + " 00:00:00");
+        Date eTime = FormatUtil.dateTime(endTime + " 23:59:59");
         Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
                 .setSqlSelect(
                         "question_id AS questionId,option_id AS optionId,target_three AS targetThree,score,COUNT(1) quantity"
@@ -631,8 +631,8 @@ public class ReportCompareService implements IReportCompareService {
 
     private List<ReportAnswerOption> getItemAnswerOption(Integer itemId, Integer optionType, String startTime, String endTime, List<Integer> officeIds,
                                                          Integer questionnaireId, Integer questionId, Integer optionId) {
-        Date sTime = FormatUtil.dateTime(startTime);
-        Date eTime = FormatUtil.dateTime(endTime);
+        Date sTime = FormatUtil.dateTime(startTime + " 00:00:00");
+        Date eTime = FormatUtil.dateTime(endTime + " 23:59:59");
         Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
                 .setSqlSelect(
                         "question_id AS questionId,option_id AS optionId,target_three AS targetThree,score,COUNT(1) quantity"
