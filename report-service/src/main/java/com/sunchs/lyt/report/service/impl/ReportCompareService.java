@@ -253,7 +253,13 @@ public class ReportCompareService implements IReportCompareService {
             // 设置题目列
             IdTitleData questionColData = new IdTitleData();
             questionColData.setId(item.getItemId());
-            questionColData.setTitle(itemNameMap.get(item.getItemId()));
+            String itemName = itemNameMap.get(item.getItemId());
+            if (item.getStartTime().length() == 0) {
+                itemName += "(全部)";
+            } else {
+                itemName += "("+item.getStartTime()+" 至 "+item.getEndTime()+")";
+            }
+            questionColData.setTitle(itemName);
             colList.add(questionColData);
             // 列索引
             item.setColIndex(valueList.indexOf(item));
@@ -612,12 +618,14 @@ public class ReportCompareService implements IReportCompareService {
                 )
                 .eq(ReportAnswerOption.ITEM_ID, itemId)
                 .eq(ReportAnswerOption.OFFICE_TYPE_ID, optionType)
-                .ge(ReportAnswerOption.ENDTIME, sTime)
-                .le(ReportAnswerOption.ENDTIME, eTime)
                 .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
                 .in(ReportAnswerOption.TARGET_THREE, officeIds)
                 .groupBy(ReportAnswerOption.QUESTION_ID)
                 .groupBy(ReportAnswerOption.OPTION_ID);
+        if (startTime.length() > 0) {
+            wrapper.ge(ReportAnswerOption.ENDTIME, sTime)
+                    .le(ReportAnswerOption.ENDTIME, eTime);
+        }
         return reportAnswerOptionService.selectList(wrapper);
     }
 
