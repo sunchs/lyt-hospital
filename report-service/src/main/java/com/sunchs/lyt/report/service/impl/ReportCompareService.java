@@ -437,25 +437,24 @@ public class ReportCompareService implements IReportCompareService {
             item.setColIndex(valueList.indexOf(item));
 
             // 收集指标ID
-            List<Integer> targetIds = new ArrayList<>();
+//            List<Integer> targetIds = new ArrayList<>();
             Wrapper<CustomItemOffice> customItemOfficeWrapper = new EntityWrapper<CustomItemOffice>()
                     .eq(CustomItemOffice.ITEM_ID, item.getItemId())
                     .eq(CustomItemOffice.OFFICE_TYPE, item.getOfficeType())
                     .eq(CustomItemOffice.TITLE, item.getCustomOfficeTitle());
             List<CustomItemOffice> customItemOfficeList = customItemOfficeService.selectList(customItemOfficeWrapper);
-            for (CustomItemOffice custom : customItemOfficeList) {
-                Wrapper<CustomItemTarget> customItemTargetWrapper = new EntityWrapper<CustomItemTarget>()
-                        .eq(CustomItemTarget.CUSTOM_ID, custom.getId());
-                List<CustomItemTarget> customItemTargetList = customItemTargetService.selectList(customItemTargetWrapper);
-                customItemTargetList.forEach(t->targetIds.add(t.getTargetThree()));
-            }
-            item.setTempTargetIds(targetIds);
+//            for (CustomItemOffice custom : customItemOfficeList) {
+//                Wrapper<CustomItemTarget> customItemTargetWrapper = new EntityWrapper<CustomItemTarget>()
+//                        .eq(CustomItemTarget.CUSTOM_ID, custom.getId());
+//                List<CustomItemTarget> customItemTargetList = customItemTargetService.selectList(customItemTargetWrapper);
+//                customItemTargetList.forEach(t->targetIds.add(t.getTargetThree()));
+//            }
+//            item.setTempTargetIds(targetIds);
 
             // 查询需要统计的数据
             List<ReportAnswerOption> tempOptionList = new ArrayList<>();
             for (CustomItemOffice custom : customItemOfficeList) {
-                List<ReportAnswerOption> itemAnswerOption = getItemAnswerOption(item.getItemId(), item.getOfficeType(), item.getStartTime(), item.getEndTime(), targetIds,
-                        custom.getQuestionnaireId(), custom.getQuestionId(), custom.getOptionId());
+                List<ReportAnswerOption> itemAnswerOption = getItemAnswerOption(item.getItemId(), item.getOfficeType(), item.getStartTime(), item.getEndTime(), custom);
                 tempOptionList.addAll(itemAnswerOption);
             }
             item.setTempOptionList(tempOptionList);
@@ -629,28 +628,40 @@ public class ReportCompareService implements IReportCompareService {
         return reportAnswerOptionService.selectList(wrapper);
     }
 
-    private List<ReportAnswerOption> getItemAnswerOption(Integer itemId, Integer optionType, String startTime, String endTime, List<Integer> officeIds,
-                                                         Integer questionnaireId, Integer questionId, Integer optionId) {
+    private List<ReportAnswerOption> getItemAnswerOption(Integer itemId, Integer optionType, String startTime, String endTime, CustomItemOffice custom) {
         Date sTime = FormatUtil.dateTime(startTime + " 00:00:00");
         Date eTime = FormatUtil.dateTime(endTime + " 23:59:59");
         Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
+                .setSqlSelect(ReportAnswerOption.ANSWER_ID + " AS answerId")
+                .eq(ReportAnswerOption.ITEM_ID, itemId)
+                .eq(ReportAnswerOption.OFFICE_TYPE_ID, optionType)
+                .eq(ReportAnswerOption.QUESTIONNAIRE_ID, custom.getQuestionnaireId())
+                .eq(ReportAnswerOption.QUESTION_ID, custom.getQuestionId())
+                .eq(ReportAnswerOption.OPTION_ID, custom.getOptionId())
+                .groupBy(ReportAnswerOption.ANSWER_ID);
+        if (startTime.length() > 0) {
+            wrapper.ge(ReportAnswerOption.ENDTIME, sTime)
+                    .le(ReportAnswerOption.ENDTIME, eTime);
+        }
+        List<ReportAnswerOption> reportAnswerOptions = reportAnswerOptionService.selectList(wrapper);
+        List<Integer> answerIds = reportAnswerOptions.stream().map(ReportAnswerOption::getAnswerId).collect(Collectors.toList());
+
+        Wrapper<ReportAnswerOption> reportAnswerOptionWrapper = new EntityWrapper<ReportAnswerOption>()
                 .setSqlSelect(
                         "question_id AS questionId,option_id AS optionId,target_three AS targetThree,score,COUNT(1) quantity"
-//                                "option_name AS optionName,target_one AS targetOne,target_two AS targetTwo,target_three AS targetThree, " +
                 )
                 .eq(ReportAnswerOption.ITEM_ID, itemId)
                 .eq(ReportAnswerOption.OFFICE_TYPE_ID, optionType)
                 .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
-                .in(ReportAnswerOption.TARGET_THREE, officeIds)
-                .eq(ReportAnswerOption.QUESTIONNAIRE_ID, questionnaireId)
-                .eq(ReportAnswerOption.QUESTION_ID, questionId)
+                .in(ReportAnswerOption.ANSWER_ID, answerIds)
+                .and(" target_three IN(SELECT target_three FROM custom_item_target WHERE custom_id="+custom.getId()+")")
                 .groupBy(ReportAnswerOption.QUESTION_ID)
                 .groupBy(ReportAnswerOption.OPTION_ID);
         if (startTime.length() > 0) {
             wrapper.ge(ReportAnswerOption.ENDTIME, sTime)
                     .le(ReportAnswerOption.ENDTIME, eTime);
         }
-        return reportAnswerOptionService.selectList(wrapper);
+        return reportAnswerOptionService.selectList(reportAnswerOptionWrapper);
     }
 
     /**
