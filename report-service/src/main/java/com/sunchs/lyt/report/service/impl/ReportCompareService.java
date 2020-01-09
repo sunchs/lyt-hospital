@@ -437,19 +437,19 @@ public class ReportCompareService implements IReportCompareService {
             item.setColIndex(valueList.indexOf(item));
 
             // 收集指标ID
-//            List<Integer> targetIds = new ArrayList<>();
+            List<Integer> targetIds = new ArrayList<>();
             Wrapper<CustomItemOffice> customItemOfficeWrapper = new EntityWrapper<CustomItemOffice>()
                     .eq(CustomItemOffice.ITEM_ID, item.getItemId())
                     .eq(CustomItemOffice.OFFICE_TYPE, item.getOfficeType())
                     .eq(CustomItemOffice.TITLE, item.getCustomOfficeTitle());
             List<CustomItemOffice> customItemOfficeList = customItemOfficeService.selectList(customItemOfficeWrapper);
-//            for (CustomItemOffice custom : customItemOfficeList) {
-//                Wrapper<CustomItemTarget> customItemTargetWrapper = new EntityWrapper<CustomItemTarget>()
-//                        .eq(CustomItemTarget.CUSTOM_ID, custom.getId());
-//                List<CustomItemTarget> customItemTargetList = customItemTargetService.selectList(customItemTargetWrapper);
-//                customItemTargetList.forEach(t->targetIds.add(t.getTargetThree()));
-//            }
-//            item.setTempTargetIds(targetIds);
+            for (CustomItemOffice custom : customItemOfficeList) {
+                Wrapper<CustomItemTarget> customItemTargetWrapper = new EntityWrapper<CustomItemTarget>()
+                        .eq(CustomItemTarget.CUSTOM_ID, custom.getId());
+                List<CustomItemTarget> customItemTargetList = customItemTargetService.selectList(customItemTargetWrapper);
+                customItemTargetList.forEach(t->targetIds.add(t.getTargetThree()));
+            }
+            item.setTempTargetIds(targetIds);
 
             // 查询需要统计的数据
             List<ReportAnswerOption> tempOptionList = new ArrayList<>();
