@@ -64,7 +64,7 @@ public class ReportOutputService implements IReportOutputService {
 
     @Override
     public String getItemOfficeAnswer(OutputParam param) {
-        Wrapper<ReportAnswer> reportAnswerWrapper = new EntityWrapper<ReportAnswer>()
+        Wrapper<ReportAnswer> reportAnswerWrapper = new EntityWrapper<ReportAnswer>();
         if (CollectionUtils.isNotEmpty(param.getOfficeIds())) {
             reportAnswerWrapper.eq(ReportAnswer.ITEM_ID, param.getItemId())
                     .in(ReportAnswer.OFFICE_ID, param.getOfficeIds())
