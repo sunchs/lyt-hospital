@@ -1,5 +1,7 @@
 package com.sunchs.lyt.report.bean;
 
+import java.util.List;
+
 public class OutputParam {
 
     private int itemId;
@@ -9,6 +11,7 @@ public class OutputParam {
     private String startTime;
     private String endTime;
     private int officeType;
+    private List<Integer> officeIds;
 
     public int getItemId() {
         return itemId;
@@ -64,5 +67,13 @@ public class OutputParam {
 
     public void setOfficeType(int officeType) {
         this.officeType = officeType;
+    }
+
+    public List<Integer> getOfficeIds() {
+        return officeIds;
+    }
+
+    public void setOfficeIds(List<Integer> officeIds) {
+        this.officeIds = officeIds;
     }
 }
