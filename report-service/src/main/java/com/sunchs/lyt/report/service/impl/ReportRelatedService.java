@@ -107,9 +107,6 @@ public class ReportRelatedService implements IReportRelatedService {
      * 求相关系数
      */
     private double caculatePearson(Map<Integer, Double> mapX, Map<Integer, Double> mapY) {
-        System.out.println("!!!!!!!!!!!");
-        System.out.println(mapX);
-        System.out.println(mapY);
         double sumXY = 0d;
         double sumX = 0d;
         double sumY = 0d;
