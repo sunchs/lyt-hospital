@@ -618,7 +618,7 @@ public class ItemService implements IItemService {
             Map<String, Object> row = new HashMap<>();
             row.put("id", questionTag.getId());
             row.put("title", questionTag.getTitle());
-            List<Map<String, Object>> tagChildrenData = getTagChildrenData();
+            List<Map<String, Object>> tagChildrenData = getTagChildrenData(itemId, officeType, questionTag.getId());
             if (CollectionUtils.isNotEmpty(tagChildrenData)) {
                 row.put("children", tagChildrenData);
             }
