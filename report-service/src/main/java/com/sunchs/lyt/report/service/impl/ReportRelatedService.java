@@ -37,7 +37,7 @@ public class ReportRelatedService implements IReportRelatedService {
                 )
                 .eq(ReportAnswerOption.ITEM_ID, itemId)
                 .eq(ReportAnswerOption.OFFICE_TYPE_ID, officeType)
-                .ne(ReportAnswerOption.OPTION_TYPE, 5);
+                .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4));
         List<ReportAnswerOption> optionList = reportAnswerOptionService.selectList(wrapper);
         Map<Integer, List<ReportAnswerOption>> optionGroupMap = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetThree));
         Map<Integer, String> targetNameMap = getTargetNameByIds(optionGroupMap.keySet());
