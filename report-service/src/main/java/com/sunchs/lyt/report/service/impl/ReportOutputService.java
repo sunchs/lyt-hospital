@@ -68,25 +68,32 @@ public class ReportOutputService implements IReportOutputService {
         initPath(path);
         String fileName = System.currentTimeMillis() +".xls";
 
+        Wrapper<ReportAnswer> reportAnswerWrapper = new EntityWrapper<ReportAnswer>();
+        if (CollectionUtils.isNotEmpty(param.getOfficeIds())) {
+            reportAnswerWrapper.eq(ReportAnswer.ITEM_ID, param.getItemId())
+                    .in(ReportAnswer.OFFICE_ID, param.getOfficeIds())
+                    .ge(ReportAnswer.STARTTIME, param.getStartTime())
+                    .le(ReportAnswer.STARTTIME, param.getEndTime());
+        } else {
+            reportAnswerWrapper.eq(ReportAnswer.ITEM_ID, param.getItemId())
+                    .eq(ReportAnswer.OFFICE_ID, param.getOfficeId())
+                    .ge(ReportAnswer.STARTTIME, param.getStartTime())
+                    .le(ReportAnswer.STARTTIME, param.getEndTime());
+        }
+        int qty = reportAnswerService.selectCount(reportAnswerWrapper);
+        if (qty == 0) {
+            throw new ReportException("无数据，无法导出！");
+        }
+
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Wrapper<ReportAnswer> reportAnswerWrapper = new EntityWrapper<ReportAnswer>();
-                if (CollectionUtils.isNotEmpty(param.getOfficeIds())) {
-                    reportAnswerWrapper.eq(ReportAnswer.ITEM_ID, param.getItemId())
-                            .in(ReportAnswer.OFFICE_ID, param.getOfficeIds())
-                            .ge(ReportAnswer.STARTTIME, param.getStartTime())
-                            .le(ReportAnswer.STARTTIME, param.getEndTime());
-                } else {
-                    reportAnswerWrapper.eq(ReportAnswer.ITEM_ID, param.getItemId())
-                            .eq(ReportAnswer.OFFICE_ID, param.getOfficeId())
-                            .ge(ReportAnswer.STARTTIME, param.getStartTime())
-                            .le(ReportAnswer.STARTTIME, param.getEndTime());
-                }
+
                 List<ReportAnswer> reportAnswerList = reportAnswerService.selectList(reportAnswerWrapper);
                 if (reportAnswerList.size() == 0) {
                     throw new ReportException("无数据，无法导出！");
                 }
+
                 List<Integer> reportAnswerIds = reportAnswerList.stream().map(ReportAnswer::getId).collect(Collectors.toList());
 
                 // 获取题目
