@@ -2,10 +2,16 @@ package com.sunchs.lyt.report.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.sunchs.lyt.db.business.entity.QuestionTagBinding;
+import com.sunchs.lyt.db.business.entity.ReportAnswerOption;
 import com.sunchs.lyt.db.business.entity.ReportAnswerQuantity;
+import com.sunchs.lyt.db.business.service.impl.QuestionTagBindingServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.ReportAnswerQuantityServiceImpl;
+import com.sunchs.lyt.framework.bean.TitleValueData;
+import com.sunchs.lyt.report.bean.ItemCrowdParam;
 import com.sunchs.lyt.report.bean.TotalSexData;
 import com.sunchs.lyt.report.service.IReportTagService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +24,9 @@ public class ReportTagService implements IReportTagService {
 
     @Autowired
     private ReportAnswerQuantityServiceImpl reportAnswerQuantityService;
+
+    @Autowired
+    private QuestionTagBindingServiceImpl questionTagBindingService;
 
     @Override
     public List<TotalSexData> getItemQuantityByTag(int itemId, int tagId, int targetOne) {
@@ -97,4 +106,32 @@ public class ReportTagService implements IReportTagService {
         });
         return list;
     }
+
+//    /**
+//     * 根据 选项ID集合 获取对应的题目ID集合（已分组好）
+//     */
+//    private Map<Integer, List<QuestionTagBinding>> getTagQuestionIds(List<Integer> tagIds) {
+//        Wrapper<QuestionTagBinding> wrapper = new EntityWrapper<QuestionTagBinding>()
+//                .setSqlSelect(
+//                        QuestionTagBinding.QUESTION_ID + " as questionId",
+//                        QuestionTagBinding.TAG_ID + " as tagId"
+//                )
+//                .in(QuestionTagBinding.TAG_ID, tagIds);
+//        List<QuestionTagBinding> questionTagBindingList = questionTagBindingService.selectList(wrapper);
+//        return questionTagBindingList.stream().collect(Collectors.groupingBy(QuestionTagBinding::getTagId));
+//    }
+//
+//    private TitleValueData getItemTag(Integer tagId) {
+//        Wrapper<QuestionTagBinding> wrapper = new EntityWrapper<QuestionTagBinding>()
+//                .setSqlSelect(QuestionTagBinding.QUESTION_ID + " as questionId")
+//                .eq(QuestionTagBinding.TAG_ID, tagId);
+//        List<QuestionTagBinding> questionTagBindingList = questionTagBindingService.selectList(wrapper);
+//        if (CollectionUtils.isNotEmpty(questionTagBindingList)) {
+////            questionTagBindingList.stream()
+//        }
+////        questionTagBindingList
+//
+////        questionTagBindings.forEach();
+////        Map<String, Object> stringObjectMap = questionTagBindingService.selectMap(wrapper);
+//    }
 }

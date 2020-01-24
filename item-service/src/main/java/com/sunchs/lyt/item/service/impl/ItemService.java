@@ -602,15 +602,6 @@ public class ItemService implements IItemService {
     @Override
     public List<Map<String, Object>> getItemTagMenu(Integer itemId, Integer officeType) {
         List<Map<String, Object>> result = new ArrayList<>();
-//        Wrapper<QuestionTagBinding> wrapper = new EntityWrapper<QuestionTagBinding>()
-//                .setSqlSelect(
-//                        QuestionTagBinding.QUESTION_ID + " as questionId",
-//                        QuestionTagBinding.TAG_ID + " as tagId"
-//                )
-//                .eq(QuestionTagBinding.TAG_TYPE, 1);
-//        List<QuestionTagBinding> questionTagBindingList = questionTagBindingService.selectList(wrapper);
-//        Set<Integer> questionIds = questionTagBindingList.stream().map(QuestionTagBinding::getQuestionId).collect(Collectors.toSet());
-
         Wrapper<QuestionTag> wrapper = new EntityWrapper<QuestionTag>()
                 .eq(QuestionTag.PID, 1);
         List<QuestionTag> questionTagList = questionTagService.selectList(wrapper);

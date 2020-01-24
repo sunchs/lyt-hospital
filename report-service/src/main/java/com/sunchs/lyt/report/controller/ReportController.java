@@ -5,10 +5,7 @@ import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.constants.CacheKeys;
 import com.sunchs.lyt.framework.controller.BaseController;
 import com.sunchs.lyt.framework.util.RedisUtil;
-import com.sunchs.lyt.report.bean.AnswerQuestionParam;
-import com.sunchs.lyt.report.bean.ItemTotalParam;
-import com.sunchs.lyt.report.bean.SettingParam;
-import com.sunchs.lyt.report.bean.TotalParam;
+import com.sunchs.lyt.report.bean.*;
 import com.sunchs.lyt.report.service.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -162,5 +159,15 @@ public class ReportController extends BaseController {
         Integer officeType = data.getInt("officeType");
         return success(reportRelatedService.getItemRelatedData(itemId, officeType));
     }
+
+    /**
+     * 获取人群满意度，人群是通过 标签+选项 区分
+     */
+    @PostMapping("/getItemCrowdSatisfy")
+    public ResultData getItemCrowdSatisfy(@RequestBody RequestData data) {
+        ItemCrowdParam param = data.toObject(ItemCrowdParam.class);
+        return success(reportTagService.getItemCrowdSatisfy(param));
+    }
+
 
 }
