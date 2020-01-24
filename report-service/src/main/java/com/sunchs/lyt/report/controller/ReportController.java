@@ -171,4 +171,11 @@ public class ReportController extends BaseController {
         ItemCrowdParam param = data.toObject(ItemCrowdParam.class);
         return success(reportOptionService.getItemCrowdSatisfy(param));
     }
+
+    @PostMapping("/getItemTagMenu")
+    public ResultData itemTagMenu(@RequestBody RequestData data) {
+        int itemId = data.getInt("itemId");
+        int officeType = data.getInt("officeType");
+        return success(reportService.getItemTagMenu(itemId, officeType));
+    }
 }

@@ -165,13 +165,4 @@ public class ItemController extends BaseController {
         ItemParam param = data.toObject(ItemParam.class);
         return success(itemService.getItemOfficeGroup(param));
     }
-
-    @PostMapping("/getItemTagMenu")
-    public ResultData itemTagMenu(@RequestBody RequestData data) {
-        int itemId = data.getInt("itemId");
-        int officeType = data.getInt("officeType");
-        return success(itemService.getItemTagMenu(itemId, officeType));
-    }
-
-
 }

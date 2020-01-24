@@ -5,6 +5,7 @@ import com.sunchs.lyt.framework.bean.TitleData;
 import com.sunchs.lyt.report.bean.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IReportService {
 
@@ -37,4 +38,9 @@ public interface IReportService {
      * 保存项目指标显示设置
      */
     void saveSettingItemTarget(SettingParam param);
+
+    /**
+     * 获取项目人群标签
+     */
+    List<Map<String, Object>> getItemTagMenu(Integer itemId, Integer officeType);
 }

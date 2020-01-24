@@ -91,8 +91,5 @@ public interface IItemService {
 
     List<OfficeGroupData> getItemOfficeGroup(ItemParam param);
 
-    /**
-     * 获取项目人群标签
-     */
-    List<Map<String, Object>> getItemTagMenu(Integer itemId, Integer officeType);
+
 }

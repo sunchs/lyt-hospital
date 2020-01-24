@@ -599,48 +599,6 @@ public class ItemService implements IItemService {
         return result;
     }
 
-    @Override
-    public List<Map<String, Object>> getItemTagMenu(Integer itemId, Integer officeType) {
-        List<Map<String, Object>> result = new ArrayList<>();
-        Wrapper<QuestionTag> wrapper = new EntityWrapper<QuestionTag>()
-                .eq(QuestionTag.PID, 1);
-        List<QuestionTag> questionTagList = questionTagService.selectList(wrapper);
-        questionTagList.forEach(questionTag -> {
-            Map<String, Object> row = new HashMap<>();
-            row.put("id", questionTag.getId());
-            row.put("title", questionTag.getTitle());
-            List<Map<String, Object>> tagChildrenData = getTagChildrenData(itemId, officeType, questionTag.getId());
-            if (CollectionUtils.isNotEmpty(tagChildrenData)) {
-                row.put("children", tagChildrenData);
-            }
-            result.add(row);
-        });
-        return result;
-    }
-
-    private List<Map<String, Object>> getTagChildrenData(Integer itemId, Integer officeType, Integer tagId) {
-        List<Map<String, Object>> result = new ArrayList<>();
-        Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
-                .setSqlSelect(
-                        ReportAnswerOption.OPTION_ID + " as optionId",
-                        ReportAnswerOption.OPTION_NAME + " as optionName"
-                )
-                .eq(ReportAnswerOption.ITEM_ID, itemId)
-                .eq(ReportAnswerOption.OFFICE_TYPE_ID, officeType)
-                .and(" question_id IN(SELECT question_id FROM question_tag_binding WHERE tag_id="+tagId+")")
-                .groupBy(ReportAnswerOption.OPTION_ID);
-        List<ReportAnswerOption> reportAnswerOptionList = reportAnswerOptionService.selectList(wrapper);
-        if (CollectionUtils.isNotEmpty(reportAnswerOptionList)) {
-            reportAnswerOptionList.forEach(option->{
-                Map<String, Object> row = new HashMap<>();
-                row.put("id", option.getOptionId());
-                row.put("title", option.getOptionName());
-                result.add(row);
-            });
-        }
-        return result;
-    }
-
     private List<UserItemOfficeTypeData> getUserItemOfficeTypeList(int itemId) {
         List<UserItemOfficeTypeData> list = new ArrayList<>();
         Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
