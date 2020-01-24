@@ -6,7 +6,6 @@ import com.sunchs.lyt.db.business.entity.QuestionOption;
 import com.sunchs.lyt.db.business.entity.ReportAnswerOption;
 import com.sunchs.lyt.db.business.service.impl.QuestionOptionServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.ReportAnswerOptionServiceImpl;
-import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.report.bean.ItemCrowdParam;
 import com.sunchs.lyt.report.bean.SatisfyData;

@@ -32,6 +32,9 @@ public class ReportController extends BaseController {
     @Autowired
     private ReportRelatedService reportRelatedService;
 
+    @Autowired
+    private ReportOptionService reportOptionService;
+
     /**
      * 问卷抽样量统计列表
      */
@@ -166,8 +169,6 @@ public class ReportController extends BaseController {
     @PostMapping("/getItemCrowdSatisfy")
     public ResultData getItemCrowdSatisfy(@RequestBody RequestData data) {
         ItemCrowdParam param = data.toObject(ItemCrowdParam.class);
-        return success(reportTagService.getItemCrowdSatisfy(param));
+        return success(reportOptionService.getItemCrowdSatisfy(param));
     }
-
-
 }
