@@ -49,6 +49,7 @@ public class ReportOptionService implements IReportOptionService {
                     row.setId(optionId);
                     row.setName(questionOption.getTitle());
                     row.setValue(satisfyValue);
+                    result.add(row);
                 }
             }
         });
