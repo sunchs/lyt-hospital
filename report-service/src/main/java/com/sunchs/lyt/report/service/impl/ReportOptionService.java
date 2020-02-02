@@ -153,8 +153,8 @@ public class ReportOptionService implements IReportOptionService {
                 )
                 .eq(ReportAnswerOption.ITEM_ID, param.getItemId())
                 .eq(ReportAnswerOption.OFFICE_TYPE_ID, param.getOfficeType())
-                .in(ReportAnswerOption.OPTION_ID, param.getOptionIds())
-                .groupBy(ReportAnswerOption.ANSWER_ID);
+                .in(ReportAnswerOption.OPTION_ID, param.getOptionIds());
+//                .groupBy(ReportAnswerOption.ANSWER_ID);
         // 根据时间段
         if (Objects.nonNull(param.getStartTime()) && param.getStartTime().length() > 0) {
             wrapper.ge(ReportAnswerOption.ENDTIME, param.getStartTime())
