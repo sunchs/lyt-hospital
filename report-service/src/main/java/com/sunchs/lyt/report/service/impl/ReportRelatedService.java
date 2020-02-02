@@ -74,13 +74,16 @@ public class ReportRelatedService implements IReportRelatedService {
                 }
                 for (int i = 0; i < oneAnswerOptionList.size(); i++) {
                     if (Objects.isNull(oneAnswerOptionList.get(i)) || Objects.isNull(oneAnswerOptionList.get(i).getOptionId())) {
-                        System.out.println("无数据");
+                        System.out.println("111无数据");
                     }
                     mapX.put(i, oneAnswerOptionList.get(i).getOptionId().doubleValue());
                 }
 
                 List<ReportAnswerOption> twoAnswerOptionList = optionGroupMap.get(tId);
                 for (int i = 0; i < twoAnswerOptionList.size(); i++) {
+                    if (Objects.isNull(oneAnswerOptionList.get(i)) || Objects.isNull(oneAnswerOptionList.get(i).getOptionId())) {
+                        System.out.println("222无数据");
+                    }
                     mapY.put(i, twoAnswerOptionList.get(i).getOptionId().doubleValue());
                 }
 
