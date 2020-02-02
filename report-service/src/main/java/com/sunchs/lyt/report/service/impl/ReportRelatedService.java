@@ -90,6 +90,9 @@ public class ReportRelatedService implements IReportRelatedService {
 //                optionGroupMap.get(tId).forEach(t2->{
 //                    mapY.put(t2.getId(), t2.getOptionId().doubleValue());
 //                });
+                if (mapX.size() != mapY.size()) {
+                    System.out.println("数量不相等");
+                }
                 double value = caculatePearson(mapX, mapY);
                 row.setValue(value);
                 valueList.add(row);
