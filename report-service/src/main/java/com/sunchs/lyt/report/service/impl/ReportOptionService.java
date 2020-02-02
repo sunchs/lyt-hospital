@@ -65,13 +65,11 @@ public class ReportOptionService implements IReportOptionService {
         Map<Integer, QuestionOption> questionOptionMap = getQuestionOptionMap(param.getOptionIds());
         // 获取所有答卷ID集合，按optionId分好组
         Map<Integer, List<ReportAnswerOption>> questionGroup = getOptionAnswerIds(param);
-        System.out.println("=========");
-        System.out.println(questionGroup);
-        System.out.println("=========||||||||");
         param.getOptionIds().forEach(optionId -> {
             if (questionGroup.containsKey(optionId)) {
                 List<ReportAnswerOption> answerList = questionGroup.get(optionId);
                 List<Integer> answerIds = answerList.stream().map(ReportAnswerOption::getAnswerId).collect(Collectors.toList());
+                System.out.println(optionId+":"+answerIds+"--->\r\n");
                 if (answerIds.size() > 0) {
                     Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
                             .setSqlSelect("question_id AS questionId,option_id AS optionId,score,COUNT(1) quantity")
