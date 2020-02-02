@@ -94,7 +94,7 @@ public class ReportRelatedService implements IReportRelatedService {
 //                    mapY.put(t2.getId(), t2.getOptionId().doubleValue());
 //                });
                 if (mapX.size() != mapY.size()) {
-                    System.out.println("数量不相等");
+                    System.out.println("数量不相等"+mapX.size()+"："+mapY.size());
                 }
                 double value = caculatePearson(mapX, mapY);
                 row.setValue(value);
