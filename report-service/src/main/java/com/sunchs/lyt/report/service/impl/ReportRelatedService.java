@@ -81,7 +81,7 @@ public class ReportRelatedService implements IReportRelatedService {
 
                 List<ReportAnswerOption> twoAnswerOptionList = optionGroupMap.get(tId);
                 for (int i = 0; i < twoAnswerOptionList.size(); i++) {
-                    if (Objects.isNull(oneAnswerOptionList.get(i)) || Objects.isNull(oneAnswerOptionList.get(i).getOptionId())) {
+                    if (Objects.isNull(twoAnswerOptionList.get(i)) || Objects.isNull(twoAnswerOptionList.get(i).getOptionId())) {
                         System.out.println("222无数据");
                     }
                     mapY.put(i, twoAnswerOptionList.get(i).getOptionId().doubleValue());
