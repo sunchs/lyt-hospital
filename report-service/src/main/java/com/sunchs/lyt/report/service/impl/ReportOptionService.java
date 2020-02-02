@@ -66,7 +66,6 @@ public class ReportOptionService implements IReportOptionService {
         // 获取所有答卷ID集合，按optionId分好组
         Map<Integer, List<ReportAnswerOption>> questionGroup = getOptionAnswerIds(param);
         param.getOptionIds().forEach(optionId -> {
-
             if (questionGroup.containsKey(optionId)) {
                 List<ReportAnswerOption> answerList = questionGroup.get(optionId);
                 List<Integer> answerIds = answerList.stream().map(ReportAnswerOption::getAnswerId).collect(Collectors.toList());
@@ -111,6 +110,15 @@ public class ReportOptionService implements IReportOptionService {
                         result.add(data);
                     }
                 }
+            } else {
+                // 无内容时，赋值
+                SatisfyData data = new SatisfyData();
+                data.setId(optionId);
+                data.setValue(0.00);
+                QuestionOption questionOption = questionOptionMap.get(optionId);
+                data.setName(questionOption.getTitle());
+                data.setpId(questionOption.getQuestionId());
+                result.add(data);
             }
         });
         return result;
