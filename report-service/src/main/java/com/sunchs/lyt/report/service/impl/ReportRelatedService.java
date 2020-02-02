@@ -10,6 +10,7 @@ import com.sunchs.lyt.framework.bean.IdTitleData;
 import com.sunchs.lyt.report.bean.ItemCompareValue;
 import com.sunchs.lyt.report.bean.ItemRelatedData;
 import com.sunchs.lyt.report.service.IReportRelatedService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -68,6 +69,9 @@ public class ReportRelatedService implements IReportRelatedService {
                 Map<Integer, Double> mapY = new HashMap<>();
 
                 List<ReportAnswerOption> oneAnswerOptionList = optionGroupMap.get(targetId);
+                if (CollectionUtils.isEmpty(oneAnswerOptionList)) {
+                    System.out.println("指标无数据");
+                }
                 for (int i = 0; i < oneAnswerOptionList.size(); i++) {
                     if (Objects.isNull(oneAnswerOptionList.get(i)) || Objects.isNull(oneAnswerOptionList.get(i).getOptionId())) {
                         System.out.println("无数据");
