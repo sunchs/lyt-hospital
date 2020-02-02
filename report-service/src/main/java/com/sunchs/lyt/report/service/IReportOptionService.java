@@ -7,7 +7,12 @@ import java.util.List;
 
 public interface IReportOptionService {
     /**
-     * 根据 选项ID 获取人群满意度
+     * 根据 选项ID 获取人群（题目满意度）
      */
     List<SatisfyData> getItemCrowdSatisfy(ItemCrowdParam param);
+
+    /**
+     * 根据 选项ID 获取人群（答卷满意度）
+     */
+    List<SatisfyData> getItemCrowdAnswerSatisfy(ItemCrowdParam param);
 }

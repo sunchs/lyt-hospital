@@ -172,6 +172,15 @@ public class ReportController extends BaseController {
         return success(reportOptionService.getItemCrowdSatisfy(param));
     }
 
+    /**
+     * 根据 选项ID 获取人群（答卷满意度）
+     */
+    @PostMapping("/getItemCrowdAnswerSatisfy")
+    public ResultData getItemCrowdAnswerSatisfy(@RequestBody RequestData data) {
+        ItemCrowdParam param = data.toObject(ItemCrowdParam.class);
+        return success(reportOptionService.getItemCrowdAnswerSatisfy(param));
+    }
+
     @PostMapping("/getItemTagMenu")
     public ResultData itemTagMenu(@RequestBody RequestData data) {
         int itemId = data.getInt("itemId");

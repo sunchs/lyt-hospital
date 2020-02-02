@@ -7,6 +7,8 @@ public class ItemCrowdParam {
     private int itemId;
     private int officeType;
     private List<Integer> optionIds;
+    private String startTime;
+    private String endTime;
 
     public int getItemId() {
         return itemId;
@@ -30,5 +32,21 @@ public class ItemCrowdParam {
 
     public void setOptionIds(List<Integer> optionIds) {
         this.optionIds = optionIds;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 }

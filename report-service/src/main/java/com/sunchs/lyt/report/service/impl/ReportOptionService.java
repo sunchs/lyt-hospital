@@ -56,6 +56,66 @@ public class ReportOptionService implements IReportOptionService {
         return result;
     }
 
+    @Override
+    public List<SatisfyData> getItemCrowdAnswerSatisfy(ItemCrowdParam param) {
+        List<SatisfyData> result = new ArrayList<>();
+        if (CollectionUtils.isEmpty(param.getOptionIds())) {
+            return result;
+        }
+        Map<Integer, QuestionOption> questionOptionMap = getQuestionOptionMap(param.getOptionIds());
+        // 获取所有答卷ID集合，按optionId分好组
+        Map<Integer, List<ReportAnswerOption>> questionGroup = getOptionAnswerIds(param);
+        param.getOptionIds().forEach(optionId -> {
+
+            if (questionGroup.containsKey(optionId)) {
+                List<ReportAnswerOption> answerList = questionGroup.get(optionId);
+                List<Integer> answerIds = answerList.stream().map(ReportAnswerOption::getAnswerId).collect(Collectors.toList());
+                if (answerIds.size() > 0) {
+                    Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
+                            .setSqlSelect("question_id AS questionId,option_id AS optionId,score,COUNT(1) quantity")
+                            .in(ReportAnswerOption.ANSWER_ID, answerIds)
+                            .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
+                            .groupBy(ReportAnswerOption.QUESTION_ID)
+                            .groupBy(ReportAnswerOption.OPTION_ID);
+                    List<ReportAnswerOption> answerOptionList = reportAnswerOptionService.selectList(wrapper);
+                    if (CollectionUtils.isNotEmpty(answerOptionList)) {
+                        // 计算满意度
+                        double allVal = 0;
+                        Map<Integer, List<ReportAnswerOption>> questionMap = answerOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
+                        for (Integer questionId : questionMap.keySet()) {
+                            List<ReportAnswerOption> optionList = questionMap.get(questionId);
+                            // 计算满意度
+                            double value = 0;
+                            int number = 0;
+                            for (ReportAnswerOption option : optionList) {
+                                if ( ! option.getScore().equals(0)) {
+                                    value += option.getScore().doubleValue() * option.getQuantity().doubleValue();
+                                    number += option.getQuantity().intValue();
+                                }
+                            }
+                            if (number > 0) {
+                                allVal += new BigDecimal(value / (double) number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                            }
+                        }
+                        // 赋值
+                        SatisfyData data = new SatisfyData();
+                        data.setId(optionId);
+                        if (questionMap.size() > 0) {
+                            data.setValue(new BigDecimal(allVal / (double) questionMap.size()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                        } else {
+                            data.setValue(0.00);
+                        }
+                        QuestionOption questionOption = questionOptionMap.get(optionId);
+                        data.setName(questionOption.getTitle());
+                        data.setpId(questionOption.getQuestionId());
+                        result.add(data);
+                    }
+                }
+            }
+        });
+        return result;
+    }
+
     /**
      * 根据 选项ID集合 获取对应的题目ID集合（已分组好）
      */
@@ -69,6 +129,28 @@ public class ReportOptionService implements IReportOptionService {
                 .eq(ReportAnswerOption.OFFICE_TYPE_ID, officeType)
                 .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
                 .in(ReportAnswerOption.OPTION_ID, optionIds);
+        List<ReportAnswerOption> reportAnswerOptions = reportAnswerOptionService.selectList(wrapper);
+        return reportAnswerOptions.stream().collect(Collectors.groupingBy(ReportAnswerOption::getOptionId));
+    }
+
+    /**
+     * 根据 选项ID集合 获取对应的答卷ID集合（已分组好）
+     */
+    private Map<Integer, List<ReportAnswerOption>> getOptionAnswerIds(ItemCrowdParam param) {
+        Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
+                .setSqlSelect(
+                        ReportAnswerOption.ANSWER_ID.concat(" as answerId"),
+                        ReportAnswerOption.OPTION_ID.concat(" as optionId")
+                )
+                .eq(ReportAnswerOption.ITEM_ID, param.getItemId())
+                .eq(ReportAnswerOption.OFFICE_TYPE_ID, param.getOfficeType())
+                .in(ReportAnswerOption.OPTION_ID, param.getOptionIds())
+                .groupBy(ReportAnswerOption.ANSWER_ID);
+        // 根据时间段
+        if (Objects.nonNull(param.getStartTime()) && param.getStartTime().length() > 0) {
+            wrapper.ge(ReportAnswerOption.ENDTIME, param.getStartTime())
+                    .le(ReportAnswerOption.ENDTIME, param.getEndTime());
+        }
         List<ReportAnswerOption> reportAnswerOptions = reportAnswerOptionService.selectList(wrapper);
         return reportAnswerOptions.stream().collect(Collectors.groupingBy(ReportAnswerOption::getOptionId));
     }
