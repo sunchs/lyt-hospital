@@ -74,9 +74,13 @@ public class ReportOutputService implements IReportOutputService {
                     .in(ReportAnswer.OFFICE_ID, param.getOfficeIds())
                     .ge(ReportAnswer.STARTTIME, param.getStartTime())
                     .le(ReportAnswer.STARTTIME, param.getEndTime());
-        } else {
+        } else if (param.getOfficeId() != 0){
             reportAnswerWrapper.eq(ReportAnswer.ITEM_ID, param.getItemId())
                     .eq(ReportAnswer.OFFICE_ID, param.getOfficeId())
+                    .ge(ReportAnswer.STARTTIME, param.getStartTime())
+                    .le(ReportAnswer.STARTTIME, param.getEndTime());
+        } else {
+            reportAnswerWrapper.eq(ReportAnswer.ITEM_ID, param.getItemId())
                     .ge(ReportAnswer.STARTTIME, param.getStartTime())
                     .le(ReportAnswer.STARTTIME, param.getEndTime());
         }
