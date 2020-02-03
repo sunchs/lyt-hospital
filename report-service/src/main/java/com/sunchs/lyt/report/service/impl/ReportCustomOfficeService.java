@@ -82,7 +82,7 @@ public class ReportCustomOfficeService implements IReportCustomOfficeService {
             d.setValue(value);
             rankingList.add(d);
         });
-        rankingList.sort(Comparator.comparing(TitleValueData::getValue));
+        rankingList.sort(Comparator.comparing(TitleValueData::getValue).reversed());
         vo.setRankingList(rankingList);
         return vo;
     }
