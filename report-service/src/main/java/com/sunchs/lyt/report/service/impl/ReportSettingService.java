@@ -5,12 +5,14 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.TitleData;
+import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.framework.enums.OfficeTypeEnum;
 import com.sunchs.lyt.report.bean.*;
 import com.sunchs.lyt.report.service.IReportSettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -188,8 +190,8 @@ public class ReportSettingService implements IReportSettingService {
     }
 
     @Override
-    public List<TempOfficeData> getItemTempOfficeList(Integer itemId, Integer officeType) {
-        List<TempOfficeData> result =  new ArrayList<>();
+    public TempOfficeDataVO getItemTempOfficeList(Integer itemId, Integer officeType) {
+        List<TempOfficeData> list =  new ArrayList<>();
         Wrapper<SettingItemTempShow> wrapper = new EntityWrapper<SettingItemTempShow>()
                 .eq(SettingItemTempShow.ITEM_ID, itemId)
                 .eq(SettingItemTempShow.OFFICE_TYPE, officeType);
@@ -246,9 +248,39 @@ public class ReportSettingService implements IReportSettingService {
                 targetList.add(d);
             }
             data.setTargetList(targetList);
-            result.add(data);
+            list.add(data);
         });
-        return result;
+        // 赋值
+        TempOfficeDataVO vo = new TempOfficeDataVO();
+        vo.setList(list);
+        // 排名
+        List<TitleValueData> rankingList = new ArrayList<>();
+        list.forEach(l -> {
+            List<OfficeTargetSatisfyData> satisfyList = l.getSatisfyList();
+            List<TitleData> officeList = l.getOfficeList();
+            officeList.forEach(o -> {
+                // 获取单科室的满意度
+                List<OfficeTargetSatisfyData> satisfyData = satisfyList.stream().filter(v -> v.getOfficeId().equals(o.getId())).collect(Collectors.toList());
+                double allScore = 0;
+                int number = 0;
+                for (OfficeTargetSatisfyData t : satisfyData) {
+                    if (t.getValue() > 0) {
+                        allScore += t.getValue();
+                        number++;
+                    }
+                }
+                double value = new BigDecimal(allScore / (double)number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                TitleValueData d = new TitleValueData();
+                d.setId(o.getId());
+                d.setTitle(o.getTitle());
+                d.setValue(value);
+                rankingList.add(d);
+            });
+        });
+        // 排序
+        rankingList.sort(Comparator.comparing(TitleValueData::getValue).reversed());
+        vo.setRankingList(rankingList);
+        return vo;
     }
 
     @Override
