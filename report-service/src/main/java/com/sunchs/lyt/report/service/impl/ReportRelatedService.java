@@ -105,8 +105,9 @@ public class ReportRelatedService implements IReportRelatedService {
                 double value = caculatePearson(mapX, mapY);
                 if (value == -1) {
                     System.out.println("--------------------------");
-                    System.out.println("X:::"+mapX);
-                    System.out.println("Y:::"+mapY);
+                    for (Integer i : mapX.keySet()) {
+                        System.out.println(mapX.get(i)+"\t"+mapY.get(i));
+                    }
                     System.out.println("==================================");
                 }
                 row.setValue(value);
