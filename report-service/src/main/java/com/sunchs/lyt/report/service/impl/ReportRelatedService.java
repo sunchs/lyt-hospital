@@ -72,12 +72,13 @@ public class ReportRelatedService implements IReportRelatedService {
             for (Integer tId : targetIds) {
 
                 ItemCompareValue row = new ItemCompareValue();
-                row.setRowId(tId);
                 row.setColId(targetId);
+                row.setRowId(tId);
+
                 // 求相关系数
                 Map<Integer, Double> mapX = new HashMap<>();
                 Map<Integer, Double> mapY = new HashMap<>();
-
+                // 求X轴数据
                 for (Integer index : answerTempList.keySet()) {
                     List<ReportAnswerOption> value = answerTempList.get(index);
                     Optional<ReportAnswerOption> firstRow = value.stream().filter(v -> v.getTargetThree().equals(targetId)).findFirst();
@@ -87,7 +88,7 @@ public class ReportRelatedService implements IReportRelatedService {
                         mapX.put(index, 0.00);
                     }
                 }
-
+                // 求Y轴数据
                 for (Integer index : answerTempList.keySet()) {
                     List<ReportAnswerOption> value = answerTempList.get(index);
                     Optional<ReportAnswerOption> firstRow = value.stream().filter(v -> v.getTargetThree().equals(tId)).findFirst();
@@ -102,6 +103,12 @@ public class ReportRelatedService implements IReportRelatedService {
                     System.out.println("数量不相等"+mapX.size()+"："+mapY.size());
                 }
                 double value = caculatePearson(mapX, mapY);
+                if (value == -1) {
+                    System.out.println("--------------------------");
+                    System.out.println("X:::"+mapX);
+                    System.out.println("Y:::"+mapY);
+                    System.out.println("==================================");
+                }
                 row.setValue(value);
                 valueList.add(row);
             }
