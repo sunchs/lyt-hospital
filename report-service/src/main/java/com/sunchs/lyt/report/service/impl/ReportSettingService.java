@@ -254,7 +254,7 @@ public class ReportSettingService implements IReportSettingService {
         TempOfficeDataVO vo = new TempOfficeDataVO();
         vo.setList(list);
         // 排名
-        List<TitleValueData> rankingList = new ArrayList<>();
+        List<TitleValueDataVO> rankingList = new ArrayList<>();
         list.forEach(l -> {
             List<OfficeTargetSatisfyData> satisfyList = l.getSatisfyList();
             List<TitleData> officeList = l.getOfficeList();
@@ -270,7 +270,7 @@ public class ReportSettingService implements IReportSettingService {
                     }
                 }
                 double value = new BigDecimal(allScore / (double)number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                TitleValueData d = new TitleValueData();
+                TitleValueDataVO d = new TitleValueDataVO();
                 d.setId(o.getId());
                 d.setTitle(o.getTitle());
                 d.setValue(value);
@@ -279,6 +279,25 @@ public class ReportSettingService implements IReportSettingService {
         });
         // 排序
         rankingList.sort(Comparator.comparing(TitleValueData::getValue).reversed());
+        // 排序次数过滤
+        int rank = 0;
+        double rankValue = 0;
+        int tempRank = 0;
+        for (TitleValueDataVO t : rankingList) {
+            if (rank == 0) {
+                rank++;
+                rankValue = t.getValue();
+                t.setRankValue(rank);
+            } else if (rankValue != t.getValue()) {
+                rank++;
+                rankValue = t.getValue();
+                rank += tempRank;
+                tempRank = 0;
+            } else {
+                tempRank++;
+            }
+            t.setRankValue(rank);
+        }
         vo.setRankingList(rankingList);
         return vo;
     }

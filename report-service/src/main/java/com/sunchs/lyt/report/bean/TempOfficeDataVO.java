@@ -1,13 +1,11 @@
 package com.sunchs.lyt.report.bean;
 
-import com.sunchs.lyt.framework.bean.TitleValueData;
-
 import java.util.List;
 
 public class TempOfficeDataVO {
 
     private List<TempOfficeData> list;
-    private List<TitleValueData> rankingList;
+    private List<TitleValueDataVO> rankingList;
 
     public List<TempOfficeData> getList() {
         return list;
@@ -17,11 +15,11 @@ public class TempOfficeDataVO {
         this.list = list;
     }
 
-    public List<TitleValueData> getRankingList() {
+    public List<TitleValueDataVO> getRankingList() {
         return rankingList;
     }
 
-    public void setRankingList(List<TitleValueData> rankingList) {
+    public void setRankingList(List<TitleValueDataVO> rankingList) {
         this.rankingList = rankingList;
     }
 }
