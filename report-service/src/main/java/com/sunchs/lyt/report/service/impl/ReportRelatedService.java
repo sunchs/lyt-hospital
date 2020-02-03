@@ -78,21 +78,23 @@ public class ReportRelatedService implements IReportRelatedService {
                 Map<Integer, Double> mapX = new HashMap<>();
                 Map<Integer, Double> mapY = new HashMap<>();
 
-                for (List<ReportAnswerOption> value : answerTempList.values()) {
+                for (Integer index : answerTempList.keySet()) {
+                    List<ReportAnswerOption> value = answerTempList.get(index);
                     Optional<ReportAnswerOption> firstRow = value.stream().filter(v -> v.getTargetThree().equals(targetId)).findFirst();
                     if (firstRow.isPresent()) {
-                        mapX.put(value.indexOf(value), firstRow.get().getOptionId().doubleValue());
+                        mapX.put(index, firstRow.get().getOptionId().doubleValue());
                     } else {
-                        mapX.put(value.indexOf(value), 0.00);
+                        mapX.put(index, 0.00);
                     }
                 }
 
-                for (List<ReportAnswerOption> value : answerTempList.values()) {
+                for (Integer index : answerTempList.keySet()) {
+                    List<ReportAnswerOption> value = answerTempList.get(index);
                     Optional<ReportAnswerOption> firstRow = value.stream().filter(v -> v.getTargetThree().equals(tId)).findFirst();
                     if (firstRow.isPresent()) {
-                        mapY.put(value.indexOf(value), firstRow.get().getOptionId().doubleValue());
+                        mapY.put(index, firstRow.get().getOptionId().doubleValue());
                     } else {
-                        mapY.put(value.indexOf(value), 0.00);
+                        mapY.put(index, 0.00);
                     }
                 }
 
