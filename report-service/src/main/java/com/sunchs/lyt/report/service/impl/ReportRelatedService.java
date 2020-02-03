@@ -41,18 +41,22 @@ public class ReportRelatedService implements IReportRelatedService {
                 .eq(ReportAnswerOption.OFFICE_TYPE_ID, officeType)
                 .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4));
         List<ReportAnswerOption> optionList = reportAnswerOptionService.selectList(wrapper);
-        Map<Integer, List<ReportAnswerOption>> optionGroupMap = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetThree));
-        Map<Integer, String> targetNameMap = getTargetNameByIds(optionGroupMap.keySet());
+//        Map<Integer, List<ReportAnswerOption>> optionGroupMap = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetThree));
+
 
         // 按照答卷分组
         Map<Integer, List<ReportAnswerOption>> answerTempList = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getAnswerId));
-        System.out.println("总共："+answerTempList.size());
+        // 设计的指标ID
+        Set<Integer> targetIds = optionList.stream().map(ReportAnswerOption::getTargetThree).distinct().collect(Collectors.toSet());
+        // 指标标题
+        Map<Integer, String> targetNameMap = getTargetNameByIds(targetIds);
 
+        System.out.println("总共："+answerTempList.size());
 
         // 表头
         List<IdTitleData> colList = new ArrayList<>();
         List<IdTitleData> rowList = new ArrayList<>();
-        for (Integer targetId : optionGroupMap.keySet()) {
+        for (Integer targetId : targetIds) {
             IdTitleData row = new IdTitleData();
             row.setId(targetId);
             row.setTitle(targetNameMap.get(targetId));
@@ -64,8 +68,8 @@ public class ReportRelatedService implements IReportRelatedService {
 
         // 计算
         List<ItemCompareValue> valueList = new ArrayList<>();
-        for (Integer targetId : optionGroupMap.keySet()) {
-            for (Integer tId : optionGroupMap.keySet()) {
+        for (Integer targetId : targetIds) {
+            for (Integer tId : targetIds) {
 
                 ItemCompareValue row = new ItemCompareValue();
                 row.setRowId(tId);
@@ -74,26 +78,24 @@ public class ReportRelatedService implements IReportRelatedService {
                 Map<Integer, Double> mapX = new HashMap<>();
                 Map<Integer, Double> mapY = new HashMap<>();
 
-                List<ReportAnswerOption> oneAnswerOptionList = optionGroupMap.get(targetId);
-                if (CollectionUtils.isEmpty(oneAnswerOptionList)) {
-                    System.out.println("指标无数据");
-                }
-                for (int i = 0; i < oneAnswerOptionList.size(); i++) {
-                    mapX.put(i, oneAnswerOptionList.get(i).getOptionId().doubleValue());
-                }
-
-                List<ReportAnswerOption> twoAnswerOptionList = optionGroupMap.get(tId);
-                for (int i = 0; i < twoAnswerOptionList.size(); i++) {
-                    mapY.put(i, twoAnswerOptionList.get(i).getOptionId().doubleValue());
+                for (List<ReportAnswerOption> value : answerTempList.values()) {
+                    Optional<ReportAnswerOption> firstRow = value.stream().filter(v -> v.getTargetThree().equals(targetId)).findFirst();
+                    if (firstRow.isPresent()) {
+                        mapX.put(value.indexOf(value), firstRow.get().getOptionId().doubleValue());
+                    } else {
+                        mapX.put(value.indexOf(value), 0.00);
+                    }
                 }
 
-//                optionGroupMap.get(targetId).forEach(t1->{
-//                    mapX.put(t1.getId(), t1.getOptionId().doubleValue());
-//                });
-//                optionGroupMap.get(tId).forEach(t2->{
-//                    mapY.put(t2.getId(), t2.getOptionId().doubleValue());
-//                });
-                // todo::::::::::::
+                for (List<ReportAnswerOption> value : answerTempList.values()) {
+                    Optional<ReportAnswerOption> firstRow = value.stream().filter(v -> v.getTargetThree().equals(tId)).findFirst();
+                    if (firstRow.isPresent()) {
+                        mapX.put(value.indexOf(value), firstRow.get().getOptionId().doubleValue());
+                    } else {
+                        mapX.put(value.indexOf(value), 0.00);
+                    }
+                }
+
                 if (mapX.size() != mapY.size()) {
                     System.out.println("数量不相等"+mapX.size()+"："+mapY.size());
                 }
@@ -103,6 +105,61 @@ public class ReportRelatedService implements IReportRelatedService {
             }
         }
         data.setValueList(valueList);
+
+
+//        // 表头
+//        List<IdTitleData> colList = new ArrayList<>();
+//        List<IdTitleData> rowList = new ArrayList<>();
+//        for (Integer targetId : optionGroupMap.keySet()) {
+//            IdTitleData row = new IdTitleData();
+//            row.setId(targetId);
+//            row.setTitle(targetNameMap.get(targetId));
+//            colList.add(row);
+//            rowList.add(row);
+//        }
+//        data.setColList(colList);
+//        data.setRowList(rowList);
+//
+//        // 计算
+//        List<ItemCompareValue> valueList = new ArrayList<>();
+//        for (Integer targetId : optionGroupMap.keySet()) {
+//            for (Integer tId : optionGroupMap.keySet()) {
+//
+//                ItemCompareValue row = new ItemCompareValue();
+//                row.setRowId(tId);
+//                row.setColId(targetId);
+//                // 求相关系数
+//                Map<Integer, Double> mapX = new HashMap<>();
+//                Map<Integer, Double> mapY = new HashMap<>();
+//
+//                List<ReportAnswerOption> oneAnswerOptionList = optionGroupMap.get(targetId);
+//                if (CollectionUtils.isEmpty(oneAnswerOptionList)) {
+//                    System.out.println("指标无数据");
+//                }
+//                for (int i = 0; i < oneAnswerOptionList.size(); i++) {
+//                    mapX.put(i, oneAnswerOptionList.get(i).getOptionId().doubleValue());
+//                }
+//
+//                List<ReportAnswerOption> twoAnswerOptionList = optionGroupMap.get(tId);
+//                for (int i = 0; i < twoAnswerOptionList.size(); i++) {
+//                    mapY.put(i, twoAnswerOptionList.get(i).getOptionId().doubleValue());
+//                }
+//
+////                optionGroupMap.get(targetId).forEach(t1->{
+////                    mapX.put(t1.getId(), t1.getOptionId().doubleValue());
+////                });
+////                optionGroupMap.get(tId).forEach(t2->{
+////                    mapY.put(t2.getId(), t2.getOptionId().doubleValue());
+////                });
+//                if (mapX.size() != mapY.size()) {
+//                    System.out.println("数量不相等"+mapX.size()+"："+mapY.size());
+//                }
+//                double value = caculatePearson(mapX, mapY);
+//                row.setValue(value);
+//                valueList.add(row);
+//            }
+//        }
+//        data.setValueList(valueList);
         return data;
     }
 
