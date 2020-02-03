@@ -33,8 +33,9 @@ public class ReportRelatedService implements IReportRelatedService {
         Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
                 .setSqlSelect(
                         ReportAnswerOption.ID,
-                        ReportAnswerOption.TARGET_THREE + " AS targetThree",
-                        ReportAnswerOption.OPTION_ID + " AS optionId"
+                        ReportAnswerOption.ANSWER_ID.concat(" AS answerId"),
+                        ReportAnswerOption.TARGET_THREE.concat(" AS targetThree"),
+                        ReportAnswerOption.OPTION_ID.concat(" AS optionId")
                 )
                 .eq(ReportAnswerOption.ITEM_ID, itemId)
                 .eq(ReportAnswerOption.OFFICE_TYPE_ID, officeType)
@@ -42,6 +43,11 @@ public class ReportRelatedService implements IReportRelatedService {
         List<ReportAnswerOption> optionList = reportAnswerOptionService.selectList(wrapper);
         Map<Integer, List<ReportAnswerOption>> optionGroupMap = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetThree));
         Map<Integer, String> targetNameMap = getTargetNameByIds(optionGroupMap.keySet());
+
+        // 按照答卷分组
+        Map<Integer, List<ReportAnswerOption>> answerTempList = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getAnswerId));
+        System.out.println("总共："+answerTempList.size());
+
 
         // 表头
         List<IdTitleData> colList = new ArrayList<>();
@@ -73,17 +79,11 @@ public class ReportRelatedService implements IReportRelatedService {
                     System.out.println("指标无数据");
                 }
                 for (int i = 0; i < oneAnswerOptionList.size(); i++) {
-                    if (Objects.isNull(oneAnswerOptionList.get(i)) || Objects.isNull(oneAnswerOptionList.get(i).getOptionId())) {
-                        System.out.println("111无数据");
-                    }
                     mapX.put(i, oneAnswerOptionList.get(i).getOptionId().doubleValue());
                 }
 
                 List<ReportAnswerOption> twoAnswerOptionList = optionGroupMap.get(tId);
                 for (int i = 0; i < twoAnswerOptionList.size(); i++) {
-                    if (Objects.isNull(twoAnswerOptionList.get(i)) || Objects.isNull(twoAnswerOptionList.get(i).getOptionId())) {
-                        System.out.println("222无数据");
-                    }
                     mapY.put(i, twoAnswerOptionList.get(i).getOptionId().doubleValue());
                 }
 
@@ -93,6 +93,7 @@ public class ReportRelatedService implements IReportRelatedService {
 //                optionGroupMap.get(tId).forEach(t2->{
 //                    mapY.put(t2.getId(), t2.getOptionId().doubleValue());
 //                });
+                // todo::::::::::::
                 if (mapX.size() != mapY.size()) {
                     System.out.println("数量不相等"+mapX.size()+"："+mapY.size());
                 }
