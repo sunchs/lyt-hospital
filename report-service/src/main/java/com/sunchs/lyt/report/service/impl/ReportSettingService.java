@@ -278,7 +278,7 @@ public class ReportSettingService implements IReportSettingService {
             });
         });
         // 排序
-        rankingList.sort(Comparator.comparing(TitleValueData::getValue).reversed());
+        rankingList.sort(Comparator.comparing(TitleValueDataVO::getValue).reversed());
         // 排序次数过滤
         int rank = 0;
         double rankValue = 0;
