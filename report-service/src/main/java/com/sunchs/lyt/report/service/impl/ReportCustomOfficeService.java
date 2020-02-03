@@ -4,18 +4,17 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
+import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.report.bean.CustomOfficeData;
+import com.sunchs.lyt.report.bean.CustomOfficeDataVO;
 import com.sunchs.lyt.report.bean.CustomOfficeTargetData;
 import com.sunchs.lyt.report.service.IReportCustomOfficeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,8 +36,9 @@ public class ReportCustomOfficeService implements IReportCustomOfficeService {
     private QuestionTargetServiceImpl questionTargetService;
 
     @Override
-    public List<CustomOfficeData> getCustomOfficeList(Integer itemId, Integer officeType) {
-        List<CustomOfficeData> result =  new ArrayList<>();
+    public CustomOfficeDataVO getCustomOfficeList(Integer itemId, Integer officeType) {
+        // 列表集合
+        List<CustomOfficeData> list =  new ArrayList<>();
         Wrapper<CustomItemOffice> wrapper = new EntityWrapper<CustomItemOffice>()
                 .eq(CustomItemOffice.ITEM_ID, itemId)
                 .eq(CustomItemOffice.OFFICE_TYPE, officeType);
@@ -47,7 +47,6 @@ public class ReportCustomOfficeService implements IReportCustomOfficeService {
             CustomOfficeData data = new CustomOfficeData();
             data.setId(o.getId());
             data.setTitle(o.getTitle());
-
             // 获取答卷ID集合
             Wrapper<ReportAnswerOption> optionWrapper = new EntityWrapper<ReportAnswerOption>()
                     .setSqlSelect(ReportAnswerOption.ANSWER_ID+" as answerId")
@@ -59,12 +58,33 @@ public class ReportCustomOfficeService implements IReportCustomOfficeService {
                     .groupBy(ReportAnswerOption.ANSWER_ID);
             List<ReportAnswerOption> optionTempList = reportAnswerOptionService.selectList(optionWrapper);
             List<Integer> answerIds = optionTempList.stream().map(ReportAnswerOption::getAnswerId).collect(Collectors.toList());
-
             data.setTargetList(getTargetSatisfyList(answerIds, o.getId()));
-
-            result.add(data);
+            list.add(data);
         });
-        return result;
+        CustomOfficeDataVO vo = new CustomOfficeDataVO();
+        vo.setList(list);
+        // 排名
+        List<TitleValueData> rankingList = new ArrayList<>();
+        list.forEach(o->{
+            double allScore = 0;
+            int number = 0;
+            List<CustomOfficeTargetData> targetList = o.getTargetList();
+            for (CustomOfficeTargetData t : targetList) {
+                if (t.getSatisfyValue() > 0) {
+                    allScore += t.getSatisfyValue();
+                    number++;
+                }
+            }
+            double value = new BigDecimal(allScore / (double)number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            TitleValueData d = new TitleValueData();
+            d.setId(o.getId());
+            d.setTitle(o.getTitle());
+            d.setValue(value);
+            rankingList.add(d);
+        });
+        rankingList.sort(Comparator.comparing(TitleValueData::getValue));
+        vo.setRankingList(rankingList);
+        return vo;
     }
 
     private List<CustomOfficeTargetData> getTargetSatisfyList(List<Integer> answerIds, Integer customId) {
