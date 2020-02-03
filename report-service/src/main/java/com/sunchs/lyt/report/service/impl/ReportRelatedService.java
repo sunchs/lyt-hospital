@@ -90,9 +90,9 @@ public class ReportRelatedService implements IReportRelatedService {
                 for (List<ReportAnswerOption> value : answerTempList.values()) {
                     Optional<ReportAnswerOption> firstRow = value.stream().filter(v -> v.getTargetThree().equals(tId)).findFirst();
                     if (firstRow.isPresent()) {
-                        mapX.put(value.indexOf(value), firstRow.get().getOptionId().doubleValue());
+                        mapY.put(value.indexOf(value), firstRow.get().getOptionId().doubleValue());
                     } else {
-                        mapX.put(value.indexOf(value), 0.00);
+                        mapY.put(value.indexOf(value), 0.00);
                     }
                 }
 
