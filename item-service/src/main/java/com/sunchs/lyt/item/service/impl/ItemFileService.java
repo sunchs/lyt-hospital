@@ -124,7 +124,12 @@ public class ItemFileService implements IItemFileService {
     }
 
     @Override
-    public String inputItemAnswer(MultipartFile file) {
+    public String inputItemAnswer() {
+        return null;
+    }
+
+    @Override
+    public String uploadFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new ItemException("请选择导入文件");
         }
@@ -144,9 +149,7 @@ public class ItemFileService implements IItemFileService {
             throw new ItemException("上传文件到服务器失败：" + e.toString());
         }
 
-        // 执行写入操作
-
-        return null;
+        return fileName;
     }
 
     private void initPath(String path) {

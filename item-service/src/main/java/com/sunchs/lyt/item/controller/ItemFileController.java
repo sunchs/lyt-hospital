@@ -33,8 +33,7 @@ public class ItemFileController extends BaseController {
 
     @PostMapping("/upload")
     public ResultData uploadFile(@RequestParam("file") MultipartFile file) {
-        itemFileService.inputItemAnswer(file);
-        return success();
+        return success(itemFileService.uploadFile(file));
     }
 
     @GetMapping("/download")

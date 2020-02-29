@@ -12,5 +12,10 @@ public interface IItemFileService {
     /**
      * 导入数据
      */
-    String inputItemAnswer(MultipartFile file);
+    String inputItemAnswer();
+
+    /**
+     * 上传文件
+     */
+    String uploadFile(MultipartFile file);
 }
