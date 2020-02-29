@@ -53,7 +53,7 @@ public class ItemFileService implements IItemFileService {
             throw new ItemException("项目和科室无绑定状态，请重新选择项目和科室！");
         }
         // 判断是否有问卷
-        if (itemOffice.getQuestionnaireId() > 0) {
+        if (itemOffice.getQuestionnaireId().equals(0)) {
             throw new ItemException("无绑定问卷，请绑定问卷再试！");
         }
         // 查询问卷题目
