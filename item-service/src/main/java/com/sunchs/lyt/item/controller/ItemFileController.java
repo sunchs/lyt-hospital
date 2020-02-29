@@ -31,6 +31,15 @@ public class ItemFileController extends BaseController {
         return success("http://47.107.255.115:8004/itemFile/download/?fileName="+path);
     }
 
+    @PostMapping("/inputItemAnswer")
+    public ResultData inputItemAnswer(@RequestBody RequestData data) {
+        Integer itemId = data.getInt("itemId");
+        Integer officeType = data.getInt("officeType");
+        Integer officeId = data.getInt("officeId");
+        String file = data.getString("file");
+        return success(itemFileService.inputItemAnswer(itemId, officeType, officeId, file));
+    }
+
     @PostMapping("/upload")
     public ResultData uploadFile(@RequestParam("file") MultipartFile file) {
         return success(itemFileService.uploadFile(file));

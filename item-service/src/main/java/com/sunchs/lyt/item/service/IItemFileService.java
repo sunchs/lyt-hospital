@@ -12,7 +12,7 @@ public interface IItemFileService {
     /**
      * 导入数据
      */
-    String inputItemAnswer();
+    String inputItemAnswer(Integer itemId, Integer officeType, Integer officeId, String file);
 
     /**
      * 上传文件
