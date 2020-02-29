@@ -249,8 +249,10 @@ public class ItemFileService implements IItemFileService {
             List<InputAnswerBean> beanList = new ArrayList<>();
             for (InputAnswerBean bean : questionMap.values()) {
                 try {
-                    LabelCell label = (LabelCell)sheet.getCell(bean.getPosition(), line);
-                    String optionVal = label.getString();
+                    Cell cell = sheet.getCell(bean.getPosition(), line);
+                    String optionVal = cell.getContents();
+//                    LabelCell label = (LabelCell)sheet.getCell(bean.getPosition(), line);
+//                    String optionVal = label.getString();
                     bean.setOptionValue(optionVal);
                     beanList.add(bean);
                 } catch (Exception e) {
