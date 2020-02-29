@@ -209,8 +209,11 @@ public class ItemFileService implements IItemFileService {
         Map<Integer, String> patientMap = new HashMap<>();
         for (int line = 1; line < rowLen; line++) {
             try {
-                LabelCell label = (LabelCell)sheet.getCell(patientIdIndex, line);
-                String patientNo = label.getString();
+                Cell cell = sheet.getCell(patientIdIndex, line);
+                String patientNo = cell.getContents();
+                if (patientNo.length() == 0) {
+                    throw new ItemException("患者编号有问题");
+                }
                 patientMap.put(line, patientNo);
             } catch (Exception e) {
                 throw new ItemException("患者编号有问题： (第"+(line+1)+"行，第"+(patientIdIndex+1)+"列)");
@@ -223,8 +226,10 @@ public class ItemFileService implements IItemFileService {
         for (int line = 1; line < rowLen; line++) {
             InputAnswerBean bean = new InputAnswerBean();
             // 判断开始时间
-            LabelCell sLabel = (LabelCell)sheet.getCell(startTimeIndex, line);
-            String sTimeStr = sLabel.getString();
+            Cell sCell = sheet.getCell(startTimeIndex, line);
+            String sTimeStr = sCell.getContents();
+//            LabelCell sLabel = (LabelCell)sheet.getCell(startTimeIndex, line);
+//            String sTimeStr = sLabel.getString();
             try {
                 Date startTime = dateFormat.parse(sTimeStr);
                 bean.setStartTime(startTime);
@@ -232,8 +237,10 @@ public class ItemFileService implements IItemFileService {
                 throw new ItemException("答题开始时间："+ sTimeStr +"(第"+(line+1)+"行，第"+(startTimeIndex+1)+"列)");
             }
             // 判断结束时间
-            LabelCell eLabel = (LabelCell)sheet.getCell(endTimeIndex, line);
-            String eTimeStr = eLabel.getString();
+            Cell eCell = sheet.getCell(endTimeIndex, line);
+            String eTimeStr = eCell.getContents();
+//            LabelCell eLabel = (LabelCell)sheet.getCell(endTimeIndex, line);
+//            String eTimeStr = eLabel.getString();
             try {
                 Date endTime = dateFormat.parse(eTimeStr);
                 bean.setEndTime(endTime);
