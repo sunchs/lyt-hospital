@@ -6,6 +6,7 @@ import com.sunchs.lyt.framework.controller.BaseController;
 import com.sunchs.lyt.item.service.impl.ItemFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -28,6 +29,12 @@ public class ItemFileController extends BaseController {
         Integer officeId = data.getInt("officeId");
         String path = itemFileService.getItemAnswerInputTemplate(itemId, officeType, officeId);
         return success("http://47.107.255.115:8004/itemFile/download/?fileName="+path);
+    }
+
+    @PostMapping("/upload")
+    public ResultData uploadFile(@RequestParam("file") MultipartFile file) {
+        itemFileService.inputItemAnswer(file);
+        return success();
     }
 
     @GetMapping("/download")

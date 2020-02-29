@@ -1,5 +1,7 @@
 package com.sunchs.lyt.item.service;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public interface IItemFileService {
 
     /**
@@ -7,4 +9,8 @@ public interface IItemFileService {
      */
     String getItemAnswerInputTemplate(Integer itemId, Integer officeType, Integer officeId);
 
+    /**
+     * 导入数据
+     */
+    String inputItemAnswer(MultipartFile file);
 }

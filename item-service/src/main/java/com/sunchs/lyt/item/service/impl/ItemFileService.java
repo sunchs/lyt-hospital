@@ -21,9 +21,11 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -119,6 +121,32 @@ public class ItemFileService implements IItemFileService {
         }).start();
 
         return path + "/" + fileName;
+    }
+
+    @Override
+    public String inputItemAnswer(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new ItemException("请选择导入文件");
+        }
+
+        String fileName = "/lyt";
+        File fileUpload = new File(fileName);
+        if (!fileUpload.exists()) {
+            fileUpload.mkdirs();
+        }
+
+        fileName += "/upload_"+System.currentTimeMillis()+file.getOriginalFilename();
+        fileUpload = new File(fileName);
+
+        try {
+            file.transferTo(fileUpload);
+        } catch (IOException e) {
+            throw new ItemException("上传文件到服务器失败：" + e.toString());
+        }
+
+        // 执行写入操作
+
+        return null;
     }
 
     private void initPath(String path) {
