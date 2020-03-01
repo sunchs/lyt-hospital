@@ -312,9 +312,9 @@ public class ItemFileService implements IItemFileService {
                 // 写入数据
         new Thread(()-> {
             for (int line = 1; line < rowLen; line++) {
-                for (InputAnswerBean bean : questionMap.values()) {
+                List<InputAnswerBean> beanList = answerMap.get(line);
+                for (InputAnswerBean bean : beanList) {
                     if ("在进行检验检查时，检验/检查人员态度友善，能够清晰说明检查步骤和需要注意的问题。".equals(bean.getQuestion().getTitle())) {
-                        System.out.println(line+"|->"+bean.getQuestionOptionMap().values());
                         System.out.println(bean.getOptionValue());
                     }
                 }
