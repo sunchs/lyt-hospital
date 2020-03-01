@@ -276,7 +276,7 @@ public class ItemFileService implements IItemFileService {
                     bean.setOptionValue(optionVal);
                     beanList.add(bean);
                 } catch (ItemException e) {
-                    throw new ItemException("题目的答案不存在，请确定好答案再导入：(第"+(line+1)+"行，第"+(bean.getPosition()+1)+"列)");
+                    throw new ItemException("题目的答案不存在，请确定好答案再导入：(第"+(line+1)+"行，第"+(bean.getPosition()+1)+"列)[题目ID："+bean.getQuestion().getId()+"]");
                 } catch (Exception e) {
                     throw new ItemException("题目的答案有问题：(第"+(line+1)+"行，第"+(bean.getPosition()+1)+"列)");
                 }
