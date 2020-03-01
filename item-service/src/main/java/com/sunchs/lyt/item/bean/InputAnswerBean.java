@@ -1,6 +1,7 @@
 package com.sunchs.lyt.item.bean;
 
 import com.sunchs.lyt.db.business.entity.Question;
+import com.sunchs.lyt.db.business.entity.QuestionOption;
 
 import java.util.Date;
 import java.util.Map;
@@ -13,7 +14,7 @@ public class InputAnswerBean {
     private Question question;
     private Integer position;
     private String optionValue;
-    private Map<String, Integer> questionOptionMap;
+    private Map<String, QuestionOption> questionOptionMap;
 
     public String getPatientNo() {
         return patientNo;
@@ -63,11 +64,11 @@ public class InputAnswerBean {
         this.optionValue = optionValue;
     }
 
-    public Map<String, Integer> getQuestionOptionMap() {
+    public Map<String, QuestionOption> getQuestionOptionMap() {
         return questionOptionMap;
     }
 
-    public void setQuestionOptionMap(Map<String, Integer> questionOptionMap) {
+    public void setQuestionOptionMap(Map<String, QuestionOption> questionOptionMap) {
         this.questionOptionMap = questionOptionMap;
     }
 }
