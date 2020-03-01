@@ -223,10 +223,6 @@ public class ItemFileService implements IItemFileService {
                 throw new ItemException("缺少题目："+question.getTitle().trim());
             }
         }
-        System.out.println("xls位置：");
-        for (InputAnswerBean value : questionMap.values()) {
-            System.out.println(value.getQuestion().getTitle() + " <-> " + value.getPosition());
-        }
 
         // 患者集合，key:行号
         Map<Integer, String> patientMap = new HashMap<>();
@@ -300,9 +296,6 @@ public class ItemFileService implements IItemFileService {
                         }
                     }
                     data.setOptionValue(optionVal);
-                    if ("在进行检验检查时，检验/检查人员态度友善，能够清晰说明检查步骤和需要注意的问题。".equals(bean.getQuestion().getTitle())) {
-                        System.out.println(line+"--->"+bean.getQuestion().getTitle() + " ---> " + bean.getPosition() + " ===> "+optionVal);
-                    }
                     beanList.add(data);
                 } catch (ItemException e) {
                     throw new ItemException(e.getMessage()+"(第"+(line+1)+"行，第"+(bean.getPosition()+1)+"列)[题目ID："+bean.getQuestion().getId()+"]");
@@ -313,73 +306,64 @@ public class ItemFileService implements IItemFileService {
             answerMap.put(line, beanList);
         }
 
-                // 写入数据
-//        new Thread(()-> {
+        // 写入数据
+        new Thread(()->{
             for (int line = 1; line < rowLen; line++) {
-                List<InputAnswerBean> beanList = answerMap.get(line);
-                for (InputAnswerBean bean : beanList) {
-                    if ("在进行检验检查时，检验/检查人员态度友善，能够清晰说明检查步骤和需要注意的问题。".equals(bean.getQuestion().getTitle())) {
-                        System.out.println(bean.getOptionValue());
+                List<InputAnswerBean> answerBeanList = answerMap.get(line);
+
+                // 提取时间
+                InputAnswerBean tBean = timeMap.get(line);
+                Date st = tBean.getStartTime();
+                Date et = tBean.getEndTime();
+                double lt = (double)(et.getTime() - st.getTime()) / (double)1000;
+
+                Answer answer = new Answer();
+                answer.setHospitalId(itemOffice.getHospitalId());
+                answer.setItemId(itemOffice.getItemId());
+                answer.setOfficeTypeId(itemOffice.getOfficeTypeId());
+                answer.setOfficeId(itemOffice.getOfficeId());
+                answer.setQuestionnaireId(itemOffice.getQuestionnaireId());
+                answer.setUserId(UserThreadUtil.getUserId());
+                answer.setMemberId(0);
+                answer.setPatientNumber(patientMap.get(line));
+                answer.setStatus(0);
+                answer.setReason("");
+                answer.setTimeDuration((int)lt);
+                answer.setStartTime(st);
+                answer.setEndTime(et);
+                answer.setUpdateId(UserThreadUtil.getUserId());
+                answer.setUpdateTime(new Date());
+                answer.setCreateId(UserThreadUtil.getUserId());
+                answer.setCreateTime(new Date());
+                answer.setFilterReason("");
+                if (answerService.insert(answer)) {
+                    // 插入答案
+                    for (InputAnswerBean bean : answerBeanList) {
+                        // 有值时插入
+                        if (bean.getOptionValue().length() > 0) {
+                            Map<String, QuestionOption> optionMapTempGroup = bean.getQuestionOptionMap();
+                            // 填空题
+                            if (optionMapTempGroup.containsKey("填空，无需填写")) {
+                                setAnswerOption(answer, bean, 0, bean.getOptionValue().trim(), 0);
+                            } else if (optionMapTempGroup.containsKey(bean.getOptionValue().trim())) {
+                                QuestionOption option = optionMapTempGroup.get(bean.getOptionValue().trim());
+                                setAnswerOption(answer, bean, option.getId(), bean.getOptionValue().trim(), option.getScore());
+                            } else if (bean.getOptionValue().contains(",")) {
+                                // 判断多选题
+                                String[] split = bean.getOptionValue().split(",");
+                                List<String> splitList = Arrays.asList(split);
+                                for (String s : splitList) {
+                                    if (optionMapTempGroup.containsKey(s)) {
+                                        QuestionOption option = optionMapTempGroup.get(s);
+                                        setAnswerOption(answer, bean, option.getId(), s.trim(), option.getScore());
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
-//        }).start();
-
-//        // 写入数据
-//        new Thread(()->{
-//            for (int line = 1; line < rowLen; line++) {
-//                // 提取时间
-//                InputAnswerBean tBean = timeMap.get(line);
-//                Date st = tBean.getStartTime();
-//                Date et = tBean.getEndTime();
-//                double lt = (double)(et.getTime() - st.getTime()) / (double)1000;
-//
-//                Answer answer = new Answer();
-//                answer.setHospitalId(itemOffice.getHospitalId());
-//                answer.setItemId(itemOffice.getItemId());
-//                answer.setOfficeTypeId(itemOffice.getOfficeTypeId());
-//                answer.setOfficeId(itemOffice.getOfficeId());
-//                answer.setQuestionnaireId(itemOffice.getQuestionnaireId());
-//                answer.setUserId(UserThreadUtil.getUserId());
-//                answer.setMemberId(0);
-//                answer.setPatientNumber(patientMap.get(line));
-//                answer.setStatus(0);
-//                answer.setReason("");
-//                answer.setTimeDuration((int)lt);
-//                answer.setStartTime(st);
-//                answer.setEndTime(et);
-//                answer.setUpdateId(UserThreadUtil.getUserId());
-//                answer.setUpdateTime(new Date());
-//                answer.setCreateId(UserThreadUtil.getUserId());
-//                answer.setCreateTime(new Date());
-//                answer.setFilterReason("");
-//                if (answerService.insert(answer)) {
-//                    for (InputAnswerBean bean : questionMap.values()) {
-//                        // 有值时插入
-//                        if (bean.getOptionValue().length() > 0) {
-//                            Map<String, QuestionOption> optionMapTempGroup = bean.getQuestionOptionMap();
-//                            // 填空题
-//                            if (optionMapTempGroup.containsKey("填空，无需填写")) {
-//                                setAnswerOption(answer, bean, 0, bean.getOptionValue().trim(), 0);
-//                            } else if (optionMapTempGroup.containsKey(bean.getOptionValue().trim())) {
-//                                QuestionOption option = optionMapTempGroup.get(bean.getOptionValue().trim());
-//                                setAnswerOption(answer, bean, option.getId(), bean.getOptionValue().trim(), option.getScore());
-//                            } else if (bean.getOptionValue().contains(",")) {
-//                                // 判断多选题
-//                                String[] split = bean.getOptionValue().split(",");
-//                                List<String> splitList = Arrays.asList(split);
-//                                for (String s : splitList) {
-//                                    if (optionMapTempGroup.containsKey(s)) {
-//                                        QuestionOption option = optionMapTempGroup.get(s);
-//                                        setAnswerOption(answer, bean, option.getId(), s.trim(), option.getScore());
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }).start();
+        }).start();
         return "恭喜，成功插入"+(rowLen-1)+"份答卷";
     }
 
