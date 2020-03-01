@@ -274,6 +274,7 @@ public class ItemFileService implements IItemFileService {
                 InputAnswerBean data = new InputAnswerBean();
                 data.setPosition(bean.getPosition());
                 data.setQuestion(bean.getQuestion());
+                data.setQuestionOptionMap(bean.getQuestionOptionMap());
                 try {
                     Cell cell = sheet.getCell(bean.getPosition(), line);
                     String optionVal = cell.getContents();
