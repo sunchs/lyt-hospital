@@ -277,9 +277,6 @@ public class ItemFileService implements IItemFileService {
                 try {
                     Cell cell = sheet.getCell(bean.getPosition(), line);
                     String optionVal = cell.getContents();
-                    if ("在进行检验检查时，检验/检查人员态度友善，能够清晰说明检查步骤和需要注意的问题。".equals(bean.getQuestion().getTitle())) {
-                        System.out.println(line+"--->"+bean.getQuestion().getTitle() + " ---> " + bean.getPosition() + " ===> "+optionVal);
-                    }
                     if (optionVal.length() > 0) {
                         Map<String, QuestionOption> optionMapTempGroup = bean.getQuestionOptionMap();
                         // 过滤掉填空题的判断
@@ -299,6 +296,9 @@ public class ItemFileService implements IItemFileService {
                         }
                     }
                     bean.setOptionValue(optionVal);
+                    if ("在进行检验检查时，检验/检查人员态度友善，能够清晰说明检查步骤和需要注意的问题。".equals(bean.getQuestion().getTitle())) {
+                        System.out.println(line+"--->"+bean.getQuestion().getTitle() + " ---> " + bean.getPosition() + " ===> "+optionVal);
+                    }
                     beanList.add(bean);
                 } catch (ItemException e) {
                     throw new ItemException(e.getMessage()+"(第"+(line+1)+"行，第"+(bean.getPosition()+1)+"列)[题目ID："+bean.getQuestion().getId()+"]");
@@ -310,7 +310,7 @@ public class ItemFileService implements IItemFileService {
         }
 
                 // 写入数据
-        new Thread(()-> {
+//        new Thread(()-> {
             for (int line = 1; line < rowLen; line++) {
                 List<InputAnswerBean> beanList = answerMap.get(line);
                 for (InputAnswerBean bean : beanList) {
@@ -319,7 +319,7 @@ public class ItemFileService implements IItemFileService {
                     }
                 }
             }
-        }).start();
+//        }).start();
 
 //        // 写入数据
 //        new Thread(()->{
