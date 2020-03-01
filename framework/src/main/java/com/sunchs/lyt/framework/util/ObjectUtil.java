@@ -10,7 +10,6 @@ public class ObjectUtil {
         T t = null;
         try {
             t = clazz.newInstance();
-            System.out.println("传后的对象："+old);
             PropertyUtils.copyProperties(t, old);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
