@@ -2,14 +2,8 @@ package com.sunchs.lyt.item.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.sunchs.lyt.db.business.entity.Item;
-import com.sunchs.lyt.db.business.entity.ItemOffice;
-import com.sunchs.lyt.db.business.entity.Question;
-import com.sunchs.lyt.db.business.entity.QuestionnaireExtend;
-import com.sunchs.lyt.db.business.service.impl.ItemOfficeServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.ItemServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.QuestionServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.QuestionnaireExtendServiceImpl;
+import com.sunchs.lyt.db.business.entity.*;
+import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.enums.OfficeTypeEnum;
 import com.sunchs.lyt.framework.util.FormatUtil;
 import com.sunchs.lyt.item.bean.InputAnswerBean;
@@ -47,7 +41,8 @@ public class ItemFileService implements IItemFileService {
     private QuestionServiceImpl questionService;
     @Autowired
     private ItemServiceImpl itemService;
-
+    @Autowired
+    private QuestionOptionServiceImpl questionOptionService;
 
     @Override
     public String getItemAnswerInputTemplate(Integer itemId, Integer officeType, Integer officeId) {
@@ -157,6 +152,16 @@ public class ItemFileService implements IItemFileService {
                 .in(Question.ID, questionIds);
         List<Question> questionList = questionService.selectList(questionWrapper);
 
+        Wrapper<QuestionOption> questionOptionWrapper = new EntityWrapper<QuestionOption>()
+                .setSqlSelect(
+                        QuestionOption.ID,
+                        QuestionOption.QUESTION_ID.concat(" AS questionId"),
+                        QuestionOption.TITLE
+                )
+                .eq(QuestionOption.QUESTION_ID, questionIds);
+        List<QuestionOption> tempQuestionOptionList = questionOptionService.selectList(questionOptionWrapper);
+
+
         // ----------------------------------------------------------------------------
         int patientIdIndex = 0;// 患者ID位置
         int startTimeIndex = 1;// 开始时间位置
@@ -199,6 +204,13 @@ public class ItemFileService implements IItemFileService {
                 InputAnswerBean bean = new InputAnswerBean();
                 bean.setQuestion(question);
                 bean.setPosition(xlsQuestionPos.get(question.getTitle().trim()));
+                // 选项集合
+                Map<String, Integer> optionMap = new HashMap<>();
+                List<QuestionOption> questionGroup = tempQuestionOptionList.stream().filter(v -> v.getQuestionId().equals(question.getId())).collect(Collectors.toList());
+                for (QuestionOption option : questionGroup) {
+                    optionMap.put(option.getTitle().trim(), option.getId());
+                }
+                bean.setQuestionOptionMap(optionMap);
                 questionMap.put(question.getId(), bean);
             } else {
                 throw new ItemException("缺少题目："+question.getTitle().trim());
@@ -228,8 +240,6 @@ public class ItemFileService implements IItemFileService {
             // 判断开始时间
             Cell sCell = sheet.getCell(startTimeIndex, line);
             String sTimeStr = sCell.getContents();
-//            LabelCell sLabel = (LabelCell)sheet.getCell(startTimeIndex, line);
-//            String sTimeStr = sLabel.getString();
             try {
                 Date startTime = dateFormat.parse(sTimeStr);
                 bean.setStartTime(startTime);
@@ -239,8 +249,6 @@ public class ItemFileService implements IItemFileService {
             // 判断结束时间
             Cell eCell = sheet.getCell(endTimeIndex, line);
             String eTimeStr = eCell.getContents();
-//            LabelCell eLabel = (LabelCell)sheet.getCell(endTimeIndex, line);
-//            String eTimeStr = eLabel.getString();
             try {
                 Date endTime = dateFormat.parse(eTimeStr);
                 bean.setEndTime(endTime);
@@ -258,10 +266,17 @@ public class ItemFileService implements IItemFileService {
                 try {
                     Cell cell = sheet.getCell(bean.getPosition(), line);
                     String optionVal = cell.getContents();
-//                    LabelCell label = (LabelCell)sheet.getCell(bean.getPosition(), line);
-//                    String optionVal = label.getString();
+                    if (optionVal.length() > 0) {
+                        Map<String, Integer> optionMapTempGroup = bean.getQuestionOptionMap();
+                        // 过滤掉填空题的判断
+                        if ( ! optionMapTempGroup.containsKey("填空，无需填写") && ! optionMapTempGroup.containsKey(optionVal.trim())) {
+                            throw new ItemException("答案不正确");
+                        }
+                    }
                     bean.setOptionValue(optionVal);
                     beanList.add(bean);
+                } catch (ItemException e) {
+                    throw new ItemException("题目的答案不存在，请确定好答案再导入：(第"+(line+1)+"行，第"+(bean.getPosition()+1)+"列)");
                 } catch (Exception e) {
                     throw new ItemException("题目的答案有问题：(第"+(line+1)+"行，第"+(bean.getPosition()+1)+"列)");
                 }
