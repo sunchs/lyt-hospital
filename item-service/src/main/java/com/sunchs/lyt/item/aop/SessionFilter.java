@@ -21,7 +21,7 @@ public class SessionFilter implements Filter {
         String stream = StreamUtil.getInputStream(request.getInputStream());
         UserThreadUtil.initUser(stream);
         chain.doFilter(new PostServletRequest((HttpServletRequest) request, stream), response);
-        System.out.println("收到接口请求任务 ------------->>>>>>>>>.");
+        System.out.println("接口请求 ------------> : "+((HttpServletRequest) request).getRequestURL());
     }
 
     @Override

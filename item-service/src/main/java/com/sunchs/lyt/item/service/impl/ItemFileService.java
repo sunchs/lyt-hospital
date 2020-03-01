@@ -302,61 +302,70 @@ public class ItemFileService implements IItemFileService {
             answerMap.put(line, beanList);
         }
 
-        // 写入数据
-        new Thread(()->{
+                // 写入数据
+        new Thread(()-> {
             for (int line = 1; line < rowLen; line++) {
-                // 提取时间
-                InputAnswerBean tBean = timeMap.get(line);
-                Date st = tBean.getStartTime();
-                Date et = tBean.getEndTime();
-                double lt = (double)(et.getTime() - st.getTime()) / (double)1000;
-
-                Answer answer = new Answer();
-                answer.setHospitalId(itemOffice.getHospitalId());
-                answer.setItemId(itemOffice.getItemId());
-                answer.setOfficeTypeId(itemOffice.getOfficeTypeId());
-                answer.setOfficeId(itemOffice.getOfficeId());
-                answer.setQuestionnaireId(itemOffice.getQuestionnaireId());
-                answer.setUserId(UserThreadUtil.getUserId());
-                answer.setMemberId(0);
-                answer.setPatientNumber(patientMap.get(line));
-                answer.setStatus(0);
-                answer.setReason("");
-                answer.setTimeDuration((int)lt);
-                answer.setStartTime(st);
-                answer.setEndTime(et);
-                answer.setUpdateId(UserThreadUtil.getUserId());
-                answer.setUpdateTime(new Date());
-                answer.setCreateId(UserThreadUtil.getUserId());
-                answer.setCreateTime(new Date());
-                answer.setFilterReason("");
-                if (answerService.insert(answer)) {
-                    for (InputAnswerBean bean : questionMap.values()) {
-                        // 有值时插入
-                        if (bean.getOptionValue().length() > 0) {
-                            Map<String, QuestionOption> optionMapTempGroup = bean.getQuestionOptionMap();
-                            // 填空题
-                            if (optionMapTempGroup.containsKey("填空，无需填写")) {
-                                setAnswerOption(answer, bean, 0, bean.getOptionValue().trim(), 0);
-                            } else if (optionMapTempGroup.containsKey(bean.getOptionValue().trim())) {
-                                QuestionOption option = optionMapTempGroup.get(bean.getOptionValue().trim());
-                                setAnswerOption(answer, bean, option.getId(), bean.getOptionValue().trim(), option.getScore());
-                            } else if (bean.getOptionValue().contains(",")) {
-                                // 判断多选题
-                                String[] split = bean.getOptionValue().split(",");
-                                List<String> splitList = Arrays.asList(split);
-                                for (String s : splitList) {
-                                    if (optionMapTempGroup.containsKey(s)) {
-                                        QuestionOption option = optionMapTempGroup.get(s);
-                                        setAnswerOption(answer, bean, option.getId(), s.trim(), option.getScore());
-                                    }
-                                }
-                            }
-                        }
-                    }
+                for (InputAnswerBean bean : questionMap.values()) {
+                    System.out.println(bean.getQuestion().getTitle()+"\r\n");
                 }
             }
         }).start();
+
+//        // 写入数据
+//        new Thread(()->{
+//            for (int line = 1; line < rowLen; line++) {
+//                // 提取时间
+//                InputAnswerBean tBean = timeMap.get(line);
+//                Date st = tBean.getStartTime();
+//                Date et = tBean.getEndTime();
+//                double lt = (double)(et.getTime() - st.getTime()) / (double)1000;
+//
+//                Answer answer = new Answer();
+//                answer.setHospitalId(itemOffice.getHospitalId());
+//                answer.setItemId(itemOffice.getItemId());
+//                answer.setOfficeTypeId(itemOffice.getOfficeTypeId());
+//                answer.setOfficeId(itemOffice.getOfficeId());
+//                answer.setQuestionnaireId(itemOffice.getQuestionnaireId());
+//                answer.setUserId(UserThreadUtil.getUserId());
+//                answer.setMemberId(0);
+//                answer.setPatientNumber(patientMap.get(line));
+//                answer.setStatus(0);
+//                answer.setReason("");
+//                answer.setTimeDuration((int)lt);
+//                answer.setStartTime(st);
+//                answer.setEndTime(et);
+//                answer.setUpdateId(UserThreadUtil.getUserId());
+//                answer.setUpdateTime(new Date());
+//                answer.setCreateId(UserThreadUtil.getUserId());
+//                answer.setCreateTime(new Date());
+//                answer.setFilterReason("");
+//                if (answerService.insert(answer)) {
+//                    for (InputAnswerBean bean : questionMap.values()) {
+//                        // 有值时插入
+//                        if (bean.getOptionValue().length() > 0) {
+//                            Map<String, QuestionOption> optionMapTempGroup = bean.getQuestionOptionMap();
+//                            // 填空题
+//                            if (optionMapTempGroup.containsKey("填空，无需填写")) {
+//                                setAnswerOption(answer, bean, 0, bean.getOptionValue().trim(), 0);
+//                            } else if (optionMapTempGroup.containsKey(bean.getOptionValue().trim())) {
+//                                QuestionOption option = optionMapTempGroup.get(bean.getOptionValue().trim());
+//                                setAnswerOption(answer, bean, option.getId(), bean.getOptionValue().trim(), option.getScore());
+//                            } else if (bean.getOptionValue().contains(",")) {
+//                                // 判断多选题
+//                                String[] split = bean.getOptionValue().split(",");
+//                                List<String> splitList = Arrays.asList(split);
+//                                for (String s : splitList) {
+//                                    if (optionMapTempGroup.containsKey(s)) {
+//                                        QuestionOption option = optionMapTempGroup.get(s);
+//                                        setAnswerOption(answer, bean, option.getId(), s.trim(), option.getScore());
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }).start();
         return "恭喜，成功插入"+(rowLen-1)+"份答卷";
     }
 
