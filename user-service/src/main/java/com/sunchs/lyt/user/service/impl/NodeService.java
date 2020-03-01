@@ -56,7 +56,8 @@ public class NodeService implements INodeService {
         List<MenuData> list = new ArrayList<>();
         Wrapper<Node> wrapper = new EntityWrapper<Node>()
                 .eq(Node.STATUS, 1)
-                .in(Node.ID, userNodeIds);
+                .in(Node.ID, userNodeIds)
+                .orderBy(Node.SORT, true);
         List<Node> nodeList = nodeService.selectList(wrapper);
         nodeList.forEach(n -> {
             if (n.getPid().equals(0)) {
