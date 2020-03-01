@@ -223,6 +223,10 @@ public class ItemFileService implements IItemFileService {
                 throw new ItemException("缺少题目："+question.getTitle().trim());
             }
         }
+        System.out.println("xls位置：");
+        for (InputAnswerBean value : questionMap.values()) {
+            System.out.println(value.getQuestion().getTitle() + " <-> " + value.getPosition());
+        }
 
         // 患者集合，key:行号
         Map<Integer, String> patientMap = new HashMap<>();
@@ -273,6 +277,9 @@ public class ItemFileService implements IItemFileService {
                 try {
                     Cell cell = sheet.getCell(bean.getPosition(), line);
                     String optionVal = cell.getContents();
+                    if ("在进行检验检查时，检验/检查人员态度友善，能够清晰说明检查步骤和需要注意的问题。".equals(bean.getQuestion().getTitle())) {
+                        System.out.println(line+"--->"+bean.getQuestion().getTitle() + " ---> " + bean.getPosition() + " ===> "+optionVal);
+                    }
                     if (optionVal.length() > 0) {
                         Map<String, QuestionOption> optionMapTempGroup = bean.getQuestionOptionMap();
                         // 过滤掉填空题的判断
