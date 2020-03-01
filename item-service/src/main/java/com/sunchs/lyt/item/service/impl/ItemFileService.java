@@ -274,6 +274,10 @@ public class ItemFileService implements IItemFileService {
         for (int line = 1; line < rowLen; line++) {
             List<InputAnswerBean> beanList = new ArrayList<>();
             for (InputAnswerBean bean : questionMap.values()) {
+                // 新数据对象
+                InputAnswerBean data = new InputAnswerBean();
+                data.setPosition(bean.getPosition());
+                data.setQuestion(bean.getQuestion());
                 try {
                     Cell cell = sheet.getCell(bean.getPosition(), line);
                     String optionVal = cell.getContents();
@@ -295,11 +299,11 @@ public class ItemFileService implements IItemFileService {
                             }
                         }
                     }
-                    bean.setOptionValue(optionVal);
+                    data.setOptionValue(optionVal);
                     if ("在进行检验检查时，检验/检查人员态度友善，能够清晰说明检查步骤和需要注意的问题。".equals(bean.getQuestion().getTitle())) {
                         System.out.println(line+"--->"+bean.getQuestion().getTitle() + " ---> " + bean.getPosition() + " ===> "+optionVal);
                     }
-                    beanList.add(bean);
+                    beanList.add(data);
                 } catch (ItemException e) {
                     throw new ItemException(e.getMessage()+"(第"+(line+1)+"行，第"+(bean.getPosition()+1)+"列)[题目ID："+bean.getQuestion().getId()+"]");
                 } catch (Exception e) {
