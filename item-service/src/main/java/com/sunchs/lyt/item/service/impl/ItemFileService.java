@@ -274,8 +274,10 @@ public class ItemFileService implements IItemFileService {
                                 // 判断多选题
                                 String[] split = optionVal.split(",");
                                 List<String> splitList = Arrays.asList(split);
-                                if ( ! splitList.contains(optionVal)) {
-                                    throw new ItemException("题目的答案不存在："+optionVal);
+                                for (String s : splitList) {
+                                    if ( ! optionMapTempGroup.containsKey(s)) {
+                                        throw new ItemException("题目的答案不存在："+s);
+                                    }
                                 }
                             } else {
                                 throw new ItemException("题目的答案不存在："+optionVal);
