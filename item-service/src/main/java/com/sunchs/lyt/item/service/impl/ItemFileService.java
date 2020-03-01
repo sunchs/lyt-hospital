@@ -270,6 +270,9 @@ public class ItemFileService implements IItemFileService {
                         Map<String, Integer> optionMapTempGroup = bean.getQuestionOptionMap();
                         // 过滤掉填空题的判断
                         if ( ! optionMapTempGroup.containsKey("填空，无需填写") && ! optionMapTempGroup.containsKey(optionVal.trim())) {
+                            for (String value : optionMapTempGroup.keySet()) {
+                                System.out.println("=======>>>>"+value);
+                            }
                             throw new ItemException("题目的答案不存在："+optionVal);
                         }
                     }
