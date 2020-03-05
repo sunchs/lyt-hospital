@@ -131,7 +131,7 @@ public class ReportOutputService implements IReportOutputService {
             Map<Integer, String> questionnaireNameMap = questionnaireTempList.stream().collect(Collectors.toMap(Questionnaire::getId, Questionnaire::getTitle));
 
             // 用户集合
-            List<Integer> userIds = reportAnswerList.stream().map(ReportAnswer::getUserId).collect(Collectors.toList());
+            List<Integer> userIds = reportAnswerList.stream().map(ReportAnswer::getUserId).distinct().collect(Collectors.toList());
             Wrapper<User> userWrapper = new EntityWrapper<User>()
                     .in(User.ID, userIds);
             List<User> userTempList = userService.selectList(userWrapper);
@@ -149,6 +149,7 @@ public class ReportOutputService implements IReportOutputService {
 
                 int groupId = 0;
                 for (Integer questionnaireId : answerGroupList.keySet()) {
+                    List<ReportAnswer> answerList = answerGroupList.get(questionnaireId);
                     WritableSheet sheet = wb.createSheet(questionnaireNameMap.get(questionnaireId), groupId);
                     groupId++;
 
@@ -170,7 +171,7 @@ public class ReportOutputService implements IReportOutputService {
                         sheet.setColumnView(i, 18);
                     }
                     // 写入数据
-                    for (ReportAnswer answer : reportAnswerList) {
+                    for (ReportAnswer answer : answerList) {
                         columnPos = 0;
                         linePos++;
                         sheet.addCell(new Label(columnPos++, linePos, userNameMap.get(answer.getCreateId())));
