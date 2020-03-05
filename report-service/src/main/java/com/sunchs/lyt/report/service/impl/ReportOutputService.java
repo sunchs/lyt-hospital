@@ -121,7 +121,8 @@ public class ReportOutputService implements IReportOutputService {
                 List<Integer> officeIds = reportAnswerList.stream().map(ReportAnswer::getOfficeId).distinct().collect(Collectors.toList());
                 Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<ItemOffice>()
                         .eq(ItemOffice.HOSPITAL_ID, hospitalId)
-                        .in(ItemOffice.OFFICE_ID, officeIds);
+                        .in(ItemOffice.OFFICE_ID, officeIds)
+                        .groupBy(ItemOffice.OFFICE_ID);
                 List<ItemOffice> itemOfficeTempList = itemOfficeService.selectList(itemOfficeWrapper);
                 Map<Integer, String> officeNameMap = itemOfficeTempList.stream().collect(Collectors.toMap(ItemOffice::getOfficeId, ItemOffice::getTitle));
                 officeNameMap.put(0, "员工");
