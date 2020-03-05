@@ -71,17 +71,16 @@ public class ReportOutputService implements IReportOutputService {
         Wrapper<ReportAnswer> reportAnswerWrapper = new EntityWrapper<ReportAnswer>();
         if (CollectionUtils.isNotEmpty(param.getOfficeIds())) {
             reportAnswerWrapper.eq(ReportAnswer.ITEM_ID, param.getItemId())
-                    .in(ReportAnswer.OFFICE_ID, param.getOfficeIds())
-                    .ge(ReportAnswer.STARTTIME, param.getStartTime())
-                    .le(ReportAnswer.STARTTIME, param.getEndTime());
+                    .in(ReportAnswer.OFFICE_ID, param.getOfficeIds());
         } else if (param.getOfficeId() != 0){
             reportAnswerWrapper.eq(ReportAnswer.ITEM_ID, param.getItemId())
-                    .eq(ReportAnswer.OFFICE_ID, param.getOfficeId())
-                    .ge(ReportAnswer.STARTTIME, param.getStartTime())
-                    .le(ReportAnswer.STARTTIME, param.getEndTime());
+                    .eq(ReportAnswer.OFFICE_ID, param.getOfficeId());
         } else {
-            reportAnswerWrapper.eq(ReportAnswer.ITEM_ID, param.getItemId())
-                    .ge(ReportAnswer.STARTTIME, param.getStartTime())
+            reportAnswerWrapper.eq(ReportAnswer.ITEM_ID, param.getItemId());
+        }
+        // 按照时间段导出
+        if (Objects.nonNull(param.getStartTime()) && param.getStartTime().length() > 0) {
+            reportAnswerWrapper.ge(ReportAnswer.STARTTIME, param.getStartTime())
                     .le(ReportAnswer.STARTTIME, param.getEndTime());
         }
         int qty = reportAnswerService.selectCount(reportAnswerWrapper);
