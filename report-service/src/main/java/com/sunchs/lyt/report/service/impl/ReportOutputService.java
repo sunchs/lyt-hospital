@@ -62,6 +62,9 @@ public class ReportOutputService implements IReportOutputService {
     @Autowired
     private ReportRelatedService reportRelatedService;
 
+    @Autowired
+    private ItemOfficeServiceImpl itemOfficeService;
+
     @Override
     public String getItemOfficeAnswer(OutputParam param) {
         String path = "temp";
@@ -110,8 +113,17 @@ public class ReportOutputService implements IReportOutputService {
                 List<ReportAnswerOption> reportAnswerOptionList = reportAnswerOptionService.selectList(wrapper);
 //        Map<Integer, List<ReportAnswerOption>> questionMap = reportAnswerOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
 
-                String hospitalName = getHospitalNameById(reportAnswerList.get(0).getHospitalId());
-                String hospitalOfficeName = getOfficeNameById(param.getOfficeId());
+                // 医院和科室名称
+                Integer hospitalId = reportAnswerList.get(0).getHospitalId();
+                String hospitalName = getHospitalNameById(hospitalId);
+                List<Integer> officeIds = reportAnswerList.stream().map(ReportAnswer::getOfficeId).distinct().collect(Collectors.toList());
+                Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<ItemOffice>()
+                        .eq(ItemOffice.HOSPITAL_ID, hospitalId)
+                        .in(ItemOffice.OFFICE_ID, officeIds);
+                List<ItemOffice> itemOfficeTempList = itemOfficeService.selectList(itemOfficeWrapper);
+                Map<Integer, String> officeNameMap = itemOfficeTempList.stream().collect(Collectors.toMap(ItemOffice::getOfficeId, ItemOffice::getTitle));
+                officeNameMap.put(0, "员工");
+//                String hospitalOfficeName = getOfficeNameById(param.getOfficeId());
 
                 try {
                     File file = new File(path + "/" + fileName);
@@ -148,7 +160,7 @@ public class ReportOutputService implements IReportOutputService {
                         sheet.addCell(new Label(columnPos++, linePos, getUserNameById(answer.getCreateId())));
                         sheet.addCell(new Label(columnPos++, linePos, answer.getPatientNumber()));
                         sheet.addCell(new Label(columnPos++, linePos, hospitalName));
-                        sheet.addCell(new Label(columnPos++, linePos, hospitalOfficeName));
+                        sheet.addCell(new Label(columnPos++, linePos, officeNameMap.get(answer.getOfficeId())));
                         sheet.addCell(new Label(columnPos++, linePos, getQuestionnaireNameById(answer.getQuestionnaireId())));
                         sheet.addCell(new Label(columnPos++, linePos, FormatUtil.dateTime(answer.getStartTime())));
                         sheet.addCell(new Label(columnPos++, linePos, FormatUtil.dateTime(answer.getEndTime())));
@@ -332,9 +344,9 @@ public class ReportOutputService implements IReportOutputService {
     }
 
     private String getOfficeNameById(int officeId) {
-        Wrapper<HospitalOffice> wrapper = new EntityWrapper<HospitalOffice>()
-                .eq(HospitalOffice.ID, officeId);
-        HospitalOffice row = hospitalOfficeService.selectOne(wrapper);
+        Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
+                .eq(ItemOffice.OFFICE_ID, officeId);
+        ItemOffice row = itemOfficeService.selectOne(wrapper);
         if (Objects.nonNull(row)) {
             return row.getTitle();
         }
