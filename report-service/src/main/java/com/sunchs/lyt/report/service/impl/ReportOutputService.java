@@ -106,6 +106,7 @@ public class ReportOutputService implements IReportOutputService {
                     .in(ReportAnswerOption.ANSWER_ID, reportAnswerIds)
                     .groupBy(ReportAnswerOption.QUESTION_ID);
             List<ReportAnswerOption> reportAnswerOptionGroupList = reportAnswerOptionService.selectList(reportAnswerOptionWrapper);
+            Map<Integer, List<ReportAnswerOption>> reportAnswerOptionGroupMap = reportAnswerOptionGroupList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionnaireId));
 
             Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
                     .in(ReportAnswerOption.ANSWER_ID, reportAnswerIds);
@@ -162,10 +163,9 @@ public class ReportOutputService implements IReportOutputService {
                     sheet.addCell(new Label(columnPos++, linePos, "调查问卷", format));
                     sheet.addCell(new Label(columnPos++, linePos, "调查开始", format));
                     sheet.addCell(new Label(columnPos++, linePos, "调查结束", format));
-                    for (ReportAnswerOption answerOption : reportAnswerOptionGroupList) {
+                    for (ReportAnswerOption answerOption : reportAnswerOptionGroupMap.get(questionnaireId)) {
                         sheet.addCell(new Label(columnPos++, linePos, answerOption.getQuestionName(), format));
                     }
-
                     // 列宽度
                     for (int i = 0; i < columnPos; i++) {
                         sheet.setColumnView(i, 18);
@@ -182,7 +182,7 @@ public class ReportOutputService implements IReportOutputService {
                         sheet.addCell(new Label(columnPos++, linePos, FormatUtil.dateTime(answer.getStartTime())));
                         sheet.addCell(new Label(columnPos++, linePos, FormatUtil.dateTime(answer.getEndTime())));
 
-                        for (ReportAnswerOption answerOption : reportAnswerOptionGroupList) {
+                        for (ReportAnswerOption answerOption : reportAnswerOptionGroupMap.get(questionnaireId)) {
                             List<ReportAnswerOption> optionList = reportAnswerOptionList.stream().filter(v ->
                                     v.getAnswerId().equals(answer.getId()) && v.getQuestionId().equals(answerOption.getQuestionId())
                             ).collect(Collectors.toList());
