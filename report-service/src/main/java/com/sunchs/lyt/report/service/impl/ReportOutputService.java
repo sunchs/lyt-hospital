@@ -12,6 +12,7 @@ import com.sunchs.lyt.report.bean.OutputParam;
 import com.sunchs.lyt.report.bean.TotalSexData;
 import com.sunchs.lyt.report.exception.ReportException;
 import com.sunchs.lyt.report.service.IReportOutputService;
+import jxl.Workbook;
 import jxl.format.Colour;
 import jxl.write.WritableCellFormat;
 import jxl.write.WritableSheet;
@@ -101,6 +102,7 @@ public class ReportOutputService implements IReportOutputService {
                 }
 
                 List<Integer> reportAnswerIds = reportAnswerList.stream().map(ReportAnswer::getId).collect(Collectors.toList());
+                Map<Integer, List<ReportAnswer>> answerGroupList = reportAnswerList.stream().collect(Collectors.groupingBy(ReportAnswer::getQuestionnaireId));
 
                 // 获取题目
                 Wrapper<ReportAnswerOption> reportAnswerOptionWrapper = new EntityWrapper<ReportAnswerOption>()
@@ -123,65 +125,68 @@ public class ReportOutputService implements IReportOutputService {
                 List<ItemOffice> itemOfficeTempList = itemOfficeService.selectList(itemOfficeWrapper);
                 Map<Integer, String> officeNameMap = itemOfficeTempList.stream().collect(Collectors.toMap(ItemOffice::getOfficeId, ItemOffice::getTitle));
                 officeNameMap.put(0, "员工");
-//                String hospitalOfficeName = getOfficeNameById(param.getOfficeId());
 
                 try {
                     File file = new File(path + "/" + fileName);
-                    WritableWorkbook wb = jxl.Workbook.createWorkbook(file);
+                    WritableWorkbook wb = Workbook.createWorkbook(file);
+                    // 表头背景
+                    WritableCellFormat format = new WritableCellFormat();
+                    format.setBackground(Colour.RED);
                     // 改变默认颜色
                     Color color = Color.decode("#EEA9B8");
                     wb.setColourRGB(Colour.RED, color.getRed(), color.getGreen(), color.getBlue());
-                    WritableSheet sheet = wb.createSheet(hospitalName, 0);
-                    // 写表头
-                    WritableCellFormat format = new WritableCellFormat();
-                    format.setBackground(Colour.RED);
 
-                    int columnPos = 0;
-                    int linePos = 0;
-                    sheet.addCell(new Label(columnPos++, linePos, "调查员账号", format));
-                    sheet.addCell(new Label(columnPos++, linePos, "病人ID", format));
-                    sheet.addCell(new Label(columnPos++, linePos, "调查医院", format));
-                    sheet.addCell(new Label(columnPos++, linePos, "调查科室", format));
-                    sheet.addCell(new Label(columnPos++, linePos, "调查问卷", format));
-                    sheet.addCell(new Label(columnPos++, linePos, "调查开始", format));
-                    sheet.addCell(new Label(columnPos++, linePos, "调查结束", format));
-                    for (ReportAnswerOption answerOption : reportAnswerOptionGroupList) {
-                        sheet.addCell(new Label(columnPos++, linePos, answerOption.getQuestionName(), format));
-                    }
+                    int groupId = 0;
+                    for (Integer questionnaireId : answerGroupList.keySet()) {
+                        WritableSheet sheet = wb.createSheet(getQuestionnaireNameById(questionnaireId), groupId);
+                        groupId++;
 
-                    // 列宽度
-                    for (int i = 0; i < columnPos; i++) {
-                        sheet.setColumnView(i, 18);
-                    }
-
-                    for (ReportAnswer answer : reportAnswerList) {
-                        columnPos = 0;
-                        linePos++;
-                        sheet.addCell(new Label(columnPos++, linePos, getUserNameById(answer.getCreateId())));
-                        sheet.addCell(new Label(columnPos++, linePos, answer.getPatientNumber()));
-                        sheet.addCell(new Label(columnPos++, linePos, hospitalName));
-                        sheet.addCell(new Label(columnPos++, linePos, officeNameMap.get(answer.getOfficeId())));
-                        sheet.addCell(new Label(columnPos++, linePos, getQuestionnaireNameById(answer.getQuestionnaireId())));
-                        sheet.addCell(new Label(columnPos++, linePos, FormatUtil.dateTime(answer.getStartTime())));
-                        sheet.addCell(new Label(columnPos++, linePos, FormatUtil.dateTime(answer.getEndTime())));
-
+                        int columnPos = 0;
+                        int linePos = 0;
+                        sheet.addCell(new Label(columnPos++, linePos, "调查员账号", format));
+                        sheet.addCell(new Label(columnPos++, linePos, "病人ID", format));
+                        sheet.addCell(new Label(columnPos++, linePos, "调查医院", format));
+                        sheet.addCell(new Label(columnPos++, linePos, "调查科室", format));
+                        sheet.addCell(new Label(columnPos++, linePos, "调查问卷", format));
+                        sheet.addCell(new Label(columnPos++, linePos, "调查开始", format));
+                        sheet.addCell(new Label(columnPos++, linePos, "调查结束", format));
                         for (ReportAnswerOption answerOption : reportAnswerOptionGroupList) {
-                            List<ReportAnswerOption> optionList = reportAnswerOptionList.stream().filter(v ->
-                                    v.getAnswerId().equals(answer.getId()) && v.getQuestionId().equals(answerOption.getQuestionId())
-                            ).collect(Collectors.toList());
-                            if (Objects.nonNull(optionList) && optionList.size() > 0) {
-                                String value = "";
-                                for (ReportAnswerOption option : optionList) {
-                                    value += value.equals("") ? option.getOptionName() : ","+option.getOptionName();
+                            sheet.addCell(new Label(columnPos++, linePos, answerOption.getQuestionName(), format));
+                        }
+
+                        // 列宽度
+                        for (int i = 0; i < columnPos; i++) {
+                            sheet.setColumnView(i, 18);
+                        }
+                        // 写入数据
+                        for (ReportAnswer answer : reportAnswerList) {
+                            columnPos = 0;
+                            linePos++;
+                            sheet.addCell(new Label(columnPos++, linePos, getUserNameById(answer.getCreateId())));
+                            sheet.addCell(new Label(columnPos++, linePos, answer.getPatientNumber()));
+                            sheet.addCell(new Label(columnPos++, linePos, hospitalName));
+                            sheet.addCell(new Label(columnPos++, linePos, officeNameMap.get(answer.getOfficeId())));
+                            sheet.addCell(new Label(columnPos++, linePos, getQuestionnaireNameById(answer.getQuestionnaireId())));
+                            sheet.addCell(new Label(columnPos++, linePos, FormatUtil.dateTime(answer.getStartTime())));
+                            sheet.addCell(new Label(columnPos++, linePos, FormatUtil.dateTime(answer.getEndTime())));
+
+                            for (ReportAnswerOption answerOption : reportAnswerOptionGroupList) {
+                                List<ReportAnswerOption> optionList = reportAnswerOptionList.stream().filter(v ->
+                                        v.getAnswerId().equals(answer.getId()) && v.getQuestionId().equals(answerOption.getQuestionId())
+                                ).collect(Collectors.toList());
+                                if (Objects.nonNull(optionList) && optionList.size() > 0) {
+                                    String value = "";
+                                    for (ReportAnswerOption option : optionList) {
+                                        value += value.equals("") ? option.getOptionName() : ","+option.getOptionName();
+                                    }
+                                    sheet.addCell(new Label(columnPos, linePos, value));
+                                } else {
+                                    sheet.addCell(new Label(columnPos, linePos, " "));
                                 }
-                                sheet.addCell(new Label(columnPos, linePos, value));
-                            } else {
-                                sheet.addCell(new Label(columnPos, linePos, " "));
+                                columnPos++;
                             }
-                            columnPos++;
                         }
                     }
-
                     wb.write();
                     wb.close();
 
