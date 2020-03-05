@@ -92,116 +92,119 @@ public class ReportOutputService implements IReportOutputService {
             throw new ReportException("无数据，无法导出！");
         }
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        new Thread(()-> {
+            List<ReportAnswer> reportAnswerList = reportAnswerService.selectList(reportAnswerWrapper);
+            if (reportAnswerList.size() == 0) {
+                throw new ReportException("无数据，无法导出！");
+            }
 
-                List<ReportAnswer> reportAnswerList = reportAnswerService.selectList(reportAnswerWrapper);
-                if (reportAnswerList.size() == 0) {
-                    throw new ReportException("无数据，无法导出！");
-                }
+            List<Integer> reportAnswerIds = reportAnswerList.stream().map(ReportAnswer::getId).collect(Collectors.toList());
+            Map<Integer, List<ReportAnswer>> answerGroupList = reportAnswerList.stream().collect(Collectors.groupingBy(ReportAnswer::getQuestionnaireId));
 
-                List<Integer> reportAnswerIds = reportAnswerList.stream().map(ReportAnswer::getId).collect(Collectors.toList());
-                Map<Integer, List<ReportAnswer>> answerGroupList = reportAnswerList.stream().collect(Collectors.groupingBy(ReportAnswer::getQuestionnaireId));
+            // 获取题目
+            Wrapper<ReportAnswerOption> reportAnswerOptionWrapper = new EntityWrapper<ReportAnswerOption>()
+                    .in(ReportAnswerOption.ANSWER_ID, reportAnswerIds)
+                    .groupBy(ReportAnswerOption.QUESTION_ID);
+            List<ReportAnswerOption> reportAnswerOptionGroupList = reportAnswerOptionService.selectList(reportAnswerOptionWrapper);
 
-                // 获取题目
-                Wrapper<ReportAnswerOption> reportAnswerOptionWrapper = new EntityWrapper<ReportAnswerOption>()
-                        .in(ReportAnswerOption.ANSWER_ID, reportAnswerIds)
-                        .groupBy(ReportAnswerOption.QUESTION_ID);
-                List<ReportAnswerOption> reportAnswerOptionGroupList = reportAnswerOptionService.selectList(reportAnswerOptionWrapper);
-
-                Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
-                        .in(ReportAnswerOption.ANSWER_ID, reportAnswerIds);
-                List<ReportAnswerOption> reportAnswerOptionList = reportAnswerOptionService.selectList(wrapper);
+            Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
+                    .in(ReportAnswerOption.ANSWER_ID, reportAnswerIds);
+            List<ReportAnswerOption> reportAnswerOptionList = reportAnswerOptionService.selectList(wrapper);
 //        Map<Integer, List<ReportAnswerOption>> questionMap = reportAnswerOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
 
-                // 医院和科室名称
-                Integer hospitalId = reportAnswerList.get(0).getHospitalId();
-                String hospitalName = getHospitalNameById(hospitalId);
-                List<Integer> officeIds = reportAnswerList.stream().map(ReportAnswer::getOfficeId).distinct().collect(Collectors.toList());
-                Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<ItemOffice>()
-                        .eq(ItemOffice.HOSPITAL_ID, hospitalId)
-                        .in(ItemOffice.OFFICE_ID, officeIds)
-                        .groupBy(ItemOffice.OFFICE_ID);
-                List<ItemOffice> itemOfficeTempList = itemOfficeService.selectList(itemOfficeWrapper);
-                Map<Integer, String> officeNameMap = itemOfficeTempList.stream().collect(Collectors.toMap(ItemOffice::getOfficeId, ItemOffice::getTitle));
-                officeNameMap.put(0, "员工");
+            // 医院和科室名称
+            Integer hospitalId = reportAnswerList.get(0).getHospitalId();
+            String hospitalName = getHospitalNameById(hospitalId);
+            List<Integer> officeIds = reportAnswerList.stream().map(ReportAnswer::getOfficeId).distinct().collect(Collectors.toList());
+            Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<ItemOffice>()
+                    .eq(ItemOffice.HOSPITAL_ID, hospitalId)
+                    .in(ItemOffice.OFFICE_ID, officeIds)
+                    .groupBy(ItemOffice.OFFICE_ID);
+            List<ItemOffice> itemOfficeTempList = itemOfficeService.selectList(itemOfficeWrapper);
+            Map<Integer, String> officeNameMap = itemOfficeTempList.stream().collect(Collectors.toMap(ItemOffice::getOfficeId, ItemOffice::getTitle));
+            officeNameMap.put(0, "员工");
 
-                // 问卷集合
-                Wrapper<Questionnaire> questionnaireWrapper = new EntityWrapper<Questionnaire>()
-                        .in(Questionnaire.ID, answerGroupList.keySet());
-                List<Questionnaire> questionnaireTempList = questionnaireService.selectList(questionnaireWrapper);
-                Map<Integer, String> questionnaireNameMap = questionnaireTempList.stream().collect(Collectors.toMap(Questionnaire::getId, Questionnaire::getTitle));
+            // 问卷集合
+            Wrapper<Questionnaire> questionnaireWrapper = new EntityWrapper<Questionnaire>()
+                    .in(Questionnaire.ID, answerGroupList.keySet());
+            List<Questionnaire> questionnaireTempList = questionnaireService.selectList(questionnaireWrapper);
+            Map<Integer, String> questionnaireNameMap = questionnaireTempList.stream().collect(Collectors.toMap(Questionnaire::getId, Questionnaire::getTitle));
 
-                try {
-                    File file = new File(path + "/" + fileName);
-                    WritableWorkbook wb = Workbook.createWorkbook(file);
-                    // 表头背景
-                    WritableCellFormat format = new WritableCellFormat();
-                    format.setBackground(Colour.RED);
-                    // 改变默认颜色
-                    Color color = Color.decode("#EEA9B8");
-                    wb.setColourRGB(Colour.RED, color.getRed(), color.getGreen(), color.getBlue());
+            // 用户集合
+            List<Integer> userIds = reportAnswerList.stream().map(ReportAnswer::getUserId).collect(Collectors.toList());
+            Wrapper<User> userWrapper = new EntityWrapper<User>()
+                    .in(User.ID, userIds);
+            List<User> userTempList = userService.selectList(userWrapper);
+            Map<Integer, String> userNameMap = userTempList.stream().collect(Collectors.toMap(User::getId, User::getName));
 
-                    int groupId = 0;
-                    for (Integer questionnaireId : answerGroupList.keySet()) {
-                        WritableSheet sheet = wb.createSheet(questionnaireNameMap.get(questionnaireId), groupId);
-                        groupId++;
+            try {
+                File file = new File(path + "/" + fileName);
+                WritableWorkbook wb = Workbook.createWorkbook(file);
+                // 表头背景
+                WritableCellFormat format = new WritableCellFormat();
+                format.setBackground(Colour.RED);
+                // 改变默认颜色
+                Color color = Color.decode("#EEA9B8");
+                wb.setColourRGB(Colour.RED, color.getRed(), color.getGreen(), color.getBlue());
 
-                        int columnPos = 0;
-                        int linePos = 0;
-                        sheet.addCell(new Label(columnPos++, linePos, "调查员账号", format));
-                        sheet.addCell(new Label(columnPos++, linePos, "病人ID", format));
-                        sheet.addCell(new Label(columnPos++, linePos, "调查医院", format));
-                        sheet.addCell(new Label(columnPos++, linePos, "调查科室", format));
-                        sheet.addCell(new Label(columnPos++, linePos, "调查问卷", format));
-                        sheet.addCell(new Label(columnPos++, linePos, "调查开始", format));
-                        sheet.addCell(new Label(columnPos++, linePos, "调查结束", format));
+                int groupId = 0;
+                for (Integer questionnaireId : answerGroupList.keySet()) {
+                    WritableSheet sheet = wb.createSheet(questionnaireNameMap.get(questionnaireId), groupId);
+                    groupId++;
+
+                    int columnPos = 0;
+                    int linePos = 0;
+                    sheet.addCell(new Label(columnPos++, linePos, "调查员账号", format));
+                    sheet.addCell(new Label(columnPos++, linePos, "病人ID", format));
+                    sheet.addCell(new Label(columnPos++, linePos, "调查医院", format));
+                    sheet.addCell(new Label(columnPos++, linePos, "调查科室", format));
+                    sheet.addCell(new Label(columnPos++, linePos, "调查问卷", format));
+                    sheet.addCell(new Label(columnPos++, linePos, "调查开始", format));
+                    sheet.addCell(new Label(columnPos++, linePos, "调查结束", format));
+                    for (ReportAnswerOption answerOption : reportAnswerOptionGroupList) {
+                        sheet.addCell(new Label(columnPos++, linePos, answerOption.getQuestionName(), format));
+                    }
+
+                    // 列宽度
+                    for (int i = 0; i < columnPos; i++) {
+                        sheet.setColumnView(i, 18);
+                    }
+                    // 写入数据
+                    for (ReportAnswer answer : reportAnswerList) {
+                        columnPos = 0;
+                        linePos++;
+                        sheet.addCell(new Label(columnPos++, linePos, userNameMap.get(answer.getCreateId())));
+                        sheet.addCell(new Label(columnPos++, linePos, answer.getPatientNumber()));
+                        sheet.addCell(new Label(columnPos++, linePos, hospitalName));
+                        sheet.addCell(new Label(columnPos++, linePos, officeNameMap.get(answer.getOfficeId())));
+                        sheet.addCell(new Label(columnPos++, linePos, questionnaireNameMap.get(questionnaireId)));
+                        sheet.addCell(new Label(columnPos++, linePos, FormatUtil.dateTime(answer.getStartTime())));
+                        sheet.addCell(new Label(columnPos++, linePos, FormatUtil.dateTime(answer.getEndTime())));
+
                         for (ReportAnswerOption answerOption : reportAnswerOptionGroupList) {
-                            sheet.addCell(new Label(columnPos++, linePos, answerOption.getQuestionName(), format));
-                        }
-
-                        // 列宽度
-                        for (int i = 0; i < columnPos; i++) {
-                            sheet.setColumnView(i, 18);
-                        }
-                        // 写入数据
-                        for (ReportAnswer answer : reportAnswerList) {
-                            columnPos = 0;
-                            linePos++;
-                            sheet.addCell(new Label(columnPos++, linePos, getUserNameById(answer.getCreateId())));
-                            sheet.addCell(new Label(columnPos++, linePos, answer.getPatientNumber()));
-                            sheet.addCell(new Label(columnPos++, linePos, hospitalName));
-                            sheet.addCell(new Label(columnPos++, linePos, officeNameMap.get(answer.getOfficeId())));
-                            sheet.addCell(new Label(columnPos++, linePos, questionnaireNameMap.get(questionnaireId)));
-                            sheet.addCell(new Label(columnPos++, linePos, FormatUtil.dateTime(answer.getStartTime())));
-                            sheet.addCell(new Label(columnPos++, linePos, FormatUtil.dateTime(answer.getEndTime())));
-
-                            for (ReportAnswerOption answerOption : reportAnswerOptionGroupList) {
-                                List<ReportAnswerOption> optionList = reportAnswerOptionList.stream().filter(v ->
-                                        v.getAnswerId().equals(answer.getId()) && v.getQuestionId().equals(answerOption.getQuestionId())
-                                ).collect(Collectors.toList());
-                                if (Objects.nonNull(optionList) && optionList.size() > 0) {
-                                    String value = "";
-                                    for (ReportAnswerOption option : optionList) {
-                                        value += value.equals("") ? option.getOptionName() : ","+option.getOptionName();
-                                    }
-                                    sheet.addCell(new Label(columnPos, linePos, value));
-                                } else {
-                                    sheet.addCell(new Label(columnPos, linePos, " "));
+                            List<ReportAnswerOption> optionList = reportAnswerOptionList.stream().filter(v ->
+                                    v.getAnswerId().equals(answer.getId()) && v.getQuestionId().equals(answerOption.getQuestionId())
+                            ).collect(Collectors.toList());
+                            if (Objects.nonNull(optionList) && optionList.size() > 0) {
+                                String value = "";
+                                for (ReportAnswerOption option : optionList) {
+                                    value += value.equals("") ? option.getOptionName() : ","+option.getOptionName();
                                 }
-                                columnPos++;
+                                sheet.addCell(new Label(columnPos, linePos, value));
+                            } else {
+                                sheet.addCell(new Label(columnPos, linePos, " "));
                             }
+                            columnPos++;
                         }
                     }
-                    wb.write();
-                    wb.close();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (WriteException e) {
-                    e.printStackTrace();
                 }
+                wb.write();
+                wb.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (WriteException e) {
+                e.printStackTrace();
             }
         }).start();
 
@@ -351,39 +354,6 @@ public class ReportOutputService implements IReportOutputService {
         Hospital row = hospitalService.selectOne(wrapper);
         if (Objects.nonNull(row)) {
             return row.getHospitalName();
-        }
-        return "";
-    }
-
-    private String getOfficeNameById(int officeId) {
-        Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
-                .eq(ItemOffice.OFFICE_ID, officeId);
-        ItemOffice row = itemOfficeService.selectOne(wrapper);
-        if (Objects.nonNull(row)) {
-            return row.getTitle();
-        }
-        return "";
-    }
-
-    private String getQuestionnaireNameById(int questionnaireId) {
-        Wrapper<Questionnaire> wrapper = new EntityWrapper<Questionnaire>()
-                .eq(Questionnaire.ID, questionnaireId);
-        Questionnaire row = questionnaireService.selectOne(wrapper);
-        if (Objects.nonNull(row)) {
-            return row.getTitle();
-        }
-        return "";
-    }
-
-    private String getUserNameById(int userId) {
-        if (userId <= 0) {
-            return "无";
-        }
-        Wrapper<User> wrapper = new EntityWrapper<User>()
-                .eq(User.ID, userId);
-        User row = userService.selectOne(wrapper);
-        if (Objects.nonNull(row)) {
-            return row.getName();
         }
         return "";
     }
