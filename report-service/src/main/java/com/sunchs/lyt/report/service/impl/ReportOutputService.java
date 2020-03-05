@@ -127,6 +127,12 @@ public class ReportOutputService implements IReportOutputService {
                 Map<Integer, String> officeNameMap = itemOfficeTempList.stream().collect(Collectors.toMap(ItemOffice::getOfficeId, ItemOffice::getTitle));
                 officeNameMap.put(0, "员工");
 
+                // 问卷集合
+                Wrapper<Questionnaire> questionnaireWrapper = new EntityWrapper<Questionnaire>()
+                        .in(Questionnaire.ID, answerGroupList.keySet());
+                List<Questionnaire> questionnaireTempList = questionnaireService.selectList(questionnaireWrapper);
+                Map<Integer, String> questionnaireNameMap = questionnaireTempList.stream().collect(Collectors.toMap(Questionnaire::getId, Questionnaire::getTitle));
+
                 try {
                     File file = new File(path + "/" + fileName);
                     WritableWorkbook wb = Workbook.createWorkbook(file);
@@ -139,7 +145,7 @@ public class ReportOutputService implements IReportOutputService {
 
                     int groupId = 0;
                     for (Integer questionnaireId : answerGroupList.keySet()) {
-                        WritableSheet sheet = wb.createSheet(getQuestionnaireNameById(questionnaireId), groupId);
+                        WritableSheet sheet = wb.createSheet(questionnaireNameMap.get(questionnaireId), groupId);
                         groupId++;
 
                         int columnPos = 0;
@@ -167,7 +173,7 @@ public class ReportOutputService implements IReportOutputService {
                             sheet.addCell(new Label(columnPos++, linePos, answer.getPatientNumber()));
                             sheet.addCell(new Label(columnPos++, linePos, hospitalName));
                             sheet.addCell(new Label(columnPos++, linePos, officeNameMap.get(answer.getOfficeId())));
-                            sheet.addCell(new Label(columnPos++, linePos, getQuestionnaireNameById(answer.getQuestionnaireId())));
+                            sheet.addCell(new Label(columnPos++, linePos, questionnaireNameMap.get(questionnaireId)));
                             sheet.addCell(new Label(columnPos++, linePos, FormatUtil.dateTime(answer.getStartTime())));
                             sheet.addCell(new Label(columnPos++, linePos, FormatUtil.dateTime(answer.getEndTime())));
 
