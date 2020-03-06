@@ -71,7 +71,7 @@ public class ReportOptionService implements IReportOptionService {
         Map<Integer, String> questionOptionMap = getQuestionOptionMap(param.getOptionIds());
         String optionName = "";
         for (String oName : questionOptionMap.values()) {
-            optionName += optionName.length() == 0 ? oName : "、" + oName;
+            optionName += optionName.length() == 0 ? oName : " / " + oName;
         }
         data.setTitle(optionName);
 
