@@ -6,9 +6,11 @@ import com.sunchs.lyt.db.business.entity.QuestionOption;
 import com.sunchs.lyt.db.business.entity.ReportAnswerOption;
 import com.sunchs.lyt.db.business.service.impl.QuestionOptionServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.ReportAnswerOptionServiceImpl;
+import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.report.bean.ItemCrowdParam;
 import com.sunchs.lyt.report.bean.SatisfyData;
+import com.sunchs.lyt.report.exception.ReportException;
 import com.sunchs.lyt.report.service.IReportOptionService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,72 +59,71 @@ public class ReportOptionService implements IReportOptionService {
     }
 
     @Override
-    public List<SatisfyData> getItemCrowdAnswerSatisfy(ItemCrowdParam param) {
-        List<SatisfyData> result = new ArrayList<>();
+    public TitleValueData getItemCrowdAnswerSatisfy(ItemCrowdParam param) {
         if (CollectionUtils.isEmpty(param.getOptionIds())) {
-            return result;
+            throw new ReportException("题目答案不能为空！");
         }
-        Map<Integer, QuestionOption> questionOptionMap = getQuestionOptionMap(param.getOptionIds());
+
+        // 结果
+        TitleValueData data = new TitleValueData();
+
+        // 获取题目选项内容
+        Map<Integer, String> questionOptionMap = getQuestionOptionMap(param.getOptionIds());
+        String optionName = "";
+        for (String oName : questionOptionMap.values()) {
+            optionName += optionName.length() == 0 ? oName : "、" + oName;
+        }
+        data.setTitle(optionName);
+
         // 获取所有答卷ID集合，按optionId分好组
         Map<Integer, List<ReportAnswerOption>> questionGroup = getOptionAnswerIds(param);
-        param.getOptionIds().forEach(optionId -> {
-            if (questionGroup.containsKey(optionId)) {
-                List<ReportAnswerOption> answerList = questionGroup.get(optionId);
-                List<Integer> answerIds = answerList.stream().map(ReportAnswerOption::getAnswerId).collect(Collectors.toList());
-                System.out.println(optionId+":"+answerIds+"--->\r\n");
-                if (answerIds.size() > 0) {
-                    Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
-                            .setSqlSelect("question_id AS questionId,option_id AS optionId,score,COUNT(1) quantity")
-                            .in(ReportAnswerOption.ANSWER_ID, answerIds)
-                            .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
-                            .groupBy(ReportAnswerOption.QUESTION_ID)
-                            .groupBy(ReportAnswerOption.OPTION_ID);
-                    List<ReportAnswerOption> answerOptionList = reportAnswerOptionService.selectList(wrapper);
-                    if (CollectionUtils.isNotEmpty(answerOptionList)) {
-                        // 计算满意度
-                        double allVal = 0;
-                        Map<Integer, List<ReportAnswerOption>> questionMap = answerOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
-                        for (Integer questionId : questionMap.keySet()) {
-                            List<ReportAnswerOption> optionList = questionMap.get(questionId);
-                            // 计算满意度
-                            double value = 0;
-                            int number = 0;
-                            for (ReportAnswerOption option : optionList) {
-                                if ( ! option.getScore().equals(0)) {
-                                    value += option.getScore().doubleValue() * option.getQuantity().doubleValue();
-                                    number += option.getQuantity().intValue();
-                                }
-                            }
-                            if (number > 0) {
-                                allVal += new BigDecimal(value / (double) number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                            }
-                        }
-                        // 赋值
-                        SatisfyData data = new SatisfyData();
-                        data.setId(optionId);
-                        if (questionMap.size() > 0) {
-                            data.setValue(new BigDecimal(allVal / (double) questionMap.size()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-                        } else {
-                            data.setValue(0.00);
-                        }
-                        QuestionOption questionOption = questionOptionMap.get(optionId);
-                        data.setName(questionOption.getTitle());
-                        data.setpId(questionOption.getQuestionId());
-                        result.add(data);
+
+        // 根据选项，交集求答卷ID集合
+        List<Integer> oAnswerIds = null;
+        for (List<ReportAnswerOption> optionAnswer : questionGroup.values()) {
+            List<Integer> oaIds = optionAnswer.stream().map(ReportAnswerOption::getAnswerId).collect(Collectors.toList());
+            if (Objects.isNull(oAnswerIds)) {
+                oAnswerIds = oaIds;
+            } else {
+                oAnswerIds.retainAll(oaIds);
+            }
+        }
+
+        // 提取结果
+        Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
+                .setSqlSelect("question_id AS questionId,option_id AS optionId,score,COUNT(1) quantity")
+                .in(ReportAnswerOption.ANSWER_ID, oAnswerIds)
+                .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
+                .groupBy(ReportAnswerOption.QUESTION_ID)
+                .groupBy(ReportAnswerOption.OPTION_ID);
+        List<ReportAnswerOption> answerOptionList = reportAnswerOptionService.selectList(wrapper);
+        if (CollectionUtils.isNotEmpty(answerOptionList)) {
+            // 计算满意度
+            double allVal = 0;
+            Map<Integer, List<ReportAnswerOption>> questionMap = answerOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
+            for (Integer questionId : questionMap.keySet()) {
+                List<ReportAnswerOption> optionList = questionMap.get(questionId);
+                // 计算满意度
+                double value = 0;
+                int number = 0;
+                for (ReportAnswerOption option : optionList) {
+                    if ( ! option.getScore().equals(0)) {
+                        value += option.getScore().doubleValue() * option.getQuantity().doubleValue();
+                        number += option.getQuantity().intValue();
                     }
                 }
-            } else {
-                // 无内容时，赋值
-                SatisfyData data = new SatisfyData();
-                data.setId(optionId);
-                data.setValue(0.00);
-                QuestionOption questionOption = questionOptionMap.get(optionId);
-                data.setName(questionOption.getTitle());
-                data.setpId(questionOption.getQuestionId());
-                result.add(data);
+                if (number > 0) {
+                    allVal += new BigDecimal(value / (double) number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                }
             }
-        });
-        return result;
+            // 赋值
+            if (questionMap.size() > 0) {
+                data.setValue(new BigDecimal(allVal / (double) questionMap.size()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+            } else {
+                data.setValue(0.00);
+            }
+        }
+        return data;
     }
 
     /**
@@ -211,12 +212,14 @@ public class ReportOptionService implements IReportOptionService {
         return 0.00;
     }
 
-    private Map<Integer, QuestionOption> getQuestionOptionMap(List<Integer> optionIds) {
-        Map<Integer, QuestionOption> map = new HashMap<>();
+    private Map<Integer, String> getQuestionOptionMap(List<Integer> optionIds) {
         Wrapper<QuestionOption> wrapper = new EntityWrapper<QuestionOption>()
+                .setSqlSelect(
+                        QuestionOption.ID,
+                        QuestionOption.TITLE
+                )
                 .in(QuestionOption.ID, optionIds);
         List<QuestionOption> questionOptionList = questionOptionService.selectList(wrapper);
-        questionOptionList.forEach(o -> map.put(o.getId(), o));
-        return map;
+        return questionOptionList.stream().collect(Collectors.toMap(QuestionOption::getId, QuestionOption::getTitle));
     }
 }
