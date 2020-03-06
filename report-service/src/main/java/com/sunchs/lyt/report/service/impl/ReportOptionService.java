@@ -88,6 +88,7 @@ public class ReportOptionService implements IReportOptionService {
                 oAnswerIds.retainAll(oaIds);
             }
         }
+        System.out.println("|||----->>>"+oAnswerIds);
 
         // 提取结果
         Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
