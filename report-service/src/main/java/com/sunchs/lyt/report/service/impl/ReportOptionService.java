@@ -29,34 +29,34 @@ public class ReportOptionService implements IReportOptionService {
     @Autowired
     private QuestionOptionServiceImpl questionOptionService;
 
-    @Override
-    public List<SatisfyData> getItemCrowdSatisfy(ItemCrowdParam param) {
-        List<SatisfyData> result = new ArrayList<>();
-        if (CollectionUtils.isEmpty(param.getOptionIds())) {
-            return result;
-        }
-        Map<Integer, QuestionOption> questionOptionMap = getQuestionOptionMap(param.getOptionIds());
-        Map<Integer, List<ReportAnswerOption>> questionGroup = getOptionQuestionIds(param.getItemId(), param.getOfficeType(), param.getOptionIds());
-        param.getOptionIds().forEach(optionId -> {
-            if (questionGroup.containsKey(optionId)) {
-                List<ReportAnswerOption> questionList = questionGroup.get(optionId);
-                List<Integer> questionIds = questionList.stream().map(ReportAnswerOption::getQuestionId).collect(Collectors.toList());
-                // 计算满意度
-                double satisfyValue = getSatisfyValue(param.getItemId(), param.getOfficeType(), questionIds);
-                // 增加记录
-                QuestionOption questionOption = questionOptionMap.get(optionId);
-                if (Objects.nonNull(questionOption)) {
-                    SatisfyData row = new SatisfyData();
-                    row.setpId(questionOption.getQuestionId());
-                    row.setId(optionId);
-                    row.setName(questionOption.getTitle());
-                    row.setValue(satisfyValue);
-                    result.add(row);
-                }
-            }
-        });
-        return result;
-    }
+//    @Override
+//    public List<SatisfyData> getItemCrowdSatisfy(ItemCrowdParam param) {
+//        List<SatisfyData> result = new ArrayList<>();
+//        if (CollectionUtils.isEmpty(param.getOptionIds())) {
+//            return result;
+//        }
+//        Map<Integer, QuestionOption> questionOptionMap = getQuestionOptionMap(param.getOptionIds());
+//        Map<Integer, List<ReportAnswerOption>> questionGroup = getOptionQuestionIds(param.getItemId(), param.getOfficeType(), param.getOptionIds());
+//        param.getOptionIds().forEach(optionId -> {
+//            if (questionGroup.containsKey(optionId)) {
+//                List<ReportAnswerOption> questionList = questionGroup.get(optionId);
+//                List<Integer> questionIds = questionList.stream().map(ReportAnswerOption::getQuestionId).collect(Collectors.toList());
+//                // 计算满意度
+//                double satisfyValue = getSatisfyValue(param.getItemId(), param.getOfficeType(), questionIds);
+//                // 增加记录
+//                QuestionOption questionOption = questionOptionMap.get(optionId);
+//                if (Objects.nonNull(questionOption)) {
+//                    SatisfyData row = new SatisfyData();
+//                    row.setpId(questionOption.getQuestionId());
+//                    row.setId(optionId);
+//                    row.setName(questionOption.getTitle());
+//                    row.setValue(satisfyValue);
+//                    result.add(row);
+//                }
+//            }
+//        });
+//        return result;
+//    }
 
     @Override
     public TitleValueData getItemCrowdAnswerSatisfy(ItemCrowdParam param) {
