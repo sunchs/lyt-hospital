@@ -91,6 +91,15 @@ public class ReportController extends BaseController {
         return success(reportTargetService.getItemSatisfyByTarget(param.getItemId(), param.getTargetId(), param.getPosition()));
     }
 
+//    /**
+//     * 获取 满意度、推荐度 的情况
+//     */
+//    @PostMapping("/getItemSatisfyByOnly")
+//    public ResultData getItemSatisfyByOnly(@RequestBody RequestData data) {
+//        TotalParam param = data.toObject(TotalParam.class);
+//        return success(reportTargetService.getItemSatisfyByOnly(param.getItemId(), param.getTargetId(), param.getPosition()));
+//    }
+
     /**
      * 获取总体满意度
      */
@@ -163,14 +172,14 @@ public class ReportController extends BaseController {
         return success(reportRelatedService.getItemRelatedData(itemId, officeType));
     }
 
-    /**
-     * 获取人群满意度，人群是通过 标签+选项 区分
-     */
-    @PostMapping("/getItemCrowdSatisfy")
-    public ResultData getItemCrowdSatisfy(@RequestBody RequestData data) {
-        ItemCrowdParam param = data.toObject(ItemCrowdParam.class);
-        return success(reportOptionService.getItemCrowdSatisfy(param));
-    }
+//    /**
+//     * 获取人群满意度，人群是通过 标签+选项 区分
+//     */
+//    @PostMapping("/getItemCrowdSatisfy")
+//    public ResultData getItemCrowdSatisfy(@RequestBody RequestData data) {
+//        ItemCrowdParam param = data.toObject(ItemCrowdParam.class);
+//        return success(reportOptionService.getItemCrowdSatisfy(param));
+//    }
 
     /**
      * 根据 选项ID 获取人群（答卷满意度）
