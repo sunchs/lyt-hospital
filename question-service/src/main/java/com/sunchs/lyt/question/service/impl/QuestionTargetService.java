@@ -88,7 +88,16 @@ public class QuestionTargetService implements IQuestionTargetService {
         data.setStatus(param.getStatus());
         data.setUpdateId(UserThreadUtil.getUserId());
         data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-        questionTargetService.updateById(data);
+        if (questionTargetService.updateById(data)) {
+            QuestionTarget sdata = new QuestionTarget();
+            sdata.setStatus(param.getStatus());
+            data.setUpdateId(UserThreadUtil.getUserId());
+            data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+
+            Wrapper<QuestionTarget> wrapper = new EntityWrapper<QuestionTarget>()
+                    .eq(QuestionTarget.PID, param.getId());
+            questionTargetService.update(sdata, wrapper);
+        }
     }
 
     @Override
