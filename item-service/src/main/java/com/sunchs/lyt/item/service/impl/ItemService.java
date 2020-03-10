@@ -395,6 +395,9 @@ public class ItemService implements IItemService {
 
         // 获取项目相关信息
         ItemOffice itemOffice = getItemOffice(param.getItemId(), param.getOfficeId());
+        if (Objects.isNull(itemOffice)) {
+            throw new ItemException("科室不存在，请检查科室配置，项目ID："+param.getItemId()+"，科室ID："+param.getOfficeId());
+        }
 
         Wrapper<Answer> answerWrapper = new EntityWrapper<Answer>()
                 .orderBy(Answer.ID, false);
