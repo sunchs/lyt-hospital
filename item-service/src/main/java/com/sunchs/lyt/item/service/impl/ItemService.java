@@ -250,9 +250,32 @@ public class ItemService implements IItemService {
         if (param.getId() > 0) {
             wrapper.eq(ItemOffice.ITEM_ID, param.getId());
         }
+//        if (UserThreadUtil.getHospitalId() > 0) {
+//            wrapper.eq(ItemOffice.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+//        }
+
         if (UserThreadUtil.getHospitalId() > 0) {
-            wrapper.eq(ItemOffice.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+            Wrapper<UserHospital> userHospitalWrapper = new EntityWrapper<UserHospital>()
+                    .eq(UserHospital.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+            List<Integer> ids = new ArrayList<>();
+            List<UserHospital> userHospitals = userHospitalService.selectList(userHospitalWrapper);
+            userHospitals.forEach(h->{
+                ids.add(h.getUserId());
+            });
+            if (CollectionUtils.isEmpty(ids)) {
+                return PagingUtil.Empty();
+            }
+            Wrapper<Item> itemWrapper = new EntityWrapper<Item>()
+                    .in(Item.CREATE_ID, ids)
+                    .groupBy(Item.ID);
+            List<Item> itemTempList = itemService.selectList(itemWrapper);
+            List<Integer> itemIds = itemTempList.stream().map(Item::getId).collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(itemIds)) {
+                return PagingUtil.Empty();
+            }
+            wrapper.in(ItemOffice.ITEM_ID, itemIds);
         }
+
         wrapper.orderBy(ItemOffice.ID, false);
         Page<ItemOffice> page = itemOfficeService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), wrapper);
         page.getRecords().forEach(row -> {
