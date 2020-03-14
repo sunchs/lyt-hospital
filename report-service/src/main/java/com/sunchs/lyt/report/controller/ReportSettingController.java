@@ -125,8 +125,9 @@ public class ReportSettingController extends BaseController {
      */
     @PostMapping("/deleteItemAllSatisfySetting")
     public ResultData deleteItemAllSatisfySetting(@RequestBody RequestData data) {
-        Integer id = data.getInt("id");
-        reportSettingService.deleteItemAllSatisfySetting(id);
+        Integer itemId = data.getInt("itemId");
+        Integer officeType = data.getInt("officeType");
+        reportSettingService.deleteItemAllSatisfySetting(itemId, officeType);
         return success();
     }
 

@@ -61,7 +61,7 @@ public interface IReportSettingService {
     /**
      * 删除总体满意度设置
      */
-    void deleteItemAllSatisfySetting(Integer id);
+    void deleteItemAllSatisfySetting(Integer itemId, Integer officeType);
 
     /**
      * 获取总体满意度设置

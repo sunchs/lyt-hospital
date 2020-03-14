@@ -355,8 +355,11 @@ public class ReportSettingService implements IReportSettingService {
     }
 
     @Override
-    public void deleteItemAllSatisfySetting(Integer id) {
-        settingItemWeightService.deleteById(id);
+    public void deleteItemAllSatisfySetting(Integer itemId, Integer officeType) {
+        Wrapper<SettingItemWeight> weightWrapper = new EntityWrapper<SettingItemWeight>()
+                .eq(SettingItemWeight.ITEM_ID, itemId)
+                .eq(SettingItemWeight.OFFICE_TYPE, officeType);
+        settingItemWeightService.delete(weightWrapper);
     }
 
     @Override
