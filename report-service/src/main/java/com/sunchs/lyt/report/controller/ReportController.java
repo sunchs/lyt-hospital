@@ -35,6 +35,9 @@ public class ReportController extends BaseController {
     @Autowired
     private ReportOptionService reportOptionService;
 
+    @Autowired
+    private ReportSingleOfficeService reportSingleOfficeService;
+
     /**
      * 问卷抽样量统计列表
      */
@@ -195,5 +198,20 @@ public class ReportController extends BaseController {
         int itemId = data.getInt("itemId");
         int officeType = data.getInt("officeType");
         return success(reportService.getItemTagMenu(itemId, officeType));
+    }
+
+    @PostMapping("/getItemSingleOfficeSatisfy")
+    public ResultData getItemSingleOfficeSatisfy(@RequestBody RequestData data) {
+        Integer itemId = data.getInt("itemId");
+        Integer officeType = data.getInt("officeType");
+        Integer officeId = data.getInt("officeId");
+        return success(reportSingleOfficeService.getItemSingleOfficeSatisfy(itemId, officeType, officeId));
+    }
+
+    @PostMapping("/setItemOfficeRanking")
+    public ResultData setItemOfficeRanking(@RequestBody RequestData data) {
+        Integer itemId = data.getInt("itemId");
+        reportSingleOfficeService.setItemOfficeRanking(itemId);
+        return success();
     }
 }

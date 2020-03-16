@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sunchs.lyt.db.business.mapper.ReportItemScoreMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sunchs.lyt.db.business.entity.ReportItemScore">
+        <id column="id" property="id" />
+        <result column="item_id" property="itemId" />
+        <result column="office_type_id" property="officeTypeId" />
+        <result column="id_type" property="idType" />
+        <result column="id_value" property="idValue" />
+        <result column="score" property="score" />
+    </resultMap>
+
+</mapper>
