@@ -1,5 +1,7 @@
 package com.sunchs.lyt.db.business.entity;
 
+import com.baomidou.mybatisplus.enums.IdType;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -21,6 +23,7 @@ public class ReportItemScore extends Model<ReportItemScore> {
     /**
      * 自增ID
      */
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**

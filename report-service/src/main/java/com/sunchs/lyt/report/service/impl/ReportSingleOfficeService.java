@@ -53,6 +53,7 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
                 )
                 .eq(ReportAnswerOption.ITEM_ID, itemId)
                 .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
+                .ne(ReportAnswerOption.SCORE, 0)
                 .groupBy(ReportAnswerOption.OFFICE_TYPE_ID)
                 .groupBy(ReportAnswerOption.OFFICE_ID)
                 .groupBy(ReportAnswerOption.QUESTION_ID)
@@ -81,10 +82,8 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
                     int score = 0;
                     // 累计
                     for (ReportAnswerOption row : option) {
-                        if (row.getScore() > 0) {
-                            number += row.getQuantity();
-                            score += row.getQuantity() * row.getScore();
-                        }
+                        number += row.getQuantity();
+                        score += row.getQuantity() * row.getScore();
                     }
                     // 满意度
                     if (NumberUtil.nonZero(number)) {
