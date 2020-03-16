@@ -30,7 +30,7 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
     public SingleOfficeSatisfyData getItemSingleOfficeSatisfy(Integer itemId, Integer officeType, Integer officeId) {
         Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
                 .setSqlSelect(
-                        ReportAnswerOption.ANSWER_ID.concat(" as answer_id"),
+                        ReportAnswerOption.ANSWER_ID.concat(" as answerId"),
                         ReportAnswerOption.OFFICE_TYPE_ID.concat(" as officeTypeId"),
                         ReportAnswerOption.OFFICE_ID.concat(" as officeId"),
                         ReportAnswerOption.TARGET_THREE.concat(" as targetThree"),
@@ -84,7 +84,7 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
         CurrentOfficeBean bean = new CurrentOfficeBean();
 
         // 当前科室抽样量
-        long answerQuantity = optionList.stream().map(ReportAnswerOption::getAnswerId).distinct().count();
+        long answerQuantity = optionList.stream().filter(v->v.getOfficeId().equals(officeId)).map(ReportAnswerOption::getAnswerId).distinct().count();
         bean.setAnswerQuantity((int) answerQuantity);
 
         // 算排名
@@ -202,6 +202,28 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
             data.setValue(score);
             data.setQuestionList(questionList);
             result.add(data);
+        }
+
+        // 当前科室满意度
+        result.sort(Comparator.comparing(TitleValueDataVO::getValue).reversed());
+        // 排序次数过滤
+        int rank = 0;
+        double rankValue = 0;
+        int tempRank = 0;
+        for (TitleValueDataVO t : result) {
+            if (rank == 0) {
+                rank++;
+                rankValue = t.getValue();
+                t.setRankValue(rank);
+            } else if (rankValue != t.getValue()) {
+                rank++;
+                rankValue = t.getValue();
+                rank += tempRank;
+                tempRank = 0;
+            } else {
+                tempRank++;
+            }
+            t.setRankValue(rank);
         }
         return result;
     }
