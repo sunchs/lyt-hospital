@@ -55,6 +55,19 @@ public class ReportItemScore extends Model<ReportItemScore> {
      */
     private Float score;
 
+    @TableField(exist = false)
+    private Integer qtyValue1;
+    @TableField(exist = false)
+    private Integer qtyValue2;
+    @TableField(exist = false)
+    private Integer qtyValue3;
+    @TableField(exist = false)
+    private Integer qtyValue4;
+    @TableField(exist = false)
+    private Integer qtyValue5;
+    @TableField(exist = false)
+    private Integer AnswerQuantity;
+
     public Integer getId() {
         return id;
     }
@@ -96,6 +109,54 @@ public class ReportItemScore extends Model<ReportItemScore> {
 
     public void setScore(Float score) {
         this.score = score;
+    }
+
+    public Integer getQtyValue1() {
+        return qtyValue1;
+    }
+
+    public void setQtyValue1(Integer qtyValue1) {
+        this.qtyValue1 = qtyValue1;
+    }
+
+    public Integer getQtyValue2() {
+        return qtyValue2;
+    }
+
+    public void setQtyValue2(Integer qtyValue2) {
+        this.qtyValue2 = qtyValue2;
+    }
+
+    public Integer getQtyValue3() {
+        return qtyValue3;
+    }
+
+    public void setQtyValue3(Integer qtyValue3) {
+        this.qtyValue3 = qtyValue3;
+    }
+
+    public Integer getQtyValue4() {
+        return qtyValue4;
+    }
+
+    public void setQtyValue4(Integer qtyValue4) {
+        this.qtyValue4 = qtyValue4;
+    }
+
+    public Integer getQtyValue5() {
+        return qtyValue5;
+    }
+
+    public void setQtyValue5(Integer qtyValue5) {
+        this.qtyValue5 = qtyValue5;
+    }
+
+    public Integer getAnswerQuantity() {
+        return AnswerQuantity;
+    }
+
+    public void setAnswerQuantity(Integer answerQuantity) {
+        AnswerQuantity = answerQuantity;
     }
 
     public static final String ID = "id";
