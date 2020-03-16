@@ -20,4 +20,9 @@ public interface IReportTargetService {
      * 获取总体满意度
      */
     Double getItemAllSatisfy(Integer itemId, Integer officeType);
+
+    /**
+     * 满意度和推荐度
+     */
+//    getItemSatisfyByOnly(TotalParam param);
 }

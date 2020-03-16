@@ -2,8 +2,10 @@ package com.sunchs.lyt.report.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.sunchs.lyt.db.business.entity.Question;
 import com.sunchs.lyt.db.business.entity.ReportAnswerOption;
 import com.sunchs.lyt.db.business.entity.ReportItemScore;
+import com.sunchs.lyt.db.business.service.impl.QuestionServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.ReportAnswerOptionServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.ReportItemScoreServiceImpl;
 import com.sunchs.lyt.framework.bean.TitleData;
@@ -12,6 +14,7 @@ import com.sunchs.lyt.report.bean.*;
 import com.sunchs.lyt.report.service.IReportSingleOfficeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.dc.pr.PRError;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -25,6 +28,9 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
 
     @Autowired
     private ReportItemScoreServiceImpl reportItemScoreService;
+
+    @Autowired
+    private QuestionServiceImpl questionService;
 
     @Override
     public SingleOfficeSatisfyData getItemSingleOfficeSatisfy(Integer itemId, Integer officeType, Integer officeId) {
@@ -52,21 +58,19 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
         // 算出 当前科室 的信息（包含排名）
         CurrentOfficeBean info = getCurrentOfficeInfo(optionList, officeId);
         // 算出 所有科室 三级指标满意度
-        List<TitleValueDataVO> itemTargetThreeScore = getItemTargetThreeScore(optionList);
+//        List<TitleValueDataVO> itemTargetThreeScore = getItemTargetThreeScore(optionList);
         // 算出 当前科室 三级指标的排名
-        List<TitleValueListVO> currentTargetThreeScore = getCurrentTargetThreeScore(optionList, officeId);
+        List<SingleOfficeData> currentQuestionScore = getCurrentQuestionScore(optionList, officeId);
         // 获取当前科室的题目
 //        currentTargetThreeScore.stream().map(TitleValueDataVO::getId)
-        currentTargetThreeScore.forEach(cur->{
 
-        });
 
         SingleOfficeSatisfyData data = new SingleOfficeSatisfyData();
         data.setOfficeSatisfyValue(info.getSatisfyValue());
         data.setAnswerQuantity(info.getAnswerQuantity());
         data.setLevelValue(info.getLevel());
 //        data.setTitleList();
-        data.setValueList(currentTargetThreeScore);
+        data.setQuestionList(currentQuestionScore);
 
 
 
@@ -150,118 +154,148 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
         return bean;
     }
 
-    private List<TitleValueListVO> getCurrentTargetThreeScore(List<ReportAnswerOption> optionList, Integer officeId) {
-        List<TitleValueListVO> result = new ArrayList<>();
-        List<ReportAnswerOption> collect = optionList.stream().filter(v -> v.getOfficeId().equals(officeId)).collect(Collectors.toList());
-        // 按三级指标划分
-        Map<Integer, List<ReportAnswerOption>> targetThreeGroup = collect.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetThree));
-        for (List<ReportAnswerOption> targetThree : targetThreeGroup.values()) {
-            ReportAnswerOption targetThreeRow = targetThree.get(0);
-            int targetNumber = 0;
-            double targetScore = 0;
-            // 计算每道题的得分
-            List<SingleOfficeForQuestionList> questionList = new ArrayList<>();
-            Map<Integer, List<ReportAnswerOption>> questionGroup = targetThree.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
-            for (Integer questionId : questionGroup.keySet()) {
-                List<ReportAnswerOption> option = questionGroup.get(questionId);
-                int number = 0;
-                int score = 0;
-                // 累计
-                for (ReportAnswerOption row : option) {
-                    number += row.getQuantity();
-                    score += row.getQuantity() * row.getScore();
-                }
-                option.sort(Comparator.comparing(ReportAnswerOption::getScore).reversed());
-                // 记录题目答题数量
-                List<SingleOfficeRowValue> singleOfficeRowValueList = new ArrayList<>();
-                int pos = 0;
-                for (ReportAnswerOption reportAnswerOption : option) {
-                    SingleOfficeRowValue singleOfficeRowValue = new SingleOfficeRowValue();
-                    singleOfficeRowValue.setOptionId(reportAnswerOption.getOptionId());
-                    pos++;
-                    singleOfficeRowValue.setPosition(pos);
-                    singleOfficeRowValue.setQuantity(reportAnswerOption.getQuantity());
-                }
-                // 满意度
-                if (NumberUtil.nonZero(number)) {
-                    double val = (double)score / (double)number;
-                    targetScore += new BigDecimal(val).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                    targetNumber++;
-                }
-                // 记录题目
-                SingleOfficeForQuestionList singleOfficeForQuestionList = new SingleOfficeForQuestionList();
-                singleOfficeForQuestionList.setQuestionId(questionId);
-                singleOfficeForQuestionList.setOptionList(singleOfficeRowValueList);
-                questionList.add(singleOfficeForQuestionList);
+    private List<SingleOfficeData> getCurrentQuestionScore(List<ReportAnswerOption> optionList, Integer officeId) {
+        List<SingleOfficeData> result = new ArrayList<>();
+        List<ReportAnswerOption> currentOfficeQuestionList = optionList.stream().filter(v -> v.getOfficeId().equals(officeId)).collect(Collectors.toList());
+
+        // 按 题目 划分
+        Map<Integer, List<ReportAnswerOption>> questionGroup = currentOfficeQuestionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
+        for (Integer questionId : questionGroup.keySet()) {
+            List<ReportAnswerOption> options = questionGroup.get(questionId);
+            // 结果
+            SingleOfficeData data = new SingleOfficeData();
+            data.setQuestionId(questionId);
+//            data.setQuestionName();
+
+
+
+//            data.setHospitalSatisfyValue();
+//            data.setQuestionLevel();
+
+
+            // 计算题目满意度
+            int number = 0;
+            int score = 0;
+            // 累计
+            for (ReportAnswerOption row : options) {
+                number += row.getQuantity();
+                score += row.getQuantity() * row.getScore();
             }
-            // 三级指标得分
-            double score = new BigDecimal(targetScore / (double) targetNumber).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-            // 保存数据
-            TitleValueListVO data = new TitleValueListVO();
-            data.setId(targetThreeRow.getTargetThree());
-            data.setValue(score);
-            data.setQuestionList(questionList);
+
+            // 记录题目答题数量
+            data.setValue1(0.0D);
+            data.setValue2(0.0D);
+            data.setValue3(0.0D);
+            data.setValue4(0.0D);
+            data.setValue5(0.0D);
+            options.sort(Comparator.comparing(ReportAnswerOption::getScore).reversed());
+            for (int i = 1; i <= options.size(); i++) {
+                ReportAnswerOption reportAnswerOption = options.get(i - 1);
+                switch (i) {
+                    case 1:
+                        double val1 = (double) reportAnswerOption.getQuantity() / (double) number;
+                        data.setValue1(new BigDecimal(val1 * 100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                        break;
+                    case 2:
+                        double val2 = (double) reportAnswerOption.getQuantity() / (double) number;
+                        data.setValue2(new BigDecimal(val2 * 100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                        break;
+                    case 3:
+                        double val3 = (double) reportAnswerOption.getQuantity() / (double) number;
+                        data.setValue3(new BigDecimal(val3 * 100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                        break;
+                    case 4:
+                        double val4 = (double) reportAnswerOption.getQuantity() / (double) number;
+                        data.setValue4(new BigDecimal(val4 * 100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                        break;
+                    case 5:
+                        double val5 = (double) reportAnswerOption.getQuantity() / (double) number;
+                        data.setValue5(new BigDecimal(val5 * 100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                        break;
+                    default:
+                        break;
+                }
+            }
+            data.setCountValue(data.getValue1() + data.getValue2());
+            // 满意度
+            if (NumberUtil.nonZero(number)) {
+                double val = new BigDecimal((double)score / (double)number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                data.setQuestionSatisfyValue(val);
+            }
             result.add(data);
         }
-
-        // 当前科室满意度
-        result.sort(Comparator.comparing(TitleValueDataVO::getValue).reversed());
-        // 排序次数过滤
-        int rank = 0;
-        double rankValue = 0;
-        int tempRank = 0;
-        for (TitleValueDataVO t : result) {
-            if (rank == 0) {
-                rank++;
-                rankValue = t.getValue();
-                t.setRankValue(rank);
-            } else if (rankValue != t.getValue()) {
-                rank++;
-                rankValue = t.getValue();
-                rank += tempRank;
-                tempRank = 0;
-            } else {
-                tempRank++;
+        // 设置题目标题
+        List<Integer> questionIds = result.stream().map(SingleOfficeData::getQuestionId).collect(Collectors.toList());
+        Wrapper<Question> questionWrapper = new EntityWrapper<Question>()
+                .setSqlSelect(Question.ID, Question.TITLE)
+                .in(Question.ID, questionIds);
+        List<Question> tempQuestionList = questionService.selectList(questionWrapper);
+        Map<Integer, String> questionMap = tempQuestionList.stream().collect(Collectors.toMap(Question::getId, Question::getTitle));
+        result.forEach(row -> {
+            String title = questionMap.get(row.getQuestionId());
+            if (Objects.nonNull(title)) {
+                row.setQuestionName(title);
             }
-            t.setRankValue(rank);
-        }
+        });
+
+//        // 当前科室满意度
+//        result.sort(Comparator.comparing(TitleValueDataVO::getValue).reversed());
+//        // 排序次数过滤
+//        int rank = 0;
+//        double rankValue = 0;
+//        int tempRank = 0;
+//        for (TitleValueDataVO t : result) {
+//            if (rank == 0) {
+//                rank++;
+//                rankValue = t.getValue();
+//                t.setRankValue(rank);
+//            } else if (rankValue != t.getValue()) {
+//                rank++;
+//                rankValue = t.getValue();
+//                rank += tempRank;
+//                tempRank = 0;
+//            } else {
+//                tempRank++;
+//            }
+//            t.setRankValue(rank);
+//        }
         return result;
     }
 
-    private List<TitleValueDataVO> getItemTargetThreeScore(List<ReportAnswerOption> optionList) {
+    private List<TitleValueDataVO> getItemQuestionScore(List<ReportAnswerOption> optionList) {
         List<TitleValueDataVO> result = new ArrayList<>();
         // 按三级指标划分
-        Map<Integer, List<ReportAnswerOption>> targetThreeGroup = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetThree));
-        for (List<ReportAnswerOption> targetThree : targetThreeGroup.values()) {
-            ReportAnswerOption targetThreeRow = targetThree.get(0);
-            int targetNumber = 0;
-            double targetScore = 0;
-            // 计算每道题的得分
-            Map<Integer, List<ReportAnswerOption>> questionGroup = targetThree.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
-            for (List<ReportAnswerOption> option : questionGroup.values()) {
-                int number = 0;
-                int score = 0;
-                // 累计
-                for (ReportAnswerOption row : option) {
-                    number += row.getQuantity();
-                    score += row.getQuantity() * row.getScore();
-                }
-                option.sort(Comparator.comparing(ReportAnswerOption::getScore).reversed());
-
-                // 满意度
-                if (NumberUtil.nonZero(number)) {
-                    double val = (double)score / (double)number;
-                    targetScore += new BigDecimal(val).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                    targetNumber++;
-                }
-            }
-            // 三级指标得分
-            double score = new BigDecimal(targetScore / (double) targetNumber).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-            // 保存数据
-            TitleValueDataVO data = new TitleValueDataVO();
-            data.setId(targetThreeRow.getTargetThree());
-            data.setValue(score);
-            result.add(data);
+        Map<Integer, List<ReportAnswerOption>> questionGroup = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
+        for (List<ReportAnswerOption> questionList : questionGroup.values()) {
+//            ReportAnswerOption targetThreeRow = questionList.get(0);
+//            int targetNumber = 0;
+//            double targetScore = 0;
+//            // 计算每道题的得分
+//            Map<Integer, List<ReportAnswerOption>> questionGroup = targetThree.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
+//            for (List<ReportAnswerOption> option : questionGroup.values()) {
+//                int number = 0;
+//                int score = 0;
+//                // 累计
+//                for (ReportAnswerOption row : option) {
+//                    number += row.getQuantity();
+//                    score += row.getQuantity() * row.getScore();
+//                }
+//                option.sort(Comparator.comparing(ReportAnswerOption::getScore).reversed());
+//
+//                // 满意度
+//                if (NumberUtil.nonZero(number)) {
+//                    double val = (double)score / (double)number;
+//                    targetScore += new BigDecimal(val).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+//                    targetNumber++;
+//                }
+//            }
+//            // 三级指标得分
+//            double score = new BigDecimal(targetScore / (double) targetNumber).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+//            // 保存数据
+//            TitleValueDataVO data = new TitleValueDataVO();
+//            data.setId(targetThreeRow.getTargetThree());
+//            data.setValue(score);
+//            result.add(data);
         }
         return result;
     }

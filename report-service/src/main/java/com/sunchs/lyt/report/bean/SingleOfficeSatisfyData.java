@@ -10,7 +10,7 @@ public class SingleOfficeSatisfyData {
     private Integer answerQuantity;
     private Integer levelValue;
     private List<TitleData> titleList;
-    private List<TitleValueListVO> valueList;
+    private List<SingleOfficeData> questionList;
 
     public Double getOfficeSatisfyValue() {
         return officeSatisfyValue;
@@ -44,11 +44,11 @@ public class SingleOfficeSatisfyData {
         this.titleList = titleList;
     }
 
-    public List<TitleValueListVO> getValueList() {
-        return valueList;
+    public List<SingleOfficeData> getQuestionList() {
+        return questionList;
     }
 
-    public void setValueList(List<TitleValueListVO> valueList) {
-        this.valueList = valueList;
+    public void setQuestionList(List<SingleOfficeData> questionList) {
+        this.questionList = questionList;
     }
 }
