@@ -8,13 +8,14 @@ import com.sunchs.lyt.db.business.entity.ReportItemScore;
 import com.sunchs.lyt.db.business.service.impl.QuestionServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.ReportAnswerOptionServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.ReportItemScoreServiceImpl;
-import com.sunchs.lyt.framework.bean.TitleData;
 import com.sunchs.lyt.framework.util.NumberUtil;
-import com.sunchs.lyt.report.bean.*;
+import com.sunchs.lyt.report.bean.CurrentOfficeBean;
+import com.sunchs.lyt.report.bean.SingleOfficeData;
+import com.sunchs.lyt.report.bean.SingleOfficeSatisfyData;
+import com.sunchs.lyt.report.bean.TitleValueDataVO;
 import com.sunchs.lyt.report.service.IReportSingleOfficeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.dc.pr.PRError;
 
 import java.math.BigDecimal;
 import java.util.*;
