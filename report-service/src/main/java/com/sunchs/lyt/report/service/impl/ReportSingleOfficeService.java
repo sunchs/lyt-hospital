@@ -55,7 +55,6 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
                 .groupBy(ReportAnswerOption.QUESTION_ID)
                 .groupBy(ReportAnswerOption.OPTION_ID);
         List<ReportAnswerOption> optionList = reportAnswerOptionService.selectList(wrapper);
-
         // 算出 当前科室 的信息（包含排名）
         CurrentOfficeBean info = getCurrentOfficeInfo(optionList, officeId);
         // 算出 所有科室 题目相关信息
@@ -70,19 +69,12 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
                 cur.setQuestionLevel(valueDataVO.getRankValue());
             }
         });
-        // 获取当前科室的题目
-//        currentTargetThreeScore.stream().map(TitleValueDataVO::getId)
-
-
+        // 返回结果
         SingleOfficeSatisfyData data = new SingleOfficeSatisfyData();
         data.setOfficeSatisfyValue(info.getSatisfyValue());
         data.setAnswerQuantity(info.getAnswerQuantity());
         data.setLevelValue(info.getLevel());
-//        data.setTitleList();
         data.setQuestionList(currentQuestionScore);
-
-
-
         return data;
     }
 
