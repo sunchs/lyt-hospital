@@ -65,7 +65,7 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
                 .eq(ReportItemScore.ITEM_ID, itemId);
         reportItemScoreService.delete(reportItemScoreWrapper);
 
-        // 按科室类型划分
+        // 根据科室类型分组
         Map<Integer, List<ReportAnswerOption>> officeTypeGroup = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getOfficeTypeId));
         for (List<ReportAnswerOption> type : officeTypeGroup.values()) {
             ReportAnswerOption typeRow = type.get(0);
@@ -100,6 +100,44 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
                 data.setOfficeTypeId(typeRow.getOfficeTypeId());
                 data.setIdType(1);
                 data.setIdValue(officeRow.getOfficeId());
+                data.setScore(Float.parseFloat(score + ""));
+                reportItemScoreService.insert(data);
+            }
+        }
+
+        for (List<ReportAnswerOption> type : officeTypeGroup.values()) {
+            ReportAnswerOption typeRow = type.get(0);
+            // 按三级指标划分
+            Map<Integer, List<ReportAnswerOption>> targetThreeGroup = type.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetThree));
+            for (List<ReportAnswerOption> targetThree : targetThreeGroup.values()) {
+                ReportAnswerOption targetThreeRow = targetThree.get(0);
+                int targetNumber = 0;
+                double targetScore = 0;
+                // 计算每道题的得分
+                Map<Integer, List<ReportAnswerOption>> questionGroup = targetThree.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
+                for (List<ReportAnswerOption> option : questionGroup.values()) {
+                    int number = 0;
+                    int score = 0;
+                    // 累计
+                    for (ReportAnswerOption row : option) {
+                        number += row.getQuantity();
+                        score += row.getQuantity() * row.getScore();
+                    }
+                    // 满意度
+                    if (NumberUtil.nonZero(number)) {
+                        double val = (double)score / (double)number;
+                        targetScore += new BigDecimal(val).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                        targetNumber++;
+                    }
+                }
+                // 三级指标得分
+                double score = new BigDecimal(targetScore / (double) targetNumber).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                // 保存数据
+                ReportItemScore data = new ReportItemScore();
+                data.setItemId(itemId);
+                data.setOfficeTypeId(typeRow.getOfficeTypeId());
+                data.setIdType(2);
+                data.setIdValue(targetThreeRow.getTargetThree());
                 data.setScore(Float.parseFloat(score + ""));
                 reportItemScoreService.insert(data);
             }
