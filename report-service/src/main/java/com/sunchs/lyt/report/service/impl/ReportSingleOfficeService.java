@@ -302,24 +302,24 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
             options.sort(Comparator.comparing(ReportAnswerOption::getScore).reversed());
             for (int i = 1; i <= options.size(); i++) {
                 ReportAnswerOption reportAnswerOption = options.get(i - 1);
-                switch (i) {
-                    case 1:
+                switch (reportAnswerOption.getScore()) {
+                    case 100:
                         double val1 = (double) reportAnswerOption.getQuantity() / (double) number;
                         data.setValue1(new BigDecimal(val1 * 100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
                         break;
-                    case 2:
+                    case 80:
                         double val2 = (double) reportAnswerOption.getQuantity() / (double) number;
                         data.setValue2(new BigDecimal(val2 * 100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
                         break;
-                    case 3:
+                    case 60:
                         double val3 = (double) reportAnswerOption.getQuantity() / (double) number;
                         data.setValue3(new BigDecimal(val3 * 100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
                         break;
-                    case 4:
+                    case 40:
                         double val4 = (double) reportAnswerOption.getQuantity() / (double) number;
                         data.setValue4(new BigDecimal(val4 * 100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
                         break;
-                    case 5:
+                    case 20:
                         double val5 = (double) reportAnswerOption.getQuantity() / (double) number;
                         data.setValue5(new BigDecimal(val5 * 100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
                         break;
