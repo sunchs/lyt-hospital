@@ -6,6 +6,7 @@ import com.sunchs.lyt.framework.bean.ResultData;
 import com.sunchs.lyt.framework.controller.BaseController;
 import com.sunchs.lyt.report.bean.OutputParam;
 import com.sunchs.lyt.report.service.impl.ReportOutputService;
+import com.sunchs.lyt.report.service.impl.ReportSingleOfficeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,9 @@ public class ReportOutputController extends BaseController {
 
     @Autowired
     private ReportOutputService reportOutputService;
+
+    @Autowired
+    private ReportSingleOfficeService reportSingleOfficeService;
 
     /**
      * 导出项目科室
@@ -104,5 +108,12 @@ public class ReportOutputController extends BaseController {
             }
         }
         return null;
+    }
+
+    @PostMapping("/outputSingleOfficeSatisfy")
+    public ResultData getItemSingleOfficeSatisfy(@RequestBody RequestData data) {
+        OutputParam param = data.toObject(OutputParam.class);
+        String path = reportSingleOfficeService.outputSingleOfficeSatisfy(param);
+        return success("http://47.107.255.115:8008/output/download/?fileName="+path);
     }
 }

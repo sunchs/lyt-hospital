@@ -2,22 +2,25 @@ package com.sunchs.lyt.report.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.sunchs.lyt.db.business.entity.Question;
-import com.sunchs.lyt.db.business.entity.ReportAnswerOption;
-import com.sunchs.lyt.db.business.entity.ReportItemScore;
-import com.sunchs.lyt.db.business.service.impl.QuestionServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.ReportAnswerOptionServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.ReportItemScoreServiceImpl;
+import com.sunchs.lyt.db.business.entity.*;
+import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.util.NumberUtil;
-import com.sunchs.lyt.report.bean.CurrentOfficeBean;
-import com.sunchs.lyt.report.bean.SingleOfficeData;
-import com.sunchs.lyt.report.bean.SingleOfficeSatisfyData;
-import com.sunchs.lyt.report.bean.TitleValueDataVO;
+import com.sunchs.lyt.report.bean.*;
+import com.sunchs.lyt.report.exception.ReportException;
 import com.sunchs.lyt.report.service.IReportSingleOfficeService;
+import jxl.Workbook;
+import jxl.format.Colour;
+import jxl.write.Label;
+import jxl.write.*;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,6 +35,12 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
 
     @Autowired
     private QuestionServiceImpl questionService;
+
+    @Autowired
+    private ReportAnswerServiceImpl reportAnswerService;
+
+    @Autowired
+    private ItemOfficeServiceImpl itemOfficeService;
 
     @Override
     public SingleOfficeSatisfyData getItemSingleOfficeSatisfy(Integer itemId, Integer officeType, Integer officeId) {
@@ -83,6 +92,117 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
         new Thread(()->{
             execMakeItemOfficeScore(itemId);
         }).start();
+    }
+
+    @Override
+    public String outputSingleOfficeSatisfy(OutputParam param) {
+        if (CollectionUtils.isEmpty(param.getOfficeIds())) {
+            Wrapper<ReportAnswer> reportAnswerWrapper = new EntityWrapper<ReportAnswer>()
+                    .setSqlSelect(ReportAnswer.OFFICE_ID.concat(" as officeId"))
+                    .eq(ReportAnswer.ITEM_ID, param.getItemId())
+                    .eq(ReportAnswer.OFFICE_TYPE_ID, param.getOfficeType())
+                    .groupBy(ReportAnswer.OFFICE_ID);
+            List<ReportAnswer> reportAnswers = reportAnswerService.selectList(reportAnswerWrapper);
+            List<Integer> officeIds = reportAnswers.stream().map(ReportAnswer::getOfficeId).collect(Collectors.toList());
+            param.setOfficeIds(officeIds);
+        }
+        Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<ItemOffice>()
+                .setSqlSelect(ItemOffice.GROUP_NAME.concat(" as groupName"), ItemOffice.TITLE, ItemOffice.OFFICE_ID.concat(" as officeId"))
+                .eq(ItemOffice.ITEM_ID, param.getItemId())
+                .eq(ItemOffice.OFFICE_TYPE_ID, param.getOfficeType())
+                .in(ReportAnswer.OFFICE_ID, param.getOfficeIds());
+        List<ItemOffice> itemOfficeList = itemOfficeService.selectList(itemOfficeWrapper);
+
+        // 开始导出
+        String path = "temp";
+        initPath(path);
+        String fileName = System.currentTimeMillis() +".xls";
+
+        if (itemOfficeList.size() == 0) {
+            throw new ReportException("无数据，无法导出！");
+        }
+
+        new Thread(()-> {
+            try {
+                File file = new File(path + "/" + fileName);
+                WritableWorkbook wb = Workbook.createWorkbook(file);
+                // 表头背景
+                WritableCellFormat format = new WritableCellFormat();
+                format.setBackground(Colour.RED);
+                // 改变默认颜色
+                Color color = Color.decode("#EEA9B8");
+                wb.setColourRGB(Colour.RED, color.getRed(), color.getGreen(), color.getBlue());
+
+                int groupId = 0;
+                for (ItemOffice office : itemOfficeList) {
+                    SingleOfficeSatisfyData itemSingleOfficeSatisfy = getItemSingleOfficeSatisfy(param.getItemId(), param.getOfficeType(), office.getOfficeId());
+                    String officeName = office.getTitle().length()>0 ? office.getTitle() : office.getGroupName();
+                    WritableSheet sheet = wb.createSheet(officeName, groupId);
+                    groupId++;
+
+                    int linePos = 0;
+
+                    // 第一行
+                    sheet.addCell(new Label(0, linePos, "科室名称", format));
+                    sheet.mergeCells(1, linePos, 5, linePos);
+                    sheet.addCell(new Label(1, 0, "科室名称"));
+                    sheet.mergeCells(6, linePos, 7, linePos);
+                    sheet.addCell(new Label(6, linePos, "样本量", format));
+                    sheet.mergeCells(8, linePos, 9, linePos);
+                    sheet.addCell(new Label(8, linePos, itemSingleOfficeSatisfy.getAnswerQuantity()+""));
+                    // 第二行
+                    linePos++;
+                    sheet.addCell(new Label(0, linePos, "患者满意度", format));
+                    sheet.mergeCells(1, linePos, 5, linePos);
+                    sheet.addCell(new Label(1, linePos, String.format("%.2f", itemSingleOfficeSatisfy.getOfficeSatisfyValue())+""));
+                    sheet.mergeCells(6, linePos, 7, linePos);
+                    sheet.addCell(new Label(6, linePos, "全院排名", format));
+                    sheet.mergeCells(8, linePos, 9, linePos);
+                    sheet.addCell(new Label(8, linePos, itemSingleOfficeSatisfy.getLevelValue()+""));
+                    // 第三行
+                    linePos++;
+                    sheet.addCell(new Label(0, linePos, "问卷题目", format));
+                    sheet.addCell(new Label(1, linePos, "非常满意", format));
+                    sheet.addCell(new Label(2, linePos, "满意", format));
+                    sheet.addCell(new Label(3, linePos, "一般", format));
+                    sheet.addCell(new Label(4, linePos, "不满意", format));
+                    sheet.addCell(new Label(5, linePos, "非常不满意", format));
+                    sheet.addCell(new Label(6, linePos, "满意人数占比", format));
+                    sheet.addCell(new Label(7, linePos, "满意度", format));
+                    sheet.addCell(new Label(8, linePos, "院均满意度", format));
+                    sheet.addCell(new Label(9, linePos, "全院排名", format));
+
+                    // 写入数据
+                    for (SingleOfficeData row : itemSingleOfficeSatisfy.getQuestionList()) {
+                        linePos++;
+                        sheet.addCell(new Label(0, linePos, row.getQuestionName()+"", format));
+                        sheet.addCell(new Label(1, linePos, String.format("%.2f", row.getValue1())+"%"));
+                        sheet.addCell(new Label(2, linePos, String.format("%.2f", row.getValue2())+"%"));
+                        sheet.addCell(new Label(3, linePos, String.format("%.2f", row.getValue3())+"%"));
+                        sheet.addCell(new Label(4, linePos, String.format("%.2f", row.getValue4())+"%"));
+                        sheet.addCell(new Label(5, linePos, String.format("%.2f", row.getValue5())+"%"));
+                        sheet.addCell(new Label(6, linePos, String.format("%.2f", row.getCountValue())+"%"));
+                        sheet.addCell(new Label(7, linePos, String.format("%.2f", row.getQuestionSatisfyValue())+""));
+                        sheet.addCell(new Label(8, linePos, String.format("%.2f", row.getHospitalSatisfyValue())+""));
+                        sheet.addCell(new Label(9, linePos, row.getQuestionLevel()+""));
+                    }
+
+                    // 列宽度
+                    sheet.setColumnView(0, 30);
+                    for (int i = 1; i < 9; i++) {
+                        sheet.setColumnView(i, 16);
+                    }
+                }
+                wb.write();
+                wb.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (WriteException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+        return path + "/" + fileName;
     }
 
     public CurrentOfficeBean getCurrentOfficeInfo(List<ReportAnswerOption> optionList, Integer officeId) {
@@ -465,6 +585,13 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
                 data.setScore(Float.parseFloat(score + ""));
                 reportItemScoreService.insert(data);
             }
+        }
+    }
+
+    private void initPath(String path) {
+        File file1 = new File(path);
+        if ( ! file1.exists()) {
+            file1.mkdirs();
         }
     }
 }
