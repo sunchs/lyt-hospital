@@ -84,6 +84,18 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
         data.setAnswerQuantity(info.getAnswerQuantity());
         data.setLevelValue(info.getLevel());
         data.setQuestionList(currentQuestionScore);
+
+        // 科室名称
+        Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<ItemOffice>()
+                .setSqlSelect(ItemOffice.GROUP_NAME.concat(" as groupName"), ItemOffice.TITLE, ItemOffice.OFFICE_ID.concat(" as officeId"))
+                .eq(ItemOffice.ITEM_ID, itemId)
+                .eq(ItemOffice.OFFICE_TYPE_ID, officeType)
+                .eq(ReportAnswer.OFFICE_ID, officeId);
+        ItemOffice itemOffice = itemOfficeService.selectOne(itemOfficeWrapper);
+        if (Objects.nonNull(itemOffice)) {
+            String officeName = itemOffice.getTitle().length()>0 ? itemOffice.getTitle() : itemOffice.getGroupName();
+            data.setOfficeName(officeName);
+        }
         return data;
     }
 
@@ -136,8 +148,7 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
                 int groupId = 0;
                 for (ItemOffice office : itemOfficeList) {
                     SingleOfficeSatisfyData itemSingleOfficeSatisfy = getItemSingleOfficeSatisfy(param.getItemId(), param.getOfficeType(), office.getOfficeId());
-                    String officeName = office.getTitle().length()>0 ? office.getTitle() : office.getGroupName();
-                    WritableSheet sheet = wb.createSheet(officeName, groupId);
+                    WritableSheet sheet = wb.createSheet(itemSingleOfficeSatisfy.getOfficeName(), groupId);
                     groupId++;
 
                     int linePos = 0;
@@ -145,7 +156,7 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
                     // 第一行
                     sheet.addCell(new Label(0, linePos, "科室名称", format));
                     sheet.mergeCells(1, linePos, 5, linePos);
-                    sheet.addCell(new Label(1, 0, "科室名称"));
+                    sheet.addCell(new Label(1, 0, itemSingleOfficeSatisfy.getOfficeName()));
                     sheet.mergeCells(6, linePos, 7, linePos);
                     sheet.addCell(new Label(6, linePos, "样本量", format));
                     sheet.mergeCells(8, linePos, 9, linePos);

@@ -1,7 +1,5 @@
 package com.sunchs.lyt.report.bean;
 
-import com.sunchs.lyt.framework.bean.TitleData;
-
 import java.util.List;
 
 public class SingleOfficeSatisfyData {
@@ -9,7 +7,7 @@ public class SingleOfficeSatisfyData {
     private Double officeSatisfyValue;
     private Integer answerQuantity;
     private Integer levelValue;
-    private List<TitleData> titleList;
+    private String officeName;
     private List<SingleOfficeData> questionList;
 
     public Double getOfficeSatisfyValue() {
@@ -36,12 +34,12 @@ public class SingleOfficeSatisfyData {
         this.levelValue = levelValue;
     }
 
-    public List<TitleData> getTitleList() {
-        return titleList;
+    public String getOfficeName() {
+        return officeName;
     }
 
-    public void setTitleList(List<TitleData> titleList) {
-        this.titleList = titleList;
+    public void setOfficeName(String officeName) {
+        this.officeName = officeName;
     }
 
     public List<SingleOfficeData> getQuestionList() {
