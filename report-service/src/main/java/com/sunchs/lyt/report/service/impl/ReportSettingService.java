@@ -336,7 +336,8 @@ public class ReportSettingService implements IReportSettingService {
     public void saveItemAllSatisfySetting(ItemAllSatisfySettingParam param) {
         // 清理历史数据
         Wrapper<SettingItemWeight> weightWrapper = new EntityWrapper<SettingItemWeight>()
-                .eq(SettingItemWeight.ITEM_ID, param.getItemId());
+                .eq(SettingItemWeight.ITEM_ID, param.getItemId())
+                .eq(SettingItemWeight.OFFICE_TYPE, param.getOfficeType());
         settingItemWeightService.delete(weightWrapper);
         // 插入新数据
         if (Objects.nonNull(param.getValueList()) && param.getValueList().size() > 0) {
