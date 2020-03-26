@@ -30,7 +30,7 @@ public class ReportAnswerQuantityServiceImpl extends ServiceImpl<ReportAnswerQua
     }
 
     @Override
-    public List<ReportAnswerQuantity> getTargetSatisfyList(List<Integer> targetIds) {
-        return baseMapper.getTargetSatisfyList(targetIds);
+    public List<ReportAnswerQuantity> getTargetSatisfyList(Integer itemId, Integer officeType, List<Integer> targetIds) {
+        return baseMapper.getTargetSatisfyList(itemId, officeType, targetIds);
     }
 }

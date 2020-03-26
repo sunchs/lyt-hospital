@@ -138,7 +138,7 @@ public class ReportTargetService implements IReportTargetService {
             return allScore;
         }
         // 提取三级指标的满意度
-        List<ReportAnswerQuantity> targetSatisfyList = reportAnswerQuantityService.getTargetSatisfyList(targetIds);
+        List<ReportAnswerQuantity> targetSatisfyList = reportAnswerQuantityService.getTargetSatisfyList(itemId, officeType, targetIds);
         Map<Integer, Double> targetSatisfyMap = targetSatisfyList.stream().collect(Collectors.toMap(ReportAnswerQuantity::getTargetThree, ReportAnswerQuantity::getSatisfyValue));
 
         for (SettingItemWeight weight : weightList) {

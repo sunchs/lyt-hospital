@@ -20,5 +20,5 @@ public interface ReportAnswerQuantityMapper extends BaseMapper<ReportAnswerQuant
 
     List<ReportAnswerQuantity> getTargetSatisfyTwoList(@Param("itemId") Integer itemId, @Param("targetId") Integer targetId);
 
-    List<ReportAnswerQuantity> getTargetSatisfyList(@Param("targetIds") List<Integer> targetIds);
+    List<ReportAnswerQuantity> getTargetSatisfyList(@Param("itemId") Integer itemId, @Param("officeType") Integer officeType, @Param("targetIds") List<Integer> targetIds);
 }
