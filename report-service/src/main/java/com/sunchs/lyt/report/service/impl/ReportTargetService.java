@@ -165,23 +165,14 @@ public class ReportTargetService implements IReportTargetService {
 
     private List<SatisfyData> getOneTargetSatisfyList(int itemId, int targetId) {
         List<SatisfyData> list = new ArrayList<>();
-        // 查询
-        Wrapper<ReportAnswerSatisfy> wrapper = new EntityWrapper<>();
-        wrapper.setSqlSelect("TRUNCATE(AVG(score),2) as score", ReportAnswerSatisfy.TARGET_ONE+" as targetOne", ReportAnswerSatisfy.TARGET_TWO+" as targetTwo");
-        wrapper.eq(ReportAnswerSatisfy.ITEM_ID, itemId);
-        wrapper.ne(ReportAnswerSatisfy.SCORE, 0);
-        wrapper.eq(ReportAnswerSatisfy.TARGET_ONE, targetId);
-        wrapper.andNew("question_id IN (SELECT id FROM question WHERE option_type IN(1,4))");
-        wrapper.groupBy(ReportAnswerSatisfy.TARGET_TWO);
-        List<ReportAnswerSatisfy> satisfyList = reportAnswerSatisfyService.selectList(wrapper);
-        satisfyList.forEach(row->{
+        List<ReportAnswerQuantity> targetSatisfyList = reportAnswerQuantityService.getTargetSatisfyTwoList(itemId, targetId);
+        targetSatisfyList.forEach(t -> {
             SatisfyData data = new SatisfyData();
-            data.setpId(row.getTargetOne());
-            data.setpName(getTargetName(row.getTargetOne()));
-            data.setId(row.getTargetTwo());
-            data.setName(getTargetName(row.getTargetTwo()));
-            double value = new BigDecimal((double)row.getScore() / (double)100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-            data.setValue(value);
+            data.setpId(targetId);
+            data.setpName(getTargetName(targetId));
+            data.setId(t.getTargetTwo());
+            data.setName(getTargetName(t.getTargetTwo()));
+            data.setValue(t.getSatisfyValue());
             list.add(data);
         });
         return list;
@@ -189,7 +180,7 @@ public class ReportTargetService implements IReportTargetService {
 
     private List<SatisfyData> getTwoTargetSatisfyList(int itemId, int targetId) {
         List<SatisfyData> list = new ArrayList<>();
-        List<ReportAnswerQuantity> targetSatisfyList = reportAnswerQuantityService.getTargetSatisfyList(itemId, targetId);
+        List<ReportAnswerQuantity> targetSatisfyList = reportAnswerQuantityService.getTargetSatisfyThreeList(itemId, targetId);
         targetSatisfyList.forEach(t -> {
             SatisfyData data = new SatisfyData();
             data.setpId(targetId);

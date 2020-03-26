@@ -16,8 +16,12 @@ import java.util.List;
 public interface IReportAnswerQuantityService extends IService<ReportAnswerQuantity> {
 
     /**
-     * 获取指标满意度列表
+     * 获取三级指标满意度列表
      */
-    List<ReportAnswerQuantity> getTargetSatisfyList(Integer itemId, Integer targetId);
+    List<ReportAnswerQuantity> getTargetSatisfyThreeList(Integer itemId, Integer targetId);
 
+    /**
+     * 获取二级指标满意度列表
+     */
+    List<ReportAnswerQuantity> getTargetSatisfyTwoList(Integer itemId, Integer targetId);
 }

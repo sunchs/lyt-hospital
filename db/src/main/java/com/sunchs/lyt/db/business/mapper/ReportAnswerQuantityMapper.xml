@@ -20,10 +20,16 @@
         <result column="target_three" property="targetThree" />
     </resultMap>
 
-    <select id="getTargetSatisfyList" resultType="com.sunchs.lyt.db.business.entity.ReportAnswerQuantity">
+    <select id="getTargetSatisfyThreeList" resultType="com.sunchs.lyt.db.business.entity.ReportAnswerQuantity">
         SELECT target_three as targetThree,SUM(quantity*score)/SUM(quantity) as satisfyValue FROM report_answer_quantity
         WHERE item_id=#{itemId} AND target_two=#{targetId} AND score!=0
         GROUP BY target_three
+    </select>
+
+    <select id="getTargetSatisfyTwoList" resultType="com.sunchs.lyt.db.business.entity.ReportAnswerQuantity">
+        SELECT target_two as targetTwo,SUM(quantity*score)/SUM(quantity) as satisfyValue FROM report_answer_quantity
+        WHERE item_id=#{itemId} AND target_one=#{targetId} AND score!=0
+        GROUP BY target_two
     </select>
 
 </mapper>

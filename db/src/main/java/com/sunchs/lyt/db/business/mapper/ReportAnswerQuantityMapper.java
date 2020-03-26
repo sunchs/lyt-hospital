@@ -16,5 +16,7 @@ import java.util.List;
  */
 public interface ReportAnswerQuantityMapper extends BaseMapper<ReportAnswerQuantity> {
 
-    List<ReportAnswerQuantity> getTargetSatisfyList(@Param("itemId") Integer itemId, @Param("targetId") Integer targetId);
+    List<ReportAnswerQuantity> getTargetSatisfyThreeList(@Param("itemId") Integer itemId, @Param("targetId") Integer targetId);
+
+    List<ReportAnswerQuantity> getTargetSatisfyTwoList(@Param("itemId") Integer itemId, @Param("targetId") Integer targetId);
 }

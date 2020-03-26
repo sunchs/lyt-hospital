@@ -4,6 +4,7 @@ import com.sunchs.lyt.db.business.entity.ReportAnswerQuantity;
 import com.sunchs.lyt.db.business.mapper.ReportAnswerQuantityMapper;
 import com.sunchs.lyt.db.business.service.IReportAnswerQuantityService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +20,12 @@ import java.util.List;
 @Service
 public class ReportAnswerQuantityServiceImpl extends ServiceImpl<ReportAnswerQuantityMapper, ReportAnswerQuantity> implements IReportAnswerQuantityService {
     @Override
-    public List<ReportAnswerQuantity> getTargetSatisfyList(Integer itemId, Integer targetId) {
-        return baseMapper.getTargetSatisfyList(itemId, targetId);
+    public List<ReportAnswerQuantity> getTargetSatisfyThreeList(Integer itemId, Integer targetId) {
+        return baseMapper.getTargetSatisfyThreeList(itemId, targetId);
+    }
+
+    @Override
+    public List<ReportAnswerQuantity> getTargetSatisfyTwoList(Integer itemId, Integer targetId) {
+        return baseMapper.getTargetSatisfyTwoList(itemId, targetId);
     }
 }
