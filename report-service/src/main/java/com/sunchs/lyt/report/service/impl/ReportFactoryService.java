@@ -131,11 +131,12 @@ public class ReportFactoryService implements IReportFactoryService {
                 reportAnswerSatisfyService.delete(reportAnswerSatisfyWrapper);
 
                 // 计算满意度
-                Wrapper<ReportAnswerQuantity> quantityWrapper = new EntityWrapper<>();
-                quantityWrapper.eq(ReportAnswerQuantity.HOSPITAL_ID, itemOffice.getHospitalId());
-                quantityWrapper.eq(ReportAnswerQuantity.ITEM_ID, itemOffice.getItemId());
-                quantityWrapper.eq(ReportAnswerQuantity.OFFICE_ID, itemOffice.getOfficeId());
-                quantityWrapper.eq(ReportAnswerQuantity.QUESTIONNAIRE_ID, itemOffice.getQuestionnaireId());
+                Wrapper<ReportAnswerQuantity> quantityWrapper = new EntityWrapper<ReportAnswerQuantity>()
+                        .eq(ReportAnswerQuantity.HOSPITAL_ID, itemOffice.getHospitalId())
+                        .eq(ReportAnswerQuantity.ITEM_ID, itemOffice.getItemId())
+                        .eq(ReportAnswerQuantity.OFFICE_ID, itemOffice.getOfficeId())
+                        .ne(ReportAnswerQuantity.SCORE, 0)
+                        .eq(ReportAnswerQuantity.QUESTIONNAIRE_ID, itemOffice.getQuestionnaireId());
                 List<ReportAnswerQuantity> quantityList = reportAnswerQuantityService.selectList(quantityWrapper);
                 Map<Integer, List<ReportAnswerQuantity>> mapGroup = quantityList.stream().collect(Collectors.groupingBy(ReportAnswerQuantity::getQuestionId));
                 for (List<ReportAnswerQuantity> group : mapGroup.values()) {
@@ -149,12 +150,10 @@ public class ReportFactoryService implements IReportFactoryService {
                     data.setQuestionnaireId(old.getQuestionnaireId());
                     // 累计
                     for (ReportAnswerQuantity row : group) {
-                        if (row.getScore() > 0) {
-                            number += row.getQuantity();
-                            score += row.getQuantity() * row.getScore();
-                            data.setQuestionId(row.getQuestionId());
-                            data.setQuestionName(row.getQuestionName());
-                        }
+                        number += row.getQuantity();
+                        score += row.getQuantity() * row.getScore();
+                        data.setQuestionId(row.getQuestionId());
+                        data.setQuestionName(row.getQuestionName());
                     }
                     // 指标
                     data.setTargetOne(old.getTargetOne());
