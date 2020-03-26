@@ -625,6 +625,22 @@ public class ItemService implements IItemService {
         return result;
     }
 
+    @Override
+    public List<RequestQuantityData> getItemOfficeRequestQuantity(Integer itemId) {
+        List<RequestQuantityData> result = new ArrayList<>();
+        Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
+                .eq(ItemOffice.ITEM_ID, itemId);
+        List<ItemOffice> itemOfficeList = itemOfficeService.selectList(wrapper);
+        itemOfficeList.forEach(o -> {
+            RequestQuantityData data = new RequestQuantityData();
+            data.setId(o.getOfficeId());
+            data.setName(o.getOfficeId().equals(0) ? o.getGroupName() : o.getTitle());
+            data.setQuantity(o.getQuantity());
+            result.add(data);
+        });
+        return result;
+    }
+
     private List<UserItemOfficeTypeData> getUserItemOfficeTypeList(int itemId) {
         List<UserItemOfficeTypeData> list = new ArrayList<>();
         Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()

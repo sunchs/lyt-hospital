@@ -165,4 +165,10 @@ public class ItemController extends BaseController {
         ItemParam param = data.toObject(ItemParam.class);
         return success(itemService.getItemOfficeGroup(param));
     }
+
+    @PostMapping("/getItemOfficeRequestQuantity")
+    public ResultData getItemOfficeRequestQuantity(@RequestBody RequestData data) {
+        Integer itemId = data.getInt("itemId");
+        return success(itemService.getItemOfficeRequestQuantity(itemId));
+    }
 }

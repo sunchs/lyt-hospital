@@ -2,6 +2,7 @@ package com.sunchs.lyt.item.service;
 
 import com.sunchs.lyt.db.business.entity.User;
 import com.sunchs.lyt.framework.bean.PagingList;
+import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.item.bean.*;
 
 import java.util.List;
@@ -91,5 +92,8 @@ public interface IItemService {
 
     List<OfficeGroupData> getItemOfficeGroup(ItemParam param);
 
-
+    /**
+     * 获取科室抽样量列表
+     */
+    List<RequestQuantityData> getItemOfficeRequestQuantity(Integer itemId);
 }
