@@ -102,6 +102,9 @@ public class ReportAnswerQuantity extends Model<ReportAnswerQuantity> {
     @TableField("target_three")
     private Integer targetThree;
 
+    @TableField(exist = false)
+    private Double satisfyValue;
+
     public Integer getId() {
         return id;
     }
@@ -201,6 +204,14 @@ public class ReportAnswerQuantity extends Model<ReportAnswerQuantity> {
         this.targetThree = targetThree;
     }
 
+    public Double getSatisfyValue() {
+        return satisfyValue;
+    }
+
+    public void setSatisfyValue(Double satisfyValue) {
+        this.satisfyValue = satisfyValue;
+    }
+
     public static final String ID = "id";
 
     public static final String HOSPITAL_ID = "hospital_id";
@@ -243,14 +254,15 @@ public class ReportAnswerQuantity extends Model<ReportAnswerQuantity> {
         ", officeId=" + officeId +
         ", questionnaireId=" + questionnaireId +
         ", questionId=" + questionId +
-        ", questionName=" + questionName +
+        ", questionName='" + questionName + '\'' +
         ", optionId=" + optionId +
-        ", optionName=" + optionName +
+        ", optionName='" + optionName + '\'' +
         ", quantity=" + quantity +
         ", score=" + score +
         ", targetOne=" + targetOne +
         ", targetTwo=" + targetTwo +
         ", targetThree=" + targetThree +
-        "}";
+        ", satisfyValue=" + satisfyValue +
+        '}';
     }
 }

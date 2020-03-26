@@ -2,14 +2,8 @@ package com.sunchs.lyt.report.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.sunchs.lyt.db.business.entity.HospitalOffice;
-import com.sunchs.lyt.db.business.entity.QuestionTarget;
-import com.sunchs.lyt.db.business.entity.ReportAnswerSatisfy;
-import com.sunchs.lyt.db.business.entity.SettingItemWeight;
-import com.sunchs.lyt.db.business.service.impl.HospitalOfficeServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.QuestionTargetServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.ReportAnswerSatisfyServiceImpl;
-import com.sunchs.lyt.db.business.service.impl.SettingItemWeightServiceImpl;
+import com.sunchs.lyt.db.business.entity.*;
+import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.report.bean.SatisfyData;
 import com.sunchs.lyt.report.bean.TotalParam;
 import com.sunchs.lyt.report.service.IReportTargetService;
@@ -28,6 +22,9 @@ public class ReportTargetService implements IReportTargetService {
 
     @Autowired
     private ReportAnswerSatisfyServiceImpl reportAnswerSatisfyService;
+
+    @Autowired
+    private ReportAnswerQuantityServiceImpl reportAnswerQuantityService;
 
     @Autowired
     private QuestionTargetServiceImpl questionTargetService;
@@ -192,23 +189,14 @@ public class ReportTargetService implements IReportTargetService {
 
     private List<SatisfyData> getTwoTargetSatisfyList(int itemId, int targetId) {
         List<SatisfyData> list = new ArrayList<>();
-        // 查询
-        Wrapper<ReportAnswerSatisfy> wrapper = new EntityWrapper<>();
-        wrapper.setSqlSelect("TRUNCATE(AVG(score),2) as score", ReportAnswerSatisfy.TARGET_TWO+" as targetTwo", ReportAnswerSatisfy.TARGET_THREE+" as targetThree");
-        wrapper.eq(ReportAnswerSatisfy.ITEM_ID, itemId);
-        wrapper.ne(ReportAnswerSatisfy.SCORE, 0);
-        wrapper.eq(ReportAnswerSatisfy.TARGET_TWO, targetId);
-        wrapper.andNew("question_id IN (SELECT id FROM question WHERE option_type IN(1,4))");
-        wrapper.groupBy(ReportAnswerSatisfy.TARGET_THREE);
-        List<ReportAnswerSatisfy> satisfyList = reportAnswerSatisfyService.selectList(wrapper);
-        satisfyList.forEach(row->{
+        List<ReportAnswerQuantity> targetSatisfyList = reportAnswerQuantityService.getTargetSatisfyList(itemId, targetId);
+        targetSatisfyList.forEach(t -> {
             SatisfyData data = new SatisfyData();
-            data.setpId(row.getTargetTwo());
-            data.setpName(getTargetName(row.getTargetTwo()));
-            data.setId(row.getTargetThree());
-            data.setName(getTargetName(row.getTargetThree()));
-            double value = new BigDecimal((double)row.getScore() / (double)100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-            data.setValue(value);
+            data.setpId(targetId);
+            data.setpName(getTargetName(targetId));
+            data.setId(t.getTargetThree());
+            data.setName(getTargetName(t.getTargetThree()));
+            data.setValue(t.getSatisfyValue());
             list.add(data);
         });
         return list;
