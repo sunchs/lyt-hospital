@@ -78,10 +78,16 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
                 cur.setQuestionLevel(valueDataVO.getRankValue());
             }
         });
+        // 抽样量
+        Wrapper<ReportAnswer> reportAnswerWrapper = new EntityWrapper<ReportAnswer>()
+                .eq(ReportAnswer.ITEM_ID, itemId)
+                .eq(ReportAnswer.OFFICE_TYPE_ID, officeType)
+                .eq(ReportAnswer.OFFICE_ID, officeId);
+        int answerQuantity = reportAnswerService.selectCount(reportAnswerWrapper);
         // 返回结果
         SingleOfficeSatisfyData data = new SingleOfficeSatisfyData();
         data.setOfficeSatisfyValue(info.getSatisfyValue());
-        data.setAnswerQuantity(info.getAnswerQuantity());
+        data.setAnswerQuantity(answerQuantity);
         data.setLevelValue(info.getLevel());
         data.setQuestionList(currentQuestionScore);
 
@@ -219,9 +225,9 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
     public CurrentOfficeBean getCurrentOfficeInfo(List<ReportAnswerOption> optionList, Integer officeId) {
         CurrentOfficeBean bean = new CurrentOfficeBean();
 
-        // 当前科室抽样量
-        long answerQuantity = optionList.stream().filter(v->v.getOfficeId().equals(officeId)).map(ReportAnswerOption::getAnswerId).distinct().count();
-        bean.setAnswerQuantity((int) answerQuantity);
+//        // 当前科室抽样量
+//        long answerQuantity = optionList.stream().filter(v->v.getOfficeId().equals(officeId)).map(ReportAnswerOption::getAnswerId).distinct().count();
+//        bean.setAnswerQuantity((int) answerQuantity);
 
         // 算排名
         List<TitleValueDataVO> rankingList = new ArrayList<>();
