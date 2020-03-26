@@ -1,12 +1,14 @@
 package com.sunchs.lyt.report.bean;
 
+import com.sunchs.lyt.db.business.entity.SettingItemWeight;
+
 import java.util.List;
 
 public class ItemAllSatisfySettingParam {
 
     private int itemId;
     private int officeType;
-    private List<ItemAllSatisfySettingBean> valueList;
+    private List<SettingItemWeight> valueList;
 
     public int getItemId() {
         return itemId;
@@ -24,11 +26,11 @@ public class ItemAllSatisfySettingParam {
         this.officeType = officeType;
     }
 
-    public List<ItemAllSatisfySettingBean> getValueList() {
+    public List<SettingItemWeight> getValueList() {
         return valueList;
     }
 
-    public void setValueList(List<ItemAllSatisfySettingBean> valueList) {
+    public void setValueList(List<SettingItemWeight> valueList) {
         this.valueList = valueList;
     }
 }

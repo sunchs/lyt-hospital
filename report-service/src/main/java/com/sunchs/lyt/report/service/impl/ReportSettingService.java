@@ -338,20 +338,16 @@ public class ReportSettingService implements IReportSettingService {
         deleteItemAllSatisfySetting(param.getItemId(), param.getOfficeType());
         // 插入新数据
         if (Objects.nonNull(param.getValueList()) && param.getValueList().size() > 0) {
-            // 二级指标
-            param.getValueList().forEach(two->{
-                // 三级指标
-                two.getValueList().forEach(three -> {
-                    if (Objects.nonNull(two.getTargetId()) && Objects.nonNull(three.getTargetId())) {
-                        SettingItemWeight data = new SettingItemWeight();
-                        data.setItemId(param.getItemId());
-                        data.setOfficeType(param.getOfficeType());
-                        data.setTargetTwo(two.getTargetId());
-                        data.setTargetThree(three.getTargetId());
-                        data.setWeight(three.getWeight());
-                        settingItemWeightService.insert(data);
-                    }
-                });
+            param.getValueList().forEach(row->{
+                if (Objects.nonNull(row.getTargetTwo()) && Objects.nonNull(row.getTargetThree())) {
+                    SettingItemWeight data = new SettingItemWeight();
+                    data.setItemId(param.getItemId());
+                    data.setOfficeType(param.getOfficeType());
+                    data.setTargetTwo(row.getTargetTwo());
+                    data.setTargetThree(row.getTargetThree());
+                    data.setWeight(row.getWeight());
+                    settingItemWeightService.insert(data);
+                }
             });
         }
     }
