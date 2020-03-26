@@ -51,6 +51,9 @@ public class ReportCompareService implements IReportCompareService {
     @Autowired
     private CustomItemTargetServiceImpl customItemTargetService;
 
+    @Autowired
+    private ReportAnswerQuantityServiceImpl reportAnswerQuantityService;
+
     @Override
     public List<Item> getItemListByOfficeType(Integer officeType) {
         // 查询项目ID
@@ -528,16 +531,20 @@ public class ReportCompareService implements IReportCompareService {
         if (Objects.isNull(weightList) || weightList.size() == 0) {
             return allScore;
         }
+        // 判断是否有三级指标
+        List<Integer> targetIds = weightList.stream().map(SettingItemWeight::getTargetThree).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(targetIds)) {
+            return allScore;
+        }
+        // 提取三级指标的满意度
         for (SettingItemWeight weight : weightList) {
-            List<String> targetThreeStringList = Arrays.asList(weight.getTargetThree().split(","));
-            List<Integer> targetThreeIds = targetThreeStringList.stream().map(v -> Integer.parseInt(v)).collect(Collectors.toList());
-            double score = getSatisfyByTargetIds(itemId, officeType, targetThreeIds, startTime, endTime);
-            allScore += weight.getWeight().doubleValue() * score;
+            Double sVal = getSatisfyByTargetId(itemId, officeType, weight.getTargetThree(), startTime, endTime);
+            allScore += weight.getWeight().doubleValue() * sVal;
         }
         return new BigDecimal(allScore).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
-    private double getSatisfyByTargetIds(Integer itemId, Integer officeType, List<Integer> targetThreeIds, String startTime, String endTime) {
+    private double getSatisfyByTargetId(Integer itemId, Integer officeType, Integer targetThree, String startTime, String endTime) {
         Date sTime = FormatUtil.dateTime(startTime + " 00:00:00");
         Date eTime = FormatUtil.dateTime(endTime + " 23:59:59");
         double score = 0;
@@ -546,7 +553,7 @@ public class ReportCompareService implements IReportCompareService {
                 .eq(ReportAnswerOption.ITEM_ID, itemId)
                 .eq(ReportAnswerOption.OFFICE_TYPE_ID, officeType)
                 .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
-                .in(ReportAnswerOption.TARGET_THREE, targetThreeIds)
+                .eq(ReportAnswerOption.TARGET_THREE, targetThree)
                 .ne(ReportAnswerOption.SCORE, 0)
                 .groupBy(ReportAnswerOption.QUESTION_ID)
                 .groupBy(ReportAnswerOption.OPTION_ID);
@@ -570,10 +577,10 @@ public class ReportCompareService implements IReportCompareService {
                 number += option.getQuantity().intValue();
             }
             if (number > 0) {
-                score += new BigDecimal(value / (double) number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                score += value / (double) number;
             }
         }
-        return score / (double) questionMap.size();
+        return new BigDecimal(score / (double) questionMap.size()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
     private boolean isInRowList(Integer questionId, List<IdTitleData> rowList) {
