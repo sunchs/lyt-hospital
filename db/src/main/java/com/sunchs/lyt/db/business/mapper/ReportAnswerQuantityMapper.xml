@@ -32,4 +32,13 @@
         GROUP BY target_two
     </select>
 
+    <select id="getTargetSatisfyList" resultType="com.sunchs.lyt.db.business.entity.ReportAnswerQuantity">
+         SELECT target_three as targetThree,SUM(quantity*score)/SUM(quantity) as satisfyValue FROM report_answer_quantity
+        WHERE item_id=#{itemId} AND target_three IN
+        <foreach collection="targetIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        AND score!=0 GROUP BY target_three
+    </select>
+
 </mapper>

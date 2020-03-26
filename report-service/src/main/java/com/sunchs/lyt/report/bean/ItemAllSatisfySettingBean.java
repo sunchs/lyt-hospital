@@ -5,39 +5,23 @@ import java.util.List;
 public class ItemAllSatisfySettingBean {
 
     /**
-     * 科室类型
+     * 指标ID
      */
-    private Integer officeType;
-
-    /**
-     * 二级指标
-     */
-    private Integer targetTwo;
+    private Integer targetId;
 
     /**
      * 权重
      */
     private Float weight;
 
-    /**
-     * 三级指标
-     */
-    private List<Integer> targetThree;
+    private List<ItemAllSatisfySettingBean> valueList;
 
-    public Integer getOfficeType() {
-        return officeType;
+    public Integer getTargetId() {
+        return targetId;
     }
 
-    public void setOfficeType(Integer officeType) {
-        this.officeType = officeType;
-    }
-
-    public Integer getTargetTwo() {
-        return targetTwo;
-    }
-
-    public void setTargetTwo(Integer targetTwo) {
-        this.targetTwo = targetTwo;
+    public void setTargetId(Integer targetId) {
+        this.targetId = targetId;
     }
 
     public Float getWeight() {
@@ -48,11 +32,11 @@ public class ItemAllSatisfySettingBean {
         this.weight = weight;
     }
 
-    public List<Integer> getTargetThree() {
-        return targetThree;
+    public List<ItemAllSatisfySettingBean> getValueList() {
+        return valueList;
     }
 
-    public void setTargetThree(List<Integer> targetThree) {
-        this.targetThree = targetThree;
+    public void setValueList(List<ItemAllSatisfySettingBean> valueList) {
+        this.valueList = valueList;
     }
 }

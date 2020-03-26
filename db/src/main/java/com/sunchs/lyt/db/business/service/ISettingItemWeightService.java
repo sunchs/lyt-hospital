@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.service.IService;
  * </p>
  *
  * @author king
- * @since 2019-12-23
+ * @since 2020-03-26
  */
 public interface ISettingItemWeightService extends IService<SettingItemWeight> {
 

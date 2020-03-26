@@ -24,4 +24,9 @@ public interface IReportAnswerQuantityService extends IService<ReportAnswerQuant
      * 获取二级指标满意度列表
      */
     List<ReportAnswerQuantity> getTargetSatisfyTwoList(Integer itemId, Integer targetId);
+
+    /**
+     * 根据ID集合 获取三级指标满意度列表
+     */
+    List<ReportAnswerQuantity> getTargetSatisfyList(List<Integer> targetIds);
 }

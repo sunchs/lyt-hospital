@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2019-12-23
+ * @since 2020-03-26
  */
 @TableName("setting_item_weight")
 public class SettingItemWeight extends Model<SettingItemWeight> {
@@ -45,15 +45,15 @@ public class SettingItemWeight extends Model<SettingItemWeight> {
     private Integer targetTwo;
 
     /**
-     * 权重
-     */
-    private Float weight;
-
-    /**
      * 三级指标
      */
     @TableField("target_three")
-    private String targetThree;
+    private Integer targetThree;
+
+    /**
+     * 权重
+     */
+    private Float weight;
 
     public Integer getId() {
         return id;
@@ -83,19 +83,19 @@ public class SettingItemWeight extends Model<SettingItemWeight> {
     public void setTargetTwo(Integer targetTwo) {
         this.targetTwo = targetTwo;
     }
+    public Integer getTargetThree() {
+        return targetThree;
+    }
+
+    public void setTargetThree(Integer targetThree) {
+        this.targetThree = targetThree;
+    }
     public Float getWeight() {
         return weight;
     }
 
     public void setWeight(Float weight) {
         this.weight = weight;
-    }
-    public String getTargetThree() {
-        return targetThree;
-    }
-
-    public void setTargetThree(String targetThree) {
-        this.targetThree = targetThree;
     }
 
     public static final String ID = "id";
@@ -106,9 +106,9 @@ public class SettingItemWeight extends Model<SettingItemWeight> {
 
     public static final String TARGET_TWO = "target_two";
 
-    public static final String WEIGHT = "weight";
-
     public static final String TARGET_THREE = "target_three";
+
+    public static final String WEIGHT = "weight";
 
     @Override
     protected Serializable pkVal() {
@@ -122,8 +122,8 @@ public class SettingItemWeight extends Model<SettingItemWeight> {
         ", itemId=" + itemId +
         ", officeType=" + officeType +
         ", targetTwo=" + targetTwo +
-        ", weight=" + weight +
         ", targetThree=" + targetThree +
+        ", weight=" + weight +
         "}";
     }
 }

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author king
- * @since 2019-12-23
+ * @since 2020-03-26
  */
 @Service
 public class SettingItemWeightServiceImpl extends ServiceImpl<SettingItemWeightMapper, SettingItemWeight> implements ISettingItemWeightService {

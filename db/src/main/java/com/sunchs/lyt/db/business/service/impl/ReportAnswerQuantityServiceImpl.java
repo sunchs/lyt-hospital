@@ -28,4 +28,9 @@ public class ReportAnswerQuantityServiceImpl extends ServiceImpl<ReportAnswerQua
     public List<ReportAnswerQuantity> getTargetSatisfyTwoList(Integer itemId, Integer targetId) {
         return baseMapper.getTargetSatisfyTwoList(itemId, targetId);
     }
+
+    @Override
+    public List<ReportAnswerQuantity> getTargetSatisfyList(List<Integer> targetIds) {
+        return baseMapper.getTargetSatisfyList(targetIds);
+    }
 }

@@ -8,8 +8,8 @@
         <result column="item_id" property="itemId" />
         <result column="office_type" property="officeType" />
         <result column="target_two" property="targetTwo" />
-        <result column="weight" property="weight" />
         <result column="target_three" property="targetThree" />
+        <result column="weight" property="weight" />
     </resultMap>
 
 </mapper>

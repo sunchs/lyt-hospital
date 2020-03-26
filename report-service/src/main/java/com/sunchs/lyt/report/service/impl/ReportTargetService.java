@@ -7,14 +7,12 @@ import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.report.bean.SatisfyData;
 import com.sunchs.lyt.report.bean.TotalParam;
 import com.sunchs.lyt.report.service.IReportTargetService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -134,33 +132,22 @@ public class ReportTargetService implements IReportTargetService {
         if (Objects.isNull(weightList) || weightList.size() == 0) {
             return allScore;
         }
-        for (SettingItemWeight weight : weightList) {
-            List<String> targetThreeStringList = Arrays.asList(weight.getTargetThree().split(","));
-            List<Integer> targetThreeIds = targetThreeStringList.stream().map(v -> Integer.parseInt(v)).collect(Collectors.toList());
-            double score = getSatisfyByTargetIds(itemId, officeType, targetThreeIds);
-            allScore += weight.getWeight().doubleValue() * score;
+        // 判断是否有三级指标
+        List<Integer> targetIds = weightList.stream().map(SettingItemWeight::getTargetThree).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(targetIds)) {
+            return allScore;
         }
-//        allScore = allScore / (double) weightList.size();
-        return new BigDecimal(allScore).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-    }
+        // 提取三级指标的满意度
+        List<ReportAnswerQuantity> targetSatisfyList = reportAnswerQuantityService.getTargetSatisfyList(targetIds);
+        Map<Integer, Double> targetSatisfyMap = targetSatisfyList.stream().collect(Collectors.toMap(ReportAnswerQuantity::getTargetThree, ReportAnswerQuantity::getSatisfyValue));
 
-    private double getSatisfyByTargetIds(Integer itemId, Integer officeType, List<Integer> targetThreeIds) {
-        double score = 0;
-        Wrapper<ReportAnswerSatisfy> wrapper = new EntityWrapper<ReportAnswerSatisfy>()
-                .setSqlSelect("TRUNCATE(AVG(score),0) as score")
-                .eq(ReportAnswerSatisfy.ITEM_ID, itemId)
-                .eq(ReportAnswerSatisfy.TARGET_ONE, officeType)
-                .in(ReportAnswerSatisfy.TARGET_THREE, targetThreeIds)
-                .ne(ReportAnswerSatisfy.SCORE, 0)
-                .andNew("question_id IN (SELECT id FROM question WHERE option_type IN(1,4))");
-        List<ReportAnswerSatisfy> satisfyList = reportAnswerSatisfyService.selectList(wrapper);
-        if (Objects.isNull(satisfyList) || satisfyList.size() == 0) {
-            return score;
+        for (SettingItemWeight weight : weightList) {
+            if (targetSatisfyMap.containsKey(weight.getTargetThree())) {
+                Double sVal = targetSatisfyMap.get(weight.getTargetThree());
+                allScore += weight.getWeight().doubleValue() * sVal;
+            }
         }
-        for (ReportAnswerSatisfy reportAnswerSatisfy : satisfyList) {
-            score += reportAnswerSatisfy.getScore().doubleValue();
-        }
-        return score / (double) satisfyList.size() / (double) 100;
+        return new BigDecimal(allScore).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
     private List<SatisfyData> getOneTargetSatisfyList(int itemId, int targetId) {

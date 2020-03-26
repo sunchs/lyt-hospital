@@ -335,22 +335,23 @@ public class ReportSettingService implements IReportSettingService {
     @Override
     public void saveItemAllSatisfySetting(ItemAllSatisfySettingParam param) {
         // 清理历史数据
-        Wrapper<SettingItemWeight> weightWrapper = new EntityWrapper<SettingItemWeight>()
-                .eq(SettingItemWeight.ITEM_ID, param.getItemId())
-                .eq(SettingItemWeight.OFFICE_TYPE, param.getOfficeType());
-        settingItemWeightService.delete(weightWrapper);
+        deleteItemAllSatisfySetting(param.getItemId(), param.getOfficeType());
         // 插入新数据
         if (Objects.nonNull(param.getValueList()) && param.getValueList().size() > 0) {
-            param.getValueList().forEach(item->{
-                if (Objects.nonNull(item.getTargetThree()) && item.getTargetThree().size() > 0) {
-                    SettingItemWeight data = new SettingItemWeight();
-                    data.setItemId(param.getItemId());
-                    data.setOfficeType(item.getOfficeType());
-                    data.setTargetTwo(item.getTargetTwo());
-                    data.setWeight(item.getWeight());
-                    data.setTargetThree(String.join(",", item.getTargetThree().stream().map(v->v+"").collect(Collectors.toList())));
-                    settingItemWeightService.insert(data);
-                }
+            // 二级指标
+            param.getValueList().forEach(two->{
+                // 三级指标
+                two.getValueList().forEach(three -> {
+                    if (Objects.nonNull(two.getTargetId()) && Objects.nonNull(three.getTargetId())) {
+                        SettingItemWeight data = new SettingItemWeight();
+                        data.setItemId(param.getItemId());
+                        data.setOfficeType(param.getOfficeType());
+                        data.setTargetTwo(two.getTargetId());
+                        data.setTargetThree(three.getTargetId());
+                        data.setWeight(three.getWeight());
+                        settingItemWeightService.insert(data);
+                    }
+                });
             });
         }
     }
@@ -370,37 +371,38 @@ public class ReportSettingService implements IReportSettingService {
                 .eq(SettingItemWeight.ITEM_ID, itemId)
                 .eq(SettingItemWeight.OFFICE_TYPE, officeType);
         List<SettingItemWeight> itemWeightList = settingItemWeightService.selectList(weightWrapper);
-        List<Integer> targetIds = new ArrayList<>();
+        Set<Integer> targetIds = new HashSet<>();
         itemWeightList.forEach(row->{
             targetIds.add(row.getTargetTwo());
-            List<String> threeList = Arrays.asList(row.getTargetThree().split(","));
-            threeList.forEach(id->{
-                targetIds.add(Integer.parseInt(id));
-            });
+            targetIds.add(row.getTargetThree());
         });
+        // 题目指标内容
         Wrapper<QuestionTarget> targetWrapper = new EntityWrapper<QuestionTarget>()
                 .in(QuestionTarget.ID, targetIds);
         List<QuestionTarget> targetList = questionTargetService.selectList(targetWrapper);
         Map<Integer, String> targetTitleMap = targetList.stream().collect(Collectors.toMap(QuestionTarget::getId, QuestionTarget::getTitle));
-        itemWeightList.forEach(row->{
+        // 组合数据
+        Map<Integer, List<SettingItemWeight>> groupMap = itemWeightList.stream().collect(Collectors.groupingBy(SettingItemWeight::getTargetTwo));
+        for (Integer twoKey : groupMap.keySet()) {
+            List<SettingItemWeight> settingItemWeights = groupMap.get(twoKey);
+            // 二级指标内容
             Map<String, Object> map = new HashMap<>();
-            map.put("id", row.getId());
-            map.put("title", targetTitleMap.get(row.getTargetTwo()));
-            map.put("officeType", row.getOfficeType());
-            map.put("weight", row.getWeight());
+            map.put("id", twoKey);
+            map.put("title", targetTitleMap.get(twoKey));
+            // 三级指标内容
             List<Map<String, Object>> sList = new ArrayList<>();
-            List<String> threeList = Arrays.asList(row.getTargetThree().split(","));
-            threeList.forEach(id->{
+            for (SettingItemWeight w : settingItemWeights) {
                 Map<String, Object> m = new HashMap<>();
-                m.put("id", Integer.parseInt(id));
-                m.put("title", targetTitleMap.get(Integer.parseInt(id)));
+                m.put("id", w.getTargetThree());
+                m.put("title", targetTitleMap.get(w.getTargetThree()));
+                m.put("weight", w.getWeight());
                 sList.add(m);
-            });
-            if (Objects.nonNull(threeList) && threeList.size() > 0) {
+            }
+            if (Objects.nonNull(sList) && sList.size() > 0) {
                 map.put("children", sList);
             }
             result.add(map);
-        });
+        }
         return result;
     }
 
