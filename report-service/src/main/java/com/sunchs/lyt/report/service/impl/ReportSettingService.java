@@ -9,7 +9,9 @@ import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.TitleData;
 import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.framework.enums.OfficeTypeEnum;
+import com.sunchs.lyt.framework.util.UserThreadUtil;
 import com.sunchs.lyt.report.bean.*;
+import com.sunchs.lyt.report.exception.ReportException;
 import com.sunchs.lyt.report.service.IReportSettingService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -56,6 +58,9 @@ public class ReportSettingService implements IReportSettingService {
 
     @Autowired
     private ItemOfficeServiceImpl itemOfficeService;
+
+    @Autowired
+    private ItemTempOfficeServiceImpl itemTempOfficeService;
 
     @Override
     public List<TitleData> getItemUseQuestionnaireList(Integer itemId) {
@@ -178,21 +183,53 @@ public class ReportSettingService implements IReportSettingService {
 
     @Override
     public void saveTempItemOfficeSetting(TempItemOfficeSettingParam param) {
-//        // 清理历史数据
-//        Wrapper<SettingItemTempShow> settingItemTempShowWrapper = new EntityWrapper<SettingItemTempShow>()
-//                .eq(SettingItemTempShow.ITEM_ID, param.getItemId());
-//        settingItemTempShowService.delete(settingItemTempShowWrapper);
-
-        // 写入新数据
+        // 参数判断
+        List<Integer> officeIds = new ArrayList<>();
         param.getValueList().forEach(row->{
-            if (Objects.nonNull(row.getOfficeList()) && row.getOfficeList().size() > 0 &&
-                    Objects.nonNull(row.getTargetList()) && row.getTargetList().size() > 0) {
-                SettingItemTempShow data = new SettingItemTempShow();
-                data.setItemId(param.getItemId());
-                data.setOfficeType(row.getOfficeType());
-                data.setOfficeIds(String.join(",", row.getOfficeList().stream().map(v->v+"").collect(Collectors.toList())));
-                data.setTargetIds(String.join(",", row.getTargetList().stream().map(v->v+"").collect(Collectors.toList())));
-                settingItemTempShowService.insert(data);
+            if (CollectionUtils.isNotEmpty(row.getOfficeList()) && CollectionUtils.isNotEmpty(row.getTargetList())) {
+                officeIds.addAll(row.getOfficeList());
+            }
+        });
+        if (CollectionUtils.isNotEmpty(officeIds)) {
+            throw new ReportException("请选择科室和指标!");
+        }
+        // 判断是否存在数据库
+        Wrapper<ItemTempOffice> tempOfficeWrapper = new EntityWrapper<ItemTempOffice>()
+                .setSqlSelect(ItemTempOffice.OFFICE_ID.concat(" as officeId"))
+                .eq(ItemTempOffice.ITEM_ID, param.getItemId())
+                .eq(ItemTempOffice.OFFICE_TYPE, param.getOfficeType())
+                .in(ItemTempOffice.OFFICE_ID, officeIds);
+        List<ItemTempOffice> itemTempOffices = itemTempOfficeService.selectList(tempOfficeWrapper);
+        if (CollectionUtils.isNotEmpty(itemTempOffices)) {
+            List<Integer> oIds = itemTempOffices.stream().map(ItemTempOffice::getOfficeId).collect(Collectors.toList());
+            Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<ItemOffice>()
+                    .setSqlSelect(
+                        ItemOffice.TITLE,
+                        ItemOffice.GROUP_NAME.concat(" as groupName")
+                    )
+                    .eq(ItemOffice.ITEM_ID, param.getItemId())
+                    .eq(ItemOffice.OFFICE_TYPE_ID, param.getOfficeType())
+                    .in(ItemOffice.OFFICE_ID, oIds);
+            List<ItemOffice> itemOffices = itemOfficeService.selectList(itemOfficeWrapper);
+            String tip = "";
+            for (ItemOffice o : itemOffices) {
+                tip += o.getTitle().equals("") ? "：" + o.getGroupName() : "：" + o.getTitle();
+            }
+            throw new ReportException("科室已存在" + tip);
+        }
+        // 保存数据
+        param.getValueList().forEach(row->{
+            if (CollectionUtils.isNotEmpty(row.getOfficeList()) && CollectionUtils.isNotEmpty(row.getTargetList())) {
+                row.getOfficeList().forEach(officeId -> {
+                    ItemTempOffice data = new ItemTempOffice();
+                    data.setItemId(param.getItemId());
+                    data.setOfficeType(param.getOfficeType());
+                    data.setOfficeId(officeId);
+                    data.setTargetIds(String.join(",", row.getTargetList().stream().map(v->v+"").collect(Collectors.toList())));
+                    data.setCreateId(UserThreadUtil.getUserId());
+                    data.setCreateTime(new Date());
+                    itemTempOfficeService.insert(data);
+                });
             }
         });
     }
