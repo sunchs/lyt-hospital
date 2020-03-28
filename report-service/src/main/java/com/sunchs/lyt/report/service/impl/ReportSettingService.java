@@ -350,7 +350,7 @@ public class ReportSettingService implements IReportSettingService {
 
     @Override
     public void deleteItemTempOffice(Integer id) {
-        settingItemTempShowService.deleteById(id);
+        itemTempOfficeService.deleteById(id);
     }
 
     @Override
@@ -495,7 +495,7 @@ public class ReportSettingService implements IReportSettingService {
         // 组合数据集合
         itemTempOffices.forEach(temp -> {
             TitleChildrenVO data = new TitleChildrenVO();
-            data.setId(temp.getOfficeId());
+            data.setId(temp.getId());
             data.setTitle(officeNameMap.get(temp.getOfficeId()));
             // 拆分指标
             List<TitleChildrenVO> childList = new ArrayList<>();
@@ -505,7 +505,7 @@ public class ReportSettingService implements IReportSettingService {
             Map<Integer, String> targetNameMap = getTargetNameByIds(targetIds);
             targetIds.forEach(targetId -> {
                 TitleChildrenVO ch = new TitleChildrenVO();
-                ch.setId(targetId);
+//                ch.setId(targetId);
                 ch.setTitle(targetNameMap.get(targetId));
                 ch.setChildren(new ArrayList<>());
                 childList.add(ch);
