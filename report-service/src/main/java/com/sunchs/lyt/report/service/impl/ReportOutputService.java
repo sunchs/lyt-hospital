@@ -402,6 +402,18 @@ public class ReportOutputService implements IReportOutputService {
             line++;
             column = 0;
 
+            // 三级指标满意度
+            for (SatisfyData row : twoSatisfy) {
+                line++;
+                List<SatisfyData> threeList = reportTargetService.getItemSatisfyByTarget(param.getItemId(), row.getId(), 2);
+                for (SatisfyData three : threeList) {
+                    sheet.addCell(new Label(column++, line, three.getpName(), format));
+                    sheet.addCell(new Label(column++, line, three.getName(), format));
+                    sheet.addCell(new Label(column++, line, three.getValue()+""));
+                }
+            }
+            line++;
+            column = 0;
 
 //
 //            // 列标题
