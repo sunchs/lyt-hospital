@@ -511,6 +511,7 @@ public class ReportSettingService implements IReportSettingService {
                 childList.add(ch);
             });
             data.setChildren(childList);
+            result.add(data);
         });
         return result;
     }
