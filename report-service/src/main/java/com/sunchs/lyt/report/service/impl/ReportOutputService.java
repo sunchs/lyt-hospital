@@ -391,6 +391,7 @@ public class ReportOutputService implements IReportOutputService {
             List<SatisfyData> twoSatisfy = twoSatisfyList.stream().filter(v ->
                     ( ! v.getName().equals("总体满意度")) && ( ! v.getName().equals("满意度")) && ( ! v.getName().equals("推荐度"))
             ).collect(Collectors.toList());
+            sheet.addCell(new Label(0, line++, "二级指标满意度", format));
             for (SatisfyData row : twoSatisfy) {
                 sheet.addCell(new Label(column++, line, row.getName(), format));
             }
@@ -403,6 +404,7 @@ public class ReportOutputService implements IReportOutputService {
             column = 0;
 
             // 三级指标满意度
+            sheet.addCell(new Label(0, line++, "三级级指标满意度", format));
             for (SatisfyData row : twoSatisfy) {
                 List<SatisfyData> threeList = reportTargetService.getItemSatisfyByTarget(param.getItemId(), row.getId(), 2);
                 for (SatisfyData three : threeList) {
@@ -416,36 +418,93 @@ public class ReportOutputService implements IReportOutputService {
             line++;
             column = 0;
 
-//
-//            // 列标题
-//            int columnPos = 1;
-//            for (IdTitleData data : list.getColList()) {
-//                sheet.addCell(new Label(columnPos++, 0, data.getTitle(), format));
-//            }
-//
-//            // 列宽度
-//            for (int i = 0; i < columnPos; i++) {
-//                sheet.setColumnView(i, 8);
-//            }
-//
-//            // 行标题
-//            int line = 1;
-//            for (IdTitleData row : list.getRowList()) {
-//                sheet.addCell(new Label(0, line++, row.getTitle(), format));
-////                sheet.setRowView(line, 30);
-//            }
-//
-//            // 值
-//            line = 1;
-//            for (IdTitleData row : list.getRowList()) {
-//                columnPos = 1;
-//                for (IdTitleData col : list.getColList()) {
-//                    List<ItemCompareValue> valueList = list.getValueList();
-//                    sheet.addCell(new Label(columnPos++, line, getRelatedValue(valueList, col.getId(), row.getId())));
-//                }
-//                line++;
-//            }
+            // 性别
+            sheet.addCell(new Label(0, line++, "性别", format));
+            List<TotalSexData> sexList = reportTagService.getItemQuantityByTag(param.getItemId(), 2, param.getOfficeType());
+            sheet.addCell(new Label(column++, line, ""));
+            for (TotalSexData sexData : sexList) {
+                sheet.addCell(new Label(column++, line, sexData.getOptionName()+""));
+            }
+            line++;
+            column = 0;
+            sheet.addCell(new Label(column++, line, "人数"));
+            for (TotalSexData sexData : sexList) {
+                sheet.addCell(new Label(column++, line, sexData.getQuantity()+""));
+            }
+            line++;
+            column = 0;
+            sheet.addCell(new Label(column++, line, "占比"));
+            for (TotalSexData sexData : sexList) {
+                sheet.addCell(new Label(column++, line, sexData.getRate()+"%"));
+            }
+            line++;
+            column = 0;
 
+            // 年龄
+            sheet.addCell(new Label(0, line++, "年龄", format));
+            List<TotalSexData> ageList = reportTagService.getItemQuantityByTag(param.getItemId(), 3, param.getOfficeType());
+            sheet.addCell(new Label(column++, line, ""));
+            for (TotalSexData ageData : ageList) {
+                sheet.addCell(new Label(column++, line, ageData.getOptionName()+""));
+            }
+            line++;
+            column = 0;
+            sheet.addCell(new Label(column++, line, "人数"));
+            for (TotalSexData ageData : ageList) {
+                sheet.addCell(new Label(column++, line, ageData.getQuantity()+""));
+            }
+            line++;
+            column = 0;
+            sheet.addCell(new Label(column++, line, "占比"));
+            for (TotalSexData ageData : ageList) {
+                sheet.addCell(new Label(column++, line, ageData.getRate()+"%"));
+            }
+            line++;
+            column = 0;
+
+            // 来院理由
+            sheet.addCell(new Label(0, line++, "来院理由", format));
+            List<TotalSexData> fromList = reportTagService.getItemQuantityByTag(param.getItemId(), 3, param.getOfficeType());
+            sheet.addCell(new Label(column++, line, ""));
+            for (TotalSexData fromData : fromList) {
+                sheet.addCell(new Label(column++, line, fromData.getOptionName()+""));
+            }
+            line++;
+            column = 0;
+            sheet.addCell(new Label(column++, line, "人数"));
+            for (TotalSexData fromData : fromList) {
+                sheet.addCell(new Label(column++, line, fromData.getQuantity()+""));
+            }
+            line++;
+            column = 0;
+            sheet.addCell(new Label(column++, line, "占比"));
+            for (TotalSexData fromData : fromList) {
+                sheet.addCell(new Label(column++, line, fromData.getRate()+"%"));
+            }
+            line++;
+            column = 0;
+
+            // 居住地
+            sheet.addCell(new Label(0, line++, "居住地", format));
+            List<TotalSexData> addressList = reportTagService.getItemQuantityByTag(param.getItemId(), 6, param.getOfficeType());
+            sheet.addCell(new Label(column++, line, ""));
+            for (TotalSexData addressData : addressList) {
+                sheet.addCell(new Label(column++, line, addressData.getOptionName()+""));
+            }
+            line++;
+            column = 0;
+            sheet.addCell(new Label(column++, line, "人数"));
+            for (TotalSexData addressData : addressList) {
+                sheet.addCell(new Label(column++, line, addressData.getQuantity()+""));
+            }
+            line++;
+            column = 0;
+            sheet.addCell(new Label(column++, line, "占比"));
+            for (TotalSexData addressData : addressList) {
+                sheet.addCell(new Label(column++, line, addressData.getRate()+"%"));
+            }
+
+            
             // 列宽度
             for (int i = 0; i < 20; i++) {
                 sheet.setColumnView(i, 18);
