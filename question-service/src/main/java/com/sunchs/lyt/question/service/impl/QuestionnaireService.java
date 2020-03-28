@@ -114,7 +114,7 @@ public class QuestionnaireService implements IQuestionnaireService {
     @Override
     public PagingList<QuestionnaireData> getPageList(QuestionnaireParam param) {
         Wrapper<Questionnaire> where = new EntityWrapper<>();
-
+        where.ne(Questionnaire.STATUS, -1);
         if (UserThreadUtil.getType() == UserTypeEnum.ADMIN.value) {
             if (NumberUtil.nonZero(param.getHospitalId())) {
                 where.eq(Questionnaire.HOSPITAL_ID, param.getHospitalId());
