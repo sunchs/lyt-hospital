@@ -451,20 +451,25 @@ public class ReportSettingService implements IReportSettingService {
     @Override
     public List<TitleChildrenVO> getItemTempOfficeChildren(Integer itemId) {
         List<TitleChildrenVO> result = new ArrayList<>();
-        // 提取数据库数据
-        List<SettingItemTempShow> list = getTempOfficeListByItemId(itemId);
-        list.forEach(type -> {
+        Wrapper<ItemTempOffice> tempOfficeWrapper = new EntityWrapper<ItemTempOffice>()
+                .eq(ItemTempOffice.ITEM_ID, itemId);
+        List<ItemTempOffice> tempOfficeList = itemTempOfficeService.selectList(tempOfficeWrapper);
+        Map<Integer, List<ItemTempOffice>> tempMap = tempOfficeList.stream().collect(Collectors.groupingBy(ItemTempOffice::getOfficeType));
+        for (Integer officeType : tempMap.keySet()) {
+            List<ItemTempOffice> tempOfficeGroup = tempMap.get(officeType);
+            List<Integer> oIds = tempOfficeGroup.stream().map(ItemTempOffice::getOfficeId).collect(Collectors.toList());
+            Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<ItemOffice>()
+                    .eq(ItemOffice.ITEM_ID, itemId)
+                    .eq(ItemOffice.OFFICE_TYPE_ID, officeType)
+                    .in(ItemOffice.OFFICE_ID, oIds);
+            List<ItemOffice> itemOfficeList = itemOfficeService.selectList(itemOfficeWrapper);
+            // 消息体
             TitleChildrenVO data = new TitleChildrenVO();
-            data.setId(type.getOfficeType());
-            data.setTitle(OfficeTypeEnum.get(type.getOfficeType()));
+            data.setId(officeType);
+            data.setTitle(OfficeTypeEnum.get(officeType));
             // 提取项目科室列表
-            if (CollectionUtils.isNotEmpty(type.getOfficeList())) {
+            if (CollectionUtils.isNotEmpty(itemOfficeList)) {
                 List<TitleChildrenVO> childList = new ArrayList<>();
-                Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<ItemOffice>()
-                        .eq(ItemOffice.ITEM_ID, itemId)
-                        .eq(ItemOffice.OFFICE_TYPE_ID, type.getOfficeType())
-                        .in(ItemOffice.OFFICE_ID, type.getOfficeList());
-                List<ItemOffice> itemOfficeList = itemOfficeService.selectList(itemOfficeWrapper);
                 itemOfficeList.forEach(office -> {
                     TitleChildrenVO vo = new TitleChildrenVO();
                     vo.setId(office.getOfficeId());
@@ -478,7 +483,7 @@ public class ReportSettingService implements IReportSettingService {
                 data.setChildren(childList);
             }
             result.add(data);
-        });
+        }
         return result;
     }
 
@@ -543,22 +548,6 @@ public class ReportSettingService implements IReportSettingService {
                 .in(QuestionTarget.ID, targetIds);
         List<QuestionTarget> itemList = questionTargetService.selectList(wrapper);
         return itemList.stream().collect(Collectors.toMap(QuestionTarget::getId, QuestionTarget::getTitle));
-    }
-
-    private List<SettingItemTempShow> getTempOfficeListByItemId(Integer itemId) {
-        Wrapper<SettingItemTempShow> settingItemTempShowWrapper = new EntityWrapper<SettingItemTempShow>()
-                .eq(SettingItemTempShow.ITEM_ID, itemId);
-        List<SettingItemTempShow> typeList = settingItemTempShowService.selectList(settingItemTempShowWrapper);
-        typeList.forEach(type -> {
-            // 转换科室
-            String[] split = type.getOfficeIds().trim().split(",");
-            if (split.length > 0) {
-                List<String> tempList = Arrays.asList(split);
-                List<Integer> officeIds = tempList.stream().map(v -> Integer.parseInt(v)).collect(Collectors.toList());
-                type.setOfficeList(officeIds);
-            }
-        });
-        return typeList;
     }
 
     private List<Map<String, Object>> getTwoTargetMap(List<ReportAnswerOption> twoTempList) {
