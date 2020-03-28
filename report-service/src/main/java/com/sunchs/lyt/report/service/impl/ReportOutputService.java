@@ -6,10 +6,7 @@ import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.IdTitleData;
 import com.sunchs.lyt.framework.util.FormatUtil;
-import com.sunchs.lyt.report.bean.ItemCompareValue;
-import com.sunchs.lyt.report.bean.ItemRelatedData;
-import com.sunchs.lyt.report.bean.OutputParam;
-import com.sunchs.lyt.report.bean.TotalSexData;
+import com.sunchs.lyt.report.bean.*;
 import com.sunchs.lyt.report.exception.ReportException;
 import com.sunchs.lyt.report.service.IReportOutputService;
 import jxl.Workbook;
@@ -65,6 +62,9 @@ public class ReportOutputService implements IReportOutputService {
 
     @Autowired
     private ItemOfficeServiceImpl itemOfficeService;
+
+    @Autowired
+    private ReportTargetService reportTargetService;
 
     @Override
     public String getItemOfficeAnswer(OutputParam param) {
@@ -319,6 +319,123 @@ public class ReportOutputService implements IReportOutputService {
                 }
                 line++;
             }
+
+            wb.write();
+            wb.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (WriteException e) {
+            e.printStackTrace();
+        }
+        return path + "/" + fileName;
+    }
+
+    @Override
+    public String getItemSatisfyReport(OutputParam param) {
+
+
+        String path = "temp";
+        initPath(path);
+        String fileName = System.currentTimeMillis() +".xls";
+
+        try {
+            File file = new File(path + "/" + fileName);
+            WritableWorkbook wb = jxl.Workbook.createWorkbook(file);
+            // 改变默认颜色
+            Color color = Color.decode("#EEA9B8");
+            wb.setColourRGB(Colour.RED, color.getRed(), color.getGreen(), color.getBlue());
+            WritableSheet sheet = wb.createSheet("满意度报表", 0);
+            // 写表头
+            WritableCellFormat format = new WritableCellFormat();
+            format.setBackground(Colour.RED);
+
+            /report-service/report/getItemAllSatisfy
+
+            int column = 0;
+            int line = 0;
+            // 开始写数据
+
+            // 总体满意度
+            Double itemAllSatisfy = reportTargetService.getItemAllSatisfy(param.getItemId(), param.getOfficeType());
+            sheet.addCell(new Label(column++, line, "综合满意度", format));
+            sheet.addCell(new Label(column++, line, itemAllSatisfy+""));
+            line++;
+            column = 0;
+
+            // 总体满意度
+            List<SatisfyData> twoSatisfyList = reportTargetService.getItemSatisfyByTarget(param.getItemId(), param.getOfficeId(), 1);
+            Optional<SatisfyData> questionSatisfy = twoSatisfyList.stream().filter(v -> v.getName().equals("总体满意度")).findFirst();
+            if (questionSatisfy.isPresent()) {
+                line++;
+                sheet.addCell(new Label(column++, line, "总体满意度", format));
+                sheet.addCell(new Label(column++, line, questionSatisfy+""));
+                line++;
+                column = 0;
+            }
+            Optional<SatisfyData> questionSatisfy2 = twoSatisfyList.stream().filter(v -> v.getName().equals("满意度")).findFirst();
+            if (questionSatisfy2.isPresent()) {
+                line++;
+                sheet.addCell(new Label(column++, line, "满意度", format));
+                sheet.addCell(new Label(column++, line, questionSatisfy2+""));
+                line++;
+                column = 0;
+            }
+
+            Optional<SatisfyData> pushSatisfy = twoSatisfyList.stream().filter(v -> v.getName().equals("推荐度")).findFirst();
+            if (pushSatisfy.isPresent()) {
+                line++;
+                sheet.addCell(new Label(column++, line, "推荐度", format));
+                sheet.addCell(new Label(column++, line, pushSatisfy+""));
+                line++;
+                column = 0;
+            }
+
+            // 二级指标满意度
+            line++;
+            List<SatisfyData> twoSatisfy = twoSatisfyList.stream().filter(v ->
+                    ( ! v.getName().equals("总体满意度")) && ( ! v.getName().equals("满意度")) && ( ! v.getName().equals("推荐度"))
+            ).collect(Collectors.toList());
+            for (SatisfyData row : twoSatisfy) {
+                sheet.addCell(new Label(column++, line, row.getName(), format));
+            }
+            line++;
+            for (SatisfyData row : twoSatisfy) {
+                sheet.addCell(new Label(column++, line, row.getValue()+""));
+            }
+            line++;
+            column = 0;
+
+
+//
+//            // 列标题
+//            int columnPos = 1;
+//            for (IdTitleData data : list.getColList()) {
+//                sheet.addCell(new Label(columnPos++, 0, data.getTitle(), format));
+//            }
+//
+//            // 列宽度
+//            for (int i = 0; i < columnPos; i++) {
+//                sheet.setColumnView(i, 8);
+//            }
+//
+//            // 行标题
+//            int line = 1;
+//            for (IdTitleData row : list.getRowList()) {
+//                sheet.addCell(new Label(0, line++, row.getTitle(), format));
+////                sheet.setRowView(line, 30);
+//            }
+//
+//            // 值
+//            line = 1;
+//            for (IdTitleData row : list.getRowList()) {
+//                columnPos = 1;
+//                for (IdTitleData col : list.getColList()) {
+//                    List<ItemCompareValue> valueList = list.getValueList();
+//                    sheet.addCell(new Label(columnPos++, line, getRelatedValue(valueList, col.getId(), row.getId())));
+//                }
+//                line++;
+//            }
 
             wb.write();
             wb.close();

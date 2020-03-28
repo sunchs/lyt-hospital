@@ -18,4 +18,9 @@ public interface IReportOutputService {
      * 导出项目相关系数
      */
     String getItemRelatedData(OutputParam param);
+
+    /**
+     * 导出项目总满意度报表
+     */
+    String getItemSatisfyReport(OutputParam param);
 }
