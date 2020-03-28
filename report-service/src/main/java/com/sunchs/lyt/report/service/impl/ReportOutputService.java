@@ -350,8 +350,6 @@ public class ReportOutputService implements IReportOutputService {
             WritableCellFormat format = new WritableCellFormat();
             format.setBackground(Colour.RED);
 
-            /report-service/report/getItemAllSatisfy
-
             int column = 0;
             int line = 0;
             // 开始写数据
