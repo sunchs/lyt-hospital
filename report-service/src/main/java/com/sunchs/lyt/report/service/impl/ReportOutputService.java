@@ -333,12 +333,9 @@ public class ReportOutputService implements IReportOutputService {
 
     @Override
     public String getItemSatisfyReport(OutputParam param) {
-
-
         String path = "temp";
         initPath(path);
         String fileName = System.currentTimeMillis() +".xls";
-
         try {
             File file = new File(path + "/" + fileName);
             WritableWorkbook wb = jxl.Workbook.createWorkbook(file);
@@ -362,7 +359,7 @@ public class ReportOutputService implements IReportOutputService {
             column = 0;
 
             // 总体满意度
-            List<SatisfyData> twoSatisfyList = reportTargetService.getItemSatisfyByTarget(param.getItemId(), param.getOfficeId(), 1);
+            List<SatisfyData> twoSatisfyList = reportTargetService.getItemSatisfyByTarget(param.getItemId(), param.getOfficeType(), 1);
             Optional<SatisfyData> questionSatisfy = twoSatisfyList.stream().filter(v -> v.getName().equals("总体满意度")).findFirst();
             if (questionSatisfy.isPresent()) {
                 line++;
