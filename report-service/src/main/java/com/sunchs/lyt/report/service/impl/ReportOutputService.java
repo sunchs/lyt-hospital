@@ -433,6 +433,11 @@ public class ReportOutputService implements IReportOutputService {
 //                line++;
 //            }
 
+            // 列宽度
+            for (int i = 0; i < 20; i++) {
+                sheet.setColumnView(i, 18);
+            }
+
             wb.write();
             wb.close();
 
