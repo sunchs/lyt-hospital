@@ -67,4 +67,9 @@ public interface IReportSettingService {
      * 获取总体满意度设置
      */
     List<Map<String, Object>> getItemAllSatisfySettingList(Integer itemId, Integer officeType);
+
+    /**
+     * 根据 项目ID 获取临床科室
+     */
+    List<TitleChildrenVO> getItemTempOfficeChildren(Integer itemId);
 }

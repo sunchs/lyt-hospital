@@ -2,16 +2,21 @@ package com.sunchs.lyt.report.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.google.common.collect.Lists;
 import com.sunchs.lyt.db.business.entity.*;
+import com.sunchs.lyt.db.business.mapper.SettingItemTempShowMapper;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.TitleData;
 import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.framework.enums.OfficeTypeEnum;
 import com.sunchs.lyt.report.bean.*;
 import com.sunchs.lyt.report.service.IReportSettingService;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -48,6 +53,9 @@ public class ReportSettingService implements IReportSettingService {
 
     @Autowired
     private SettingItemWeightServiceImpl settingItemWeightService;
+
+    @Autowired
+    private ItemOfficeServiceImpl itemOfficeService;
 
     @Override
     public List<TitleData> getItemUseQuestionnaireList(Integer itemId) {
@@ -400,6 +408,56 @@ public class ReportSettingService implements IReportSettingService {
             result.add(map);
         }
         return result;
+    }
+
+    @Override
+    public List<TitleChildrenVO> getItemTempOfficeChildren(Integer itemId) {
+        List<TitleChildrenVO> result = new ArrayList<>();
+        // 提取数据库数据
+        List<SettingItemTempShow> list = getTempOfficeListByItemId(itemId);
+        list.forEach(type -> {
+            TitleChildrenVO data = new TitleChildrenVO();
+            data.setId(type.getOfficeType());
+            data.setTitle(OfficeTypeEnum.get(type.getOfficeType()));
+            // 提取项目科室列表
+            if (CollectionUtils.isNotEmpty(type.getOfficeList())) {
+                List<TitleChildrenVO> childList = new ArrayList<>();
+                Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<ItemOffice>()
+                        .eq(ItemOffice.ITEM_ID, itemId)
+                        .eq(ItemOffice.OFFICE_TYPE_ID, type.getOfficeType())
+                        .in(ItemOffice.OFFICE_ID, type.getOfficeList());
+                List<ItemOffice> itemOfficeList = itemOfficeService.selectList(itemOfficeWrapper);
+                itemOfficeList.forEach(office -> {
+                    TitleChildrenVO vo = new TitleChildrenVO();
+                    vo.setId(office.getOfficeId());
+                    if (office.getOfficeTypeId().equals(3) && office.getTitle().equals("")) {
+                        vo.setTitle("员工");
+                    } else {
+                        vo.setTitle(office.getTitle());
+                    }
+                    childList.add(vo);
+                });
+                data.setChildren(childList);
+            }
+            result.add(data);
+        });
+        return result;
+    }
+
+    private List<SettingItemTempShow> getTempOfficeListByItemId(Integer itemId) {
+        Wrapper<SettingItemTempShow> settingItemTempShowWrapper = new EntityWrapper<SettingItemTempShow>()
+                .eq(SettingItemTempShow.ITEM_ID, itemId);
+        List<SettingItemTempShow> typeList = settingItemTempShowService.selectList(settingItemTempShowWrapper);
+        typeList.forEach(type -> {
+            // 转换科室
+            String[] split = type.getOfficeIds().trim().split(",");
+            if (split.length > 0) {
+                List<String> tempList = Arrays.asList(split);
+                List<Integer> officeIds = tempList.stream().map(v -> Integer.parseInt(v)).collect(Collectors.toList());
+                type.setOfficeList(officeIds);
+            }
+        });
+        return typeList;
     }
 
     private List<Map<String, Object>> getTwoTargetMap(List<ReportAnswerOption> twoTempList) {

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -50,6 +51,12 @@ public class SettingItemTempShow extends Model<SettingItemTempShow> {
     @TableField("target_ids")
     private String targetIds;
 
+    @TableField(exist = false)
+    private List<Integer> officeList;
+
+    @TableField(exist = false)
+    private List<Integer> targetList;
+
     public Integer getId() {
         return id;
     }
@@ -84,6 +91,22 @@ public class SettingItemTempShow extends Model<SettingItemTempShow> {
 
     public void setTargetIds(String targetIds) {
         this.targetIds = targetIds;
+    }
+
+    public List<Integer> getOfficeList() {
+        return officeList;
+    }
+
+    public void setOfficeList(List<Integer> officeList) {
+        this.officeList = officeList;
+    }
+
+    public List<Integer> getTargetList() {
+        return targetList;
+    }
+
+    public void setTargetList(List<Integer> targetList) {
+        this.targetList = targetList;
     }
 
     public static final String ID = "id";

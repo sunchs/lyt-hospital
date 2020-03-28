@@ -141,4 +141,12 @@ public class ReportSettingController extends BaseController {
         return success(reportSettingService.getItemAllSatisfySettingList(itemId, officeType));
     }
 
+    /**
+     * 获取临床科室列表
+     */
+    @PostMapping("/itemTempOfficeList")
+    public ResultData itemTempOfficeList(@RequestBody RequestData data) {
+        Integer itemId = data.getInt("itemId");
+        return success(reportSettingService.getItemTempOfficeChildren(itemId));
+    }
 }
