@@ -482,6 +482,68 @@ public class ReportSettingService implements IReportSettingService {
         return result;
     }
 
+    @Override
+    public List<TitleChildrenVO> getItemTempOfficeSettingV2(Integer itemId, Integer officeType) {
+        List<TitleChildrenVO> result = new ArrayList<>();
+        // 获取数据
+        Wrapper<ItemTempOffice> tempOfficeWrapper = new EntityWrapper<ItemTempOffice>()
+                .eq(ItemTempOffice.ITEM_ID, itemId)
+                .eq(ItemTempOffice.OFFICE_TYPE, officeType);
+        List<ItemTempOffice> itemTempOffices = itemTempOfficeService.selectList(tempOfficeWrapper);
+        List<Integer> officeIds = itemTempOffices.stream().map(ItemTempOffice::getOfficeId).collect(Collectors.toList());
+        Map<Integer, String> officeNameMap = getItemTempOfficeNameMap(itemId, officeType, officeIds);
+        // 组合数据集合
+        itemTempOffices.forEach(temp -> {
+            TitleChildrenVO data = new TitleChildrenVO();
+            data.setId(temp.getOfficeId());
+            data.setTitle(officeNameMap.get(temp.getOfficeId()));
+            // 拆分指标
+            List<TitleChildrenVO> childList = new ArrayList<>();
+            String[] split = temp.getTargetIds().split(",");
+            List<String> targetList = Arrays.asList(split);
+            List<Integer> targetIds = targetList.stream().map(v -> Integer.parseInt(v)).collect(Collectors.toList());
+            Map<Integer, String> targetNameMap = getTargetNameByIds(targetIds);
+            targetIds.forEach(targetId -> {
+                TitleChildrenVO ch = new TitleChildrenVO();
+                ch.setId(targetId);
+                ch.setTitle(targetNameMap.get(targetId));
+                ch.setChildren(new ArrayList<>());
+                childList.add(ch);
+            });
+            data.setChildren(childList);
+        });
+        return result;
+    }
+
+    private Map<Integer, String> getItemTempOfficeNameMap(Integer itemId, Integer officeType, List<Integer> officeIds) {
+        Map<Integer, String> map = new HashMap<>();
+        Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<ItemOffice>()
+                .setSqlSelect(
+                        ItemOffice.OFFICE_ID.concat(" as officeId"),
+                        ItemOffice.TITLE,
+                        ItemOffice.GROUP_NAME.concat(" as groupName")
+                )
+                .eq(ItemOffice.ITEM_ID, itemId)
+                .eq(ItemOffice.OFFICE_TYPE_ID, officeType)
+                .in(ItemOffice.OFFICE_ID, officeIds);
+        List<ItemOffice> itemOffices = itemOfficeService.selectList(itemOfficeWrapper);
+        itemOffices.forEach(o -> {
+            map.put(o.getOfficeId(), o.getTitle().equals("") ? o.getGroupName() : o.getTitle());
+        });
+        return map;
+    }
+
+    /**
+     * 根据 指标ID集合 获取指标名称
+     */
+    private Map<Integer, String> getTargetNameByIds(List<Integer> targetIds) {
+        Wrapper<QuestionTarget> wrapper = new EntityWrapper<QuestionTarget>()
+                .setSqlSelect(QuestionTarget.ID, QuestionTarget.TITLE)
+                .in(QuestionTarget.ID, targetIds);
+        List<QuestionTarget> itemList = questionTargetService.selectList(wrapper);
+        return itemList.stream().collect(Collectors.toMap(QuestionTarget::getId, QuestionTarget::getTitle));
+    }
+
     private List<SettingItemTempShow> getTempOfficeListByItemId(Integer itemId) {
         Wrapper<SettingItemTempShow> settingItemTempShowWrapper = new EntityWrapper<SettingItemTempShow>()
                 .eq(SettingItemTempShow.ITEM_ID, itemId);

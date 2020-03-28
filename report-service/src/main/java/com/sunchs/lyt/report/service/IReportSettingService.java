@@ -72,4 +72,9 @@ public interface IReportSettingService {
      * 根据 项目ID 获取临床科室
      */
     List<TitleChildrenVO> getItemTempOfficeChildren(Integer itemId);
+
+    /**
+     * 获取临床科室配置信息
+     */
+    List<TitleChildrenVO> getItemTempOfficeSettingV2(Integer itemId, Integer officeType);
 }
