@@ -190,7 +190,7 @@ public class ReportSettingService implements IReportSettingService {
                 officeIds.add(row.getOfficeId());
             }
         });
-        if (CollectionUtils.isNotEmpty(officeIds)) {
+        if (CollectionUtils.isEmpty(officeIds)) {
             throw new ReportException("请选择科室和指标!");
         }
         if (officeIds.size() != officeIds.stream().distinct().count()) {
