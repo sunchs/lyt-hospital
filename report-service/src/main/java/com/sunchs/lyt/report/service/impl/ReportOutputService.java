@@ -364,7 +364,7 @@ public class ReportOutputService implements IReportOutputService {
             if (questionSatisfy.isPresent()) {
                 line++;
                 sheet.addCell(new Label(column++, line, "总体满意度", format));
-                sheet.addCell(new Label(column++, line, questionSatisfy.get()+""));
+                sheet.addCell(new Label(column++, line, questionSatisfy.get().getValue()+""));
                 line++;
                 column = 0;
             }
@@ -372,7 +372,7 @@ public class ReportOutputService implements IReportOutputService {
             if (questionSatisfy2.isPresent()) {
                 line++;
                 sheet.addCell(new Label(column++, line, "满意度", format));
-                sheet.addCell(new Label(column++, line, questionSatisfy2.get()+""));
+                sheet.addCell(new Label(column++, line, questionSatisfy2.get().getValue()+""));
                 line++;
                 column = 0;
             }
@@ -381,7 +381,7 @@ public class ReportOutputService implements IReportOutputService {
             if (pushSatisfy.isPresent()) {
                 line++;
                 sheet.addCell(new Label(column++, line, "推荐度", format));
-                sheet.addCell(new Label(column++, line, pushSatisfy.get()+""));
+                sheet.addCell(new Label(column++, line, pushSatisfy.get().getValue()+""));
                 line++;
                 column = 0;
             }
