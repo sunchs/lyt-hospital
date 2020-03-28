@@ -186,12 +186,15 @@ public class ReportSettingService implements IReportSettingService {
         // 参数判断
         List<Integer> officeIds = new ArrayList<>();
         param.getValueList().forEach(row->{
-            if (CollectionUtils.isNotEmpty(row.getOfficeList()) && CollectionUtils.isNotEmpty(row.getTargetList())) {
-                officeIds.addAll(row.getOfficeList());
+            if (Objects.nonNull(row.getOfficeId()) && row.getOfficeId() > 0 && CollectionUtils.isNotEmpty(row.getTargetList())) {
+                officeIds.add(row.getOfficeId());
             }
         });
         if (CollectionUtils.isNotEmpty(officeIds)) {
             throw new ReportException("请选择科室和指标!");
+        }
+        if (officeIds.size() != officeIds.stream().distinct().count()) {
+            throw new ReportException("科室不能重复!");
         }
         // 判断是否存在数据库
         Wrapper<ItemTempOffice> tempOfficeWrapper = new EntityWrapper<ItemTempOffice>()
@@ -219,17 +222,15 @@ public class ReportSettingService implements IReportSettingService {
         }
         // 保存数据
         param.getValueList().forEach(row->{
-            if (CollectionUtils.isNotEmpty(row.getOfficeList()) && CollectionUtils.isNotEmpty(row.getTargetList())) {
-                row.getOfficeList().forEach(officeId -> {
-                    ItemTempOffice data = new ItemTempOffice();
-                    data.setItemId(param.getItemId());
-                    data.setOfficeType(param.getOfficeType());
-                    data.setOfficeId(officeId);
-                    data.setTargetIds(String.join(",", row.getTargetList().stream().map(v->v+"").collect(Collectors.toList())));
-                    data.setCreateId(UserThreadUtil.getUserId());
-                    data.setCreateTime(new Date());
-                    itemTempOfficeService.insert(data);
-                });
+            if (Objects.nonNull(row.getOfficeId()) && row.getOfficeId() > 0 && CollectionUtils.isNotEmpty(row.getTargetList())) {
+                ItemTempOffice data = new ItemTempOffice();
+                data.setItemId(param.getItemId());
+                data.setOfficeType(param.getOfficeType());
+                data.setOfficeId(row.getOfficeId());
+                data.setTargetIds(String.join(",", row.getTargetList().stream().map(v->v+"").collect(Collectors.toList())));
+                data.setCreateId(UserThreadUtil.getUserId());
+                data.setCreateTime(new Date());
+                itemTempOfficeService.insert(data);
             }
         });
     }

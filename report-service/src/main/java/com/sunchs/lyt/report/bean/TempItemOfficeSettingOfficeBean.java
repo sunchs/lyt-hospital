@@ -4,15 +4,15 @@ import java.util.List;
 
 public class TempItemOfficeSettingOfficeBean {
 
-    private List<Integer> officeList;
+    private Integer officeId;
     private List<Integer> targetList;
 
-    public List<Integer> getOfficeList() {
-        return officeList;
+    public Integer getOfficeId() {
+        return officeId;
     }
 
-    public void setOfficeList(List<Integer> officeList) {
-        this.officeList = officeList;
+    public void setOfficeId(Integer officeId) {
+        this.officeId = officeId;
     }
 
     public List<Integer> getTargetList() {
