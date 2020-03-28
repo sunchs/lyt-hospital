@@ -471,7 +471,7 @@ public class ReportOutputService implements IReportOutputService {
             }
 
             // 来院理由
-            List<TotalSexData> fromList = reportTagService.getItemQuantityByTag(param.getItemId(), 3, param.getOfficeType());
+            List<TotalSexData> fromList = reportTagService.getItemQuantityByTag(param.getItemId(), 4, param.getOfficeType());
             if (CollectionUtils.isNotEmpty(fromList)) {
                 line++;
                 sheet.addCell(new Label(0, line++, "来院理由", format));
@@ -496,7 +496,7 @@ public class ReportOutputService implements IReportOutputService {
             }
 
             // 居住地
-            List<TotalSexData> addressList = reportTagService.getItemQuantityByTag(param.getItemId(), 6, param.getOfficeType());
+            List<TotalSexData> addressList = reportTagService.getItemQuantityByTag(param.getItemId(), 5, param.getOfficeType());
             if (CollectionUtils.isNotEmpty(addressList)) {
                 line++;
                 sheet.addCell(new Label(0, line++, "居住地", format));
@@ -518,7 +518,7 @@ public class ReportOutputService implements IReportOutputService {
                     sheet.addCell(new Label(column++, line, addressData.getRate()+"%"));
                 }
             }
-            
+
             // 列宽度
             for (int i = 0; i < 20; i++) {
                 sheet.setColumnView(i, 18);
