@@ -166,8 +166,7 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
         if (rankingRow.isPresent()) {
             res.setLevelValue(rankingRow.get().getRanking());
         }
-
-
+        return res;
     }
 
     @Override
