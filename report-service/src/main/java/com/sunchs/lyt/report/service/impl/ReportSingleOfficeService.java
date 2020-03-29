@@ -718,6 +718,7 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
             }
             data.setCountValue(data.getValue1() / data.getValue2() / (double)2);
             data.setQuestionSatisfyValue(q.getSatisfyValue());
+            result.add(data);
         });
         return result;
     }
