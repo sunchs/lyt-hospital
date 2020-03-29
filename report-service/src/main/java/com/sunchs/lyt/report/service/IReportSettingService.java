@@ -84,4 +84,9 @@ public interface IReportSettingService {
      * 获取临床科室满意度
      */
     List<TitleValueChildrenData> getItemTempOfficeSatisfyList(Integer itemId, Integer officeType);
+
+    /**
+     * 获取临床科室满意度（带排名）
+     */
+    Map<String, Object> getItemTempOfficeSatisfyAndRankingList(Integer itemId, Integer officeType);
 }

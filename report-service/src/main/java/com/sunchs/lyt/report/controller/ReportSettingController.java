@@ -103,7 +103,7 @@ public class ReportSettingController extends BaseController {
     public ResultData getItemTempOfficeSatisfyList(@RequestBody RequestData data) {
         Integer itemId = data.getInt("itemId");
         Integer officeType = data.getInt("officeType");
-        return success(reportSettingService.getItemTempOfficeSatisfyList(itemId, officeType));
+        return success(reportSettingService.getItemTempOfficeSatisfyAndRankingList(itemId, officeType));
     }
 
     /**

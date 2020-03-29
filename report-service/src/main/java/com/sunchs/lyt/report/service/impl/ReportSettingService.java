@@ -556,6 +556,39 @@ public class ReportSettingService implements IReportSettingService {
         return result;
     }
 
+    @Override
+    public Map<String, Object> getItemTempOfficeSatisfyAndRankingList(Integer itemId, Integer officeType) {
+        Map<String, Object> map = new HashMap<>();
+        List<TitleValueChildrenData> satisfyList = getItemTempOfficeSatisfyList(itemId, officeType);
+        map.put("list", satisfyList);
+
+        // 排序
+        satisfyList.sort(Comparator.comparing(TitleValueChildrenData::getValue).reversed());
+        // 排序次数过滤
+        int rank = 0;
+        double rankValue = 0;
+        int tempRank = 0;
+        for (TitleValueChildrenData t : satisfyList) {
+            if (rank == 0) {
+                rank++;
+                rankValue = t.getValue();
+                t.setId(rank);
+            } else if (rankValue != t.getValue()) {
+                rank++;
+                rankValue = t.getValue();
+                rank += tempRank;
+                tempRank = 0;
+            } else {
+                tempRank++;
+            }
+            t.setId(rank);
+        }
+        map.put("rankingList", satisfyList);
+        return map;
+    }
+
+
+
     private Map<Integer, String> getItemTempOfficeNameMap(Integer itemId, Integer officeType, List<Integer> officeIds) {
         Map<Integer, String> map = new HashMap<>();
         Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<ItemOffice>()
