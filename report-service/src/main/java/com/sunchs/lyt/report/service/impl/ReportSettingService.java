@@ -587,7 +587,22 @@ public class ReportSettingService implements IReportSettingService {
         return map;
     }
 
-
+    @Override
+    public List<ItemTempOffice> getItemTempOfficeSettingList(Integer itemId, Integer officeType) {
+        Wrapper<ItemTempOffice> tempOfficeWrapper = new EntityWrapper<ItemTempOffice>()
+                .eq(ItemTempOffice.ITEM_ID, itemId);
+        if ( ! officeType.equals(0)) {
+            tempOfficeWrapper.eq(ItemTempOffice.OFFICE_TYPE, officeType);
+        }
+        List<ItemTempOffice> settingList = itemTempOfficeService.selectList(tempOfficeWrapper);
+        settingList.forEach(setting -> {
+            // 拆分为指标ID集合
+            List<String> targetIdsString = Arrays.asList(setting.getTargetIds().split(","));
+            List<Integer> targetIds = targetIdsString.stream().map(v -> Integer.parseInt(v)).collect(Collectors.toList());
+            setting.setTargetList(targetIds);
+        });
+        return settingList;
+    }
 
     private Map<Integer, String> getItemTempOfficeNameMap(Integer itemId, Integer officeType, List<Integer> officeIds) {
         Map<Integer, String> map = new HashMap<>();
@@ -757,28 +772,5 @@ public class ReportSettingService implements IReportSettingService {
         return targetMap;
     }
 
-    /**
-     * 从 临时科室表 提取配置数据
-     * @param itemId
-     * @param officeType
-     * @return
-     */
-    private List<ItemTempOffice> getItemTempOfficeSettingList(Integer itemId, Integer officeType) {
-        Wrapper<ItemTempOffice> tempOfficeWrapper = new EntityWrapper<ItemTempOffice>()
-                .eq(ItemTempOffice.ITEM_ID, itemId)
-                .eq(ItemTempOffice.OFFICE_TYPE, officeType);
-        List<ItemTempOffice> settingList = itemTempOfficeService.selectList(tempOfficeWrapper);
-        settingList.forEach(setting -> {
-            // 拆分为指标ID集合
-            List<String> targetIdsString = Arrays.asList(setting.getTargetIds().split(","));
-            List<Integer> targetIds = targetIdsString.stream().map(v -> Integer.parseInt(v)).collect(Collectors.toList());
-            setting.setTargetList(targetIds);
-        });
-        return settingList;
-    }
 
-//
-//    public List<Double> getItemOfficeSatisfyByTargetIds(Integer itemId, Integer officeType, Integer officeId, List<Integer> targetIds) {
-//        List<ReportAnswerQuantity> officeSatisfyList = reportAnswerQuantityService.getOfficeSatisfyList(itemId, officeType, officeId, targetIds);
-//    }
 }

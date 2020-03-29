@@ -7,6 +7,8 @@ public interface IReportSingleOfficeService {
 
     SingleOfficeSatisfyData getItemSingleOfficeSatisfy(Integer itemId, Integer officeType, Integer officeId);
 
+    SingleOfficeSatisfyData getItemSingleOfficeSatisfyV2(Integer itemId, Integer officeType, Integer officeId);
+
     void setItemOfficeRanking(Integer itemId);
 
     /**

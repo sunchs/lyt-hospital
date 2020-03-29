@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
+import com.sunchs.lyt.framework.bean.TitleValueChildrenData;
+import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.framework.util.NumberUtil;
 import com.sunchs.lyt.report.bean.*;
 import com.sunchs.lyt.report.exception.ReportException;
@@ -13,6 +15,7 @@ import jxl.format.Colour;
 import jxl.write.Label;
 import jxl.write.*;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +44,12 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
 
     @Autowired
     private ItemOfficeServiceImpl itemOfficeService;
+
+    @Autowired
+    private ReportSettingService reportSettingService;
+
+    @Autowired
+    private ReportAnswerQuantityServiceImpl reportAnswerQuantityService;
 
     @Override
     public SingleOfficeSatisfyData getItemSingleOfficeSatisfy(Integer itemId, Integer officeType, Integer officeId) {
@@ -103,6 +112,62 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
             data.setOfficeName(officeName);
         }
         return data;
+    }
+
+    @Override
+    public SingleOfficeSatisfyData getItemSingleOfficeSatisfyV2(Integer itemId, Integer officeType, Integer officeId) {
+        SingleOfficeSatisfyData res = new SingleOfficeSatisfyData();
+        // 当前科室名称
+        String curOfficeName = getItemOfficeNameByOfficeId(itemId, officeType, officeId);
+        res.setOfficeName(curOfficeName);
+//        res.setQuestionList();
+        // 获取所有科室配置信息
+        List<ItemTempOffice> settingList = reportSettingService.getItemTempOfficeSettingList(itemId, 0);
+        // 获取全院各科室满意度
+        settingList.forEach(setting -> {
+            if (setting.getOfficeId() > 0 && CollectionUtils.isNotEmpty(setting.getTargetList())) {
+                ReportAnswerQuantity satisfy = reportAnswerQuantityService
+                        .getItemOfficeSatisfyInfo(itemId, officeType, setting.getOfficeId(), setting.getTargetList());
+                setting.setSatisfyValue(satisfy.getSatisfyValue());
+                // 设置当前科室满意度、抽样量
+                if (setting.getOfficeId().equals(officeId) && setting.getOfficeType().equals(officeType)) {
+                    res.setOfficeSatisfyValue(satisfy.getSatisfyValue());
+                    res.setAnswerQuantity(satisfy.getQuantity());
+                    // 题目列表
+                    List<SingleOfficeData> satisfyQuestionList = getSatisfyQuestionList(itemId, officeType, officeId, setting.getTargetList());
+                    res.setQuestionList(satisfyQuestionList);
+                }
+            }
+        });
+
+        // 排序
+        settingList.sort(Comparator.comparing(ItemTempOffice::getSatisfyValue).reversed());
+        // 排序次数过滤
+        int rank = 0;
+        double rankValue = 0;
+        int tempRank = 0;
+        for (ItemTempOffice t : settingList) {
+            if (rank == 0) {
+                rank++;
+                rankValue = t.getSatisfyValue();
+                t.setRanking(rank);
+            } else if (rankValue != t.getSatisfyValue()) {
+                rank++;
+                rankValue = t.getSatisfyValue();
+                rank += tempRank;
+                tempRank = 0;
+            } else {
+                tempRank++;
+            }
+            t.setRanking(rank);
+        }
+        // 设置当前科室的排名
+        Optional<ItemTempOffice> rankingRow = settingList.stream().filter(v -> v.getOfficeType().equals(officeType) && v.getOfficeId().equals(officeId)).findFirst();
+        if (rankingRow.isPresent()) {
+            res.setLevelValue(rankingRow.get().getRanking());
+        }
+
+
     }
 
     @Override
@@ -610,5 +675,49 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
         if ( ! file1.exists()) {
             file1.mkdirs();
         }
+    }
+
+    private String getItemOfficeNameByOfficeId(Integer itemId, Integer officeType, Integer officeId) {
+        Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
+                .setSqlSelect(
+                        ItemOffice.TITLE,
+                        ItemOffice.GROUP_NAME.concat(" as groupName")
+                )
+                .eq(ItemOffice.ITEM_ID, itemId)
+                .eq(ItemOffice.OFFICE_TYPE_ID, officeType)
+                .eq(ItemOffice.OFFICE_ID, officeId);
+        ItemOffice itemOffice = itemOfficeService.selectOne(wrapper);
+        if (Objects.nonNull(itemOffice)) {
+            return itemOffice.getTitle().equals("") ? itemOffice.getGroupName() : itemOffice.getTitle();
+        }
+        return StringUtils.EMPTY;
+    }
+
+    private List<SingleOfficeData> getSatisfyQuestionList(Integer itemId, Integer officeType, Integer officeId, List<Integer> targetIds) {
+        List<SingleOfficeData> result = new ArrayList<>();
+        List<ReportAnswerQuantity> questionList = reportAnswerQuantityService.
+                getItemOfficeSatisfyQuestionList(itemId, officeType, officeId, targetIds);
+        questionList.forEach(q -> {
+            SingleOfficeData data = new SingleOfficeData();
+            data.setQuestionId(q.getQuestionId());
+            data.setQuestionName(q.getQuestionName());
+            // 默认值
+            data.setValue1(0d);
+            data.setValue2(0d);
+            data.setValue3(0d);
+            data.setValue4(0d);
+            data.setValue5(0d);
+            int qty = q.getValue1() + q.getValue2() + q.getValue3() + q.getValue4() + q.getValue5();
+            if (qty > 0) {
+                data.setValue1((double)q.getValue1() / (double) qty);
+                data.setValue2((double)q.getValue2() / (double) qty);
+                data.setValue3((double)q.getValue3() / (double) qty);
+                data.setValue4((double)q.getValue4() / (double) qty);
+                data.setValue5((double)q.getValue5() / (double) qty);
+            }
+            data.setCountValue(data.getValue1() / data.getValue2() / (double)2);
+            data.setQuestionSatisfyValue(q.getSatisfyValue());
+        });
+        return result;
     }
 }

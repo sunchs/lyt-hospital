@@ -1,5 +1,6 @@
 package com.sunchs.lyt.report.service;
 
+import com.sunchs.lyt.db.business.entity.ItemTempOffice;
 import com.sunchs.lyt.framework.bean.TitleData;
 import com.sunchs.lyt.framework.bean.TitleValueChildrenData;
 import com.sunchs.lyt.framework.bean.TitleValueData;
@@ -89,4 +90,10 @@ public interface IReportSettingService {
      * 获取临床科室满意度（带排名）
      */
     Map<String, Object> getItemTempOfficeSatisfyAndRankingList(Integer itemId, Integer officeType);
+
+    /**
+     * 从 临时科室表 提取配置数据
+     */
+    List<ItemTempOffice> getItemTempOfficeSettingList(Integer itemId, Integer officeType);
+
 }

@@ -105,6 +105,17 @@ public class ReportAnswerQuantity extends Model<ReportAnswerQuantity> {
     @TableField(exist = false)
     private Double satisfyValue;
 
+    @TableField(exist = false)
+    private Integer value1;
+    @TableField(exist = false)
+    private Integer value2;
+    @TableField(exist = false)
+    private Integer value3;
+    @TableField(exist = false)
+    private Integer value4;
+    @TableField(exist = false)
+    private Integer value5;
+
     public Integer getId() {
         return id;
     }
@@ -210,6 +221,46 @@ public class ReportAnswerQuantity extends Model<ReportAnswerQuantity> {
 
     public void setSatisfyValue(Double satisfyValue) {
         this.satisfyValue = satisfyValue;
+    }
+
+    public Integer getValue1() {
+        return value1;
+    }
+
+    public void setValue1(Integer value1) {
+        this.value1 = value1;
+    }
+
+    public Integer getValue2() {
+        return value2;
+    }
+
+    public void setValue2(Integer value2) {
+        this.value2 = value2;
+    }
+
+    public Integer getValue3() {
+        return value3;
+    }
+
+    public void setValue3(Integer value3) {
+        this.value3 = value3;
+    }
+
+    public Integer getValue4() {
+        return value4;
+    }
+
+    public void setValue4(Integer value4) {
+        this.value4 = value4;
+    }
+
+    public Integer getValue5() {
+        return value5;
+    }
+
+    public void setValue5(Integer value5) {
+        this.value5 = value5;
     }
 
     public static final String ID = "id";

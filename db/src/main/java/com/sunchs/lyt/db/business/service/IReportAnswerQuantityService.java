@@ -34,4 +34,15 @@ public interface IReportAnswerQuantityService extends IService<ReportAnswerQuant
      * 根据 科室ID、指标ID集合 获取三级指标满意度列表
      */
     List<ReportAnswerQuantity> getItemOfficeTargetSatisfyList(Integer itemId, Integer officeType, Integer officeId, List<Integer> targetIds);
+
+    /**
+     * 根据 科室ID、指标ID集合 获取三级指标满意度列表
+     */
+    ReportAnswerQuantity getItemOfficeSatisfyInfo(Integer itemId, Integer officeType, Integer officeId, List<Integer> targetIds);
+
+    /**
+     * 获取单科室相关数据
+     */
+    List<ReportAnswerQuantity> getItemOfficeSatisfyQuestionList(Integer itemId, Integer officeType, Integer officeId, List<Integer> targetIds);
+
 }

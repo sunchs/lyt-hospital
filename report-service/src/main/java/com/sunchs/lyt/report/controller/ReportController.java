@@ -205,7 +205,7 @@ public class ReportController extends BaseController {
         Integer itemId = data.getInt("itemId");
         Integer officeType = data.getInt("officeType");
         Integer officeId = data.getInt("officeId");
-        return success(reportSingleOfficeService.getItemSingleOfficeSatisfy(itemId, officeType, officeId));
+        return success(reportSingleOfficeService.getItemSingleOfficeSatisfyV2(itemId, officeType, officeId));
     }
 
     @PostMapping("/setItemOfficeRanking")

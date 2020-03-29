@@ -57,4 +57,30 @@
             AND score!=0 AND target_one=#{officeType} GROUP BY question_id
         ) tb GROUP BY target_three
     </select>
+
+    <select id="getItemOfficeSatisfyInfo" resultType="com.sunchs.lyt.db.business.entity.ReportAnswerQuantity">
+        SELECT office_id as officeId, AVG(satisfyValue) as satisfyValue, SUM(quantity) as quantity FROM (
+            SELECT office_id, SUM(quantity*score)/SUM(quantity) as satisfyValue, SUM(quantity) as quantity FROM report_answer_quantity
+            WHERE item_id=#{itemId} AND office_id=#{officeId} AND target_three IN
+            <foreach collection="targetIds" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+            AND score!=0 AND target_one=#{officeType} GROUP BY question_id
+        ) tb GROUP BY office_id
+    </select>
+
+    <select id="getItemOfficeSatisfyQuestionList" resultType="com.sunchs.lyt.db.business.entity.ReportAnswerQuantity">
+        SELECT question_id as questionId, question_name as questionName, SUM(quantity*score)/SUM(quantity) as satisfyValue,
+            SUM(IF(score=100,quantity,0)) value1,
+            SUM(IF(score=80,quantity,0)) value2,
+            SUM(IF(score=60,quantity,0)) value3,
+            SUM(IF(score=40,quantity,0)) value4,
+            SUM(IF(score=20,quantity,0)) value5
+        FROM report_answer_quantity
+        WHERE item_id=#{itemId} AND target_one=#{officeType} AND office_id=#{officeId} AND target_three  IN
+        <foreach collection="targetIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        AND score!=0 GROUP BY question_id
+    </select>
 </mapper>

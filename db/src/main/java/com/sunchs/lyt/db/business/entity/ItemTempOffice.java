@@ -67,6 +67,12 @@ public class ItemTempOffice extends Model<ItemTempOffice> {
     @TableField(exist = false)
     private List<Integer> targetList;
 
+    @TableField(exist = false)
+    private Double satisfyValue;
+
+    @TableField
+    private Integer ranking;
+
     public Integer getId() {
         return id;
     }
@@ -123,6 +129,22 @@ public class ItemTempOffice extends Model<ItemTempOffice> {
 
     public void setTargetList(List<Integer> targetList) {
         this.targetList = targetList;
+    }
+
+    public Double getSatisfyValue() {
+        return satisfyValue;
+    }
+
+    public void setSatisfyValue(Double satisfyValue) {
+        this.satisfyValue = satisfyValue;
+    }
+
+    public Integer getRanking() {
+        return ranking;
+    }
+
+    public void setRanking(Integer ranking) {
+        this.ranking = ranking;
     }
 
     public static final String ID = "id";
