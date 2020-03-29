@@ -27,4 +27,6 @@ public interface ReportAnswerQuantityMapper extends BaseMapper<ReportAnswerQuant
     ReportAnswerQuantity getItemOfficeSatisfyInfo(@Param("itemId") Integer itemId, @Param("officeType") Integer officeType, @Param("officeId") Integer officeId, @Param("targetIds") List<Integer> targetIds);
 
     List<ReportAnswerQuantity> getItemOfficeSatisfyQuestionList(@Param("itemId") Integer itemId, @Param("officeType") Integer officeType, @Param("officeId") Integer officeId, @Param("targetIds") List<Integer> targetIds);
+
+    List<ReportAnswerQuantity> getItemAllOfficeSatisfyList(@Param("itemId") Integer itemId);
 }

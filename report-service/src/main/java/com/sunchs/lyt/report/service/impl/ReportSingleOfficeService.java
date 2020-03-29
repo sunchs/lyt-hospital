@@ -141,6 +141,39 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
                 }
             }
         });
+        // 全院排名
+        if (CollectionUtils.isNotEmpty(res.getQuestionList())) {
+            List<ReportAnswerQuantity> quantityAllList = reportAnswerQuantityService.getItemAllOfficeSatisfyList(itemId);
+            // 排序
+            quantityAllList.sort(Comparator.comparing(ReportAnswerQuantity::getSatisfyValue).reversed());
+            // 排序次数过滤
+            int rank = 0;
+            double rankValue = 0;
+            int tempRank = 0;
+            for (ReportAnswerQuantity t : quantityAllList) {
+                if (rank == 0) {
+                    rank++;
+                    rankValue = t.getSatisfyValue();
+                    t.setQuantity(rank);
+                } else if (rankValue != t.getSatisfyValue()) {
+                    rank++;
+                    rankValue = t.getSatisfyValue();
+                    rank += tempRank;
+                    tempRank = 0;
+                } else {
+                    tempRank++;
+                }
+                t.setQuantity(rank);
+            }
+            res.getQuestionList().forEach(q -> {
+                Optional<ReportAnswerQuantity> item = quantityAllList.stream().filter(v -> v.getQuestionId().equals(q.getQuestionId())).findFirst();
+                if (item.isPresent()) {
+                    q.setHospitalSatisfyValue(item.get().getSatisfyValue());
+                    q.setQuestionLevel(item.get().getQuantity());
+                }
+            });
+        }
+
 
         // 排序
         settingList.sort(Comparator.comparing(ItemTempOffice::getSatisfyValue).reversed());

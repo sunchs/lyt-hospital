@@ -48,4 +48,9 @@ public class ReportAnswerQuantityServiceImpl extends ServiceImpl<ReportAnswerQua
     public List<ReportAnswerQuantity> getItemOfficeSatisfyQuestionList(Integer itemId, Integer officeType, Integer officeId, List<Integer> targetIds) {
         return baseMapper.getItemOfficeSatisfyQuestionList(itemId, officeType, officeId, targetIds);
     }
+
+    @Override
+    public List<ReportAnswerQuantity> getItemAllOfficeSatisfyList(Integer itemId) {
+        return baseMapper.getItemAllOfficeSatisfyList(itemId);
+    }
 }
