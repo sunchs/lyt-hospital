@@ -710,11 +710,11 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
             data.setValue5(0d);
             int qty = q.getValue1() + q.getValue2() + q.getValue3() + q.getValue4() + q.getValue5();
             if (qty > 0) {
-                data.setValue1((double)q.getValue1() / (double) qty);
-                data.setValue2((double)q.getValue2() / (double) qty);
-                data.setValue3((double)q.getValue3() / (double) qty);
-                data.setValue4((double)q.getValue4() / (double) qty);
-                data.setValue5((double)q.getValue5() / (double) qty);
+                data.setValue1((double)q.getValue1() / (double) qty * 100);
+                data.setValue2((double)q.getValue2() / (double) qty * 100);
+                data.setValue3((double)q.getValue3() / (double) qty * 100);
+                data.setValue4((double)q.getValue4() / (double) qty * 100);
+                data.setValue5((double)q.getValue5() / (double) qty * 100);
             }
             data.setCountValue(data.getValue1() / data.getValue2() / (double)2);
             data.setQuestionSatisfyValue(q.getSatisfyValue());
