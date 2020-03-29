@@ -127,15 +127,17 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
         settingList.forEach(setting -> {
             if (setting.getOfficeId() > 0 && CollectionUtils.isNotEmpty(setting.getTargetList())) {
                 ReportAnswerQuantity satisfy = reportAnswerQuantityService
-                        .getItemOfficeSatisfyInfo(itemId, officeType, setting.getOfficeId(), setting.getTargetList());
-                setting.setSatisfyValue(satisfy.getSatisfyValue());
-                // 设置当前科室满意度、抽样量
-                if (setting.getOfficeId().equals(officeId) && setting.getOfficeType().equals(officeType)) {
-                    res.setOfficeSatisfyValue(satisfy.getSatisfyValue());
-                    res.setAnswerQuantity(satisfy.getQuantity());
-                    // 题目列表
-                    List<SingleOfficeData> satisfyQuestionList = getSatisfyQuestionList(itemId, officeType, officeId, setting.getTargetList());
-                    res.setQuestionList(satisfyQuestionList);
+                        .getItemOfficeSatisfyInfo(itemId, setting.getOfficeType(), setting.getOfficeId(), setting.getTargetList());
+                if (Objects.nonNull(satisfy)) {
+                    setting.setSatisfyValue(satisfy.getSatisfyValue());
+                    // 设置当前科室满意度、抽样量
+                    if (setting.getOfficeId().equals(officeId) && setting.getOfficeType().equals(officeType)) {
+                        res.setOfficeSatisfyValue(satisfy.getSatisfyValue());
+                        res.setAnswerQuantity(satisfy.getQuantity());
+                        // 题目列表
+                        List<SingleOfficeData> satisfyQuestionList = getSatisfyQuestionList(itemId, officeType, officeId, setting.getTargetList());
+                        res.setQuestionList(satisfyQuestionList);
+                    }
                 }
             }
         });
