@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -28,5 +29,5 @@ public interface ReportAnswerQuantityMapper extends BaseMapper<ReportAnswerQuant
 
     List<ReportAnswerQuantity> getItemOfficeSatisfyQuestionList(@Param("itemId") Integer itemId, @Param("officeType") Integer officeType, @Param("officeId") Integer officeId, @Param("targetIds") List<Integer> targetIds);
 
-    List<ReportAnswerQuantity> getItemAllOfficeSatisfyList(@Param("itemId") Integer itemId);
+    List<ReportAnswerQuantity> getItemAllOfficeSatisfyList(@Param("itemId") Integer itemId, @Param("officeTypeIds") Set<Integer> officeTypeIds, @Param("officeIds") Set<Integer> officeIds);
 }

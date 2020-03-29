@@ -143,7 +143,9 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
         });
         // 全院排名
         if (CollectionUtils.isNotEmpty(res.getQuestionList())) {
-            List<ReportAnswerQuantity> quantityAllList = reportAnswerQuantityService.getItemAllOfficeSatisfyList(itemId);
+            Set<Integer> officeTypeIds = settingList.stream().map(ItemTempOffice::getOfficeType).collect(Collectors.toSet());
+            Set<Integer> officeIds = settingList.stream().map(ItemTempOffice::getOfficeId).collect(Collectors.toSet());
+            List<ReportAnswerQuantity> quantityAllList = reportAnswerQuantityService.getItemAllOfficeSatisfyList(itemId, officeTypeIds, officeIds);
             // 排序
             quantityAllList.sort(Comparator.comparing(ReportAnswerQuantity::getSatisfyValue).reversed());
             // 排序次数过滤

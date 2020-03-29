@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.service.IService;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -49,6 +50,6 @@ public interface IReportAnswerQuantityService extends IService<ReportAnswerQuant
     /**
      * 获取全院的统计数据
      */
-    List<ReportAnswerQuantity> getItemAllOfficeSatisfyList(@Param("itemId") Integer itemId);
+    List<ReportAnswerQuantity> getItemAllOfficeSatisfyList(Integer itemId, Set<Integer> officeTypeIds, Set<Integer> officeIds);
 
 }

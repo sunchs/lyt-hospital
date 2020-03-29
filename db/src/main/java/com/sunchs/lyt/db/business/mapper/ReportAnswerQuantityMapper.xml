@@ -87,6 +87,14 @@
     <select id="getItemAllOfficeSatisfyList" resultType="com.sunchs.lyt.db.business.entity.ReportAnswerQuantity">
         SELECT question_id as questionId, SUM(quantity*score)/SUM(quantity) as satisfyValue
         FROM report_answer_quantity
-        WHERE item_id=#{itemId} AND score!=0 GROUP BY question_id
+        WHERE item_id=#{itemId} AND target_one IN
+        <foreach collection="officeIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        AND office_id IN
+        <foreach collection="officeIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        AND score!=0 GROUP BY question_id
     </select>
 </mapper>

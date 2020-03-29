@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -50,7 +51,7 @@ public class ReportAnswerQuantityServiceImpl extends ServiceImpl<ReportAnswerQua
     }
 
     @Override
-    public List<ReportAnswerQuantity> getItemAllOfficeSatisfyList(Integer itemId) {
-        return baseMapper.getItemAllOfficeSatisfyList(itemId);
+    public List<ReportAnswerQuantity> getItemAllOfficeSatisfyList(Integer itemId, Set<Integer> officeTypeIds, Set<Integer> officeIds) {
+        return baseMapper.getItemAllOfficeSatisfyList(itemId, officeTypeIds, officeIds);
     }
 }
