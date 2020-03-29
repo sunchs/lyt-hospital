@@ -97,6 +97,16 @@ public class ReportSettingController extends BaseController {
     }
 
     /**
+     * 获取临床科室满意度
+     */
+    @PostMapping("/getItemTempOfficeSatisfyList")
+    public ResultData getItemTempOfficeSatisfyList(@RequestBody RequestData data) {
+        Integer itemId = data.getInt("itemId");
+        Integer officeType = data.getInt("officeType");
+        return success(reportSettingService.getItemTempOfficeSatisfyList(itemId, officeType));
+    }
+
+    /**
      * 获取指标
      */
     @PostMapping("/deleteItemTempOffice")

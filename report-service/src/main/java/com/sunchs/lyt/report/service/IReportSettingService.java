@@ -1,6 +1,8 @@
 package com.sunchs.lyt.report.service;
 
 import com.sunchs.lyt.framework.bean.TitleData;
+import com.sunchs.lyt.framework.bean.TitleValueChildrenData;
+import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.report.bean.*;
 
 import java.util.List;
@@ -77,4 +79,9 @@ public interface IReportSettingService {
      * 获取临床科室配置信息
      */
     List<TitleChildrenVO> getItemTempOfficeSettingV2(Integer itemId, Integer officeType);
+
+    /**
+     * 获取临床科室满意度
+     */
+    List<TitleValueChildrenData> getItemTempOfficeSatisfyList(Integer itemId, Integer officeType);
 }

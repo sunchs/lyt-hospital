@@ -41,4 +41,14 @@
         AND score!=0 AND target_one=#{officeType} GROUP BY target_three
     </select>
 
+    <select id="getItemOfficeTargetSatisfyList" resultType="com.sunchs.lyt.db.business.entity.ReportAnswerQuantity">
+        SELECT target_three as targetThree, AVG(satisfyValue) as satisfyValue FROM (
+            SELECT target_three,SUM(quantity*score)/SUM(quantity) as satisfyValue FROM report_answer_quantity
+            WHERE item_id=#{itemId} AND office_id=#{officeId} AND target_three IN
+            <foreach collection="targetIds" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+            AND score!=0 AND target_one=#{officeType} GROUP BY question_id
+        ) tb GROUP BY target_three
+    </select>
 </mapper>

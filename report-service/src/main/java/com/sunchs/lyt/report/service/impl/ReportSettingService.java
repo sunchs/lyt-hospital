@@ -7,6 +7,7 @@ import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.mapper.SettingItemTempShowMapper;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.TitleData;
+import com.sunchs.lyt.framework.bean.TitleValueChildrenData;
 import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.framework.enums.OfficeTypeEnum;
 import com.sunchs.lyt.framework.util.UserThreadUtil;
@@ -510,13 +511,47 @@ public class ReportSettingService implements IReportSettingService {
             Map<Integer, String> targetNameMap = getTargetNameByIds(targetIds);
             targetIds.forEach(targetId -> {
                 TitleChildrenVO ch = new TitleChildrenVO();
-//                ch.setId(targetId);
                 ch.setTitle(targetNameMap.get(targetId));
                 ch.setChildren(new ArrayList<>());
                 childList.add(ch);
             });
             data.setChildren(childList);
             result.add(data);
+        });
+        return result;
+    }
+
+    @Override
+    public List<TitleValueChildrenData> getItemTempOfficeSatisfyList(Integer itemId, Integer officeType) {
+        List<TitleValueChildrenData> result = new ArrayList<>();
+        List<ItemTempOffice> settingList = getItemTempOfficeSettingList(itemId, officeType);
+        Set<Integer> officeIds = settingList.stream().map(ItemTempOffice::getOfficeId).collect(Collectors.toSet());
+        Map<Integer, String> officeNameMap = getOfficeNameByIds(itemId, officeType, officeIds);
+        settingList.forEach(setting -> {
+            if (setting.getOfficeId() > 0 && CollectionUtils.isNotEmpty(setting.getTargetList())) {
+                // 结果
+                TitleValueChildrenData data = new TitleValueChildrenData();
+                data.setId(setting.getOfficeId());
+                data.setTitle(officeNameMap.get(setting.getOfficeId()));
+                // 提取指标满意度
+                List<TitleValueData> targetList = new ArrayList<>();
+                List<ReportAnswerQuantity> satisfyList = reportAnswerQuantityService
+                        .getItemOfficeTargetSatisfyList(itemId, officeType, setting.getOfficeId(), setting.getTargetList());
+                List<Integer> targetIds = satisfyList.stream().map(ReportAnswerQuantity::getTargetThree).collect(Collectors.toList());
+                Map<Integer, String> targetNameMap = getTargetNameByIds(targetIds);
+                satisfyList.forEach(row -> {
+                    TitleValueData vo = new TitleValueData();
+                    vo.setId(row.getTargetThree());
+                    vo.setTitle(targetNameMap.get(row.getTargetThree()));
+                    vo.setValue(row.getSatisfyValue());
+                    targetList.add(vo);
+                });
+                data.setChildren(targetList);
+                // 科室满意度均值
+                Double officeSatisfyValue = targetList.stream().collect(Collectors.averagingDouble(TitleValueData::getValue));
+                data.setValue(officeSatisfyValue);
+                result.add(data);
+            }
         });
         return result;
     }
@@ -670,4 +705,47 @@ public class ReportSettingService implements IReportSettingService {
         Map<Integer, String> targetMap = targetList.stream().collect(Collectors.toMap(QuestionTarget::getId, QuestionTarget::getTitle));
         return targetMap;
     }
+
+    private Map<Integer, String> getOfficeNameByIds(Integer itemId, Integer officeType, Set<Integer> officeIds) {
+        Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
+                .setSqlSelect(
+                        ItemOffice.OFFICE_ID.concat(" as officeId"),
+                        ItemOffice.TITLE,
+                        ItemOffice.GROUP_NAME.concat(" as groupName")
+                )
+                .eq(ItemOffice.ITEM_ID, itemId)
+                .eq(ItemOffice.OFFICE_TYPE_ID, officeType)
+                .in(ItemOffice.OFFICE_ID, officeIds);
+        List<ItemOffice> itemOfficeList = itemOfficeService.selectList(wrapper);
+        Map<Integer, String> targetMap = new HashMap<>();
+        itemOfficeList.forEach(t -> {
+            targetMap.put(t.getOfficeId(), t.getTitle().equals("") ? t.getGroupName() : t.getTitle());
+        });
+        return targetMap;
+    }
+
+    /**
+     * 从 临时科室表 提取配置数据
+     * @param itemId
+     * @param officeType
+     * @return
+     */
+    private List<ItemTempOffice> getItemTempOfficeSettingList(Integer itemId, Integer officeType) {
+        Wrapper<ItemTempOffice> tempOfficeWrapper = new EntityWrapper<ItemTempOffice>()
+                .eq(ItemTempOffice.ITEM_ID, itemId)
+                .eq(ItemTempOffice.OFFICE_TYPE, officeType);
+        List<ItemTempOffice> settingList = itemTempOfficeService.selectList(tempOfficeWrapper);
+        settingList.forEach(setting -> {
+            // 拆分为指标ID集合
+            List<String> targetIdsString = Arrays.asList(setting.getTargetIds().split(","));
+            List<Integer> targetIds = targetIdsString.stream().map(v -> Integer.parseInt(v)).collect(Collectors.toList());
+            setting.setTargetList(targetIds);
+        });
+        return settingList;
+    }
+
+//
+//    public List<Double> getItemOfficeSatisfyByTargetIds(Integer itemId, Integer officeType, Integer officeId, List<Integer> targetIds) {
+//        List<ReportAnswerQuantity> officeSatisfyList = reportAnswerQuantityService.getOfficeSatisfyList(itemId, officeType, officeId, targetIds);
+//    }
 }

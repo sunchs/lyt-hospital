@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -63,6 +64,9 @@ public class ItemTempOffice extends Model<ItemTempOffice> {
     @TableField("create_time")
     private Date createTime;
 
+    @TableField(exist = false)
+    private List<Integer> targetList;
+
     public Integer getId() {
         return id;
     }
@@ -111,6 +115,14 @@ public class ItemTempOffice extends Model<ItemTempOffice> {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public List<Integer> getTargetList() {
+        return targetList;
+    }
+
+    public void setTargetList(List<Integer> targetList) {
+        this.targetList = targetList;
     }
 
     public static final String ID = "id";
