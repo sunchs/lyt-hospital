@@ -70,7 +70,7 @@ public class ItemTempOffice extends Model<ItemTempOffice> {
     @TableField(exist = false)
     private Double satisfyValue;
 
-    @TableField
+    @TableField(exist = false)
     private Integer ranking;
 
     public Integer getId() {
