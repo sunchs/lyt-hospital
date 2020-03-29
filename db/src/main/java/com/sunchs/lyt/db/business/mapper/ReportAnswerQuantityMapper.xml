@@ -88,7 +88,7 @@
         SELECT question_id as questionId, SUM(quantity*score)/SUM(quantity) as satisfyValue
         FROM report_answer_quantity
         WHERE item_id=#{itemId} AND target_one IN
-        <foreach collection="officeIds" item="id" index="index" open="(" close=")" separator=",">
+        <foreach collection="officeTypeIds" item="id" index="index" open="(" close=")" separator=",">
             #{id}
         </foreach>
         AND office_id IN
