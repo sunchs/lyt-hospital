@@ -222,14 +222,15 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
     @Override
     public String outputSingleOfficeSatisfy(OutputParam param) {
         if (CollectionUtils.isEmpty(param.getOfficeIds())) {
-            Wrapper<ReportAnswer> reportAnswerWrapper = new EntityWrapper<ReportAnswer>()
-                    .setSqlSelect(ReportAnswer.OFFICE_ID.concat(" as officeId"))
-                    .eq(ReportAnswer.ITEM_ID, param.getItemId())
-                    .eq(ReportAnswer.OFFICE_TYPE_ID, param.getOfficeType())
-                    .groupBy(ReportAnswer.OFFICE_ID);
-            List<ReportAnswer> reportAnswers = reportAnswerService.selectList(reportAnswerWrapper);
-            List<Integer> officeIds = reportAnswers.stream().map(ReportAnswer::getOfficeId).collect(Collectors.toList());
-            param.setOfficeIds(officeIds);
+//            Wrapper<ReportAnswer> reportAnswerWrapper = new EntityWrapper<ReportAnswer>()
+//                    .setSqlSelect(ReportAnswer.OFFICE_ID.concat(" as officeId"))
+//                    .eq(ReportAnswer.ITEM_ID, param.getItemId())
+//                    .eq(ReportAnswer.OFFICE_TYPE_ID, param.getOfficeType())
+//                    .groupBy(ReportAnswer.OFFICE_ID);
+//            List<ReportAnswer> reportAnswers = reportAnswerService.selectList(reportAnswerWrapper);
+//            List<Integer> officeIds = reportAnswers.stream().map(ReportAnswer::getOfficeId).collect(Collectors.toList());
+            List<ItemTempOffice> settingList = reportSettingService.getItemTempOfficeSettingList(param.getItemId(), 0);
+            param.setOfficeIds(settingList.stream().map(ItemTempOffice::getOfficeId).collect(Collectors.toList()));
         }
         Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<ItemOffice>()
                 .setSqlSelect(ItemOffice.GROUP_NAME.concat(" as groupName"), ItemOffice.TITLE, ItemOffice.OFFICE_ID.concat(" as officeId"))
@@ -260,7 +261,7 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
 
                 int groupId = 0;
                 for (ItemOffice office : itemOfficeList) {
-                    SingleOfficeSatisfyData itemSingleOfficeSatisfy = getItemSingleOfficeSatisfy(param.getItemId(), param.getOfficeType(), office.getOfficeId());
+                    SingleOfficeSatisfyData itemSingleOfficeSatisfy = getItemSingleOfficeSatisfyV2(param.getItemId(), param.getOfficeType(), office.getOfficeId());
                     WritableSheet sheet = wb.createSheet(itemSingleOfficeSatisfy.getOfficeName(), groupId);
                     groupId++;
 
