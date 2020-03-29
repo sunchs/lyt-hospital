@@ -716,7 +716,7 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
                 data.setValue4((double)q.getValue4() / (double) qty * 100);
                 data.setValue5((double)q.getValue5() / (double) qty * 100);
             }
-            data.setCountValue(data.getValue1() / data.getValue2() / (double)2);
+            data.setCountValue((data.getValue1() + data.getValue2()) / (double)2);
             data.setQuestionSatisfyValue(q.getSatisfyValue());
             data.setHospitalSatisfyValue(0d);
             data.setQuestionLevel(0);
