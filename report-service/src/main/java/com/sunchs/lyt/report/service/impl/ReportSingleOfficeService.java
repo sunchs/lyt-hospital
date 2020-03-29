@@ -133,7 +133,6 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
                     // 设置当前科室满意度、抽样量
                     if (setting.getOfficeId().equals(officeId) && setting.getOfficeType().equals(officeType)) {
                         res.setOfficeSatisfyValue(satisfy.getSatisfyValue());
-                        res.setAnswerQuantity(satisfy.getQuantity());
                         // 题目列表
                         List<SingleOfficeData> satisfyQuestionList = getSatisfyQuestionList(itemId, officeType, officeId, setting.getTargetList());
                         res.setQuestionList(satisfyQuestionList);
@@ -141,6 +140,13 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
                 }
             }
         });
+        // 抽样量
+        Wrapper<ReportAnswer> reportAnswerWrapper = new EntityWrapper<ReportAnswer>()
+                .eq(ReportAnswer.ITEM_ID, itemId)
+                .eq(ReportAnswer.OFFICE_TYPE_ID, officeType)
+                .eq(ReportAnswer.OFFICE_ID, officeId);
+        int answerQuantity = reportAnswerService.selectCount(reportAnswerWrapper);
+        res.setAnswerQuantity(answerQuantity);
         // 全院排名
         if (CollectionUtils.isNotEmpty(res.getQuestionList())) {
             Set<Integer> officeTypeIds = settingList.stream().map(ItemTempOffice::getOfficeType).collect(Collectors.toSet());
