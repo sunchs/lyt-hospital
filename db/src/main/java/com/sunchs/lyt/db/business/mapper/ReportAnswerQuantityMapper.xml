@@ -29,7 +29,7 @@
     </select>
 
     <select id="getTargetSatisfyTwoList" resultType="com.sunchs.lyt.db.business.entity.ReportAnswerQuantity">
-        SELECT target_two as targetTwo AVG(satisfyValue) as satisfyValue FROM (
+        SELECT target_two as targetTwo, AVG(satisfyValue) as satisfyValue FROM (
             SELECT target_two, SUM(quantity*score)/SUM(quantity) as satisfyValue FROM report_answer_quantity
             WHERE item_id=#{itemId} AND target_one=#{targetId} AND score!=0
             GROUP BY question_id
