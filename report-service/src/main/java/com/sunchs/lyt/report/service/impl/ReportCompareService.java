@@ -54,6 +54,9 @@ public class ReportCompareService implements IReportCompareService {
     @Autowired
     private ReportAnswerQuantityServiceImpl reportAnswerQuantityService;
 
+    @Autowired
+    private ItemTempOfficeServiceImpl itemTempOfficeService;
+
     @Override
     public List<Item> getItemListByOfficeType(Integer officeType) {
         // 查询项目ID
@@ -357,14 +360,13 @@ public class ReportCompareService implements IReportCompareService {
         // 提取科室ID集合
         Set<Integer> ids = new HashSet<>();
         param.getValueList().forEach(item->{
-            Wrapper<SettingItemTempShow> settingItemTempShowWrapper = new EntityWrapper<SettingItemTempShow>()
-                    .eq(SettingItemTempShow.ITEM_ID, item.getItemId())
-                    .eq(SettingItemTempShow.OFFICE_TYPE, item.getOfficeType());
-            List<SettingItemTempShow> settingItemTempShowList = settingItemTempShowService.selectList(settingItemTempShowWrapper);
-            for (SettingItemTempShow temp : settingItemTempShowList) {
-                List<String> tempOfficeIds = Arrays.asList(temp.getOfficeIds().split(","));
-                tempOfficeIds.forEach(id -> ids.add(Integer.parseInt(id)));
-            }
+            Wrapper<ItemTempOffice> itemTempOfficeWrapper = new EntityWrapper<ItemTempOffice>()
+                    .setSqlSelect(ItemTempOffice.OFFICE_ID.concat(" as officeId"))
+                    .eq(ItemTempOffice.ITEM_ID, item.getItemId())
+                    .eq(ItemTempOffice.OFFICE_TYPE, item.getOfficeType());
+            List<ItemTempOffice> officeList = itemTempOfficeService.selectList(itemTempOfficeWrapper);
+            List<Integer> officeIds = officeList.stream().map(ItemTempOffice::getOfficeId).collect(Collectors.toList());
+            ids.addAll(officeIds);
         });
         if (ids.size() == 0) {
             return result;
