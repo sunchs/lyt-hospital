@@ -272,20 +272,15 @@ public class ReportCompareService implements IReportCompareService {
 
             // 收集指标ID
             List<Integer> targetIds = new ArrayList<>();
-            Wrapper<SettingItemTempShow> settingItemTempShowWrapper = new EntityWrapper<SettingItemTempShow>()
-                    .eq(SettingItemTempShow.ITEM_ID, item.getItemId())
-                    .eq(SettingItemTempShow.OFFICE_TYPE, item.getOfficeType());
-            List<SettingItemTempShow> settingItemTempShowList = settingItemTempShowService.selectList(settingItemTempShowWrapper);
-            for (SettingItemTempShow temp : settingItemTempShowList) {
-                List<String> tempOfficeIds = Arrays.asList(temp.getOfficeIds().split(","));
-                for (String officeId : tempOfficeIds) {
-                    if (Integer.parseInt(officeId) == item.getOfficeId()) {
-                        List<String> list = Arrays.asList(temp.getTargetIds().split(","));
-                        list.forEach(id->{
-                            targetIds.add(Integer.parseInt(id));
-                        });
-                    }
-                }
+            Wrapper<ItemTempOffice> itemTempOfficeWrapper = new EntityWrapper<ItemTempOffice>()
+                    .eq(ItemTempOffice.ITEM_ID, item.getItemId())
+                    .eq(ItemTempOffice.OFFICE_TYPE, item.getOfficeType());
+            List<ItemTempOffice> settingItemTempShowList = itemTempOfficeService.selectList(itemTempOfficeWrapper);
+            for (ItemTempOffice temp : settingItemTempShowList) {
+                List<String> list = Arrays.asList(temp.getTargetIds().split(","));
+                list.forEach(id->{
+                    targetIds.add(Integer.parseInt(id));
+                });
             }
             item.setTempTargetIds(targetIds);
 
