@@ -96,4 +96,8 @@ public interface IReportSettingService {
      */
     List<ItemTempOffice> getItemTempOfficeSettingList(Integer itemId, Integer officeType);
 
+    /**
+     * 根据 科室ID集合 获取答卷指标列表
+     */
+    List<TitleData> getTargetListByOfficeIds(ItemSettingParam param);
 }

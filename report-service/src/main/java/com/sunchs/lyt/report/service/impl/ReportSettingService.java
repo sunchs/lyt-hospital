@@ -604,6 +604,46 @@ public class ReportSettingService implements IReportSettingService {
         return settingList;
     }
 
+    @Override
+    public List<TitleData> getTargetListByOfficeIds(ItemSettingParam param) {
+        if (CollectionUtils.isEmpty(param.getOfficeIds())) {
+            throw new ReportException("请选择科室！");
+        }
+        // 判断是否存在多问卷问题
+        Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<ItemOffice>()
+                .setSqlSelect(ItemOffice.QUESTIONNAIRE_ID.concat(" as questionnaireId"))
+                .eq(ItemOffice.ITEM_ID, param.getItemId())
+                .eq(ItemOffice.OFFICE_TYPE_ID, param.getOfficeType())
+                .in(ItemOffice.OFFICE_ID, param.getOfficeIds())
+                .groupBy(ItemOffice.QUESTIONNAIRE_ID);
+        List<ItemOffice> itemOfficeList = itemOfficeService.selectList(itemOfficeWrapper);
+        if (itemOfficeList.size() > 1) {
+            throw new ReportException("多科室绑定的问卷不一致，请重新选择！");
+        }
+        // 获取答卷的指标ID集合
+        Wrapper<ReportAnswerOption> optionWrapper = new EntityWrapper<ReportAnswerOption>()
+                .setSqlSelect(ReportAnswerOption.TARGET_THREE.concat(" as targetThree"))
+                .eq(ReportAnswerOption.ITEM_ID, param.getItemId())
+                .eq(ReportAnswerOption.OFFICE_TYPE_ID, param.getOfficeType())
+                .in(ReportAnswerOption.OFFICE_ID, param.getOfficeIds())
+                .groupBy(ReportAnswerOption.TARGET_THREE);
+        List<ReportAnswerOption> optionTargetList = reportAnswerOptionService.selectList(optionWrapper);
+        List<Integer> targetIds = optionTargetList.stream().map(ReportAnswerOption::getTargetThree).collect(Collectors.toList());
+        // 获取指标标题
+        Wrapper<QuestionTarget> targetWrapper = new EntityWrapper<QuestionTarget>()
+                .setSqlSelect(QuestionTarget.ID,QuestionTarget.TITLE)
+                .in(QuestionTarget.ID, targetIds);
+        List<QuestionTarget> questionTargets = questionTargetService.selectList(targetWrapper);
+        List<TitleData> result = new ArrayList<>();
+        questionTargets.forEach(t -> {
+            TitleData data = new TitleData();
+            data.setId(t.getId());
+            data.setTitle(t.getTitle());
+            result.add(data);
+        });
+        return result;
+    }
+
     private Map<Integer, String> getItemTempOfficeNameMap(Integer itemId, Integer officeType, List<Integer> officeIds) {
         Map<Integer, String> map = new HashMap<>();
         Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<ItemOffice>()

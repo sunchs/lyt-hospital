@@ -165,4 +165,10 @@ public class ReportSettingController extends BaseController {
         Integer itemId = data.getInt("itemId");
         return success(reportSettingService.getItemTempOfficeChildren(itemId));
     }
+
+    @PostMapping("/getTargetListByOfficeIds")
+    public ResultData getTargetListByOfficeIds(@RequestBody RequestData data) {
+        ItemSettingParam param = data.toObject(ItemSettingParam.class);
+        return success(reportSettingService.getTargetListByOfficeIds(param));
+    }
 }
