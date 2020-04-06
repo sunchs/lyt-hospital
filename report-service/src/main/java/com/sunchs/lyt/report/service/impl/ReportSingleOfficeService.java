@@ -149,7 +149,9 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
         res.setAnswerQuantity(answerQuantity);
         // 全院排名
         if (CollectionUtils.isNotEmpty(res.getQuestionList())) {
-            Set<Integer> officeTypeIds = settingList.stream().map(ItemTempOffice::getOfficeType).collect(Collectors.toSet());
+//            Set<Integer> officeTypeIds = settingList.stream().map(ItemTempOffice::getOfficeType).collect(Collectors.toSet());
+            Set<Integer> officeTypeIds = new HashSet<>();
+            officeTypeIds.add(officeType);
             Set<Integer> officeIds = settingList.stream().map(ItemTempOffice::getOfficeId).collect(Collectors.toSet());
             List<ReportAnswerQuantity> quantityAllList = reportAnswerQuantityService.getItemAllOfficeSatisfyList(itemId, officeTypeIds, officeIds);
             // 排序
