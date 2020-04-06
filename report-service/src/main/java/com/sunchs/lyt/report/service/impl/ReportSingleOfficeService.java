@@ -122,7 +122,7 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
         res.setOfficeName(curOfficeName);
 //        res.setQuestionList();
         // 获取所有科室配置信息
-        List<ItemTempOffice> settingList = reportSettingService.getItemTempOfficeSettingList(itemId, officeType);
+        List<ItemTempOffice> settingList = reportSettingService.getItemTempOfficeSettingList(itemId, 0);
         // 获取全院各科室满意度
         settingList.forEach(setting -> {
             if (setting.getOfficeId() > 0 && CollectionUtils.isNotEmpty(setting.getTargetList())) {
