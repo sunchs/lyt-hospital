@@ -122,7 +122,7 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
         res.setOfficeName(curOfficeName);
 //        res.setQuestionList();
         // 获取所有科室配置信息
-        List<ItemTempOffice> settingList = reportSettingService.getItemTempOfficeSettingList(itemId, 0);
+        List<ItemTempOffice> settingList = reportSettingService.getItemTempOfficeSettingList(itemId, officeType);
         // 获取全院各科室满意度
         settingList.forEach(setting -> {
             if (setting.getOfficeId() > 0 && CollectionUtils.isNotEmpty(setting.getTargetList())) {
@@ -149,9 +149,7 @@ public class ReportSingleOfficeService implements IReportSingleOfficeService {
         res.setAnswerQuantity(answerQuantity);
         // 全院排名
         if (CollectionUtils.isNotEmpty(res.getQuestionList())) {
-//            Set<Integer> officeTypeIds = settingList.stream().map(ItemTempOffice::getOfficeType).collect(Collectors.toSet());
-            Set<Integer> officeTypeIds = new HashSet<>();
-            officeTypeIds.add(officeType);
+            Set<Integer> officeTypeIds = settingList.stream().map(ItemTempOffice::getOfficeType).collect(Collectors.toSet());
             Set<Integer> officeIds = settingList.stream().map(ItemTempOffice::getOfficeId).collect(Collectors.toSet());
             List<ReportAnswerQuantity> quantityAllList = reportAnswerQuantityService.getItemAllOfficeSatisfyList(itemId, officeTypeIds, officeIds);
             // 排序
