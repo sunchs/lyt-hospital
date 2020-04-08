@@ -275,7 +275,8 @@ public class ReportCompareService implements IReportCompareService {
             List<Integer> targetIds = new ArrayList<>();
             Wrapper<ItemTempOffice> itemTempOfficeWrapper = new EntityWrapper<ItemTempOffice>()
                     .eq(ItemTempOffice.ITEM_ID, item.getItemId())
-                    .eq(ItemTempOffice.OFFICE_TYPE, item.getOfficeType());
+                    .eq(ItemTempOffice.OFFICE_TYPE, item.getOfficeType())
+                    .eq(ItemTempOffice.OFFICE_ID, item.getOfficeId());
             List<ItemTempOffice> settingItemTempShowList = itemTempOfficeService.selectList(itemTempOfficeWrapper);
             for (ItemTempOffice temp : settingItemTempShowList) {
                 List<String> list = Arrays.asList(temp.getTargetIds().split(","));
