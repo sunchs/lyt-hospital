@@ -565,6 +565,16 @@ public class ReportOutputService implements IReportOutputService {
             if (CollectionUtils.isNotEmpty(tempList)) {
                 WritableSheet sheet = wb.createSheet("临床科室满意度", sheetIndex);
                 sheetIndex++;
+                // 宽度
+                int widthLen = 0;
+                for (TitleValueChildrenData d : tempList) {
+                    if (d.getChildren().size() > widthLen) {
+                        widthLen = d.getChildren().size();
+                    }
+                }
+                for (int i = 0; i < widthLen; i++) {
+                    sheet.setColumnView(i, 18);
+                }
                 // 散数据
                 for (TitleValueChildrenData temp : tempList) {
                     column=0;
@@ -585,6 +595,7 @@ public class ReportOutputService implements IReportOutputService {
                             sheet.addCell(new Label(column++, line, ch.getValue()+""));
                         }
                     }
+                    line++;
                     line++;
                 }
                 // 排名
