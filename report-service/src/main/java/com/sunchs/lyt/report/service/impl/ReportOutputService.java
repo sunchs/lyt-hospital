@@ -601,13 +601,20 @@ public class ReportOutputService implements IReportOutputService {
                     line++;
                     line++;
                 }
+
+                // 改变默认颜色
+                Color colorRank = Color.decode("#5dc250");
+                wb.setColourRGB(Colour.GREEN, colorRank.getRed(), colorRank.getGreen(), colorRank.getBlue());
+                // 写表头
+                WritableCellFormat formatRank = new WritableCellFormat();
+                format.setBackground(Colour.GREEN);
                 // 排名
                 line++;
                 column=0;
                 List<TitleValueChildrenData> rankingList = tempOfficeData.get("rankingList");
-                sheet.addCell(new Label(column++, line, "排名", format));
-                sheet.addCell(new Label(column++, line, "科室名称", format));
-                sheet.addCell(new Label(column++, line, "科室满意度", format));
+                sheet.addCell(new Label(column++, line, "排名", formatRank));
+                sheet.addCell(new Label(column++, line, "科室名称", formatRank));
+                sheet.addCell(new Label(column++, line, "科室满意度", formatRank));
                 for (TitleValueChildrenData temp : rankingList) {
                     column=0;
                     line++;
@@ -667,12 +674,19 @@ public class ReportOutputService implements IReportOutputService {
                     line++;
                     line++;
                 }
+
+                // 改变默认颜色
+                Color colorRank = Color.decode("#5dc250");
+                wb.setColourRGB(Colour.GREEN, colorRank.getRed(), colorRank.getGreen(), colorRank.getBlue());
+                // 写表头
+                WritableCellFormat formatRank = new WritableCellFormat();
+                format.setBackground(Colour.GREEN);
                 // 排名
                 line++;
                 column=0;
-                sheet.addCell(new Label(column++, line, "排名", format));
-                sheet.addCell(new Label(column++, line, "科室名称", format));
-                sheet.addCell(new Label(column++, line, "科室满意度", format));
+                sheet.addCell(new Label(column++, line, "排名", formatRank));
+                sheet.addCell(new Label(column++, line, "科室名称", formatRank));
+                sheet.addCell(new Label(column++, line, "科室满意度", formatRank));
                 for (TitleValueDataVO valueDataVO : customOfficeList.getRankingList()) {
                     column=0;
                     line++;
