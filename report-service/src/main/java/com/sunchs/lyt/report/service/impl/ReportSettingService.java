@@ -549,7 +549,8 @@ public class ReportSettingService implements IReportSettingService {
                 data.setChildren(targetList);
                 // 科室满意度均值
                 Double officeSatisfyValue = targetList.stream().collect(Collectors.averagingDouble(TitleValueData::getValue));
-                data.setValue(officeSatisfyValue);
+                double value = new BigDecimal(officeSatisfyValue).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                data.setValue(value);
                 result.add(data);
             }
         });
