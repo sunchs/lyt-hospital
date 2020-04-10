@@ -71,6 +71,9 @@ public class ReportOutputService implements IReportOutputService {
     @Autowired
     private ReportSettingService reportSettingService;
 
+    @Autowired
+    private ReportCustomOfficeService reportCustomOfficeService;
+
     @Override
     public String getItemOfficeAnswer(OutputParam param) {
         String path = "temp";
@@ -563,8 +566,7 @@ public class ReportOutputService implements IReportOutputService {
             Map<String, List<TitleValueChildrenData>> tempOfficeData = reportSettingService.getItemTempOfficeSatisfyAndRankingList(param.getItemId(), param.getOfficeType());
             List<TitleValueChildrenData> tempList = tempOfficeData.get("list");
             if (CollectionUtils.isNotEmpty(tempList)) {
-                WritableSheet sheet = wb.createSheet("临床科室满意度", sheetIndex);
-                sheetIndex++;
+                WritableSheet sheet = wb.createSheet("临床科室满意度", sheetIndex++);
                 // 宽度
                 int widthLen = 0;
                 for (TitleValueChildrenData d : tempList) {
@@ -572,7 +574,7 @@ public class ReportOutputService implements IReportOutputService {
                         widthLen = d.getChildren().size();
                     }
                 }
-                for (int i = 0; i < widthLen; i++) {
+                for (int i = 0; i < widthLen + 2; i++) {
                     sheet.setColumnView(i, 18);
                 }
                 // 散数据
@@ -614,6 +616,60 @@ public class ReportOutputService implements IReportOutputService {
                 }
             }
 
+
+            column = 0;
+            line = 0;
+            // 自定义科室满意度
+            CustomOfficeDataVO customOfficeList = reportCustomOfficeService.getCustomOfficeList(param.getItemId(), param.getOfficeType());
+            if (CollectionUtils.isNotEmpty(customOfficeList.getList())) {
+                WritableSheet sheet = wb.createSheet("自定义科室满意度", sheetIndex++);
+                // 宽度
+                int widthLen = 0;
+                for (CustomOfficeData d : customOfficeList.getList()) {
+                    if (d.getTargetList().size() > widthLen) {
+                        widthLen = d.getTargetList().size();
+                    }
+                }
+                for (int i = 0; i < widthLen + 2; i++) {
+                    sheet.setColumnView(i, 18);
+                }
+                // 散数据
+                for (CustomOfficeData custom : customOfficeList.getList()) {
+                    column=0;
+                    List<CustomOfficeTargetData> childList = custom.getTargetList();
+                    if (CollectionUtils.isNotEmpty(childList)) {
+                        // 标题
+                        sheet.addCell(new Label(column++, line, "", format));
+                        sheet.addCell(new Label(column++, line, "总满意度", format));
+                        for (CustomOfficeTargetData ch : childList) {
+                            sheet.addCell(new Label(column++, line, ch.getTargetTitle(), format));
+                        }
+                        // 内容
+                        line++;
+                        column=0;
+                        sheet.addCell(new Label(column++, line, custom.getTitle()+""));
+                        sheet.addCell(new Label(column++, line, custom.getTitle()+""));
+                        for (CustomOfficeTargetData ch : childList) {
+                            sheet.addCell(new Label(column++, line, ch.getSatisfyValue()+""));
+                        }
+                    }
+                    line++;
+                    line++;
+                }
+                // 排名
+                line++;
+                column=0;
+                sheet.addCell(new Label(column++, line, "排名", format));
+                sheet.addCell(new Label(column++, line, "科室名称", format));
+                sheet.addCell(new Label(column++, line, "科室满意度", format));
+                for (TitleValueDataVO valueDataVO : customOfficeList.getRankingList()) {
+                    column=0;
+                    line++;
+                    sheet.addCell(new Label(column++, line, valueDataVO.getId()+""));
+                    sheet.addCell(new Label(column++, line, valueDataVO.getTitle()+""));
+                    sheet.addCell(new Label(column++, line, valueDataVO.getValue()+""));
+                }
+            }
 
             wb.write();
             wb.close();
