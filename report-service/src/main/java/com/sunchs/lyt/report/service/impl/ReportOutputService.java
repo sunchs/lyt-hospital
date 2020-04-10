@@ -648,12 +648,16 @@ public class ReportOutputService implements IReportOutputService {
                         // 内容
                         line++;
                         column=0;
-                        
+
                         double cValue = 0.00;
+                        int qty = 0;
                         for (CustomOfficeTargetData ch : childList) {
-                            cValue += ch.getSatisfyValue();
+                            if (ch.getSatisfyValue() > 0) {
+                                cValue += ch.getSatisfyValue();
+                                qty++;
+                            }
                         }
-                        double value = new BigDecimal(cValue / (double) childList.size()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                        double value = new BigDecimal(cValue / (double) qty).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                         sheet.addCell(new Label(column++, line, custom.getTitle()+""));
                         sheet.addCell(new Label(column++, line, value+""));
                         for (CustomOfficeTargetData ch : childList) {
