@@ -567,6 +567,7 @@ public class ReportOutputService implements IReportOutputService {
                 sheetIndex++;
                 // 散数据
                 for (TitleValueChildrenData temp : tempList) {
+                    column=0;
                     List<TitleValueData> childList = temp.getChildren();
                     if (CollectionUtils.isNotEmpty(childList)) {
                         // 标题
