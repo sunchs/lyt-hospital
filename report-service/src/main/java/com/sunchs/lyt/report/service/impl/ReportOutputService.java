@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -647,8 +648,14 @@ public class ReportOutputService implements IReportOutputService {
                         // 内容
                         line++;
                         column=0;
+                        
+                        double cValue = 0.00;
+                        for (CustomOfficeTargetData ch : childList) {
+                            cValue += ch.getSatisfyValue();
+                        }
+                        double value = new BigDecimal(cValue / (double) childList.size()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                         sheet.addCell(new Label(column++, line, custom.getTitle()+""));
-                        sheet.addCell(new Label(column++, line, custom.getTitle()+""));
+                        sheet.addCell(new Label(column++, line, value+""));
                         for (CustomOfficeTargetData ch : childList) {
                             sheet.addCell(new Label(column++, line, ch.getSatisfyValue()+""));
                         }
@@ -665,7 +672,7 @@ public class ReportOutputService implements IReportOutputService {
                 for (TitleValueDataVO valueDataVO : customOfficeList.getRankingList()) {
                     column=0;
                     line++;
-                    sheet.addCell(new Label(column++, line, valueDataVO.getId()+""));
+                    sheet.addCell(new Label(column++, line, valueDataVO.getRankValue()+""));
                     sheet.addCell(new Label(column++, line, valueDataVO.getTitle()+""));
                     sheet.addCell(new Label(column++, line, valueDataVO.getValue()+""));
                 }
