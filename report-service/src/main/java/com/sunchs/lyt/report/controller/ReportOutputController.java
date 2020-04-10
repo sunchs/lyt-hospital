@@ -64,6 +64,16 @@ public class ReportOutputController extends BaseController {
         return success("http://47.107.255.115:8008/output/download/?fileName="+path);
     }
 
+    /**
+     * 导出自定义科室满意度
+     */
+    @PostMapping("/itemCustomOfficeSatisfyReport")
+    public ResultData itemCustomOfficeSatisfyReport(@RequestBody RequestData data) {
+        OutputParam param = data.toObject(OutputParam.class);
+        String path = reportOutputService.getItemCustomOfficeSatisfyReport(param);
+        return success("http://47.107.255.115:8008/output/download/?fileName="+path);
+    }
+
     @GetMapping("/download")
     public String downloadFile(@RequestParam("fileName") String fileName, HttpServletResponse response ) {
         // 获取指定目录下的第一个文件

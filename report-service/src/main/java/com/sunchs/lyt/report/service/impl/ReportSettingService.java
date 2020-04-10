@@ -557,8 +557,8 @@ public class ReportSettingService implements IReportSettingService {
     }
 
     @Override
-    public Map<String, Object> getItemTempOfficeSatisfyAndRankingList(Integer itemId, Integer officeType) {
-        Map<String, Object> map = new HashMap<>();
+    public Map<String, List<TitleValueChildrenData>> getItemTempOfficeSatisfyAndRankingList(Integer itemId, Integer officeType) {
+        Map<String, List<TitleValueChildrenData>> map = new HashMap<>();
         List<TitleValueChildrenData> satisfyList = getItemTempOfficeSatisfyList(itemId, officeType);
         map.put("list", satisfyList);
 

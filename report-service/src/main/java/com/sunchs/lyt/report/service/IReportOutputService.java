@@ -23,4 +23,9 @@ public interface IReportOutputService {
      * 导出项目总满意度报表
      */
     String getItemSatisfyReport(OutputParam param);
+
+    /**
+     * 导出自定义科室满意度
+     */
+    String getItemCustomOfficeSatisfyReport(OutputParam param);
 }

@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.IdTitleData;
+import com.sunchs.lyt.framework.bean.TitleValueChildrenData;
+import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.framework.util.FormatUtil;
 import com.sunchs.lyt.report.bean.*;
 import com.sunchs.lyt.report.exception.ReportException;
@@ -65,6 +67,9 @@ public class ReportOutputService implements IReportOutputService {
 
     @Autowired
     private ReportTargetService reportTargetService;
+
+    @Autowired
+    private ReportSettingService reportSettingService;
 
     @Override
     public String getItemOfficeAnswer(OutputParam param) {
@@ -524,6 +529,79 @@ public class ReportOutputService implements IReportOutputService {
             for (int i = 0; i < 20; i++) {
                 sheet.setColumnView(i, 18);
             }
+
+            wb.write();
+            wb.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (WriteException e) {
+            e.printStackTrace();
+        }
+        return path + "/" + fileName;
+    }
+
+    @Override
+    public String getItemCustomOfficeSatisfyReport(OutputParam param) {
+        String path = "temp";
+        initPath(path);
+        String fileName = System.currentTimeMillis() +".xls";
+        try {
+            File file = new File(path + "/" + fileName);
+            WritableWorkbook wb = jxl.Workbook.createWorkbook(file);
+            // 改变默认颜色
+            Color color = Color.decode("#EEA9B8");
+            wb.setColourRGB(Colour.RED, color.getRed(), color.getGreen(), color.getBlue());
+            // 写表头
+            WritableCellFormat format = new WritableCellFormat();
+            format.setBackground(Colour.RED);
+
+            int column = 0;
+            int line = 0;
+            int sheetIndex = 0;
+            // 临床科室满意度
+            Map<String, List<TitleValueChildrenData>> tempOfficeData = reportSettingService.getItemTempOfficeSatisfyAndRankingList(param.getItemId(), param.getOfficeType());
+            List<TitleValueChildrenData> tempList = tempOfficeData.get("list");
+            if (CollectionUtils.isNotEmpty(tempList)) {
+                WritableSheet sheet = wb.createSheet("临床科室满意度", sheetIndex);
+                sheetIndex++;
+                // 散数据
+                for (TitleValueChildrenData temp : tempList) {
+                    List<TitleValueData> childList = temp.getChildren();
+                    if (CollectionUtils.isNotEmpty(childList)) {
+                        // 标题
+                        sheet.addCell(new Label(column++, line, "", format));
+                        sheet.addCell(new Label(column++, line, "总满意度", format));
+                        for (TitleValueData ch : childList) {
+                            sheet.addCell(new Label(column++, line, ch.getTitle(), format));
+                        }
+                        // 内容
+                        line++;
+                        column=0;
+                        sheet.addCell(new Label(column++, line, temp.getTitle()+""));
+                        sheet.addCell(new Label(column++, line, temp.getValue()+""));
+                        for (TitleValueData ch : childList) {
+                            sheet.addCell(new Label(column++, line, ch.getValue()+""));
+                        }
+                    }
+                    line++;
+                }
+                // 排名
+                line++;
+                column=0;
+                List<TitleValueChildrenData> rankingList = tempOfficeData.get("rankingList");
+                sheet.addCell(new Label(column++, line, "排名", format));
+                sheet.addCell(new Label(column++, line, "科室名称", format));
+                sheet.addCell(new Label(column++, line, "科室满意度", format));
+                for (TitleValueChildrenData temp : rankingList) {
+                    column=0;
+                    line++;
+                    sheet.addCell(new Label(column++, line, temp.getId()+""));
+                    sheet.addCell(new Label(column++, line, temp.getTitle()+""));
+                    sheet.addCell(new Label(column++, line, temp.getValue()+""));
+                }
+            }
+
 
             wb.write();
             wb.close();
