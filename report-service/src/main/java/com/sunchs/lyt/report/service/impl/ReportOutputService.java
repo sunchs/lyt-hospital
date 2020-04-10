@@ -607,7 +607,7 @@ public class ReportOutputService implements IReportOutputService {
                 wb.setColourRGB(Colour.GREEN, colorRank.getRed(), colorRank.getGreen(), colorRank.getBlue());
                 // 写表头
                 WritableCellFormat formatRank = new WritableCellFormat();
-                format.setBackground(Colour.GREEN);
+                formatRank.setBackground(Colour.GREEN);
                 // 排名
                 line++;
                 column=0;
@@ -680,7 +680,7 @@ public class ReportOutputService implements IReportOutputService {
                 wb.setColourRGB(Colour.GREEN, colorRank.getRed(), colorRank.getGreen(), colorRank.getBlue());
                 // 写表头
                 WritableCellFormat formatRank = new WritableCellFormat();
-                format.setBackground(Colour.GREEN);
+                formatRank.setBackground(Colour.GREEN);
                 // 排名
                 line++;
                 column=0;
