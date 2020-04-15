@@ -150,18 +150,25 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void bindUserHospital(int userId, List<Integer> hospitalList) {
+    public void bindUserHospital(int userId, UserParam param) {
         // 清历史数据
         Wrapper<UserHospital> w = new EntityWrapper<>();
         w.eq(UserRole.USER_ID, userId);
         userHospitalService.delete(w);
         // 插入新数据
-        hospitalList.forEach(hospitalId -> {
+        if (param.getType() != 1) {
+            param.getHospitalList().forEach(hospitalId -> {
+                UserHospital data = new UserHospital();
+                data.setUserId(userId);
+                data.setHospitalId(hospitalId);
+                userHospitalService.insert(data);
+            });
+        } else {
             UserHospital data = new UserHospital();
             data.setUserId(userId);
-            data.setHospitalId(hospitalId);
+            data.setHospitalId(0);
             userHospitalService.insert(data);
-        });
+        }
     }
 
     @Override
@@ -229,7 +236,7 @@ public class UserService implements IUserService {
         data.setCreateTime(new Timestamp(System.currentTimeMillis()));
         if (userService.insert(data)) {
             roleService.bindUserRole(data.getId(), param);
-            bindUserHospital(data.getId(), param.getHospitalList());
+            bindUserHospital(data.getId(), param);
             return data.getId();
         }
         return 0;
@@ -262,7 +269,7 @@ public class UserService implements IUserService {
         data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         if (userService.updateById(data)) {
             roleService.bindUserRole(data.getId(), param);
-            bindUserHospital(data.getId(), param.getHospitalList());
+            bindUserHospital(data.getId(), param);
             return data.getId();
         }
         return 0;

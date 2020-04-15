@@ -33,7 +33,7 @@ public interface IUserService {
     /**
      * 用户绑定医院
      */
-    void bindUserHospital(int userId, List<Integer> hospitalList);
+    void bindUserHospital(int userId, UserParam param);
 
     /**
      * 获取可用的用户列表
