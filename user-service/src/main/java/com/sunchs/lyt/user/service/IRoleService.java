@@ -4,6 +4,7 @@ import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.user.bean.RoleNodeData;
 import com.sunchs.lyt.user.bean.RoleData;
 import com.sunchs.lyt.user.bean.RoleParam;
+import com.sunchs.lyt.user.bean.UserParam;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,7 @@ public interface IRoleService {
     /**
      * 用户绑定角色
      */
-    void bindUserRole(int userId, List<Integer> roleList);
+    void bindUserRole(int userId, UserParam param);
 
     /**
      * 获取select数据

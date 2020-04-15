@@ -11,10 +11,7 @@ import com.sunchs.lyt.db.business.service.impl.RoleServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.UserRoleServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.util.*;
-import com.sunchs.lyt.user.bean.NodeActionParam;
-import com.sunchs.lyt.user.bean.RoleNodeData;
-import com.sunchs.lyt.user.bean.RoleData;
-import com.sunchs.lyt.user.bean.RoleParam;
+import com.sunchs.lyt.user.bean.*;
 import com.sunchs.lyt.user.dao.NodeDao;
 import com.sunchs.lyt.user.dao.RoleDao;
 import com.sunchs.lyt.user.enums.StatusEnum;
@@ -105,13 +102,13 @@ public class RoleService implements IRoleService {
     }
 
     @Override
-    public void bindUserRole(int userId, List<Integer> roleList) {
+    public void bindUserRole(int userId, UserParam param) {
         // 清历史数据
         Wrapper<UserRole> w = new EntityWrapper<>();
         w.eq(UserRole.USER_ID, userId);
         userRoleService.delete(w);
         // 插入新数据
-        roleList.forEach(roleId -> {
+        param.getRoleList().forEach(roleId -> {
             UserRole data = new UserRole();
             data.setUserId(userId);
             data.setRoleId(roleId);

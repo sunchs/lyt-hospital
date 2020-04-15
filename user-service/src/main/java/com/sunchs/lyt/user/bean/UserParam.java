@@ -3,6 +3,7 @@ package com.sunchs.lyt.user.bean;
 import com.sunchs.lyt.framework.bean.PagingParam;
 import com.sunchs.lyt.framework.util.StringUtil;
 import com.sunchs.lyt.user.exception.UserException;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -36,8 +37,22 @@ public class UserParam extends PagingParam {
     }
 
     public void checkRole() {
-        if (roleList == null || roleList.size() == 0) {
+        if (CollectionUtils.isEmpty(roleList)) {
             throw new UserException("角色不能为空");
+        }
+        long count = roleList.stream().filter(v -> !v.equals(0)).count();
+        if (count == 0) {
+            throw new UserException("角色不能为空");
+        }
+    }
+
+    public void checkHospital() {
+        if (CollectionUtils.isEmpty(hospitalList)) {
+            throw new UserException("医院不能为空");
+        }
+        long count = hospitalList.stream().filter(v -> !v.equals(0)).count();
+        if (count == 0) {
+            throw new UserException("医院不能为空");
         }
     }
 

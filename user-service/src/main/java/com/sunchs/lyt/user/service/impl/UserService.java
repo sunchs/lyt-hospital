@@ -18,6 +18,7 @@ import com.sunchs.lyt.user.service.IUserService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -198,6 +199,7 @@ public class UserService implements IUserService {
      * 添加用户信息
      */
     private int insert(UserParam param) {
+        // 参数判断
         param.checkUserName();
         if (userNameExist(param.getUserName())) {
             throw new UserException("用户名已存在");
@@ -205,6 +207,10 @@ public class UserService implements IUserService {
         param.checkPassWord();
         param.checkName();
         param.checkRole();
+        // 非超级管理员判断
+        if (UserThreadUtil.getType() != 1) {
+            param.checkHospital();
+        }
 
         User data = new User();
         data.setType(param.getType()>0 ? param.getType() : 2);
@@ -219,7 +225,7 @@ public class UserService implements IUserService {
         data.setCreateId(UserThreadUtil.getUserId());
         data.setCreateTime(new Timestamp(System.currentTimeMillis()));
         if (userService.insert(data)) {
-            roleService.bindUserRole(data.getId(), param.getRoleList());
+            roleService.bindUserRole(data.getId(), param);
             bindUserHospital(data.getId(), param.getHospitalList());
             return data.getId();
         }
@@ -230,6 +236,14 @@ public class UserService implements IUserService {
      * 更新用户信息
      */
     private int update(UserParam param) {
+        // 参数判断
+        param.checkName();
+        param.checkRole();
+        // 非超级管理员判断
+        if (UserThreadUtil.getType() != 1) {
+            param.checkHospital();
+        }
+
         User data = new User();
         data.setId(param.getId());
         if (StringUtil.isNotEmpty(param.getPassWord())) {
@@ -241,7 +255,7 @@ public class UserService implements IUserService {
         data.setUpdateId(UserThreadUtil.getUserId());
         data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         if (userService.updateById(data)) {
-            roleService.bindUserRole(data.getId(), param.getRoleList());
+            roleService.bindUserRole(data.getId(), param);
             bindUserHospital(data.getId(), param.getHospitalList());
             return data.getId();
         }
