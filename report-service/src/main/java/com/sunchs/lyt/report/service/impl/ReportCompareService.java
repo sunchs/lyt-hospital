@@ -67,9 +67,9 @@ public class ReportCompareService implements IReportCompareService {
     @Override
     public List<Item> getItemListByOfficeType(Integer officeType) {
         // 查询项目ID
-        Wrapper<ReportAnswerSatisfy> satisfyWrapper = new EntityWrapper<ReportAnswerSatisfy>()
-                .setSqlSelect(ReportAnswerSatisfy.ITEM_ID + " as itemId")
-                .eq(ReportAnswerSatisfy.TARGET_ONE, officeType);
+        Wrapper<ReportAnswerOption> satisfyWrapper = new EntityWrapper<ReportAnswerOption>()
+                .setSqlSelect(ReportAnswerOption.ITEM_ID + " as itemId")
+                .eq(ReportAnswerOption.TARGET_ONE, officeType);
 
         // 非全局账号
         if (UserThreadUtil.getType() != UserTypeEnum.ADMIN.value) {
@@ -87,13 +87,13 @@ public class ReportCompareService implements IReportCompareService {
                 if (CollectionUtils.isEmpty(itemIds)) {
                     return new ArrayList<>();
                 }
-                satisfyWrapper.in(ItemOffice.ITEM_ID, itemIds);
+                satisfyWrapper.in(ReportAnswerOption.ITEM_ID, itemIds);
             }
         }
-        satisfyWrapper.groupBy(ReportAnswerSatisfy.ITEM_ID);
+        satisfyWrapper.groupBy(ReportAnswerOption.ITEM_ID);
 
-        List<ReportAnswerSatisfy> satisfyList = reportAnswerSatisfyService.selectList(satisfyWrapper);
-        List<Integer> itemIds = satisfyList.stream().map(ReportAnswerSatisfy::getItemId).collect(Collectors.toList());
+        List<ReportAnswerOption> satisfyList = reportAnswerOptionService.selectList(satisfyWrapper);
+        List<Integer> itemIds = satisfyList.stream().map(ReportAnswerOption::getItemId).collect(Collectors.toList());
         // 查询项目
         Wrapper<Item> itemWrapper = new EntityWrapper<Item>()
                 .in(Item.ID, itemIds);
