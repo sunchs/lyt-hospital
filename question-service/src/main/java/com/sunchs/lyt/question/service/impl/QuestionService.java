@@ -134,6 +134,25 @@ public class QuestionService implements IQuestionService {
             throw new QuestionException("题目已存在，请重新输入！");
         }
 
+        Wrapper<Question> noWrapper = new EntityWrapper<Question>()
+                .eq(Question.IS_PUBLIC, 1)
+                .eq(Question.NUMBER, param.getNumber())
+                .eq(Question.STATUS, 1);
+        int noCout = questionService.selectCount(noWrapper);
+        if (noCout > 0) {
+            throw new QuestionException("题目编号已存在，请重新输入！");
+        }
+
+        Wrapper<Question> noQuestionWrapper = new EntityWrapper<Question>()
+                .eq(Question.TARGET_ONE, param.getTargetOne())
+                .eq(Question.NUMBER, param.getNumber())
+                .eq(Question.STATUS, 1)
+                .eq(Question.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+        int noQuestionCount = questionService.selectCount(noQuestionWrapper);
+        if (noQuestionCount > 0) {
+            throw new QuestionException("题目编号已存在，请重新输入！");
+        }
+
         Question question = new Question();
         question.setHospitalId(UserThreadUtil.getHospitalId());
         question.setNumber(param.getNumber());
