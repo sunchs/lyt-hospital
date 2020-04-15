@@ -66,16 +66,17 @@ public class UserService implements IUserService {
 
     @Override
     public PagingList<UserData> getPagingList(UserParam param) {
-
         Wrapper<User> wrapper = new EntityWrapper<>();
         wrapper.orderBy(User.ID, false);
+        // 医院之间账号独立
         if (UserThreadUtil.getType() != 1) {
             Wrapper<UserHospital> userHospitalWrapper = new EntityWrapper<UserHospital>()
+                    .setSqlSelect(UserHospital.USER_ID.concat(" as userId"))
                     .eq(UserHospital.HOSPITAL_ID, UserThreadUtil.getHospitalId());
             List<UserHospital> userHospitals = userHospitalService.selectList(userHospitalWrapper);
             List<Integer> userIds = userHospitals.stream().map(UserHospital::getUserId).collect(Collectors.toList());
             if (Objects.nonNull(userIds)) {
-                wrapper.eq(User.ID, userIds);
+                wrapper.in(User.ID, userIds);
             } else {
                 return PagingUtil.Empty(param.getPageNow(), param.getPageSize());
             }
@@ -312,12 +313,12 @@ public class UserService implements IUserService {
         param.checkName();
         param.checkRole();
         // 非超级管理员判断
-        if (UserThreadUtil.getType() == 1 && param.getType() != 1) {
-            param.checkHospital();
-        }
-        if (UserThreadUtil.getType() != 1) {
-            param.checkAccess();
-        }
+//        if (UserThreadUtil.getType() == 1 && param.getType() != 1) {
+//            param.checkHospital();
+//        }
+//        if (UserThreadUtil.getType() != 1) {
+//            param.checkAccess();
+//        }
 
         User data = new User();
         data.setId(param.getId());
@@ -331,7 +332,7 @@ public class UserService implements IUserService {
         data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         if (userService.updateById(data)) {
             roleService.bindUserRole(data.getId(), param);
-            bindUserHospital(data.getId(), param);
+//            bindUserHospital(data.getId(), param);
             return data.getId();
         }
         return 0;
