@@ -8,6 +8,7 @@ import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.constants.CacheKeys;
 import com.sunchs.lyt.framework.constants.DateTimes;
+import com.sunchs.lyt.framework.enums.UserTypeEnum;
 import com.sunchs.lyt.framework.util.*;
 import com.sunchs.lyt.user.bean.UserData;
 import com.sunchs.lyt.user.bean.UserParam;
@@ -15,10 +16,10 @@ import com.sunchs.lyt.user.bean.UserRoleData;
 import com.sunchs.lyt.user.enums.StatusEnum;
 import com.sunchs.lyt.user.exception.UserException;
 import com.sunchs.lyt.user.service.IUserService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -197,24 +198,24 @@ public class UserService implements IUserService {
 
     @Override
     public List<Map<String, Object>> getUsableList() {
-        Wrapper<User> w = new EntityWrapper<>();
-        w.setSqlSelect(User.ID, User.USERNAME, User.NAME);
-        w.eq(User.STATUS, 1);
-        w.gt(User.ID, 10);
-        if (UserThreadUtil.getHospitalId() > 0) {
+        Wrapper<User> wrapper = new EntityWrapper<>();
+        wrapper.setSqlSelect(User.ID, User.USERNAME, User.NAME);
+        wrapper.eq(User.STATUS, 1);
+        
+        // 非全局账号
+        if (UserThreadUtil.getType() != UserTypeEnum.ADMIN.value) {
             Wrapper<UserHospital> userHospitalWrapper = new EntityWrapper<UserHospital>()
+                    .setSqlSelect(UserHospital.USER_ID.concat(" as userId"))
                     .eq(UserHospital.HOSPITAL_ID, UserThreadUtil.getHospitalId());
-            List<Integer> ids = new ArrayList<>();
             List<UserHospital> userHospitals = userHospitalService.selectList(userHospitalWrapper);
-            userHospitals.forEach(h->{
-                ids.add(h.getUserId());
-            });
-            if (ids.size() > 0) {
-                w.in(User.ID, ids);
+            List<Integer> userIds = userHospitals.stream().map(UserHospital::getUserId).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(userIds)) {
+                wrapper.in(User.ID, userIds);
             }
         }
-        w.orderBy(User.ID, false);
-        List<User> userList = userService.selectList(w);
+
+        wrapper.orderBy(User.ID, false);
+        List<User> userList = userService.selectList(wrapper);
         List<Map<String, Object>> list = new ArrayList<>();
         userList.forEach(row -> {
             Map<String, Object> m = new HashMap<>();
