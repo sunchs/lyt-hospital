@@ -232,33 +232,27 @@ public class ItemService implements IItemService {
         Wrapper<ItemOffice> wrapper = new EntityWrapper<>();
         if (param.getId() > 0) {
             wrapper.eq(ItemOffice.ITEM_ID, param.getId());
-        }
-//        if (UserThreadUtil.getHospitalId() > 0) {
-//            wrapper.eq(ItemOffice.HOSPITAL_ID, UserThreadUtil.getHospitalId());
-//        }
-
-        if (UserThreadUtil.getHospitalId() > 0) {
-            Wrapper<UserHospital> userHospitalWrapper = new EntityWrapper<UserHospital>()
-                    .eq(UserHospital.HOSPITAL_ID, UserThreadUtil.getHospitalId());
-            List<Integer> ids = new ArrayList<>();
-            List<UserHospital> userHospitals = userHospitalService.selectList(userHospitalWrapper);
-            userHospitals.forEach(h->{
-                ids.add(h.getUserId());
-            });
-            if (CollectionUtils.isEmpty(ids)) {
-                return PagingUtil.Empty();
+        } else {
+            // 非全局账号
+            if (UserThreadUtil.getType() != UserTypeEnum.ADMIN.value) {
+                Wrapper<UserHospital> userHospitalWrapper = new EntityWrapper<UserHospital>()
+                        .setSqlSelect(UserHospital.USER_ID.concat(" as userId"))
+                        .eq(UserHospital.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+                List<UserHospital> userHospitals = userHospitalService.selectList(userHospitalWrapper);
+                List<Integer> userIds = userHospitals.stream().map(UserHospital::getUserId).collect(Collectors.toList());
+                if (CollectionUtils.isNotEmpty(userIds)) {
+                    Wrapper<Item> itemWrapper = new EntityWrapper<Item>()
+                            .in(Item.CREATE_ID, userIds)
+                            .groupBy(Item.ID);
+                    List<Item> itemTempList = itemService.selectList(itemWrapper);
+                    List<Integer> itemIds = itemTempList.stream().map(Item::getId).collect(Collectors.toList());
+                    if (CollectionUtils.isEmpty(itemIds)) {
+                        return PagingUtil.Empty(param.getPageNow(), param.getPageSize());
+                    }
+                    wrapper.in(ItemOffice.ITEM_ID, itemIds);
+                }
             }
-            Wrapper<Item> itemWrapper = new EntityWrapper<Item>()
-                    .in(Item.CREATE_ID, ids)
-                    .groupBy(Item.ID);
-            List<Item> itemTempList = itemService.selectList(itemWrapper);
-            List<Integer> itemIds = itemTempList.stream().map(Item::getId).collect(Collectors.toList());
-            if (CollectionUtils.isEmpty(itemIds)) {
-                return PagingUtil.Empty();
-            }
-            wrapper.in(ItemOffice.ITEM_ID, itemIds);
         }
-
         wrapper.orderBy(ItemOffice.ID, false);
         Page<ItemOffice> page = itemOfficeService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), wrapper);
         page.getRecords().forEach(row -> {
