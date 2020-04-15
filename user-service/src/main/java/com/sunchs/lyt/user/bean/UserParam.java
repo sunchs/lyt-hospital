@@ -56,6 +56,12 @@ public class UserParam extends PagingParam {
         }
     }
 
+    public void checkAccess() {
+        if (type == 1) {
+            throw new UserException("无权限添加此类账号");
+        }
+    }
+
     public int getId() {
         return id;
     }

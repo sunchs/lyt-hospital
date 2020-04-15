@@ -208,8 +208,11 @@ public class UserService implements IUserService {
         param.checkName();
         param.checkRole();
         // 非超级管理员判断
-        if (UserThreadUtil.getType() != 1) {
+        if (param.getType() != 1) {
             param.checkHospital();
+        }
+        if (UserThreadUtil.getType() != 1) {
+            param.checkAccess();
         }
 
         User data = new User();
@@ -240,8 +243,11 @@ public class UserService implements IUserService {
         param.checkName();
         param.checkRole();
         // 非超级管理员判断
-        if (UserThreadUtil.getType() != 1) {
+        if (param.getType() != 1) {
             param.checkHospital();
+        }
+        if (UserThreadUtil.getType() != 1) {
+            param.checkAccess();
         }
 
         User data = new User();
