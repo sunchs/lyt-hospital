@@ -8,7 +8,10 @@ import com.sunchs.lyt.framework.bean.IdTitleData;
 import com.sunchs.lyt.framework.bean.TitleData;
 import com.sunchs.lyt.framework.bean.TitleValueChildrenData;
 import com.sunchs.lyt.framework.bean.TitleValueData;
+import com.sunchs.lyt.framework.enums.UserTypeEnum;
 import com.sunchs.lyt.framework.util.FormatUtil;
+import com.sunchs.lyt.framework.util.PagingUtil;
+import com.sunchs.lyt.framework.util.UserThreadUtil;
 import com.sunchs.lyt.report.bean.*;
 import com.sunchs.lyt.report.service.IReportCompareService;
 import org.apache.commons.collections.CollectionUtils;
@@ -58,13 +61,37 @@ public class ReportCompareService implements IReportCompareService {
     @Autowired
     private ItemTempOfficeServiceImpl itemTempOfficeService;
 
+    @Autowired
+    private UserHospitalServiceImpl userHospitalService;
+
     @Override
     public List<Item> getItemListByOfficeType(Integer officeType) {
         // 查询项目ID
         Wrapper<ReportAnswerSatisfy> satisfyWrapper = new EntityWrapper<ReportAnswerSatisfy>()
                 .setSqlSelect(ReportAnswerSatisfy.ITEM_ID + " as itemId")
-                .eq(ReportAnswerSatisfy.TARGET_ONE, officeType)
-                .groupBy(ReportAnswerSatisfy.ITEM_ID);
+                .eq(ReportAnswerSatisfy.TARGET_ONE, officeType);
+
+        // 非全局账号
+        if (UserThreadUtil.getType() != UserTypeEnum.ADMIN.value) {
+            Wrapper<UserHospital> userHospitalWrapper = new EntityWrapper<UserHospital>()
+                    .setSqlSelect(UserHospital.USER_ID.concat(" as userId"))
+                    .eq(UserHospital.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+            List<UserHospital> userHospitals = userHospitalService.selectList(userHospitalWrapper);
+            List<Integer> userIds = userHospitals.stream().map(UserHospital::getUserId).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(userIds)) {
+                Wrapper<Item> itemWrapper = new EntityWrapper<Item>()
+                        .in(Item.CREATE_ID, userIds)
+                        .groupBy(Item.ID);
+                List<Item> itemTempList = itemService.selectList(itemWrapper);
+                List<Integer> itemIds = itemTempList.stream().map(Item::getId).collect(Collectors.toList());
+                if (CollectionUtils.isEmpty(itemIds)) {
+                    return new ArrayList<>();
+                }
+                satisfyWrapper.in(ItemOffice.ITEM_ID, itemIds);
+            }
+        }
+        satisfyWrapper.groupBy(ReportAnswerSatisfy.ITEM_ID);
+
         List<ReportAnswerSatisfy> satisfyList = reportAnswerSatisfyService.selectList(satisfyWrapper);
         List<Integer> itemIds = satisfyList.stream().map(ReportAnswerSatisfy::getItemId).collect(Collectors.toList());
         // 查询项目
