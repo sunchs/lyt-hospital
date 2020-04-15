@@ -70,42 +70,25 @@ public class ItemService implements IItemService {
     @Autowired
     private UserHospitalServiceImpl userHospitalService;
 
-    @Autowired
-    private QuestionTagServiceImpl questionTagService;
-
-    @Autowired
-    private ReportAnswerOptionServiceImpl reportAnswerOptionService;
-
     @Override
     public PagingList<ItemData> getPageList(ItemParam param) {
         List<ItemData> list = new ArrayList<>();
-        Wrapper<Item> w = new EntityWrapper<>();
-//        if (UserThreadUtil.getType() == UserTypeEnum.ADMIN.value) {
-//            if (NumberUtil.nonZero(param.getHospitalId())) {
-//                where.eq(Question.HOSPITAL_ID, param.getHospitalId());
-//            }
-//        } else if (UserThreadUtil.getHospitalId() > 0){
-//            where.eq(Question.HOSPITAL_ID, UserThreadUtil.getHospitalId());
-//        } else {
-//            // 非管理员，又没绑定医院
-//            where.eq(Question.HOSPITAL_ID, -1);
-//        }
+        Wrapper<Item> wrapper = new EntityWrapper<>();
 
-
-        if (UserThreadUtil.getHospitalId() > 0) {
+        // 非全局账号
+        if (UserThreadUtil.getType() != UserTypeEnum.ADMIN.value) {
             Wrapper<UserHospital> userHospitalWrapper = new EntityWrapper<UserHospital>()
+                    .setSqlSelect(UserHospital.USER_ID.concat(" as userId"))
                     .eq(UserHospital.HOSPITAL_ID, UserThreadUtil.getHospitalId());
-            List<Integer> ids = new ArrayList<>();
             List<UserHospital> userHospitals = userHospitalService.selectList(userHospitalWrapper);
-            userHospitals.forEach(h->{
-                ids.add(h.getUserId());
-            });
-            if (ids.size() > 0) {
-                w.in(Item.CREATE_ID, ids);
+            List<Integer> userIds = userHospitals.stream().map(UserHospital::getUserId).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(userIds)) {
+                wrapper.in(Item.CREATE_ID, userIds);
             }
         }
-        w.orderBy(Item.ID, false);
-        Page<Item> page = itemService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), w);
+
+        wrapper.orderBy(Item.ID, false);
+        Page<Item> page = itemService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), wrapper);
         page.getRecords().forEach(row -> list.add(getItemInfo(row)));
         return PagingUtil.getData(list, page.getTotal(), page.getCurrent(), page.getSize());
     }
