@@ -47,10 +47,20 @@ public class UserService implements IUserService {
 
     @Override
     public int save(UserParam param) {
-        if (NumberUtil.isZero(param.getId())) {
-            return insert(param);
+        if (UserThreadUtil.getType() == 1) {
+            // 超级管理员账号操作
+            if (NumberUtil.isZero(param.getId())) {
+                return bossInsert(param);
+            } else {
+                return bossUpdate(param);
+            }
         } else {
-            return update(param);
+            // 普通账号操作
+            if (NumberUtil.isZero(param.getId())) {
+                return otherInsert(param);
+            } else {
+                return bossUpdate(param);
+            }
         }
     }
 
@@ -205,7 +215,7 @@ public class UserService implements IUserService {
     /**
      * 添加用户信息
      */
-    private int insert(UserParam param) {
+    private int bossInsert(UserParam param) {
         // 参数判断
         param.checkUserName();
         if (userNameExist(param.getUserName())) {
@@ -215,7 +225,7 @@ public class UserService implements IUserService {
         param.checkName();
         param.checkRole();
         // 非超级管理员判断
-        if (param.getType() != 1) {
+        if (UserThreadUtil.getType() == 1 && param.getType() != 1) {
             param.checkHospital();
         }
         if (UserThreadUtil.getType() != 1) {
@@ -241,16 +251,55 @@ public class UserService implements IUserService {
         }
         return 0;
     }
+    private int otherInsert(UserParam param) {
+        // 参数判断
+        param.checkUserName();
+        if (userNameExist(param.getUserName())) {
+            throw new UserException("用户名被占用，请使用其他用户名！");
+        }
+        param.checkPassWord();
+        param.checkName();
+        param.checkRole();
+
+        User data = new User();
+        data.setType(2);
+        data.setUsername(param.getUserName());
+        data.setPassword(MD5Util.encode(param.getPassWord()));
+        data.setName(param.getName());
+        data.setStatus(param.getStatus());
+        data.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        data.setPwLog(param.getPassWord());
+        data.setUpdateId(UserThreadUtil.getUserId());
+        data.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        data.setCreateId(UserThreadUtil.getUserId());
+        data.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        if (userService.insert(data)) {
+            // 插入角色数据
+            param.getRoleList().forEach(roleId -> {
+                UserRole userRole = new UserRole();
+                userRole.setUserId(data.getId());
+                userRole.setRoleId(roleId);
+                userRoleService.insert(userRole);
+            });
+            // 插入医院数据
+            UserHospital userHospital = new UserHospital();
+            userHospital.setUserId(data.getId());
+            userHospital.setHospitalId(UserThreadUtil.getHospitalId());
+            userHospitalService.insert(userHospital);
+            return data.getId();
+        }
+        return 0;
+    }
 
     /**
      * 更新用户信息
      */
-    private int update(UserParam param) {
+    private int bossUpdate(UserParam param) {
         // 参数判断
         param.checkName();
         param.checkRole();
         // 非超级管理员判断
-        if (param.getType() != 1) {
+        if (UserThreadUtil.getType() == 1 && param.getType() != 1) {
             param.checkHospital();
         }
         if (UserThreadUtil.getType() != 1) {
