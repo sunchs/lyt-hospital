@@ -66,9 +66,22 @@ public class UserService implements IUserService {
 
     @Override
     public PagingList<UserData> getPagingList(UserParam param) {
-        Wrapper<User> w = new EntityWrapper<>();
-        w.orderBy(User.ID, false);
-        Page<User> page = userService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), w);
+
+        Wrapper<User> wrapper = new EntityWrapper<>();
+        wrapper.orderBy(User.ID, false);
+        if (UserThreadUtil.getType() != 1) {
+            Wrapper<UserHospital> userHospitalWrapper = new EntityWrapper<UserHospital>()
+                    .eq(UserHospital.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+            List<UserHospital> userHospitals = userHospitalService.selectList(userHospitalWrapper);
+            List<Integer> userIds = userHospitals.stream().map(UserHospital::getUserId).collect(Collectors.toList());
+            if (Objects.nonNull(userIds)) {
+                wrapper.eq(User.ID, userIds);
+            } else {
+                return PagingUtil.Empty(param.getPageNow(), param.getPageSize());
+            }
+        }
+
+        Page<User> page = userService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), wrapper);
         List<UserData> list = new ArrayList<>();
         page.getRecords().forEach(row->{
             UserData data = ObjectUtil.copy(row, UserData.class);
@@ -219,7 +232,7 @@ public class UserService implements IUserService {
         // 参数判断
         param.checkUserName();
         if (userNameExist(param.getUserName())) {
-            throw new UserException("用户名已存在");
+            throw new UserException("用户名被占用，请使用其他用户名！");
         }
         param.checkPassWord();
         param.checkName();
