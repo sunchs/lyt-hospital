@@ -46,6 +46,7 @@ public class RoleService implements IRoleService {
     public PagingList<RoleData> getRoleList(RoleParam param) {
         List<RoleData> list = new ArrayList<>();
         Wrapper<Role> w = new EntityWrapper<>();
+        w.and("id not IN(select role_id from user_role WHERE user_id=?)", UserThreadUtil.getUserId());
         w.orderBy(Role.ID, false);
         Page<Role> page = roleService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), w);
         page.getRecords().forEach(row -> {
