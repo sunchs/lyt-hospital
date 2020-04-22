@@ -68,6 +68,7 @@ public class UserService implements IUserService {
     @Override
     public PagingList<UserData> getPagingList(UserParam param) {
         Wrapper<User> wrapper = new EntityWrapper<>();
+        wrapper.ne(User.ID, 9);
         wrapper.orderBy(User.ID, false);
         // 医院之间账号独立
         if (UserThreadUtil.getType() != 1) {
@@ -201,7 +202,7 @@ public class UserService implements IUserService {
         Wrapper<User> wrapper = new EntityWrapper<>();
         wrapper.setSqlSelect(User.ID, User.USERNAME, User.NAME);
         wrapper.eq(User.STATUS, 1);
-        
+
         // 非全局账号
         if (UserThreadUtil.getType() != UserTypeEnum.ADMIN.value) {
             Wrapper<UserHospital> userHospitalWrapper = new EntityWrapper<UserHospital>()
