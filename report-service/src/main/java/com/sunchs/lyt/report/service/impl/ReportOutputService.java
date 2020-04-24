@@ -113,8 +113,10 @@ public class ReportOutputService implements IReportOutputService {
             // 获取题目
             Wrapper<ReportAnswerOption> reportAnswerOptionWrapper = new EntityWrapper<ReportAnswerOption>()
                     .in(ReportAnswerOption.ANSWER_ID, reportAnswerIds)
+                    .groupBy(ReportAnswerOption.QUESTIONNAIRE_ID)
                     .groupBy(ReportAnswerOption.QUESTION_ID);
             List<ReportAnswerOption> reportAnswerOptionGroupList = reportAnswerOptionService.selectList(reportAnswerOptionWrapper);
+            // 按问卷分组
             Map<Integer, List<ReportAnswerOption>> reportAnswerOptionGroupMap = reportAnswerOptionGroupList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionnaireId));
 
             Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
