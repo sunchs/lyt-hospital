@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.sunchs.lyt.db.business.entity.Hospital;
-import com.sunchs.lyt.db.business.entity.Question;
-import com.sunchs.lyt.db.business.entity.Questionnaire;
-import com.sunchs.lyt.db.business.entity.QuestionnaireExtend;
+import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.HospitalServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.QuestionnaireExtendServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.QuestionnaireServiceImpl;
@@ -27,6 +24,7 @@ import jxl.format.Colour;
 import jxl.write.Label;
 import jxl.write.*;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +34,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionnaireService implements IQuestionnaireService {
@@ -174,6 +173,10 @@ public class QuestionnaireService implements IQuestionnaireService {
     public List<Map<String, Object>> getUsableList(QuestionnaireParam param) {
         Wrapper<Questionnaire> wrapper = new EntityWrapper<Questionnaire>()
                 .eq(Questionnaire.STATUS, 1);
+        // 非全局账号
+        if (UserThreadUtil.getType() != UserTypeEnum.ADMIN.value) {
+            wrapper.eq(Questionnaire.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+        }
         List<Map<String, Object>> list = new ArrayList<>();
         questionnaireService.selectList(wrapper).forEach(q -> {
             Map<String, Object> map = new HashMap<>();
