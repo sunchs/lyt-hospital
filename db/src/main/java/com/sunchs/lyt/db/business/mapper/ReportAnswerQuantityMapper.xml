@@ -24,7 +24,7 @@
         SELECT target_three as targetThree, AVG(satisfyValue) as satisfyValue FROM (
             SELECT target_three, SUM(quantity*score)/SUM(quantity) as satisfyValue FROM report_answer_quantity
             WHERE item_id=#{itemId} AND target_two=#{targetId} AND score!=0
-            GROUP BY question_id
+            GROUP BY target_three
          ) tb GROUP BY target_three
     </select>
 
@@ -32,7 +32,7 @@
         SELECT target_two as targetTwo, AVG(satisfyValue) as satisfyValue FROM (
             SELECT target_two, SUM(quantity*score)/SUM(quantity) as satisfyValue FROM report_answer_quantity
             WHERE item_id=#{itemId} AND target_one=#{targetId} AND score!=0
-            GROUP BY question_id
+            GROUP BY target_three
          ) tb GROUP BY target_two
     </select>
 
