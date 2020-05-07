@@ -43,7 +43,7 @@
             <foreach collection="targetIds" item="id" index="index" open="(" close=")" separator=",">
                 #{id}
             </foreach>
-            AND score!=0 AND target_one=#{officeType} GROUP BY question_id
+            AND score!=0 AND target_one=#{officeType} GROUP BY target_three
         ) tb GROUP BY target_three
     </select>
 
