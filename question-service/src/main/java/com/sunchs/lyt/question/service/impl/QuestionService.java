@@ -191,22 +191,32 @@ public class QuestionService implements IQuestionService {
     }
 
     private void setQuestionOption(int questionId, OptionTemplate optionTemplate) {
-        String content = optionTemplate.getContent();
-        String scoreString = optionTemplate.getScore();
-        String[] split = content.split(",");
-        String[] scoreArr = scoreString.split(",");
-        int index = 1;
-        for (String value : split) {
+        if (optionTemplate.getId().equals(98)) {
             QuestionOption data = new QuestionOption();
             data.setQuestionId(questionId);
-            data.setTitle(value);
-            data.setSort(index);
-            if (split.length == scoreArr.length) {
-                data.setScore(Integer.parseInt(scoreArr[(index-1)]));
-            }
+            data.setTitle(optionTemplate.getContent());
+            data.setSort(0);
+            data.setScore(0);
             data.setTemplateId(optionTemplate.getId());
             questionOptionDao.insertQuestionOption(data);
-            index++;
+        } else {
+            String content = optionTemplate.getContent();
+            String scoreString = optionTemplate.getScore();
+            String[] split = content.split(",");
+            String[] scoreArr = scoreString.split(",");
+            int index = 1;
+            for (String value : split) {
+                QuestionOption data = new QuestionOption();
+                data.setQuestionId(questionId);
+                data.setTitle(value);
+                data.setSort(index);
+                if (split.length == scoreArr.length) {
+                    data.setScore(Integer.parseInt(scoreArr[(index-1)]));
+                }
+                data.setTemplateId(optionTemplate.getId());
+                questionOptionDao.insertQuestionOption(data);
+                index++;
+            }
         }
     }
 
