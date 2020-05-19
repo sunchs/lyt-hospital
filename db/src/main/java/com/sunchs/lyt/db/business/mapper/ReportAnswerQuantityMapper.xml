@@ -62,7 +62,7 @@
         SELECT target_three as targetThree,AVG(satisfyValue) as satisfyValue FROM (
             SELECT target_three,SUM(quantity*score)/SUM(quantity) as satisfyValue FROM (
                 SELECT target_three,question_id,option_id,score,COUNT(1) quantity FROM report_answer_option
-                WHERE item_id=#{param.itemId} AND target_one=#{param.officeType} AND office_id=#{param.officeId} AND score!=0
+                WHERE item_id=#{param.itemId} AND office_type_id=#{param.officeType} AND office_id=#{param.officeId} AND score!=0
                 AND target_three IN
                 <foreach collection="param.targetIds" item="id" index="index" open="(" close=")" separator=",">
                     #{id}

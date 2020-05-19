@@ -3,8 +3,10 @@ package com.sunchs.lyt.report.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.sunchs.lyt.db.business.entity.QuestionTarget;
+import com.sunchs.lyt.db.business.entity.Questionnaire;
 import com.sunchs.lyt.db.business.entity.ReportAnswerOption;
 import com.sunchs.lyt.db.business.service.impl.QuestionTargetServiceImpl;
+import com.sunchs.lyt.db.business.service.impl.QuestionnaireServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.ReportAnswerOptionServiceImpl;
 import com.sunchs.lyt.framework.bean.IdTitleData;
 import com.sunchs.lyt.report.bean.ItemCompareValue;
@@ -27,9 +29,50 @@ public class ReportRelatedService implements IReportRelatedService {
     @Autowired
     private QuestionTargetServiceImpl questionTargetService;
 
+    @Autowired
+    private QuestionnaireServiceImpl questionnaireService;
+
     @Override
     public ItemRelatedData getItemRelatedData(Integer itemId, Integer officeType) {
         ItemRelatedData data = new ItemRelatedData();
+        // 检查是否有多问卷
+        Wrapper<ReportAnswerOption> checkWrapper = new EntityWrapper<ReportAnswerOption>()
+                .setSqlSelect(ReportAnswerOption.ANSWER_ID.concat(" AS answerId"))
+                .eq(ReportAnswerOption.ITEM_ID, itemId)
+                .eq(ReportAnswerOption.OFFICE_TYPE_ID, officeType)
+                .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
+                .groupBy(ReportAnswerOption.ANSWER_ID);
+        List<ReportAnswerOption> checkList = reportAnswerOptionService.selectList(checkWrapper);
+        if (checkList.size() == 0) {
+            return data;
+        }
+        Integer answerId = 0;
+        List<Integer> answerIds = checkList.stream().map(ReportAnswerOption::getAnswerId).collect(Collectors.toList());
+        if (answerIds.size() > 1) {
+            Wrapper<Questionnaire> questionnaireWrapper = new EntityWrapper<Questionnaire>()
+                    .setSqlSelect(
+                            Questionnaire.ID,
+                            Questionnaire.TITLE
+                    )
+                    .in(Questionnaire.ID, answerIds);
+            List<Questionnaire> questionnaires = questionnaireService.selectList(questionnaireWrapper);
+            for (Questionnaire q : questionnaires) {
+                String title = q.getTitle();
+                if (title.indexOf("（门诊）") != -1) {
+                    answerId = q.getId();
+                    break;
+                }
+                if (title.indexOf("(门诊)") != -1) {
+                    answerId = q.getId();
+                    break;
+                }
+            }
+        }
+        if (answerId == 0) {
+            answerId = answerIds.get(0);
+        }
+
+        // 获取答卷数据
         Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
                 .setSqlSelect(
                         ReportAnswerOption.ID,
@@ -39,7 +82,8 @@ public class ReportRelatedService implements IReportRelatedService {
                 )
                 .eq(ReportAnswerOption.ITEM_ID, itemId)
                 .eq(ReportAnswerOption.OFFICE_TYPE_ID, officeType)
-                .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4));
+                .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
+                .eq(ReportAnswerOption.ANSWER_ID, answerId);
         List<ReportAnswerOption> optionList = reportAnswerOptionService.selectList(wrapper);
 //        Map<Integer, List<ReportAnswerOption>> optionGroupMap = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetThree));
 
