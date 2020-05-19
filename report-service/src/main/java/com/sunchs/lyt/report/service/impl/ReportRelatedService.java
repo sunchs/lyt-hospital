@@ -37,24 +37,24 @@ public class ReportRelatedService implements IReportRelatedService {
         ItemRelatedData data = new ItemRelatedData();
         // 检查是否有多问卷
         Wrapper<ReportAnswerOption> checkWrapper = new EntityWrapper<ReportAnswerOption>()
-                .setSqlSelect(ReportAnswerOption.ANSWER_ID.concat(" AS answerId"))
+                .setSqlSelect(ReportAnswerOption.QUESTIONNAIRE_ID.concat(" AS questionnaireId"))
                 .eq(ReportAnswerOption.ITEM_ID, itemId)
                 .eq(ReportAnswerOption.OFFICE_TYPE_ID, officeType)
                 .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
-                .groupBy(ReportAnswerOption.ANSWER_ID);
+                .groupBy(ReportAnswerOption.QUESTIONNAIRE_ID);
         List<ReportAnswerOption> checkList = reportAnswerOptionService.selectList(checkWrapper);
         if (checkList.size() == 0) {
             return data;
         }
-        Integer answerId = 0;
-        List<Integer> answerIds = checkList.stream().map(ReportAnswerOption::getAnswerId).collect(Collectors.toList());
-        if (answerIds.size() > 1) {
+        int answerId = 0;
+        List<Integer> questionnaireList = checkList.stream().map(ReportAnswerOption::getQuestionnaireId).collect(Collectors.toList());
+        if (questionnaireList.size() > 1) {
             Wrapper<Questionnaire> questionnaireWrapper = new EntityWrapper<Questionnaire>()
                     .setSqlSelect(
                             Questionnaire.ID,
                             Questionnaire.TITLE
                     )
-                    .in(Questionnaire.ID, answerIds);
+                    .in(Questionnaire.ID, questionnaireList);
             List<Questionnaire> questionnaires = questionnaireService.selectList(questionnaireWrapper);
             for (Questionnaire q : questionnaires) {
                 String title = q.getTitle();
@@ -69,7 +69,7 @@ public class ReportRelatedService implements IReportRelatedService {
             }
         }
         if (answerId == 0) {
-            answerId = answerIds.get(0);
+            answerId = questionnaireList.get(0);
         }
 
         // 获取答卷数据
