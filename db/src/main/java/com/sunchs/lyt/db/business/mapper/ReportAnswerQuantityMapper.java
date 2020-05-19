@@ -1,7 +1,8 @@
 package com.sunchs.lyt.db.business.mapper;
 
-import com.sunchs.lyt.db.business.entity.ReportAnswerQuantity;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.sunchs.lyt.db.business.entity.ReportAnswerQuantity;
+import com.sunchs.lyt.db.bean.AnswerQuantityParam;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -24,6 +25,8 @@ public interface ReportAnswerQuantityMapper extends BaseMapper<ReportAnswerQuant
     List<ReportAnswerQuantity> getTargetSatisfyList(@Param("itemId") Integer itemId, @Param("officeType") Integer officeType, @Param("targetIds") List<Integer> targetIds);
 
     List<ReportAnswerQuantity> getItemOfficeTargetSatisfyList(@Param("itemId") Integer itemId, @Param("officeType") Integer officeType, @Param("officeId") Integer officeId, @Param("targetIds") List<Integer> targetIds);
+
+    List<ReportAnswerQuantity> getItemOfficeTargetSatisfyListV2(@Param("param") AnswerQuantityParam param);
 
     ReportAnswerQuantity getItemOfficeSatisfyInfo(@Param("itemId") Integer itemId, @Param("officeType") Integer officeType, @Param("officeId") Integer officeId, @Param("targetIds") List<Integer> targetIds);
 

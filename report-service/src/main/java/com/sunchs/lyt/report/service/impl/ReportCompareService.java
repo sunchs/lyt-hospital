@@ -2,15 +2,14 @@ package com.sunchs.lyt.report.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.sunchs.lyt.db.bean.AnswerQuantityParam;
 import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.IdTitleData;
 import com.sunchs.lyt.framework.bean.TitleData;
-import com.sunchs.lyt.framework.bean.TitleValueChildrenData;
 import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.framework.enums.UserTypeEnum;
 import com.sunchs.lyt.framework.util.FormatUtil;
-import com.sunchs.lyt.framework.util.PagingUtil;
 import com.sunchs.lyt.framework.util.UserThreadUtil;
 import com.sunchs.lyt.report.bean.*;
 import com.sunchs.lyt.report.service.IReportCompareService;
@@ -273,14 +272,13 @@ public class ReportCompareService implements IReportCompareService {
         if (Objects.isNull(param.getValueList()) || param.getValueList().size() == 0) {
             return data;
         }
-
-        List<ItemCompareBean> valueList = param.getValueList();
-        List<Integer> itemIds = valueList.stream().map(ItemCompareBean::getItemId).collect(Collectors.toList());
-        Map<Integer, String> itemNameMap = getItemNameByIds(itemIds);
-
+        // 结果集
         List<IdTitleData> colList = new ArrayList<>();
         List<IdTitleData> rowList = new ArrayList<>();
         List<ItemCompareValue> vList = new ArrayList<>();
+
+        List<ItemCompareBean> valueList = param.getValueList();
+        Map<Integer, String> itemNameMap = getItemNameByParam(valueList);
 
         // 设置列值
         valueList.forEach(item->{
@@ -299,53 +297,57 @@ public class ReportCompareService implements IReportCompareService {
             item.setColIndex(valueList.indexOf(item));
 
             // 收集指标ID
-            List<Integer> targetIds = new ArrayList<>();
-            Wrapper<ItemTempOffice> itemTempOfficeWrapper = new EntityWrapper<ItemTempOffice>()
-                    .eq(ItemTempOffice.ITEM_ID, item.getItemId())
-                    .eq(ItemTempOffice.OFFICE_TYPE, item.getOfficeType())
-                    .eq(ItemTempOffice.OFFICE_ID, item.getOfficeId());
-            List<ItemTempOffice> settingItemTempShowList = itemTempOfficeService.selectList(itemTempOfficeWrapper);
-            for (ItemTempOffice temp : settingItemTempShowList) {
-                List<String> list = Arrays.asList(temp.getTargetIds().split(","));
-                list.forEach(id->{
-                    targetIds.add(Integer.parseInt(id));
-                });
-            }
+            List<Integer> targetIds = getTargetIds(item.getItemId(), item.getOfficeType(), item.getOfficeId());
             item.setTempTargetIds(targetIds);
 
-            // 查询需要统计的数据
-            List<ReportAnswerOption> tempOptionList = getItemAnswerOption(item.getItemId(), item.getOfficeType(), item.getStartTime(), item.getEndTime(), targetIds);
-            item.setTempOptionList(tempOptionList);
+//            // 查询需要统计的数据
+//            List<ReportAnswerOption> tempOptionList = getItemAnswerOption(item.getItemId(), item.getOfficeType(), item.getStartTime(), item.getEndTime(), targetIds);
+//            item.setTempOptionList(tempOptionList);
         });
         data.setColList(colList);
 
         valueList.forEach(item->{
             if (CollectionUtils.isNotEmpty(item.getTempTargetIds())) {
                 Map<Integer, String> targetNameMap = getTargetNameByIds(item.getTempTargetIds());
-                item.getTempTargetIds().forEach(tId->{
+                item.getTempTargetIds().forEach(targetId->{
                     // 插入新行
-                    if (isInRowList(tId, rowList) == false) {
+                    if (isInRowList(targetId, rowList) == false) {
                         IdTitleData tData = new IdTitleData();
-                        tData.setId(tId);
-                        tData.setTitle(targetNameMap.get(tId));
+                        tData.setId(targetId);
+                        tData.setTitle(targetNameMap.get(targetId));
                         rowList.add(tData);
                     }
+                });
+            }
+        });
 
-                    List<Integer> targetList = new ArrayList<>();
-                    targetList.add(tId);
-                    List<ReportAnswerQuantity> satisfyList = reportAnswerQuantityService
-                            .getItemOfficeTargetSatisfyList(item.getItemId(), item.getOfficeType(), item.getOfficeId(), targetList);
-                    if (CollectionUtils.isNotEmpty(satisfyList)) {
-                        double satisfyValue = satisfyList.stream().mapToDouble(ReportAnswerQuantity::getSatisfyValue).average().getAsDouble();
-                        if (satisfyValue > 0) {
-                            ItemCompareValue vObj = new ItemCompareValue();
-                            vObj.setRowId(tId);
-                            vObj.setColId(item.getItemId());
-                            vObj.setColIndex(item.getColIndex());
-                            vObj.setValue(new BigDecimal(satisfyValue).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-                            vList.add(vObj);
-                        }
-                    }
+        valueList.forEach(item->{
+//            List<Integer> targetList = new ArrayList<>();
+//            targetList.add(tId);
+//                    List<ReportAnswerQuantity> satisfyList = reportAnswerQuantityService
+//                            .getItemOfficeTargetSatisfyList(item.getItemId(), item.getOfficeType(), item.getOfficeId(), targetList);
+            AnswerQuantityParam p = new AnswerQuantityParam();
+            p.setItemId(item.getItemId());
+            p.setOfficeType(item.getOfficeType());
+            p.setOfficeId(item.getOfficeId());
+            p.setTargetIds(item.getTempTargetIds());
+            // 时间范围控制
+            if (item.getStartTime().length() > 0 && item.getEndTime().length() > 0) {
+                p.setStartTime(item.getStartTime() + " 00:00:00");
+                p.setEndTime(item.getEndTime() + " 23:59:59");
+            } else {
+                p.setStartTime("");
+                p.setEndTime("");
+            }
+            List<ReportAnswerQuantity> satisfyList = reportAnswerQuantityService.getItemOfficeTargetSatisfyListV2(p);
+            if (CollectionUtils.isNotEmpty(satisfyList)) {
+                satisfyList.forEach(val -> {
+                    ItemCompareValue vObj = new ItemCompareValue();
+                    vObj.setRowId(val.getTargetThree());
+                    vObj.setColId(item.getItemId());
+                    vObj.setColIndex(item.getColIndex());
+                    vObj.setValue(new BigDecimal(val.getSatisfyValue()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                    vList.add(vObj);
                 });
             }
         });
@@ -481,7 +483,7 @@ public class ReportCompareService implements IReportCompareService {
                         tData.setTitle(targetNameMap.get(tId));
                         rowList.add(tData);
                     }
-// TODO:: 计算有问题
+// TODO:: 待优化
                     // 记录每道题的满意度
                     Map<Integer, Double> questionSatisfyMap = new HashMap<>();
                     // 计算题目满意度
@@ -517,7 +519,7 @@ public class ReportCompareService implements IReportCompareService {
                             }
                         }
                     }
-// TODO:: 计算有问题
+// TODO:: 待优化
 
                 });
             }
@@ -697,5 +699,26 @@ public class ReportCompareService implements IReportCompareService {
                 .in(QuestionTarget.ID, targetIds);
         List<QuestionTarget> itemList = questionTargetService.selectList(wrapper);
         return itemList.stream().collect(Collectors.toMap(QuestionTarget::getId, QuestionTarget::getTitle));
+    }
+
+    private Map<Integer, String> getItemNameByParam(List<ItemCompareBean> valueList) {
+        List<Integer> itemIds = valueList.stream().map(ItemCompareBean::getItemId).collect(Collectors.toList());
+        return getItemNameByIds(itemIds);
+    }
+
+    private List<Integer> getTargetIds(Integer itemId, Integer officeType, Integer officeId) {
+        List<Integer> targetIds = new ArrayList<>();
+        Wrapper<ItemTempOffice> itemTempOfficeWrapper = new EntityWrapper<ItemTempOffice>()
+                .eq(ItemTempOffice.ITEM_ID, itemId)
+                .eq(ItemTempOffice.OFFICE_TYPE, officeType)
+                .eq(ItemTempOffice.OFFICE_ID, officeId);
+        List<ItemTempOffice> settingItemTempShowList = itemTempOfficeService.selectList(itemTempOfficeWrapper);
+        for (ItemTempOffice temp : settingItemTempShowList) {
+            List<String> list = Arrays.asList(temp.getTargetIds().split(","));
+            list.forEach(id->{
+                targetIds.add(Integer.parseInt(id));
+            });
+        }
+        return targetIds;
     }
 }

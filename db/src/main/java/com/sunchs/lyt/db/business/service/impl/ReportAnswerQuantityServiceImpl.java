@@ -1,10 +1,10 @@
 package com.sunchs.lyt.db.business.service.impl;
 
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.sunchs.lyt.db.bean.AnswerQuantityParam;
 import com.sunchs.lyt.db.business.entity.ReportAnswerQuantity;
 import com.sunchs.lyt.db.business.mapper.ReportAnswerQuantityMapper;
 import com.sunchs.lyt.db.business.service.IReportAnswerQuantityService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,6 +38,11 @@ public class ReportAnswerQuantityServiceImpl extends ServiceImpl<ReportAnswerQua
     @Override
     public List<ReportAnswerQuantity> getItemOfficeTargetSatisfyList(Integer itemId, Integer officeType, Integer officeId, List<Integer> targetIds) {
         return baseMapper.getItemOfficeTargetSatisfyList(itemId, officeType, officeId, targetIds);
+    }
+
+    @Override
+    public List<ReportAnswerQuantity> getItemOfficeTargetSatisfyListV2(AnswerQuantityParam param) {
+        return baseMapper.getItemOfficeTargetSatisfyListV2(param);
     }
 
     @Override

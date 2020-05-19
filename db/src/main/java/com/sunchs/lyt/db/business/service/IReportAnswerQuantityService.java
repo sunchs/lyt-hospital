@@ -1,5 +1,6 @@
 package com.sunchs.lyt.db.business.service;
 
+import com.sunchs.lyt.db.bean.AnswerQuantityParam;
 import com.sunchs.lyt.db.business.entity.ReportAnswerQuantity;
 import com.baomidou.mybatisplus.service.IService;
 import org.apache.ibatis.annotations.Param;
@@ -36,6 +37,7 @@ public interface IReportAnswerQuantityService extends IService<ReportAnswerQuant
      * 根据 科室ID、指标ID集合 获取三级指标满意度列表
      */
     List<ReportAnswerQuantity> getItemOfficeTargetSatisfyList(Integer itemId, Integer officeType, Integer officeId, List<Integer> targetIds);
+    List<ReportAnswerQuantity> getItemOfficeTargetSatisfyListV2(AnswerQuantityParam param);
 
     /**
      * 根据 科室ID、指标ID集合 获取三级指标满意度列表

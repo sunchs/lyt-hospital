@@ -58,6 +58,23 @@
         ) tb GROUP BY target_three
     </select>
 
+    <select id="getItemOfficeTargetSatisfyListV2" resultType="com.sunchs.lyt.db.business.entity.ReportAnswerQuantity">
+        SELECT target_three as targetThree,AVG(satisfyValue) as satisfyValue FROM (
+            SELECT target_three,SUM(quantity*score)/SUM(quantity) as satisfyValue FROM (
+                SELECT target_three,question_id,option_id,score,COUNT(1) quantity FROM report_answer_option
+                WHERE item_id=#{param.itemId} AND target_one=#{param.officeType} AND office_id=#{param.officeId} AND score!=0
+                AND target_three IN
+                <foreach collection="param.targetIds" item="id" index="index" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+                <if test="param.startTime != '' and param.endTime != ''">
+                    AND endTime BETWEEN #{param.startTime} AND #{param.endTime}
+                </if>
+                GROUP BY question_id, option_id
+            ) option_table GROUP BY question_id
+        ) question_table GROUP BY target_three
+    </select>
+
     <select id="getItemOfficeSatisfyInfo" resultType="com.sunchs.lyt.db.business.entity.ReportAnswerQuantity">
         SELECT office_id as officeId, AVG(satisfyValue) as satisfyValue, SUM(quantity) as quantity FROM (
             SELECT office_id, SUM(quantity*score)/SUM(quantity) as satisfyValue, SUM(quantity) as quantity FROM report_answer_quantity
