@@ -46,7 +46,7 @@ public class ReportRelatedService implements IReportRelatedService {
         if (checkList.size() == 0) {
             return data;
         }
-        int answerId = 0;
+        int questionnairId = 0;
         List<Integer> questionnaireList = checkList.stream().map(ReportAnswerOption::getQuestionnaireId).collect(Collectors.toList());
         if (questionnaireList.size() > 1) {
             Wrapper<Questionnaire> questionnaireWrapper = new EntityWrapper<Questionnaire>()
@@ -59,17 +59,17 @@ public class ReportRelatedService implements IReportRelatedService {
             for (Questionnaire q : questionnaires) {
                 String title = q.getTitle();
                 if (title.indexOf("（门诊）") != -1) {
-                    answerId = q.getId();
+                    questionnairId = q.getId();
                     break;
                 }
                 if (title.indexOf("(门诊)") != -1) {
-                    answerId = q.getId();
+                    questionnairId = q.getId();
                     break;
                 }
             }
         }
-        if (answerId == 0) {
-            answerId = questionnaireList.get(0);
+        if (questionnairId == 0) {
+            questionnairId = questionnaireList.get(0);
         }
 
         // 获取答卷数据
@@ -83,7 +83,7 @@ public class ReportRelatedService implements IReportRelatedService {
                 .eq(ReportAnswerOption.ITEM_ID, itemId)
                 .eq(ReportAnswerOption.OFFICE_TYPE_ID, officeType)
                 .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
-                .eq(ReportAnswerOption.ANSWER_ID, answerId);
+                .eq(ReportAnswerOption.QUESTIONNAIRE_ID, questionnairId);
         List<ReportAnswerOption> optionList = reportAnswerOptionService.selectList(wrapper);
 //        Map<Integer, List<ReportAnswerOption>> optionGroupMap = optionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getTargetThree));
 
