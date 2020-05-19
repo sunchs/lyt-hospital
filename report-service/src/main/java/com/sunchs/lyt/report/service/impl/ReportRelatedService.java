@@ -44,6 +44,9 @@ public class ReportRelatedService implements IReportRelatedService {
                 .groupBy(ReportAnswerOption.QUESTIONNAIRE_ID);
         List<ReportAnswerOption> checkList = reportAnswerOptionService.selectList(checkWrapper);
         if (checkList.size() == 0) {
+            data.setColList(new ArrayList<>());
+            data.setRowList(new ArrayList<>());
+            data.setValueList(new ArrayList<>());
             return data;
         }
         int questionnairId = 0;
