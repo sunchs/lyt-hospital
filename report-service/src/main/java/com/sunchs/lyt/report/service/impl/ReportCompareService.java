@@ -326,29 +326,31 @@ public class ReportCompareService implements IReportCompareService {
 //            targetList.add(tId);
 //                    List<ReportAnswerQuantity> satisfyList = reportAnswerQuantityService
 //                            .getItemOfficeTargetSatisfyList(item.getItemId(), item.getOfficeType(), item.getOfficeId(), targetList);
-            AnswerQuantityParam p = new AnswerQuantityParam();
-            p.setItemId(item.getItemId());
-            p.setOfficeType(item.getOfficeType());
-            p.setOfficeId(item.getOfficeId());
-            p.setTargetIds(item.getTempTargetIds());
-            // 时间范围控制
-            if (item.getStartTime().length() > 0 && item.getEndTime().length() > 0) {
-                p.setStartTime(item.getStartTime() + " 00:00:00");
-                p.setEndTime(item.getEndTime() + " 23:59:59");
-            } else {
-                p.setStartTime("");
-                p.setEndTime("");
-            }
-            List<ReportAnswerQuantity> satisfyList = reportAnswerQuantityService.getItemOfficeTargetSatisfyListV2(p);
-            if (CollectionUtils.isNotEmpty(satisfyList)) {
-                satisfyList.forEach(val -> {
-                    ItemCompareValue vObj = new ItemCompareValue();
-                    vObj.setRowId(val.getTargetThree());
-                    vObj.setColId(item.getItemId());
-                    vObj.setColIndex(item.getColIndex());
-                    vObj.setValue(new BigDecimal(val.getSatisfyValue()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-                    vList.add(vObj);
-                });
+            if (CollectionUtils.isNotEmpty(item.getTempTargetIds())) {
+                AnswerQuantityParam p = new AnswerQuantityParam();
+                p.setItemId(item.getItemId());
+                p.setOfficeType(item.getOfficeType());
+                p.setOfficeId(item.getOfficeId());
+                p.setTargetIds(item.getTempTargetIds());
+                // 时间范围控制
+                if (item.getStartTime().length() > 0 && item.getEndTime().length() > 0) {
+                    p.setStartTime(item.getStartTime() + " 00:00:00");
+                    p.setEndTime(item.getEndTime() + " 23:59:59");
+                } else {
+                    p.setStartTime("");
+                    p.setEndTime("");
+                }
+                List<ReportAnswerQuantity> satisfyList = reportAnswerQuantityService.getItemOfficeTargetSatisfyListV2(p);
+                if (CollectionUtils.isNotEmpty(satisfyList)) {
+                    satisfyList.forEach(val -> {
+                        ItemCompareValue vObj = new ItemCompareValue();
+                        vObj.setRowId(val.getTargetThree());
+                        vObj.setColId(item.getItemId());
+                        vObj.setColIndex(item.getColIndex());
+                        vObj.setValue(new BigDecimal(val.getSatisfyValue()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                        vList.add(vObj);
+                    });
+                }
             }
         });
 
