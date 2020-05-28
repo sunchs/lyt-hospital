@@ -130,7 +130,21 @@ public class ReportRelatedService implements IReportRelatedService {
                     List<ReportAnswerOption> value = answerTempList.get(index);
                     Optional<ReportAnswerOption> firstRow = value.stream().filter(v -> v.getTargetThree().equals(targetId)).findFirst();
                     if (firstRow.isPresent()) {
-                        mapX.put(index, firstRow.get().getOptionId().doubleValue());
+
+                        if (firstRow.get().getScore().equals(100)) {
+                            mapX.put(index, 5d);
+                        } else if (firstRow.get().getScore().equals(80)) {
+                            mapX.put(index, 4d);
+                        } else if (firstRow.get().getScore().equals(60)) {
+                            mapX.put(index, 3d);
+                        } else if (firstRow.get().getScore().equals(40)) {
+                            mapX.put(index, 2d);
+                        } else if (firstRow.get().getScore().equals(20)) {
+                            mapX.put(index, 1d);
+                        } else {
+                            mapX.put(index, 0.00);
+                        }
+//                        mapX.put(index, firstRow.get().getOptionId().doubleValue());
                     } else {
                         mapX.put(index, 0.00);
                     }
@@ -140,7 +154,22 @@ public class ReportRelatedService implements IReportRelatedService {
                     List<ReportAnswerOption> value = answerTempList.get(index);
                     Optional<ReportAnswerOption> firstRow = value.stream().filter(v -> v.getTargetThree().equals(tId)).findFirst();
                     if (firstRow.isPresent()) {
-                        mapY.put(index, firstRow.get().getOptionId().doubleValue());
+
+                        if (firstRow.get().getScore().equals(100)) {
+                            mapX.put(index, 5d);
+                        } else if (firstRow.get().getScore().equals(80)) {
+                            mapX.put(index, 4d);
+                        } else if (firstRow.get().getScore().equals(60)) {
+                            mapX.put(index, 3d);
+                        } else if (firstRow.get().getScore().equals(40)) {
+                            mapX.put(index, 2d);
+                        } else if (firstRow.get().getScore().equals(20)) {
+                            mapX.put(index, 1d);
+                        } else {
+                            mapX.put(index, 0.00);
+                        }
+
+//                        mapY.put(index, firstRow.get().getOptionId().doubleValue());
                     } else {
                         mapY.put(index, 0.00);
                     }
