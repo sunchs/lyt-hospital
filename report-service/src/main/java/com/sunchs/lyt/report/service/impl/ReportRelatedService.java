@@ -144,11 +144,11 @@ public class ReportRelatedService implements IReportRelatedService {
                         } else if (score.equals(20)) {
                             mapX.put(index, 1d);
                         } else {
-                            mapX.put(index, 0.00);
+//                            mapX.put(index, 0.00);
                         }
 //                        mapX.put(index, firstRow.get().getOptionId().doubleValue());
                     } else {
-                        mapX.put(index, 0.00);
+//                        mapX.put(index, 0.00);
                     }
                 }
                 // 求Y轴数据
@@ -168,12 +168,12 @@ public class ReportRelatedService implements IReportRelatedService {
                         } else if (score.equals(20)) {
                             mapY.put(index, 1d);
                         } else {
-                            mapY.put(index, 0.00);
+//                            mapY.put(index, 0.00);
                         }
 
 //                        mapY.put(index, firstRow.get().getOptionId().doubleValue());
                     } else {
-                        mapY.put(index, 0.00);
+//                        mapY.put(index, 0.00);
                     }
                 }
 
