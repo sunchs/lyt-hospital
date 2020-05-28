@@ -81,7 +81,8 @@ public class ReportRelatedService implements IReportRelatedService {
                         ReportAnswerOption.ID,
                         ReportAnswerOption.ANSWER_ID.concat(" AS answerId"),
                         ReportAnswerOption.TARGET_THREE.concat(" AS targetThree"),
-                        ReportAnswerOption.OPTION_ID.concat(" AS optionId")
+                        ReportAnswerOption.OPTION_ID.concat(" AS optionId"),
+                        ReportAnswerOption.SCORE
                 )
                 .eq(ReportAnswerOption.ITEM_ID, itemId)
                 .eq(ReportAnswerOption.OFFICE_TYPE_ID, officeType)
