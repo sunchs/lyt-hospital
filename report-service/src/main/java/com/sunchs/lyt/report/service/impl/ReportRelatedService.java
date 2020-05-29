@@ -180,13 +180,13 @@ public class ReportRelatedService implements IReportRelatedService {
                 }
 
                 for (Integer key : mapY.keySet()) {
-                    if (mapY.values().equals(0)) {
+                    if (mapY.get(key).equals(0)) {
                         mapX.remove(key);
                     }
                 }
 
                 for (Integer key : mapX.keySet()) {
-                    if (mapX.values().equals(0)) {
+                    if (mapX.get(key).equals(0)) {
                         mapY.remove(key);
                     }
                 }
