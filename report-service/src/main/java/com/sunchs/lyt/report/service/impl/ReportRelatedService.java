@@ -148,8 +148,8 @@ public class ReportRelatedService implements IReportRelatedService {
                         }
 //                        mapX.put(index, firstRow.get().getOptionId().doubleValue());
                     } else {
-//                        mapX.put(index, 0.00);
-                        mapX.put(index, null);
+                        mapX.put(index, 0.00);
+//                        mapX.put(index, null);
                     }
                 }
                 // 求Y轴数据
@@ -174,8 +174,20 @@ public class ReportRelatedService implements IReportRelatedService {
 
 //                        mapY.put(index, firstRow.get().getOptionId().doubleValue());
                     } else {
-//                        mapY.put(index, 0.00);
-                        mapY.put(index, null);
+                        mapY.put(index, 0.00);
+//                        mapY.put(index, null);
+                    }
+                }
+
+                for (Integer key : mapY.keySet()) {
+                    if (mapY.values().equals(0)) {
+                        mapX.remove(key);
+                    }
+                }
+
+                for (Integer key : mapX.keySet()) {
+                    if (mapX.values().equals(0)) {
+                        mapY.remove(key);
                     }
                 }
 
