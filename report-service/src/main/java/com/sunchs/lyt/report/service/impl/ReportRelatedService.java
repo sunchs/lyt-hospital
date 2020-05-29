@@ -81,6 +81,7 @@ public class ReportRelatedService implements IReportRelatedService {
                         ReportAnswerOption.ID,
                         ReportAnswerOption.ANSWER_ID.concat(" AS answerId"),
                         ReportAnswerOption.TARGET_THREE.concat(" AS targetThree"),
+                        ReportAnswerOption.QUESTION_ID.concat(" AS questionId"),
                         ReportAnswerOption.OPTION_ID.concat(" AS optionId"),
                         ReportAnswerOption.SCORE
                 )
@@ -179,43 +180,38 @@ public class ReportRelatedService implements IReportRelatedService {
                     }
                 }
 
-                for (Integer key : mapY.keySet()) {
-                    if (mapY.get(key).equals(0.00)) {
-                        mapX.remove(key);
-                    }
-                }
-
-                for (Integer key : mapX.keySet()) {
-                    if (mapX.get(key).equals(0.00)) {
-                        mapY.remove(key);
-                    }
-                }
-
                 Map<Integer, Double> mapXT = new HashMap<>();
                 Map<Integer, Double> mapYT = new HashMap<>();
                 Integer tIndex = 0;
-                for (Integer xKey : mapX.keySet()) {
-                    mapXT.put(tIndex, mapX.get(xKey));
-                    mapYT.put(tIndex, mapY.get(xKey));
-                    tIndex ++;
-                }
-
-                mapX = mapXT;
-                mapY = mapYT;
-
-                if (mapX.size() != mapY.size()) {
-                    System.out.println("数量不相等"+mapX.size()+"："+mapY.size());
-                }
-                double value = caculatePearson(mapX, mapY);
-                if (value == -1) {
-                    System.out.println("--------------------------");
-                    for (Integer i : mapX.keySet()) {
-                        System.out.println(mapX.get(i)+"\t"+mapY.get(i));
+                for (Integer key : mapX.keySet()) {
+                    if (( ! mapX.get(key).equals(0.00)) && ( ! mapY.get(key).equals(0.00))) {
+                        mapXT.put(tIndex, mapX.get(key));
+                        mapYT.put(tIndex, mapY.get(key));
+                        tIndex ++;
                     }
-                    System.out.println("==================================");
                 }
-                row.setValue(value);
-                valueList.add(row);
+
+//                if (targetId == 294) {
+
+//                    System.out.println("mapX" + mapXT);
+//                    System.out.println("mapY" + mapYT);
+
+
+//                if (mapX.size() != mapY.size()) {
+//                    System.out.println("数量不相等"+mapX.size()+"："+mapY.size());
+//                }
+                    double value = caculatePearson(mapXT, mapYT);
+
+//                if (value == -1) {
+//                    System.out.println("--------------------------");
+//                    for (Integer i : mapX.keySet()) {
+//                        System.out.println(mapX.get(i)+"\t"+mapY.get(i));
+//                    }
+//                    System.out.println("==================================");
+//                }
+                    row.setValue(value);
+                    valueList.add(row);
+//                }
             }
         }
         data.setValueList(valueList);
