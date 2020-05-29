@@ -191,6 +191,18 @@ public class ReportRelatedService implements IReportRelatedService {
                     }
                 }
 
+                Map<Integer, Double> mapXT = new HashMap<>();
+                Map<Integer, Double> mapYT = new HashMap<>();
+                Integer tIndex = 0;
+                for (Integer xKey : mapX.keySet()) {
+                    mapXT.put(tIndex, mapX.get(xKey));
+                    mapYT.put(tIndex, mapY.get(xKey));
+                    tIndex ++;
+                }
+
+                mapX = mapXT;
+                mapY = mapYT;
+
                 if (mapX.size() != mapY.size()) {
                     System.out.println("数量不相等"+mapX.size()+"："+mapY.size());
                 }
