@@ -118,21 +118,29 @@ public class ReportOutputService implements IReportOutputService {
             // 按问卷分组
             Map<Integer, List<ReportAnswerOption>> reportAnswerOptionGroupMap = reportAnswerOptionGroupList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionnaireId));
 
-            List<ReportAnswerOption> reportAnswerOptionList = new ArrayList<>();
-            List<List<Integer>> partition = Lists.partition(reportAnswerIds, 100);
-            for (List<Integer> ids : partition) {
-                Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
-                        .setSqlSelect(
-                                ReportAnswerOption.ANSWER_ID.concat(" as answerId"),
-                                ReportAnswerOption.QUESTION_ID.concat(" as questionId"),
-                                ReportAnswerOption.OPTION_NAME.concat(" as optionName")
-                        )
-                        .in(ReportAnswerOption.ANSWER_ID, ids);
-                List<ReportAnswerOption> olist = reportAnswerOptionService.selectList(wrapper);
-                if (CollectionUtils.isNotEmpty(olist)) {
-                    reportAnswerOptionList.addAll(olist);
-                }
-            }
+//            List<ReportAnswerOption> reportAnswerOptionList = new ArrayList<>();
+//            List<List<Integer>> partition = Lists.partition(reportAnswerIds, 100);
+//            for (List<Integer> ids : partition) {
+//                Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
+//                        .setSqlSelect(
+//                                ReportAnswerOption.ANSWER_ID.concat(" as answerId"),
+//                                ReportAnswerOption.QUESTION_ID.concat(" as questionId"),
+//                                ReportAnswerOption.OPTION_NAME.concat(" as optionName")
+//                        )
+//                        .in(ReportAnswerOption.ANSWER_ID, ids);
+//                List<ReportAnswerOption> olist = reportAnswerOptionService.selectList(wrapper);
+//                if (CollectionUtils.isNotEmpty(olist)) {
+//                    reportAnswerOptionList.addAll(olist);
+//                }
+//            }
+            Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
+                    .setSqlSelect(
+                            ReportAnswerOption.ANSWER_ID.concat(" as answerId"),
+                            ReportAnswerOption.QUESTION_ID.concat(" as questionId"),
+                            ReportAnswerOption.OPTION_NAME.concat(" as optionName")
+                    )
+                    .in(ReportAnswerOption.ANSWER_ID, reportAnswerIds);
+            List<ReportAnswerOption> reportAnswerOptionList = reportAnswerOptionService.selectList(wrapper);
 //        Map<Integer, List<ReportAnswerOption>> questionMap = reportAnswerOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
 
             // 医院和科室名称
