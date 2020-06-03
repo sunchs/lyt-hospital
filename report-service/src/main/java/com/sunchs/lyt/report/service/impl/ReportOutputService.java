@@ -2,6 +2,7 @@ package com.sunchs.lyt.report.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.google.common.collect.Lists;
 import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.IdTitleData;
@@ -26,10 +27,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -119,9 +118,16 @@ public class ReportOutputService implements IReportOutputService {
             // 按问卷分组
             Map<Integer, List<ReportAnswerOption>> reportAnswerOptionGroupMap = reportAnswerOptionGroupList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionnaireId));
 
-            Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
-                    .in(ReportAnswerOption.ANSWER_ID, reportAnswerIds);
-            List<ReportAnswerOption> reportAnswerOptionList = reportAnswerOptionService.selectList(wrapper);
+            List<ReportAnswerOption> reportAnswerOptionList = new ArrayList<>();
+            List<List<Integer>> partition = Lists.partition(reportAnswerIds, 100);
+            for (List<Integer> ids : partition) {
+                Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
+                        .in(ReportAnswerOption.ANSWER_ID, ids);
+                List<ReportAnswerOption> olist = reportAnswerOptionService.selectList(wrapper);
+                if (CollectionUtils.isNotEmpty(olist)) {
+                    reportAnswerOptionList.addAll(olist);
+                }
+            }
 //        Map<Integer, List<ReportAnswerOption>> questionMap = reportAnswerOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
 
             // 医院和科室名称
