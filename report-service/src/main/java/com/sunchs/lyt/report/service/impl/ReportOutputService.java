@@ -122,6 +122,11 @@ public class ReportOutputService implements IReportOutputService {
             List<List<Integer>> partition = Lists.partition(reportAnswerIds, 100);
             for (List<Integer> ids : partition) {
                 Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
+                        .setSqlSelect(
+                                ReportAnswerOption.ANSWER_ID.concat(" as answerId"),
+                                ReportAnswerOption.QUESTION_ID.concat(" as questionId"),
+                                ReportAnswerOption.OPTION_NAME.concat(" as optionName")
+                        )
                         .in(ReportAnswerOption.ANSWER_ID, ids);
                 List<ReportAnswerOption> olist = reportAnswerOptionService.selectList(wrapper);
                 if (CollectionUtils.isNotEmpty(olist)) {
