@@ -141,6 +141,7 @@ public class ReportOutputService implements IReportOutputService {
                     )
                     .in(ReportAnswerOption.ANSWER_ID, reportAnswerIds);
             List<ReportAnswerOption> reportAnswerOptionList = reportAnswerOptionService.selectList(wrapper);
+            Map<Integer, List<ReportAnswerOption>> answerOptionList = reportAnswerOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getAnswerId));
 //        Map<Integer, List<ReportAnswerOption>> questionMap = reportAnswerOptionList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
 
             // 医院和科室名称
@@ -213,9 +214,11 @@ public class ReportOutputService implements IReportOutputService {
                         sheet.addCell(new Label(columnPos++, linePos, FormatUtil.dateTime(answer.getEndTime())));
 
                         for (ReportAnswerOption answerOption : reportAnswerOptionGroupMap.get(questionnaireId)) {
-                            List<ReportAnswerOption> optionList = reportAnswerOptionList.stream().filter(v ->
-                                    v.getAnswerId().equals(answer.getId()) && v.getQuestionId().equals(answerOption.getQuestionId())
-                            ).collect(Collectors.toList());
+                            List<ReportAnswerOption> reportAnswerOptions = answerOptionList.get(answer.getId());
+                            List<ReportAnswerOption> optionList = reportAnswerOptions.stream().filter(v->v.getQuestionId().equals(answerOption.getQuestionId())).collect(Collectors.toList());
+//                            List<ReportAnswerOption> optionList = reportAnswerOptionList.stream().filter(v ->
+//                                    v.getAnswerId().equals(answer.getId()) && v.getQuestionId().equals(answerOption.getQuestionId())
+//                            ).collect(Collectors.toList());
                             if (Objects.nonNull(optionList) && optionList.size() > 0) {
                                 String value = "";
                                 for (ReportAnswerOption option : optionList) {
