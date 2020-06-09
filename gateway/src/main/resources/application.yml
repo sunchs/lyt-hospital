@@ -16,40 +16,12 @@ eureka:
     serviceUrl:
       defaultZone: http://47.107.255.115:6006/eureka/
 
-#ribbon:
-#  ReadTimeout: 12000
-#  ConnectTimeout: 12000
-#  eureka:
-#    enabled: true
-#zuul:
-#  host:
-#    socket-timeout-millis: 12000
-#    connect-timeout-millis: 12000
-
-zuul:
-  host:
-    connect-timeout-millis: 30000
-    socket-timeout-millis: 60000
-  ribbon:
-    eager-load:
-      enabled: true
-
-ribbon:
-  ReadTimeout: 20000
-  ConnectTimeout: 20000
-  eager-load:
-    enabled: true
-
 hystrix:
   command:
     default:
       execution:
-        timeout:
-          enabled: true
         isolation:
           thread:
-            timeoutInMilliseconds: 15000
-
-#hystrix:
-#  metrics:
-#    enabled: false
+            timeoutInMilliseconds: 30000
+        timeout:
+          enabled: false
