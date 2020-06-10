@@ -400,6 +400,7 @@ public class ItemService implements IItemService {
         }
 
         Wrapper<Answer> answerWrapper = new EntityWrapper<Answer>()
+                .setSqlSelect(Answer.ENDTIME)
                 .orderBy(Answer.ID, false);
         Answer last = answerService.selectOne(answerWrapper);
 
@@ -432,61 +433,63 @@ public class ItemService implements IItemService {
         }
 
         if (answerService.insert(data)) {
-            // 插入图片
-            param.getImageList().forEach(img -> {
-                if (StringUtil.isNotEmpty(img.getPath())) {
-                    AnswerImage answerImage = new AnswerImage();
-                    answerImage.setAnswerId(data.getId());
-                    answerImage.setPath(img.getPath());
-                    answerImageService.insert(answerImage);
-                } else if (StringUtil.isNotEmpty(img.getData())) {
-                    String fileSuffix = "";
-                    if (img.getData().indexOf("data:image/png;base64,") != -1) {
-                        fileSuffix = ".png";
-                        String replace = img.getData().replace("data:image/png;base64,", "");
-                        img.setData(replace);
-                    } else if (img.getData().indexOf("data:image/jpg;base64,") != -1) {
-                        fileSuffix = ".jpg";
-                        String replace = img.getData().replace("data:image/jpg;base64,", "");
-                        img.setData(replace);
-                    } else if (img.getData().indexOf("data:image/jpeg;base64,") != -1) {
-                        fileSuffix = ".jpg";
-                        String replace = img.getData().replace("data:image/jpeg;base64,", "");
-                        img.setData(replace);
-                    }
-                    if ( ! fileSuffix.equals("")) {
-                        String basePath = "/lyt";
-                        buildFolder(basePath);
-                        String filePath = "/item_"+data.getItemId();
-                        buildFolder(basePath + filePath);
-                        // 文件路径
-                        String file = filePath + "/answer_" + data.getId() + "_" + param.getImageList().indexOf(img) + fileSuffix;
-                        buildFolder(file);
-                        // 转换图片
-                        BASE64Decoder decoder = new BASE64Decoder();
-                        try {
-                            // Base64解码
-                            byte[] b = decoder.decodeBuffer(img.getData());
-                            for (int i = 0; i < b.length; ++i) {
-                                if (b[i] < 0) {// 调整异常数据
-                                    b[i] += 256;
+            new Thread(()->{
+                // 插入图片
+                param.getImageList().forEach(img -> {
+                    if (StringUtil.isNotEmpty(img.getPath())) {
+                        AnswerImage answerImage = new AnswerImage();
+                        answerImage.setAnswerId(data.getId());
+                        answerImage.setPath(img.getPath());
+                        answerImageService.insert(answerImage);
+                    } else if (StringUtil.isNotEmpty(img.getData())) {
+                        String fileSuffix = "";
+                        if (img.getData().indexOf("data:image/png;base64,") != -1) {
+                            fileSuffix = ".png";
+                            String replace = img.getData().replace("data:image/png;base64,", "");
+                            img.setData(replace);
+                        } else if (img.getData().indexOf("data:image/jpg;base64,") != -1) {
+                            fileSuffix = ".jpg";
+                            String replace = img.getData().replace("data:image/jpg;base64,", "");
+                            img.setData(replace);
+                        } else if (img.getData().indexOf("data:image/jpeg;base64,") != -1) {
+                            fileSuffix = ".jpg";
+                            String replace = img.getData().replace("data:image/jpeg;base64,", "");
+                            img.setData(replace);
+                        }
+                        if ( ! fileSuffix.equals("")) {
+                            String basePath = "/lyt";
+                            buildFolder(basePath);
+                            String filePath = "/item_"+data.getItemId();
+                            buildFolder(basePath + filePath);
+                            // 文件路径
+                            String file = filePath + "/answer_" + data.getId() + "_" + param.getImageList().indexOf(img) + fileSuffix;
+                            buildFolder(file);
+                            // 转换图片
+                            BASE64Decoder decoder = new BASE64Decoder();
+                            try {
+                                // Base64解码
+                                byte[] b = decoder.decodeBuffer(img.getData());
+                                for (int i = 0; i < b.length; ++i) {
+                                    if (b[i] < 0) {// 调整异常数据
+                                        b[i] += 256;
+                                    }
                                 }
-                            }
-                            OutputStream out = new FileOutputStream(basePath + file);
-                            out.write(b);
-                            out.flush();
-                            out.close();
+                                OutputStream out = new FileOutputStream(basePath + file);
+                                out.write(b);
+                                out.flush();
+                                out.close();
 
-                            AnswerImage answerImage = new AnswerImage();
-                            answerImage.setAnswerId(data.getId());
-                            answerImage.setPath(file);
-                            answerImageService.insert(answerImage);
-                        } catch (Exception e) {
-                            System.out.println(e.getMessage());
+                                AnswerImage answerImage = new AnswerImage();
+                                answerImage.setAnswerId(data.getId());
+                                answerImage.setPath(file);
+                                answerImageService.insert(answerImage);
+                            } catch (Exception e) {
+                                System.out.println(e.getMessage());
+                            }
                         }
                     }
-                }
-            });
+                });
+            }).start();
             // 插入答题
             param.getQuestionList().forEach(q -> {
                 // 检查题目
