@@ -146,7 +146,7 @@ public class ReportCustomOfficeService implements IReportCustomOfficeService {
                 for (Integer lScore : scoreList) {
                     allScore += lScore;
                 }
-                double value = new BigDecimal((double)allScore / (double)scoreList.size() / (double)100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                double value = (double)allScore / (double)scoreList.size() / (double)100;
                 data.setSatisfyValue(value);
             }
             result.add(data);
