@@ -124,7 +124,7 @@ public class ReportCustomOfficeService implements IReportCustomOfficeService {
             List<ReportAnswerOption> optionTempList = targetQuestionList.stream()
                     .filter(q -> q.getTargetThree().equals(target.getTargetThree())).collect(Collectors.toList());
             Map<Integer, List<ReportAnswerOption>> qList = optionTempList.stream().collect(Collectors.groupingBy(ReportAnswerOption::getQuestionId));
-            List<Integer> scoreList = new ArrayList<>();
+            List<Double> scoreList = new ArrayList<>();
             for (List<ReportAnswerOption> questionGroup : qList.values()) {
                 // 累计
                 int number = 0;
@@ -137,16 +137,16 @@ public class ReportCustomOfficeService implements IReportCustomOfficeService {
                 }
                 // 满意度
                 if (NumberUtil.nonZero(number)) {
-                    int val = (int)(score / number * 100);
+                    double val = (double)score / (double)number;
                     scoreList.add(val);
                 }
             }
             if (scoreList.size() > 0) {
                 int allScore = 0;
-                for (Integer lScore : scoreList) {
+                for (Double lScore : scoreList) {
                     allScore += lScore;
                 }
-                double value = (double)allScore / (double)scoreList.size() / (double)100;
+                double value = (double)allScore / (double)scoreList.size();
                 data.setSatisfyValue(value);
             }
             result.add(data);
