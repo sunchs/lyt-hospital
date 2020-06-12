@@ -54,4 +54,8 @@ public interface IReportAnswerQuantityService extends IService<ReportAnswerQuant
      */
     List<ReportAnswerQuantity> getItemAllOfficeSatisfyList(Integer itemId, Set<Integer> officeTypeIds, Set<Integer> officeIds);
 
+    /**
+     * 根据 答卷ID集合 获取对应的指标满意度
+     */
+    List<ReportAnswerQuantity> getCustomOfficeTargetSatisfyList(List<Integer> answerIds, List<Integer> targetIds);
 }

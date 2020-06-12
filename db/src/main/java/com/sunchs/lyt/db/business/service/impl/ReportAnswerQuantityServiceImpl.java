@@ -5,6 +5,7 @@ import com.sunchs.lyt.db.bean.AnswerQuantityParam;
 import com.sunchs.lyt.db.business.entity.ReportAnswerQuantity;
 import com.sunchs.lyt.db.business.mapper.ReportAnswerQuantityMapper;
 import com.sunchs.lyt.db.business.service.IReportAnswerQuantityService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,5 +59,10 @@ public class ReportAnswerQuantityServiceImpl extends ServiceImpl<ReportAnswerQua
     @Override
     public List<ReportAnswerQuantity> getItemAllOfficeSatisfyList(Integer itemId, Set<Integer> officeTypeIds, Set<Integer> officeIds) {
         return baseMapper.getItemAllOfficeSatisfyList(itemId, officeTypeIds, officeIds);
+    }
+
+    @Override
+    public List<ReportAnswerQuantity> getCustomOfficeTargetSatisfyList(List<Integer> answerIds, List<Integer> targetIds) {
+        return baseMapper.getCustomOfficeTargetSatisfyList(answerIds, targetIds);
     }
 }

@@ -114,4 +114,25 @@
         </foreach>
         AND score!=0 GROUP BY target_three
     </select>
+
+    <select id="getCustomOfficeTargetSatisfyList" resultType="com.sunchs.lyt.db.business.entity.ReportAnswerQuantity">
+        SELECT target_three,AVG(satisfyValue) as satisfyValue FROM
+        (
+            SELECT target_three,question_id,SUM(quantity*score)/SUM(quantity) as satisfyValue FROM
+            (
+                SELECT target_three,question_id,option_id,score,COUNT(1) quantity FROM report_answer_option
+                WHERE answer_id IN
+                <foreach collection="answerIds" item="id" index="index" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+                AND score!=0  GROUP BY question_id, option_id
+            ) option_table GROUP BY question_id
+        ) question_table
+        WHERE target_three IN
+        <foreach collection="targetIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        GROUP BY target_three
+    </select>
+
 </mapper>

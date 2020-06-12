@@ -11,6 +11,7 @@ import com.sunchs.lyt.report.bean.CustomOfficeDataVO;
 import com.sunchs.lyt.report.bean.CustomOfficeTargetData;
 import com.sunchs.lyt.report.bean.TitleValueDataVO;
 import com.sunchs.lyt.report.service.IReportCustomOfficeService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,9 @@ public class ReportCustomOfficeService implements IReportCustomOfficeService {
     @Autowired
     private QuestionTargetServiceImpl questionTargetService;
 
+    @Autowired
+    private ReportAnswerQuantityServiceImpl reportAnswerQuantityService;
+
     @Override
     public CustomOfficeDataVO getCustomOfficeList(Integer itemId, Integer officeType) {
         // 列表集合
@@ -59,7 +63,7 @@ public class ReportCustomOfficeService implements IReportCustomOfficeService {
                     .groupBy(ReportAnswerOption.ANSWER_ID);
             List<ReportAnswerOption> optionTempList = reportAnswerOptionService.selectList(optionWrapper);
             List<Integer> answerIds = optionTempList.stream().map(ReportAnswerOption::getAnswerId).collect(Collectors.toList());
-            data.setTargetList(getTargetSatisfyList(answerIds, o.getId()));
+            data.setTargetList(getTargetSatisfyListV2(answerIds, o.getId()));
             list.add(data);
         });
         CustomOfficeDataVO vo = new CustomOfficeDataVO();
@@ -105,6 +109,32 @@ public class ReportCustomOfficeService implements IReportCustomOfficeService {
         }
         vo.setRankingList(rankingList);
         return vo;
+    }
+
+    private List<CustomOfficeTargetData> getTargetSatisfyListV2(List<Integer> answerIds, Integer customId) {
+        List<CustomOfficeTargetData> result = new ArrayList<>();
+        if (CollectionUtils.isEmpty(answerIds)) {
+            return result;
+        }
+        // 查询需要展示的指标
+        Wrapper<CustomItemTarget> wrapper = new EntityWrapper<CustomItemTarget>()
+                .eq(CustomItemTarget.CUSTOM_ID, customId);
+        List<CustomItemTarget> targetList = customItemTargetService.selectList(wrapper);
+        List<Integer> targetIds = targetList.stream().map(CustomItemTarget::getTargetThree).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(targetIds)) {
+            return result;
+        }
+        Map<Integer, String> targetNameMap = getTargetNameMap(targetIds);
+        // 查询满意度
+        List<ReportAnswerQuantity> customOfficeTargetSatisfyList = reportAnswerQuantityService.getCustomOfficeTargetSatisfyList(answerIds, targetIds);
+        customOfficeTargetSatisfyList.forEach(row -> {
+            CustomOfficeTargetData data = new CustomOfficeTargetData();
+            data.setTargetId(row.getTargetThree());
+            data.setTargetTitle(targetNameMap.get(row.getTargetThree()));
+            data.setSatisfyValue(row.getSatisfyValue());
+            result.add(data);
+        });
+        return result;
     }
 
     private List<CustomOfficeTargetData> getTargetSatisfyList(List<Integer> answerIds, Integer customId) {
