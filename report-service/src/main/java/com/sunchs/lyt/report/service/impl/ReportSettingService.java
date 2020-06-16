@@ -627,6 +627,7 @@ public class ReportSettingService implements IReportSettingService {
                 .eq(ReportAnswerOption.ITEM_ID, param.getItemId())
                 .eq(ReportAnswerOption.OFFICE_TYPE_ID, param.getOfficeType())
                 .in(ReportAnswerOption.OFFICE_ID, param.getOfficeIds())
+                .in(ReportAnswerOption.OPTION_TYPE, Arrays.asList(1, 4))
                 .groupBy(ReportAnswerOption.TARGET_THREE);
         List<ReportAnswerOption> optionTargetList = reportAnswerOptionService.selectList(optionWrapper);
         List<Integer> targetIds = optionTargetList.stream().map(ReportAnswerOption::getTargetThree).collect(Collectors.toList());
