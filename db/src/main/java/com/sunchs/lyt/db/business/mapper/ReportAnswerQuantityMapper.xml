@@ -116,7 +116,7 @@
     </select>
 
     <select id="getCustomOfficeTargetSatisfyList" resultType="com.sunchs.lyt.db.business.entity.ReportAnswerQuantity">
-        SELECT target_three,AVG(satisfyValue) as satisfyValue FROM
+        SELECT target_three as targetThree,AVG(satisfyValue) as satisfyValue FROM
         (
             SELECT target_three,question_id,SUM(quantity*score)/SUM(quantity) as satisfyValue FROM
             (
