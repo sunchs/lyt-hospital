@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sunchs.lyt.db.business.mapper.HospitalComplaintMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sunchs.lyt.db.business.entity.HospitalComplaint">
+        <id column="id" property="id" />
+        <result column="hospital_id" property="hospitalId" />
+        <result column="office_type_id" property="officeTypeId" />
+        <result column="office_id" property="officeId" />
+        <result column="type_id" property="typeId" />
+        <result column="name" property="name" />
+        <result column="tel" property="tel" />
+        <result column="number" property="number" />
+        <result column="respondent" property="respondent" />
+        <result column="content" property="content" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+</mapper>
