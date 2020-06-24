@@ -1,9 +1,9 @@
 package com.sunchs.lyt.hospital.service;
 
-import com.sunchs.lyt.db.business.entity.HospitalComplaint;
 import com.sunchs.lyt.db.business.entity.HospitalComplaintType;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.hospital.bean.ComplaintParam;
+import com.sunchs.lyt.hospital.bean.HospitalComplaintData;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public interface IComplaintService {
     /**
      * 获取列表信息
      */
-    PagingList<HospitalComplaint> getList(ComplaintParam param);
+    PagingList<HospitalComplaintData> getList(ComplaintParam param);
 
     /**
      * 获取列表信息
