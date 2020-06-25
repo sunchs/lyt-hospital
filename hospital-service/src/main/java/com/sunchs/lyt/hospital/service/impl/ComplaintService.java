@@ -156,16 +156,6 @@ public class ComplaintService implements IComplaintService {
             sheet.addCell(new Label(column++, line, "投诉对象", format));
             sheet.addCell(new Label(column++, line, "投诉建议", format));
             // 获取数据
-            ComplaintParam param = new ComplaintParam();
-            param.setHospitalId(param.getHospitalId());
-            param.setPageNow(1);
-            param.setPageSize(99999);
-            if (Objects.nonNull(param.getStartTime()) && param.getStartTime().length() > 0) {
-                param.setStartTime(param.getStartTime());
-            }
-            if (Objects.nonNull(param.getEndTime()) && param.getEndTime().length() > 0) {
-                param.setEndTime(param.getEndTime());
-            }
             PagingList<HospitalComplaintData> list = getList(param);
             for (HospitalComplaintData row : list.getList()) {
                 line++;
