@@ -181,6 +181,7 @@ public class HospitalService implements IHospitalService {
                 son.add(s);
             }
             data.setChildren(son);
+            result.add(data);
         }
         return result;
     }
