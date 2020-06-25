@@ -27,5 +27,5 @@ public interface IComplaintService {
     /**
      * 导出投诉报表文件
      */
-    String outputFile(Integer hospitalId, String startTime, String endTime);
+    String outputFile(ComplaintParam param);
 }

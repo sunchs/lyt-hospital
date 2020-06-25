@@ -45,4 +45,13 @@ public class ComplaintController extends BaseController {
         ComplaintParam param = data.toObject(ComplaintParam.class);
         return success(complaintService.getTypeList(param.getHospitalId()));
     }
+
+    /**
+     * 导出投诉报表文件
+     */
+    @PostMapping("/outputFile")
+    public ResultData outputFile(@RequestBody RequestData data) {
+        ComplaintParam param = data.toObject(ComplaintParam.class);
+        return success(complaintService.outputFile(param));
+    }
 }

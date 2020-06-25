@@ -128,7 +128,7 @@ public class ComplaintService implements IComplaintService {
     }
 
     @Override
-    public String outputFile(Integer hospitalId, String startTime, String endTime) {
+    public String outputFile(ComplaintParam param) {
         String path = "temp";
         initPath(path);
         String fileName = System.currentTimeMillis() +".xls";
@@ -157,14 +157,14 @@ public class ComplaintService implements IComplaintService {
             sheet.addCell(new Label(column++, line, "投诉建议", format));
             // 获取数据
             ComplaintParam param = new ComplaintParam();
-            param.setHospitalId(hospitalId);
+            param.setHospitalId(param.getHospitalId());
             param.setPageNow(1);
             param.setPageSize(99999);
-            if (Objects.nonNull(startTime) && startTime.length() > 0) {
-                param.setStartTime(startTime);
+            if (Objects.nonNull(param.getStartTime()) && param.getStartTime().length() > 0) {
+                param.setStartTime(param.getStartTime());
             }
-            if (Objects.nonNull(endTime) && endTime.length() > 0) {
-                param.setEndTime(startTime);
+            if (Objects.nonNull(param.getEndTime()) && param.getEndTime().length() > 0) {
+                param.setEndTime(param.getEndTime());
             }
             PagingList<HospitalComplaintData> list = getList(param);
             for (HospitalComplaintData row : list.getList()) {
