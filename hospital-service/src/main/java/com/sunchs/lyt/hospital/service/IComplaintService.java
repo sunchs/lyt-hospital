@@ -23,4 +23,9 @@ public interface IComplaintService {
      * 获取列表信息
      */
     List<HospitalComplaintType> getTypeList(Integer hospitalId);
+
+    /**
+     * 导出投诉报表文件
+     */
+    String outputFile(Integer hospitalId, String startTime, String endTime);
 }

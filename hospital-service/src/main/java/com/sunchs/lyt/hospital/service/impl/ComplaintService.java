@@ -12,6 +12,8 @@ import com.sunchs.lyt.db.business.service.impl.HospitalComplaintTypeServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.HospitalOfficeServiceImpl;
 import com.sunchs.lyt.db.business.service.impl.HospitalServiceImpl;
 import com.sunchs.lyt.framework.bean.PagingList;
+import com.sunchs.lyt.framework.bean.TitleValueChildrenData;
+import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.framework.enums.OfficeTypeEnum;
 import com.sunchs.lyt.framework.util.FormatUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
@@ -19,10 +21,22 @@ import com.sunchs.lyt.hospital.bean.ComplaintParam;
 import com.sunchs.lyt.hospital.bean.HospitalComplaintData;
 import com.sunchs.lyt.hospital.exception.HospitalException;
 import com.sunchs.lyt.hospital.service.IComplaintService;
+import jxl.format.Colour;
+import jxl.write.Label;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -113,6 +127,70 @@ public class ComplaintService implements IComplaintService {
         return hospitalComplaintTypeService.selectList(wrapper);
     }
 
+    @Override
+    public String outputFile(Integer hospitalId, String startTime, String endTime) {
+        String path = "temp";
+        initPath(path);
+        String fileName = System.currentTimeMillis() +".xls";
+        try {
+            File file = new File(path + "/" + fileName);
+            WritableWorkbook wb = jxl.Workbook.createWorkbook(file);
+            // 改变默认颜色
+            Color color = Color.decode("#EEA9B8");
+            wb.setColourRGB(Colour.RED, color.getRed(), color.getGreen(), color.getBlue());
+            // 写表头
+            WritableCellFormat format = new WritableCellFormat();
+            format.setBackground(Colour.RED);
+
+            WritableSheet sheet = wb.createSheet("投诉报表", 0);
+
+            int column = 0;
+            int line = 0;
+            // 标题
+            sheet.addCell(new Label(column++, line, "上传日期", format));
+            sheet.addCell(new Label(column++, line, "投诉人", format));
+            sheet.addCell(new Label(column++, line, "联系方式", format));
+            sheet.addCell(new Label(column++, line, "就诊卡号", format));
+            sheet.addCell(new Label(column++, line, "投诉类型", format));
+            sheet.addCell(new Label(column++, line, "投诉科室", format));
+            sheet.addCell(new Label(column++, line, "投诉对象", format));
+            sheet.addCell(new Label(column++, line, "投诉建议", format));
+            // 获取数据
+            ComplaintParam param = new ComplaintParam();
+            param.setHospitalId(hospitalId);
+            param.setPageNow(1);
+            param.setPageSize(99999);
+            if (Objects.nonNull(startTime) && startTime.length() > 0) {
+                param.setStartTime(startTime);
+            }
+            if (Objects.nonNull(endTime) && endTime.length() > 0) {
+                param.setEndTime(startTime);
+            }
+            PagingList<HospitalComplaintData> list = getList(param);
+            for (HospitalComplaintData row : list.getList()) {
+                line++;
+                column = 0;
+
+                sheet.addCell(new Label(column++, line, row.getCreateTime()));
+                sheet.addCell(new Label(column++, line, row.getName()));
+                sheet.addCell(new Label(column++, line, row.getTel()));
+                sheet.addCell(new Label(column++, line, row.getNumber()));
+                sheet.addCell(new Label(column++, line, row.getTypeName()));
+                sheet.addCell(new Label(column++, line, row.getOfficeName()));
+                sheet.addCell(new Label(column++, line, row.getRespondent()));
+                sheet.addCell(new Label(column++, line, row.getContent()));
+            }
+
+            wb.write();
+            wb.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (WriteException e) {
+            e.printStackTrace();
+        }
+        return path + "/" + fileName;
+    }
+
     private List<HospitalComplaintData> formatData(List<HospitalComplaint> pageList) {
         List<HospitalComplaintData> list = new ArrayList<>();
         // 医院
@@ -165,5 +243,12 @@ public class ComplaintService implements IComplaintService {
             list.add(data);
         });
         return list;
+    }
+
+    private void initPath(String path) {
+        File file1 = new File(path);
+        if ( ! file1.exists()) {
+            file1.mkdirs();
+        }
     }
 }
