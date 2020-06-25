@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.PagingList;
+import com.sunchs.lyt.framework.bean.TitleValueChildrenData;
+import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.framework.util.FormatUtil;
 import com.sunchs.lyt.framework.util.ObjectUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class HospitalService implements IHospitalService {
@@ -155,6 +158,31 @@ public class HospitalService implements IHospitalService {
             list.add(m);
         });
         return list;
+    }
+
+    @Override
+    public List<TitleValueChildrenData> getOfficeChildList(int hospitalId) {
+        List<TitleValueChildrenData> result = new ArrayList<>();
+        Wrapper<HospitalOffice> wrapper = new EntityWrapper<HospitalOffice>()
+                .eq(HospitalOffice.HOSPITAL_ID, hospitalId);
+        List<HospitalOffice> officeList = hospitalOfficeService.selectList(wrapper);
+        Map<Integer, List<HospitalOffice>> officeGroup = officeList.stream().collect(Collectors.groupingBy(HospitalOffice::getType));
+        for (Integer type : officeGroup.keySet()) {
+            TitleValueChildrenData data = new TitleValueChildrenData();
+            data.setId(type);
+            data.setTitle(com.sunchs.lyt.framework.enums.OfficeTypeEnum.get(type));
+            // 子数据
+            List<TitleValueData> son = new ArrayList<>();
+            List<HospitalOffice> hospitalOffices = officeGroup.get(type);
+            for (HospitalOffice hospitalOffice : hospitalOffices) {
+                TitleValueData s = new TitleValueData();
+                s.setId(hospitalOffice.getId());
+                s.setTitle(hospitalOffice.getTitle());
+                son.add(s);
+            }
+            data.setChildren(son);
+        }
+        return result;
     }
 
     @Override

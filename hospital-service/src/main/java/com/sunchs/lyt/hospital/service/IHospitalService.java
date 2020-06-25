@@ -1,6 +1,7 @@
 package com.sunchs.lyt.hospital.service;
 
 import com.sunchs.lyt.framework.bean.PagingList;
+import com.sunchs.lyt.framework.bean.TitleValueChildrenData;
 import com.sunchs.lyt.hospital.bean.HospitalData;
 import com.sunchs.lyt.hospital.bean.HospitalParam;
 
@@ -43,6 +44,12 @@ public interface IHospitalService {
      * 获取医院科室
      */
     List<Map<String, Object>> getOfficeList(int hospitalId);
+
+    /**
+     * 获取医院科室
+     */
+    List<TitleValueChildrenData> getOfficeChildList(int hospitalId);
+
 
     /**
      * 获取未绑定的科室

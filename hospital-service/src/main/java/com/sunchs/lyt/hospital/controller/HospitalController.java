@@ -82,6 +82,15 @@ public class HospitalController extends BaseController {
     }
 
     /**
+     * 获取医院所有科室(分组)
+     */
+    @PostMapping("/getOfficeChildList")
+    public ResultData getOfficeChildList(@RequestBody RequestData data) {
+        HospitalParam param = data.toObject(HospitalParam.class);
+        return success(hospitalService.getOfficeChildList(param.getId()));
+    }
+
+    /**
      * 获取医院未绑定的科室
      */
     @PostMapping("/getNoBindOfficeList")
