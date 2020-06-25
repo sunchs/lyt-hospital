@@ -53,6 +53,7 @@ public class PreFilter extends ZuulFilter {
         ignoreUri.add("/hospital-service/member/getCode");
         ignoreUri.add("/hospital-service/member/save");
         ignoreUri.add("/item-service/item/officePageList");
+        ignoreUri.add("/hospital-service/complaint/getTypeList");
         if (ignoreUri.contains(request.getRequestURI())) {
             return null;
         }
