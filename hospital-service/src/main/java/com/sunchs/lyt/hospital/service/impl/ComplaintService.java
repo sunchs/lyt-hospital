@@ -95,6 +95,7 @@ public class ComplaintService implements IComplaintService {
         if (Objects.nonNull(param.getEndTime()) && param.getEndTime().length() > 0) {
             wrapper.le(HospitalComplaint.CREATE_TIME, param.getEndTime());
         }
+        wrapper.orderBy(HospitalComplaint.ID, false);
         Page<HospitalComplaint> limit = new Page<>(param.getPageNow(), param.getPageSize());
         Page<HospitalComplaint> page = hospitalComplaintService.selectPage(limit, wrapper);
         List<HospitalComplaintData> list = formatData(page.getRecords());
