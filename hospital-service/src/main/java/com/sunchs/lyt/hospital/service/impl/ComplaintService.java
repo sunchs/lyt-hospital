@@ -147,13 +147,13 @@ public class ComplaintService implements IComplaintService {
             int column = 0;
             int line = 0;
             // 标题
-            sheet.addCell(new Label(column++, line, "上传日期", format));sheet.setColumnView(column, 18);
-            sheet.addCell(new Label(column++, line, "投诉人", format));sheet.setColumnView(column, 18);
-            sheet.addCell(new Label(column++, line, "联系方式", format));sheet.setColumnView(column, 18);
-            sheet.addCell(new Label(column++, line, "就诊卡号", format));sheet.setColumnView(column, 18);
-            sheet.addCell(new Label(column++, line, "投诉类型", format));sheet.setColumnView(column, 18);
-            sheet.addCell(new Label(column++, line, "投诉科室", format));sheet.setColumnView(column, 18);
-            sheet.addCell(new Label(column++, line, "投诉对象", format));sheet.setColumnView(column, 18);
+            sheet.addCell(new Label(column++, line, "上传日期", format));sheet.setColumnView(column, 20);
+            sheet.addCell(new Label(column++, line, "投诉人", format));sheet.setColumnView(column, 20);
+            sheet.addCell(new Label(column++, line, "联系方式", format));sheet.setColumnView(column, 20);
+            sheet.addCell(new Label(column++, line, "就诊卡号", format));sheet.setColumnView(column, 20);
+            sheet.addCell(new Label(column++, line, "投诉类型", format));sheet.setColumnView(column, 20);
+            sheet.addCell(new Label(column++, line, "投诉科室", format));sheet.setColumnView(column, 20);
+            sheet.addCell(new Label(column++, line, "投诉对象", format));sheet.setColumnView(column, 20);
             sheet.addCell(new Label(column++, line, "投诉建议", format));sheet.setColumnView(column, 60);
 
             // 获取数据
