@@ -79,10 +79,10 @@ public class ComplaintParam extends PagingParam {
         if (hospitalId == 0) {
             throw new HospitalException("医院不能为空！");
         }
-        // 科室类型
-        if (officeTypeId == 0) {
-            throw new HospitalException("科室类型不能为空！");
-        }
+//        // 科室类型
+//        if (officeTypeId == 0) {
+//            throw new HospitalException("科室类型不能为空！");
+//        }
         // 科室
         if (officeId == 0) {
             throw new HospitalException("科室不能为空！");
