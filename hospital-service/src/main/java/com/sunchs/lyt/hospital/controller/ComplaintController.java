@@ -54,7 +54,7 @@ public class ComplaintController extends BaseController {
     public ResultData outputFile(@RequestBody RequestData data) {
         ComplaintParam param = data.toObject(ComplaintParam.class);
         String path = complaintService.outputFile(param);
-        return success("http://47.107.255.115:8003/output/download/?fileName="+path);
+        return success("http://47.107.255.115:8003/complaint/download/?fileName="+path);
     }
 
     @GetMapping("/download")
