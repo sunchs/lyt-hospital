@@ -90,6 +90,10 @@ public class ComplaintService implements IComplaintService {
     @Override
     public PagingList<HospitalComplaintData> getList(ComplaintParam param) {
         Wrapper<HospitalComplaint> wrapper = new EntityWrapper<>();
+        // 医院
+        if (param.getHospitalId() > 0) {
+            wrapper.eq(HospitalComplaint.HOSPITAL_ID, param.getHospitalId());
+        }
         // 姓名
         if (Objects.nonNull(param.getName()) && param.getName().length() > 0) {
             wrapper.eq(HospitalComplaint.NAME, param.getName());
