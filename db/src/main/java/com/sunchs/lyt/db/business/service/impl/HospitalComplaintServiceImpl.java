@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author king
- * @since 2020-06-23
+ * @since 2020-06-30
  */
 @Service
 public class HospitalComplaintServiceImpl extends ServiceImpl<HospitalComplaintMapper, HospitalComplaint> implements IHospitalComplaintService {

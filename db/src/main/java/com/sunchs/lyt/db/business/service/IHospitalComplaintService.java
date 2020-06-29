@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.service.IService;
  * </p>
  *
  * @author king
- * @since 2020-06-23
+ * @since 2020-06-30
  */
 public interface IHospitalComplaintService extends IService<HospitalComplaint> {
 

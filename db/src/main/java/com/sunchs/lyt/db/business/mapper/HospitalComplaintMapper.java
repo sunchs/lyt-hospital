@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * </p>
  *
  * @author king
- * @since 2020-06-23
+ * @since 2020-06-30
  */
 public interface HospitalComplaintMapper extends BaseMapper<HospitalComplaint> {
 

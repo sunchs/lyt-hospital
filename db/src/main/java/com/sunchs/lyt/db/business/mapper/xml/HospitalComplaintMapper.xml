@@ -15,6 +15,7 @@
         <result column="respondent" property="respondent" />
         <result column="content" property="content" />
         <result column="create_time" property="createTime" />
+        <result column="files" property="files" />
     </resultMap>
 
 </mapper>

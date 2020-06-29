@@ -3,6 +3,7 @@ package com.sunchs.lyt.hospital.bean;
 import com.sunchs.lyt.framework.bean.PagingParam;
 import com.sunchs.lyt.hospital.exception.HospitalException;
 
+import java.util.List;
 import java.util.Objects;
 
 public class ComplaintParam extends PagingParam {
@@ -61,6 +62,11 @@ public class ComplaintParam extends PagingParam {
      * 结束时间
      */
     private String endTime;
+
+    /**
+     * 上传文件列表
+     */
+    private List<String> fileList;
 
     public void filter() {
         // 姓名
@@ -185,5 +191,13 @@ public class ComplaintParam extends PagingParam {
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    public List<String> getFileList() {
+        return fileList;
+    }
+
+    public void setFileList(List<String> fileList) {
+        this.fileList = fileList;
     }
 }

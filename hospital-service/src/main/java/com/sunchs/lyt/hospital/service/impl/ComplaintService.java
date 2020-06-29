@@ -16,6 +16,7 @@ import com.sunchs.lyt.framework.bean.TitleValueChildrenData;
 import com.sunchs.lyt.framework.bean.TitleValueData;
 import com.sunchs.lyt.framework.enums.OfficeTypeEnum;
 import com.sunchs.lyt.framework.util.FormatUtil;
+import com.sunchs.lyt.framework.util.JsonUtil;
 import com.sunchs.lyt.framework.util.PagingUtil;
 import com.sunchs.lyt.hospital.bean.ComplaintParam;
 import com.sunchs.lyt.hospital.bean.HospitalComplaintData;
@@ -81,6 +82,7 @@ public class ComplaintService implements IComplaintService {
             data.setRespondent(param.getRespondent());
             data.setContent(param.getContent());
             data.setCreateTime(new Date());
+            data.setFiles(JsonUtil.toJson(param.getFileList()));
             hospitalComplaintService.insert(data);
         } catch (Exception e) {
             throw new HospitalException("投诉信息保存失败:" + e.getMessage());

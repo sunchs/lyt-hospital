@@ -14,7 +14,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author king
- * @since 2020-06-23
+ * @since 2020-06-30
  */
 @TableName("hospital_complaint")
 public class HospitalComplaint extends Model<HospitalComplaint> {
@@ -81,6 +81,11 @@ public class HospitalComplaint extends Model<HospitalComplaint> {
      */
     @TableField("create_time")
     private Date createTime;
+
+    /**
+     * 附件路径
+     */
+    private String files;
 
     public Integer getId() {
         return id;
@@ -159,6 +164,13 @@ public class HospitalComplaint extends Model<HospitalComplaint> {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+    public String getFiles() {
+        return files;
+    }
+
+    public void setFiles(String files) {
+        this.files = files;
+    }
 
     public static final String ID = "id";
 
@@ -182,6 +194,8 @@ public class HospitalComplaint extends Model<HospitalComplaint> {
 
     public static final String CREATE_TIME = "create_time";
 
+    public static final String FILES = "files";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -201,6 +215,7 @@ public class HospitalComplaint extends Model<HospitalComplaint> {
         ", respondent=" + respondent +
         ", content=" + content +
         ", createTime=" + createTime +
+        ", files=" + files +
         "}";
     }
 }
