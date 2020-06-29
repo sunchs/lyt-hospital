@@ -18,13 +18,10 @@ public class SessionFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        System.out.println("user - doFilter - start");
-
         String stream = StreamUtil.getInputStream(request.getInputStream());
         UserThreadUtil.initUser(stream);
         chain.doFilter(new PostServletRequest((HttpServletRequest) request, stream), response);
-
-        System.out.println("user - doFilter - end");
+        System.out.println("接口请求 ------------> : "+((HttpServletRequest) request).getRequestURL());
     }
 
     @Override

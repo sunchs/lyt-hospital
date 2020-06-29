@@ -12,7 +12,7 @@ import java.io.*;
 import java.net.URLEncoder;
 
 @RestController
-@RequestMapping("/itemFile")
+@RequestMapping("/file")
 public class HospitalFileController extends BaseController {
 
     @Autowired
@@ -21,6 +21,11 @@ public class HospitalFileController extends BaseController {
     @PostMapping("/upload")
     public ResultData uploadFile(@RequestParam("file") MultipartFile file) {
         return success(hospitalFileService.uploadFile(file));
+    }
+
+    @GetMapping("/test")
+    public ResultData test() {
+        return success("test");
     }
 
     @GetMapping("/download")
