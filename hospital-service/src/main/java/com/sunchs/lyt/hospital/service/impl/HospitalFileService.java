@@ -7,6 +7,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Service
 public class HospitalFileService implements IHospitalFileService {
@@ -24,7 +27,10 @@ public class HospitalFileService implements IHospitalFileService {
         String originalFilename = file.getOriginalFilename();
         String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
 
-        fileName += "/" + System.currentTimeMillis() + suffix;
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+        String dateString = dateFormat.format(new Date());
+        
+        fileName += "/" + dateString + "-" + System.currentTimeMillis() + suffix;
         fileUpload = new File(fileName);
 
         try {
