@@ -18,13 +18,13 @@ public class HospitalFileService implements IHospitalFileService {
         if (file == null || file.isEmpty()) {
             throw new HospitalException("请选择导入文件");
         }
-        String fileName = "/lyt";
+        String rootPath = "/lyt";
+        String fileName = "/complaint";
         try {
-            File root = new File(fileName);
+            File root = new File(rootPath);
             if ( ! root.exists()) {
                 root.mkdirs();
             }
-            fileName += "/complaint";
             File dir = new File(fileName);
             if ( ! dir.exists()) {
                 dir.mkdirs();
