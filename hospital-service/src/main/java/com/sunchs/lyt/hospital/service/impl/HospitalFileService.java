@@ -36,6 +36,7 @@ public class HospitalFileService implements IHospitalFileService {
             DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
             String dateString = dateFormat.format(new Date());
             fileName += "/" + dateString + "-" + System.currentTimeMillis() + suffix;
+            System.out.println(fileName);
 
             File fileUpload = new File(fileName);
             file.transferTo(fileUpload);
