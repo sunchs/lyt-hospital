@@ -25,7 +25,7 @@ public class HospitalFileService implements IHospitalFileService {
             if ( ! root.exists()) {
                 root.mkdirs();
             }
-            File dir = new File(fileName);
+            File dir = new File(rootPath + fileName);
             if ( ! dir.exists()) {
                 dir.mkdirs();
             }
@@ -36,9 +36,8 @@ public class HospitalFileService implements IHospitalFileService {
             DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
             String dateString = dateFormat.format(new Date());
             fileName += "/" + dateString + "-" + System.currentTimeMillis() + suffix;
-            System.out.println(fileName);
 
-            File fileUpload = new File(fileName);
+            File fileUpload = new File(rootPath + fileName);
             file.transferTo(fileUpload);
         } catch (IOException e) {
             throw new HospitalException("上传文件到服务器失败：" + e.toString());
