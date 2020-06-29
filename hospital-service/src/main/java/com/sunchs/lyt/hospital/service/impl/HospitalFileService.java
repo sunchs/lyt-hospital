@@ -18,21 +18,26 @@ public class HospitalFileService implements IHospitalFileService {
         if (file == null || file.isEmpty()) {
             throw new HospitalException("请选择导入文件");
         }
-        String fileName = "/lyt/complaint";
+        String fileName = "/lyt";
         try {
-            File fileUpload = new File(fileName);
-            if (!fileUpload.exists()) {
-                fileUpload.mkdirs();
+            File root = new File(fileName);
+            if ( ! root.exists()) {
+                root.mkdirs();
             }
+            fileName += "/complaint";
+            File dir = new File(fileName);
+            if ( ! dir.exists()) {
+                dir.mkdirs();
+            }
+            // 扩展名
             String originalFilename = file.getOriginalFilename();
             String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
-
+            // 用日期拼接文件名
             DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
             String dateString = dateFormat.format(new Date());
-
             fileName += "/" + dateString + "-" + System.currentTimeMillis() + suffix;
-            fileUpload = new File(fileName);
 
+            File fileUpload = new File(fileName);
             file.transferTo(fileUpload);
         } catch (IOException e) {
             throw new HospitalException("上传文件到服务器失败：" + e.toString());
