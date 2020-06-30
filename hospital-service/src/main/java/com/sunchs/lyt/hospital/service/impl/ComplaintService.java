@@ -237,6 +237,7 @@ public class ComplaintService implements IComplaintService {
             data.setRespondent(row.getRespondent());
             data.setContent(row.getContent());
             data.setCreateTime(FormatUtil.dateTime(row.getCreateTime()));
+            data.setFileList(JsonUtil.toObject(row.getFiles(), List.class));
             list.add(data);
         });
         return list;

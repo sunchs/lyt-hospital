@@ -1,5 +1,7 @@
 package com.sunchs.lyt.hospital.bean;
 
+import java.util.List;
+
 public class HospitalComplaintData {
 
     /**
@@ -76,6 +78,11 @@ public class HospitalComplaintData {
      * 创建时间
      */
     private String createTime;
+
+    /**
+     * 附件列表
+     */
+    private List<String> fileList;
 
     public Integer getId() {
         return id;
@@ -195,5 +202,13 @@ public class HospitalComplaintData {
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+    public List<String> getFileList() {
+        return fileList;
+    }
+
+    public void setFileList(List<String> fileList) {
+        this.fileList = fileList;
     }
 }
