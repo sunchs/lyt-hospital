@@ -20,6 +20,7 @@ public class HospitalApplication {
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.setAllowCredentials(true);//这两句不加不能跨域上传文件，
         corsConfiguration.setMaxAge(83600L);//加上去就可以了
+        corsConfiguration.addAllowedHeader("Access-Control-Allow-Origin");
         return corsConfiguration;
     }
 
