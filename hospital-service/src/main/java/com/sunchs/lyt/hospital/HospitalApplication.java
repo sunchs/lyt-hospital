@@ -2,6 +2,7 @@ package com.sunchs.lyt.hospital;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -10,6 +11,9 @@ import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import javax.servlet.MultipartConfigElement;
+import java.io.File;
 
 @SpringBootApplication(scanBasePackages = {"com.sunchs.lyt.db","com.sunchs.lyt.hospital"})
 public class HospitalApplication {
@@ -48,6 +52,31 @@ public class HospitalApplication {
                 //.excludePathPatterns("/imageThumbnail");
             }
         };
+    }
+
+    @Bean
+    public MultipartConfigElement multipartConfigElement() {
+        MultipartConfigFactory factory = new MultipartConfigFactory();
+        //单个文件最大
+        factory.setMaxFileSize("80MB"); //KB,MB
+        /// 设置单个请求总上传数据总大小
+        factory.setMaxRequestSize("102400KB");
+        String rootPath = "/lytTemp";
+        File root = new File(rootPath);
+        if ( ! root.exists()) {
+            root.mkdirs();
+        }
+//        if (!StringUtils.isEmpty(tempLocation)) {
+            File tempLocationFile = new File(rootPath);
+            if (!tempLocationFile.exists()) {
+                boolean mkdirs = tempLocationFile.mkdirs();
+                if (!mkdirs) {
+                    throw new RuntimeException("fail to create temp location : " + rootPath);
+                }
+            }
+            factory.setLocation(rootPath);
+//        }
+        return factory.createMultipartConfig();
     }
 
 //    @Bean(name = "multipartResolver")
