@@ -69,36 +69,36 @@ public class ComplaintParam extends PagingParam {
     private List<String> fileList;
 
     public void filter() {
-        // 姓名
-        if (Objects.isNull(name) || name.length() == 0) {
-            throw new HospitalException("姓名不能为空！");
-        } else if (name.length() > 32) {
-            throw new HospitalException("姓名字符长度不能超过32个字符！");
-        }
-        // 电话
-        if (Objects.isNull(tel) || tel.length() == 0) {
-            throw new HospitalException("联系电话不能为空！");
-        } else if (tel.length() > 32) {
-            throw new HospitalException("联系电话字符长度不能超过32个字符！");
-        }
-        // 医院
-        if (hospitalId == 0) {
-            throw new HospitalException("医院不能为空！");
-        }
+//        // 姓名
+//        if (Objects.isNull(name) || name.length() == 0) {
+//            throw new HospitalException("姓名不能为空！");
+//        } else if (name.length() > 32) {
+//            throw new HospitalException("姓名字符长度不能超过32个字符！");
+//        }
+//        // 电话
+//        if (Objects.isNull(tel) || tel.length() == 0) {
+//            throw new HospitalException("联系电话不能为空！");
+//        } else if (tel.length() > 32) {
+//            throw new HospitalException("联系电话字符长度不能超过32个字符！");
+//        }
+//        // 医院
+//        if (hospitalId == 0) {
+//            throw new HospitalException("医院不能为空！");
+//        }
 //        // 科室类型
 //        if (officeTypeId == 0) {
 //            throw new HospitalException("科室类型不能为空！");
 //        }
-        // 科室
-        if (officeId == 0) {
-            throw new HospitalException("科室不能为空！");
-        }
-        // 投诉对象
-        if (Objects.isNull(respondent) || respondent.length() == 0) {
-            throw new HospitalException("投诉对象不能为空！");
-        } else if (respondent.length() > 64) {
-            throw new HospitalException("投诉对象字符长度不能超过64个字符！");
-        }
+//        // 科室
+//        if (officeId == 0) {
+//            throw new HospitalException("科室不能为空！");
+//        }
+//        // 投诉对象
+//        if (Objects.isNull(respondent) || respondent.length() == 0) {
+//            throw new HospitalException("投诉对象不能为空！");
+//        } else if (respondent.length() > 64) {
+//            throw new HospitalException("投诉对象字符长度不能超过64个字符！");
+//        }
         // 投诉内容
         if (Objects.isNull(content) && content.length() == 0) {
             throw new HospitalException("投诉内容不能为空！");

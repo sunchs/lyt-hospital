@@ -60,7 +60,7 @@ public class ComplaintService implements IComplaintService {
         // 参数过滤
         param.filter();
         // 科室类型
-        if (param.getOfficeTypeId() == 0) {
+        if (param.getOfficeTypeId() == 0 && param.getOfficeId() > 0) {
             Wrapper<HospitalOffice> wrapper = new EntityWrapper<HospitalOffice>()
                     .setSqlSelect(HospitalOffice.TYPE)
                     .eq(HospitalOffice.ID, param.getOfficeId());
