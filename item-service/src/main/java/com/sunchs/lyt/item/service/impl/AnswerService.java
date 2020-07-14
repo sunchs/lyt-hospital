@@ -58,7 +58,7 @@ public class AnswerService implements IAnswerService {
         if (param.getItemId() > 0) {
             wrapper.eq(Answer.ITEM_ID, param.getItemId());
         }
-        if (param.getOfficeId() > 0) {
+        if (param.getOfficeId() > -1) {
             wrapper.eq(Answer.OFFICE_ID, param.getOfficeId());
         }
         wrapper.orderBy(Answer.ID, false);
