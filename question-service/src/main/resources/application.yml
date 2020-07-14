@@ -12,11 +12,13 @@ spring:
 eureka:
   instance:
     prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 10
   client:
     serviceUrl:
       defaultZone: http://47.107.255.115:6006/eureka/
 
-logging:
-  level:
-    com.sunchs.lyt.db.business.mapper: DEBUG
-    com.sunchs.lyt.db.report.mapper: DEBUG
+#logging:
+#  level:
+#    com.sunchs.lyt.db.business.mapper: DEBUG
+#    com.sunchs.lyt.db.report.mapper: DEBUG
