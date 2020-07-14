@@ -14,4 +14,4 @@ eureka:
     serviceUrl:
       defaultZone: http://47.107.255.115:6006/eureka/
   server:
-    enable-self-preservation: false
+    enable-self-preservation: true
