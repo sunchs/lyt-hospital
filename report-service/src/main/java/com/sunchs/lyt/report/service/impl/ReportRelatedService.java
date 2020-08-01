@@ -293,31 +293,37 @@ public class ReportRelatedService implements IReportRelatedService {
         double sumY = 0d;
         double sumPowX = 0d;
         double sumPowY = 0d;
-        Set<Integer> setItem = new HashSet<>();
-        for (Map.Entry<Integer, Double> entry : mapX.entrySet()) {
-            setItem.add(entry.getKey());
-        }
-        for (Map.Entry<Integer, Double> entry : mapY.entrySet()) {
-            setItem.add(entry.getKey());
-        }
-        for (Integer bookId : setItem) {
-            Double x = mapX.get(bookId);
-            if (x == null) {
-                x = 0d;
+        double pearson = 0d;
+        double value = 0d;
+        try {
+            Set<Integer> setItem = new HashSet<>();
+            for (Map.Entry<Integer, Double> entry : mapX.entrySet()) {
+                setItem.add(entry.getKey());
             }
-            Double y = mapY.get(bookId);
-            if (y == null) {
-                y = 0d;
+            for (Map.Entry<Integer, Double> entry : mapY.entrySet()) {
+                setItem.add(entry.getKey());
             }
-            sumXY += x * y;
-            sumX += x;
-            sumY += y;
-            sumPowX += Math.pow(x, 2);
-            sumPowY += Math.pow(y, 2);
+            for (Integer bookId : setItem) {
+                Double x = mapX.get(bookId);
+                if (x == null) {
+                    x = 0d;
+                }
+                Double y = mapY.get(bookId);
+                if (y == null) {
+                    y = 0d;
+                }
+                sumXY += x * y;
+                sumX += x;
+                sumY += y;
+                sumPowX += Math.pow(x, 2);
+                sumPowY += Math.pow(y, 2);
+            }
+            int n = setItem.size();
+            pearson = (sumXY - sumX * sumY / n) / Math.sqrt((sumPowX - Math.pow(sumX, 2) / n) * (sumPowY - Math.pow(sumY, 2) / n));
+            value = new BigDecimal(pearson).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        } catch (Exception e) {
+            System.out.println("相关系数计算异常：mapX["+mapX+"] mapY["+mapY+"] value["+pearson+"]");
         }
-        int n = setItem.size();
-        double pearson = (sumXY - sumX * sumY / n) / Math.sqrt((sumPowX - Math.pow(sumX, 2) / n) * (sumPowY - Math.pow(sumY, 2) / n));
-        double value = new BigDecimal(pearson).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         return value;
     }
 }
