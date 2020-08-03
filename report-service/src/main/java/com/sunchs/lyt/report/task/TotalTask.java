@@ -17,7 +17,7 @@ public class TotalTask {
      */
     @Scheduled(cron = "0 0 3 * * ?")
     public void totalReportAnswerQuantity() {
-        reportFactoryService.makeAnswerQuantity();
-        reportFactoryService.makeAnswerSatisfy();
+        reportFactoryService.makeAnswerQuantity(null);
+//        reportFactoryService.makeAnswerSatisfy();
     }
 }

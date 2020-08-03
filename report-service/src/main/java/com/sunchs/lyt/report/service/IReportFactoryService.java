@@ -5,7 +5,7 @@ public interface IReportFactoryService {
     /**
      * 生成答题数量
      */
-    void makeAnswerQuantity();
+    void makeAnswerQuantity(Integer itemId);
 
     /**
      * 生成答题满意度

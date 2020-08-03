@@ -59,10 +59,10 @@ public class ReportController extends BaseController {
     @PostMapping("/makeQuantitySatisfy")
     public ResultData makeQuantitySatisfy(@RequestBody RequestData data) {
         new Thread(() -> {
-            reportFactoryService.makeAnswerQuantity();
-            if ( ! RedisUtil.exists(CacheKeys.MAKE_ANSWER_QUANTITY)) {
-                reportFactoryService.makeAnswerSatisfy();
-            }
+            reportFactoryService.makeAnswerQuantity(null);
+//            if ( ! RedisUtil.exists(CacheKeys.MAKE_ANSWER_QUANTITY)) {
+//                reportFactoryService.makeAnswerSatisfy();
+//            }
         }).start();
         return success();
     }
@@ -212,6 +212,16 @@ public class ReportController extends BaseController {
     public ResultData setItemOfficeRanking(@RequestBody RequestData data) {
         Integer itemId = data.getInt("itemId");
         reportSingleOfficeService.setItemOfficeRanking(itemId);
+        return success();
+    }
+
+    /**
+     * 更新项目数量
+     */
+    @PostMapping("/updateItemData")
+    public ResultData updateItemData(@RequestBody RequestData data) {
+        Integer itemId = data.getInt("itemId");
+        reportFactoryService.makeAnswerQuantity(itemId);
         return success();
     }
 }

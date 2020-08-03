@@ -46,7 +46,7 @@ public class ReportFactoryService implements IReportFactoryService {
     private QuestionServiceImpl questionService;
 
     @Override
-    public void makeAnswerQuantity() {
+    public void makeAnswerQuantity(Integer itemId) {
         if (RedisUtil.exists(CacheKeys.MAKE_ANSWER_QUANTITY)) {
             throw new ReportException("数据正在生成中，请稍后再试!");
         }
@@ -55,8 +55,20 @@ public class ReportFactoryService implements IReportFactoryService {
             RedisUtil.setValue(CacheKeys.MAKE_ANSWER_QUANTITY, "true", DateTimes.MONTH * 3);
 
             Wrapper<ItemOffice> itemOfficeWrapper = new EntityWrapper<>();
-            itemOfficeWrapper.andNew("item_id IN (SELECT id FROM item WHERE status=1)");
+            if (Objects.nonNull(itemId) && itemId > 0) {
+                itemOfficeWrapper.eq(ItemOffice.ITEM_ID, itemId);
+            } else {
+                itemOfficeWrapper.andNew("item_id IN (SELECT id FROM item WHERE status=1)");
+            }
             List<ItemOffice> itemOfficeList = itemOfficeService.selectList(itemOfficeWrapper);
+            List<Integer> itemIds = itemOfficeList.stream().map(ItemOffice::getItemId).distinct().collect(Collectors.toList());
+            for (Integer id : itemIds) {
+                // 删除已统计的历史记录
+                Wrapper<ReportAnswerQuantity> reportAnswerQuantityWrapper = new EntityWrapper<ReportAnswerQuantity>()
+                        .eq(ReportAnswerQuantity.ITEM_ID, id);
+                reportAnswerQuantityService.delete(reportAnswerQuantityWrapper);
+            }
+
             itemOfficeList.forEach(itemOffice -> {
                 // 通过项目对于的答卷ID
                 Wrapper<ReportAnswer> reportAnswerWrapper = new EntityWrapper<>();
@@ -67,14 +79,6 @@ public class ReportFactoryService implements IReportFactoryService {
                 List<Object> answerIdList = reportAnswerService.selectObjs(reportAnswerWrapper);
                 List<Long> answerIds = new ArrayList<>();
                 answerIdList.forEach(id->answerIds.add((long)id));
-
-                // 删除已统计的历史记录
-                Wrapper<ReportAnswerQuantity> reportAnswerQuantityWrapper = new EntityWrapper<>();
-                reportAnswerQuantityWrapper.eq(ReportAnswerQuantity.HOSPITAL_ID, itemOffice.getHospitalId());
-                reportAnswerQuantityWrapper.eq(ReportAnswerQuantity.ITEM_ID, itemOffice.getItemId());
-                reportAnswerQuantityWrapper.eq(ReportAnswerQuantity.OFFICE_ID, itemOffice.getOfficeId());
-                reportAnswerQuantityWrapper.eq(ReportAnswerQuantity.QUESTIONNAIRE_ID, itemOffice.getQuestionnaireId());
-                reportAnswerQuantityService.delete(reportAnswerQuantityWrapper);
 
                 // 生产新统计数据
                 if (answerIdList.size() > 0) {
