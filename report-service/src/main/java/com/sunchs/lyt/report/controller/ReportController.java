@@ -58,8 +58,9 @@ public class ReportController extends BaseController {
 
     @PostMapping("/makeQuantitySatisfy")
     public ResultData makeQuantitySatisfy(@RequestBody RequestData data) {
+        Integer itemId = data.getInt("itemId");
         new Thread(() -> {
-            reportFactoryService.makeAnswerQuantity(null);
+            reportFactoryService.makeAnswerQuantity(itemId);
 //            if ( ! RedisUtil.exists(CacheKeys.MAKE_ANSWER_QUANTITY)) {
 //                reportFactoryService.makeAnswerSatisfy();
 //            }
