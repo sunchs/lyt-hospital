@@ -63,10 +63,12 @@ public class ReportRelatedService implements IReportRelatedService {
                 String title = q.getTitle();
                 if (title.indexOf("（门诊）") != -1) {
                     questionnairId = q.getId();
+                    System.out.println("相关系数使用问卷标题是：" + title);
                     break;
                 }
                 if (title.indexOf("(门诊)") != -1) {
                     questionnairId = q.getId();
+                    System.out.println("相关系数使用问卷标题是：" + title);
                     break;
                 }
             }
@@ -74,6 +76,7 @@ public class ReportRelatedService implements IReportRelatedService {
         if (questionnairId == 0) {
             questionnairId = questionnaireList.get(0);
         }
+        System.out.println("相关系数使用问卷ID是：" + questionnairId);
 
         // 获取答卷数据
         Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
@@ -322,7 +325,8 @@ public class ReportRelatedService implements IReportRelatedService {
             pearson = (sumXY - sumX * sumY / n) / Math.sqrt((sumPowX - Math.pow(sumX, 2) / n) * (sumPowY - Math.pow(sumY, 2) / n));
             value = new BigDecimal(pearson).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         } catch (Exception e) {
-            System.out.println("相关系数计算异常：mapX["+mapX+"] mapY["+mapY+"] value["+pearson+"]");
+            System.out.println("相关系数计算异常："+pearson);
+//            System.out.println("相关系数计算异常：mapX["+mapX+"] mapY["+mapY+"] value["+pearson+"]");
         }
         return value;
     }
