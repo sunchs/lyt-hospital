@@ -8,7 +8,8 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     username: root
     password: Lyt@2019
-    url: jdbc:mysql://47.107.255.115:3306/hospital??useUnicode=true&characterEncoding=utf8&useSSL=false
+    url: jdbc:mysql://47.107.255.115:3306/hospital??useUnicode=true&characterEncoding=utf8&useSSL=false&autoReconnect=true&failOverReadOnly=false
+    type: com.alibaba.druid.pool.DruidDataSource
     druid:
       #初始化连接数
       initial-size: 1
@@ -21,6 +22,11 @@ spring:
       #监控页面启动
       stat-view-servlet:
         allow: true
+      #处理了解超时问题
+      validationQuery: select 1
+      testWhileIdle: true
+      testOnBorrow: true
+      testOnReturn: true
 
 eureka:
   instance:
