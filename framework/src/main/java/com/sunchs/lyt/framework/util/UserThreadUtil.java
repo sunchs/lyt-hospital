@@ -15,7 +15,7 @@ public class UserThreadUtil {
         if (data != null && StringUtil.isNotEmpty(data.getToken())) {
             if (RedisUtil.exists(CacheKeys.USER_LOGIN + data.getToken())) {
                 UserCacheData res = RedisUtil.getValue(CacheKeys.USER_LOGIN + data.getToken(), UserCacheData.class);
-                System.out.println(res);
+//                System.out.println(res);
                 userHandle.set(res);
             }
         }
