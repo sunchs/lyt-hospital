@@ -20,7 +20,8 @@ public class ExceptionAspect {
         try {
             return joinPoint.proceed();
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
+//            throwable.printStackTrace();
+            System.out.println(throwable.getMessage());
             return ResultData.getFailure(throwable.getMessage());
         }
     }
