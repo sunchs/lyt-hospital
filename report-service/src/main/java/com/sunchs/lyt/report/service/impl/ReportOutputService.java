@@ -215,6 +215,9 @@ public class ReportOutputService implements IReportOutputService {
 
                         for (ReportAnswerOption answerOption : reportAnswerOptionGroupMap.get(questionnaireId)) {
                             List<ReportAnswerOption> reportAnswerOptions = answerOptionList.get(answer.getId());
+                            if (CollectionUtils.isEmpty(reportAnswerOptions)) {
+                                continue;
+                            }
                             List<ReportAnswerOption> optionList = reportAnswerOptions.stream().filter(v->Objects.equals(v.getQuestionId(), answerOption.getQuestionId())).collect(Collectors.toList());
 //                            List<ReportAnswerOption> optionList = reportAnswerOptionList.stream().filter(v ->
 //                                    v.getAnswerId().equals(answer.getId()) && v.getQuestionId().equals(answerOption.getQuestionId())
