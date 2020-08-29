@@ -46,4 +46,16 @@ public class AnswerController extends BaseController {
         answerService.updateReason(param);
         return success();
     }
+
+    /**
+     * 刷新合格数据到报表中
+     * answer --> report_answer
+     * 谨慎使用
+     */
+    @PostMapping("/initReportDataByItemId")
+    public ResultData initReportDataByItemId(@RequestBody RequestData data) {
+        Integer itemId = data.getInt("itemId");
+        answerService.initReportDataByItemId(itemId);
+        return success();
+    }
 }

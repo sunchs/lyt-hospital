@@ -21,4 +21,6 @@ public interface IAnswerService {
      * 设置答卷不合格原因
      */
     void updateReason(AnswerParam param);
+
+    void initReportDataByItemId(Integer itemId);
 }

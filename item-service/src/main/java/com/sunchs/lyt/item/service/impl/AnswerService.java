@@ -109,6 +109,18 @@ public class AnswerService implements IAnswerService {
         answerService.updateById(data);
     }
 
+    @Override
+    public void initReportDataByItemId(Integer itemId) {
+        Wrapper<Answer> answerWrapper = new EntityWrapper<Answer>()
+                .setSqlSelect(Answer.ID)
+                .eq(Answer.ITEM_ID, itemId)
+                .eq(Answer.STATUS, 1);
+        List<Answer> answerList = answerService.selectList(answerWrapper);
+        answerList.forEach(answer -> {
+            syncReportData(answer.getId(), 1);
+        });
+    }
+
     private void syncReportData(Integer answerId, Integer status) {
         reportAnswerService.deleteById(answerId);
         Wrapper<ReportAnswerOption> wrapper = new EntityWrapper<ReportAnswerOption>()
