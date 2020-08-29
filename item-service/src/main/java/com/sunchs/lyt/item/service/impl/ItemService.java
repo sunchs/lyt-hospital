@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.bean.PagingList;
+import com.sunchs.lyt.framework.constants.CacheKeys;
 import com.sunchs.lyt.framework.enums.UserTypeEnum;
 import com.sunchs.lyt.framework.util.*;
 import com.sunchs.lyt.item.bean.*;
@@ -168,6 +169,8 @@ public class ItemService implements IItemService {
                     data.setOfficeId(0);
                     data.setQuestionnaireId(row.getQuestionnaireId());
                     itemOfficeService.insert(data);
+
+                    RedisUtil.remove(CacheKeys.ITEM_OFFICE_INFO + param.getItemId() + ":" + 0);
                 } else {
                     row.getOfficeList().forEach(officeId -> {
                         ItemOffice data = new ItemOffice();
@@ -184,6 +187,8 @@ public class ItemService implements IItemService {
                             data.setQuantity(hospitalOffice.getQuantity());
                         }
                         itemOfficeService.insert(data);
+
+                        RedisUtil.remove(CacheKeys.ITEM_OFFICE_INFO + param.getItemId() + ":" + officeId);
                     });
                 }
             }
@@ -343,6 +348,18 @@ public class ItemService implements IItemService {
 
     @Override
     public void unbindItemOffice(int id) {
+        // 清理缓存
+        Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
+                .setSqlSelect(
+                        ItemOffice.ITEM_ID.concat(" as itemId"),
+                        ItemOffice.OFFICE_ID.concat(" as officeId")
+                )
+                .eq(ItemOffice.ID, id);
+        ItemOffice itemOffice = itemOfficeService.selectOne(wrapper);
+        if (Objects.nonNull(itemOffice)) {
+            RedisUtil.remove(CacheKeys.ITEM_OFFICE_INFO + itemOffice.getItemId() + ":" + itemOffice.getOfficeId());
+        }
+
         Wrapper<ItemOffice> w = new EntityWrapper<>();
         w.eq(ItemOffice.ID, id);
         itemOfficeService.delete(w);
@@ -354,6 +371,18 @@ public class ItemService implements IItemService {
         data.setId(id);
         data.setQuantity(quantity);
         itemOfficeService.updateById(data);
+
+        // 清理缓存
+        Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
+                .setSqlSelect(
+                        ItemOffice.ITEM_ID.concat(" as itemId"),
+                        ItemOffice.OFFICE_ID.concat(" as officeId")
+                )
+                .eq(ItemOffice.ID, id);
+        ItemOffice itemOffice = itemOfficeService.selectOne(wrapper);
+        if (Objects.nonNull(itemOffice)) {
+            RedisUtil.remove(CacheKeys.ITEM_OFFICE_INFO + itemOffice.getItemId() + ":" + itemOffice.getOfficeId());
+        }
     }
 
     @Override
