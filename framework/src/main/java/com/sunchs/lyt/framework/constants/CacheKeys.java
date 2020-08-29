@@ -25,7 +25,7 @@ public class CacheKeys {
     /**
      * 患者编号缓存
      */
-    public static final String PATIENT_NUMBER = "patient_number_";
+    public static final String PATIENT_NUMBER = "patient_number:";
 
     /**
      * 项目科室信息
