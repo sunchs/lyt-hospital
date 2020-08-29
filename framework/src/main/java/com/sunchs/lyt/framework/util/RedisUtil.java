@@ -98,4 +98,31 @@ public class RedisUtil {
             closeResource(jedis);
         }
     }
+
+    public static boolean setnx(String key, String value, int expireSeconds) {
+        Jedis jedis = pool.getResource();
+        try {
+            // 1 if the key was set 0 if the key was not set
+            boolean setnxOK = jedis.setnx(key, value) == 1;
+
+            // 设置过期时间
+            if (expireSeconds > 0) {
+                if (setnxOK) { // 设置成功了，则设置失效时间
+                    jedis.expire(key, expireSeconds);
+                } else if (!setnxOK && jedis.pttl(key) < 0) {// 或者由于某些异常状态setnx执行成功
+                    // 但expire没有成功，可能会导致锁永远释放不掉，这里强制设置过期时间
+                    jedis.expire(key, expireSeconds);
+                }
+            }
+            if (setnxOK) {
+                return true;
+            }
+        } catch (Exception e) {
+            jedis.close();
+            e.printStackTrace();
+        } finally {
+            closeResource(jedis);
+        }
+        return false;
+    }
 }

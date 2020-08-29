@@ -4,10 +4,8 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
-import com.sunchs.lyt.framework.util.FormatUtil;
-import com.sunchs.lyt.framework.util.ObjectUtil;
-import com.sunchs.lyt.framework.util.StringUtil;
-import com.sunchs.lyt.framework.util.UserThreadUtil;
+import com.sunchs.lyt.framework.constants.CacheKeys;
+import com.sunchs.lyt.framework.util.*;
 import com.sunchs.lyt.item.bean.AnswerParam;
 import com.sunchs.lyt.item.bean.ItemOfficeFooData;
 import com.sunchs.lyt.item.bean.SyncAnswerParam;
@@ -184,6 +182,9 @@ public class AnswerFooService implements IAnswerFooService {
     }
 
     private void checkAnswer(SyncAnswerParam param) {
+        if ( ! RedisUtil.setnx(CacheKeys.PATIENT_NUMBER + param.getPatientNumber(), "1", 60 * 10)) {
+            throw new ItemException("答卷无需重复上传");
+        }
         Wrapper<Answer> wrapper = new EntityWrapper<Answer>()
                 .eq(Answer.ITEM_ID, param.getItemId())
                 .eq(Answer.OFFICE_ID, param.getOfficeId())

@@ -21,4 +21,9 @@ public class CacheKeys {
      * 生成答题满意度
      */
     public static final String MAKE_ANSWER_SATISFY = "make_answer_satisfy";
+
+    /**
+     * 患者编号缓存
+     */
+    public static final String PATIENT_NUMBER = "patient_number_";
 }
