@@ -95,60 +95,64 @@ public class AnswerFooService implements IAnswerFooService {
             new Thread(()->{
                 // 插入答题
                 param.getQuestionList().forEach(q -> {
-                    // 检查题目
-                    boolean isExist = answerQuestionIsExist(data.getQuestionnaireId(), q.getQuestionId());
-                    Question question = getQuestionById(q.getQuestionId());
-                    if (isExist && Objects.nonNull(question)) {
-                        if (q.getOptionMode().equals("text")) {
-                            AnswerOption answerOption = new AnswerOption();
-                            answerOption.setAnswerId(data.getId());
-                            answerOption.setItemId(param.getItemId());
-                            answerOption.setOfficeTypeId(data.getOfficeTypeId());
-                            answerOption.setOfficeId(data.getOfficeId());
-                            answerOption.setQuestionnaireId(data.getQuestionnaireId());
-                            answerOption.setQuestionId(q.getQuestionId());
-                            answerOption.setQuestionName(question.getTitle());
-                            answerOption.setOptionId(0);
-                            answerOption.setOptionName(q.getOptionValue());
-                            answerOption.setTimeDuration(q.getTimeDuration());
-                            answerOption.setStartTime(FormatUtil.dateTime(q.getStartTime()));
-                            answerOption.setEndTime(FormatUtil.dateTime(q.getEndTime()));
-                            answerOption.setTargetOne(question.getTargetOne());
-                            answerOption.setTargetTwo(question.getTargetTwo());
-                            answerOption.setTargetThree(question.getTargetThree());
-                            answerOption.setOptionType(question.getOptionType());
-                            answerOption.setScore(0);
-                            answerOptionService.insert(answerOption);
-                        } else {
-                            q.getOptionIds().forEach(optionId -> {
-                                QuestionOption option = getQuestionOption(optionId);
-                                if (Objects.nonNull(option) && option.getQuestionId().equals(q.getQuestionId())) {
-                                    AnswerOption answerOption = new AnswerOption();
-                                    answerOption.setAnswerId(data.getId());
-                                    answerOption.setItemId(param.getItemId());
-                                    answerOption.setOfficeTypeId(data.getOfficeTypeId());
-                                    answerOption.setOfficeId(data.getOfficeId());
-                                    answerOption.setQuestionnaireId(data.getQuestionnaireId());
-                                    answerOption.setQuestionId(q.getQuestionId());
-                                    answerOption.setQuestionName(question.getTitle());
-//                    answerOption.setQuestionName(q.getQuestionName());
-                                    answerOption.setOptionId(optionId);
-                                    answerOption.setOptionName(option.getTitle());
-                                    answerOption.setTimeDuration(q.getTimeDuration());
-                                    answerOption.setStartTime(FormatUtil.dateTime(q.getStartTime()));
-                                    answerOption.setEndTime(FormatUtil.dateTime(q.getEndTime()));
-//                    answerOption.setOptionName(q.getOptionName());
-                                    answerOption.setTargetOne(question.getTargetOne());
-                                    answerOption.setTargetTwo(question.getTargetTwo());
-                                    answerOption.setTargetThree(question.getTargetThree());
-                                    answerOption.setOptionType(question.getOptionType());
-                                    answerOption.setScore(option.getScore());
-                                    answerOptionService.insert(answerOption);
-                                } else {
-                                    System.out.println("同步参数有误");
-                                }
-                            });
+                    try {
+                        // 检查题目
+                        boolean isExist = answerQuestionIsExist(data.getQuestionnaireId(), q.getQuestionId());
+                        Question question = getQuestionById(q.getQuestionId());
+                        if (isExist && Objects.nonNull(question)) {
+                            if (q.getOptionMode().equals("text")) {
+                                AnswerOption answerOption = new AnswerOption();
+                                answerOption.setAnswerId(data.getId());
+                                answerOption.setItemId(param.getItemId());
+                                answerOption.setOfficeTypeId(data.getOfficeTypeId());
+                                answerOption.setOfficeId(data.getOfficeId());
+                                answerOption.setQuestionnaireId(data.getQuestionnaireId());
+                                answerOption.setQuestionId(q.getQuestionId());
+                                answerOption.setQuestionName(question.getTitle());
+                                answerOption.setOptionId(0);
+                                answerOption.setOptionName(q.getOptionValue());
+                                answerOption.setTimeDuration(q.getTimeDuration());
+                                answerOption.setStartTime(FormatUtil.dateTime(q.getStartTime()));
+                                answerOption.setEndTime(FormatUtil.dateTime(q.getEndTime()));
+                                answerOption.setTargetOne(question.getTargetOne());
+                                answerOption.setTargetTwo(question.getTargetTwo());
+                                answerOption.setTargetThree(question.getTargetThree());
+                                answerOption.setOptionType(question.getOptionType());
+                                answerOption.setScore(0);
+                                answerOptionService.insert(answerOption);
+                            } else {
+                                q.getOptionIds().forEach(optionId -> {
+                                    QuestionOption option = getQuestionOption(optionId);
+                                    if (Objects.nonNull(option) && option.getQuestionId().equals(q.getQuestionId())) {
+                                        AnswerOption answerOption = new AnswerOption();
+                                        answerOption.setAnswerId(data.getId());
+                                        answerOption.setItemId(param.getItemId());
+                                        answerOption.setOfficeTypeId(data.getOfficeTypeId());
+                                        answerOption.setOfficeId(data.getOfficeId());
+                                        answerOption.setQuestionnaireId(data.getQuestionnaireId());
+                                        answerOption.setQuestionId(q.getQuestionId());
+                                        answerOption.setQuestionName(question.getTitle());
+    //                    answerOption.setQuestionName(q.getQuestionName());
+                                        answerOption.setOptionId(optionId);
+                                        answerOption.setOptionName(option.getTitle());
+                                        answerOption.setTimeDuration(q.getTimeDuration());
+                                        answerOption.setStartTime(FormatUtil.dateTime(q.getStartTime()));
+                                        answerOption.setEndTime(FormatUtil.dateTime(q.getEndTime()));
+    //                    answerOption.setOptionName(q.getOptionName());
+                                        answerOption.setTargetOne(question.getTargetOne());
+                                        answerOption.setTargetTwo(question.getTargetTwo());
+                                        answerOption.setTargetThree(question.getTargetThree());
+                                        answerOption.setOptionType(question.getOptionType());
+                                        answerOption.setScore(option.getScore());
+                                        answerOptionService.insert(answerOption);
+                                    } else {
+                                        System.out.println("同步参数有误");
+                                    }
+                                });
+                            }
                         }
+                    } catch (Exception e) {
+                        System.out.println("答案保存异常:"+e.getMessage());
                     }
                 });
             }).start();
