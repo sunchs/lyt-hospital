@@ -62,6 +62,9 @@ public class AnswerFooService implements IAnswerFooService {
         ItemOffice itemOffice = getItemOffice(param.getItemId(), param.getOfficeId());
 
         Wrapper<Answer> answerWrapper = new EntityWrapper<Answer>()
+                .setSqlSelect(Answer.ENDTIME)
+                .eq(Answer.ITEM_ID, param.getItemId())
+                .eq(Answer.OFFICE_ID, param.getOfficeId())
                 .orderBy(Answer.ID, false);
         Answer last = answerService.selectOne(answerWrapper);
 
@@ -182,21 +185,26 @@ public class AnswerFooService implements IAnswerFooService {
     }
 
     private void checkAnswer(SyncAnswerParam param) {
-//        if ( ! RedisUtil.setnx(CacheKeys.PATIENT_NUMBER + param.getPatientNumber(), "1", 60 * 10)) {
-//            throw new ItemException("答卷无需重复上传");
-//        }
-        Wrapper<Answer> wrapper = new EntityWrapper<Answer>()
-                .eq(Answer.ITEM_ID, param.getItemId())
-                .eq(Answer.OFFICE_ID, param.getOfficeId())
-                .eq(Answer.PATIENT_NUMBER, param.getPatientNumber());
-        int count = answerService.selectCount(wrapper);
-        if (count > 0) {
+        if ( ! RedisUtil.setnx(CacheKeys.PATIENT_NUMBER + param.getPatientNumber(), "1", 60 * 30)) {
             throw new ItemException("答卷无需重复上传");
         }
+//        Wrapper<Answer> wrapper = new EntityWrapper<Answer>()
+//                .eq(Answer.ITEM_ID, param.getItemId())
+//                .eq(Answer.OFFICE_ID, param.getOfficeId())
+//                .eq(Answer.PATIENT_NUMBER, param.getPatientNumber());
+//        int count = answerService.selectCount(wrapper);
+//        if (count > 0) {
+//            throw new ItemException("答卷无需重复上传");
+//        }
     }
 
     private ItemOffice getItemOffice(int itemId, int officeId) {
         Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
+                .setSqlSelect(
+                        ItemOffice.HOSPITAL_ID.concat(" as hospitalId"),
+                        ItemOffice.OFFICE_TYPE_ID.concat(" as officeTypeId"),
+                        ItemOffice.QUESTIONNAIRE_ID.concat(" as questionnaireId")
+                )
                 .eq(ItemOffice.ITEM_ID, itemId)
                 .eq(ItemOffice.OFFICE_ID, officeId);
         return itemOfficeService.selectOne(wrapper);

@@ -100,7 +100,7 @@ public class RedisUtil {
     }
 
     public static boolean setnx(String key, String value, int expireSeconds) {
-        Jedis jedis = pool.getResource();
+        Jedis jedis = getPool().getResource();
         try {
             // 1 if the key was set 0 if the key was not set
             boolean setnxOK = jedis.setnx(key, value) == 1;
