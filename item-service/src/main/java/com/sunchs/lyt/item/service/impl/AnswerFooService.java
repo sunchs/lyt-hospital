@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.sunchs.lyt.db.business.entity.*;
 import com.sunchs.lyt.db.business.service.impl.*;
 import com.sunchs.lyt.framework.constants.CacheKeys;
+import com.sunchs.lyt.framework.data.DataReader;
 import com.sunchs.lyt.framework.util.*;
-import com.sunchs.lyt.item.bean.AnswerParam;
 import com.sunchs.lyt.item.bean.ItemOfficeFooData;
 import com.sunchs.lyt.item.bean.SyncAnswerParam;
 import com.sunchs.lyt.item.enums.OfficeTypeEnum;
@@ -14,13 +14,8 @@ import com.sunchs.lyt.item.exception.ItemException;
 import com.sunchs.lyt.item.service.IAnswerFooService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.misc.BASE64Decoder;
 
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -198,16 +193,16 @@ public class AnswerFooService implements IAnswerFooService {
 //        }
     }
 
+    /**
+     * 项目科室信息
+     */
     private ItemOffice getItemOffice(int itemId, int officeId) {
-        Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
-//                .setSqlSelect(
-//                        ItemOffice.HOSPITAL_ID.concat(" as hospitalId"),
-//                        ItemOffice.OFFICE_TYPE_ID.concat(" as officeTypeId"),
-//                        ItemOffice.QUESTIONNAIRE_ID.concat(" as questionnaireId")
-//                )
-                .eq(ItemOffice.ITEM_ID, itemId)
-                .eq(ItemOffice.OFFICE_ID, officeId);
-        return itemOfficeService.selectOne(wrapper);
+        return DataReader.getData(CacheKeys.ITEM_OFFICE_INFO, ItemOffice.class, ()->{
+            Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
+                    .eq(ItemOffice.ITEM_ID, itemId)
+                    .eq(ItemOffice.OFFICE_ID, officeId);
+            return itemOfficeService.selectOne(wrapper);
+        });
     }
 
     private String getHospitalNameById(int hospitalId) {
