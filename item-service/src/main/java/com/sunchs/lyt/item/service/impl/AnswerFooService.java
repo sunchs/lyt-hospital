@@ -197,7 +197,7 @@ public class AnswerFooService implements IAnswerFooService {
      * 项目科室信息
      */
     private ItemOffice getItemOffice(int itemId, int officeId) {
-        return DataReader.getData(CacheKeys.ITEM_OFFICE_INFO, ItemOffice.class, ()->{
+        return DataReader.getData(CacheKeys.ITEM_OFFICE_INFO + itemId + ":" + officeId, ItemOffice.class, ()->{
             Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
                     .eq(ItemOffice.ITEM_ID, itemId)
                     .eq(ItemOffice.OFFICE_ID, officeId);
