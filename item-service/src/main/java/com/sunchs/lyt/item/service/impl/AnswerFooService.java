@@ -182,9 +182,9 @@ public class AnswerFooService implements IAnswerFooService {
     }
 
     private void checkAnswer(SyncAnswerParam param) {
-        if ( ! RedisUtil.setnx(CacheKeys.PATIENT_NUMBER + param.getPatientNumber(), "1", 60 * 10)) {
-            throw new ItemException("答卷无需重复上传");
-        }
+//        if ( ! RedisUtil.setnx(CacheKeys.PATIENT_NUMBER + param.getPatientNumber(), "1", 60 * 10)) {
+//            throw new ItemException("答卷无需重复上传");
+//        }
         Wrapper<Answer> wrapper = new EntityWrapper<Answer>()
                 .eq(Answer.ITEM_ID, param.getItemId())
                 .eq(Answer.OFFICE_ID, param.getOfficeId())
