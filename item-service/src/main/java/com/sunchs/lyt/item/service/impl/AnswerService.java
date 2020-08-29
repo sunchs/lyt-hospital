@@ -111,13 +111,15 @@ public class AnswerService implements IAnswerService {
 
     @Override
     public void initReportDataByItemId(Integer itemId) {
-        Wrapper<Answer> answerWrapper = new EntityWrapper<Answer>()
-                .setSqlSelect(Answer.ID)
-                .eq(Answer.ITEM_ID, itemId)
-                .eq(Answer.STATUS, 1);
-        List<Answer> answerList = answerService.selectList(answerWrapper);
-        answerList.forEach(answer -> {
-            syncReportData(answer.getId(), 1);
+        new Thread(()->{
+            Wrapper<Answer> answerWrapper = new EntityWrapper<Answer>()
+                    .setSqlSelect(Answer.ID)
+                    .eq(Answer.ITEM_ID, itemId)
+                    .eq(Answer.STATUS, 1);
+            List<Answer> answerList = answerService.selectList(answerWrapper);
+            answerList.forEach(answer -> {
+                syncReportData(answer.getId(), 1);
+            });
         });
     }
 
