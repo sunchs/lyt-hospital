@@ -200,11 +200,11 @@ public class AnswerFooService implements IAnswerFooService {
 
     private ItemOffice getItemOffice(int itemId, int officeId) {
         Wrapper<ItemOffice> wrapper = new EntityWrapper<ItemOffice>()
-                .setSqlSelect(
-                        ItemOffice.HOSPITAL_ID.concat(" as hospitalId"),
-                        ItemOffice.OFFICE_TYPE_ID.concat(" as officeTypeId"),
-                        ItemOffice.QUESTIONNAIRE_ID.concat(" as questionnaireId")
-                )
+//                .setSqlSelect(
+//                        ItemOffice.HOSPITAL_ID.concat(" as hospitalId"),
+//                        ItemOffice.OFFICE_TYPE_ID.concat(" as officeTypeId"),
+//                        ItemOffice.QUESTIONNAIRE_ID.concat(" as questionnaireId")
+//                )
                 .eq(ItemOffice.ITEM_ID, itemId)
                 .eq(ItemOffice.OFFICE_ID, officeId);
         return itemOfficeService.selectOne(wrapper);
