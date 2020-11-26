@@ -182,7 +182,11 @@ public class ReportOutputService implements IReportOutputService {
                 int groupId = 0;
                 for (Integer questionnaireId : answerGroupList.keySet()) {
                     List<ReportAnswer> answerList = answerGroupList.get(questionnaireId);
-                    WritableSheet sheet = wb.createSheet(questionnaireNameMap.get(questionnaireId), groupId);
+                    String qName = questionnaireNameMap.get(questionnaireId);
+                    if (Objects.isNull(qName)) {
+                        qName = "问卷ID："+questionnaireId;
+                    }
+                    WritableSheet sheet = wb.createSheet(qName, groupId);
                     groupId++;
 
                     int columnPos = 0;
