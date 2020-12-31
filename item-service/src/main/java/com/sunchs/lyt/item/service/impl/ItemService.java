@@ -95,6 +95,27 @@ public class ItemService implements IItemService {
     }
 
     @Override
+    public PagingList<Item> getPageSelectList(ItemParam param) {
+        Wrapper<Item> wrapper = new EntityWrapper<>();
+
+        // 非全局账号
+        if (UserThreadUtil.getType() != UserTypeEnum.ADMIN.value) {
+            Wrapper<UserHospital> userHospitalWrapper = new EntityWrapper<UserHospital>()
+                    .setSqlSelect(UserHospital.USER_ID.concat(" as userId"))
+                    .eq(UserHospital.HOSPITAL_ID, UserThreadUtil.getHospitalId());
+            List<UserHospital> userHospitals = userHospitalService.selectList(userHospitalWrapper);
+            List<Integer> userIds = userHospitals.stream().map(UserHospital::getUserId).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(userIds)) {
+                wrapper.in(Item.CREATE_ID, userIds);
+            }
+        }
+
+        wrapper.orderBy(Item.ID, false);
+        Page<Item> page = itemService.selectPage(new Page<>(param.getPageNow(), param.getPageSize()), wrapper);
+        return PagingUtil.getData(page.getRecords(), page.getTotal(), page.getCurrent(), page.getSize());
+    }
+
+    @Override
     public int save(ItemParam param) {
         if (param.getId() == 0) {
             param.filterParam();

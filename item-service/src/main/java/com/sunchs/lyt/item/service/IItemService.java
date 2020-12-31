@@ -1,5 +1,6 @@
 package com.sunchs.lyt.item.service;
 
+import com.sunchs.lyt.db.business.entity.Item;
 import com.sunchs.lyt.db.business.entity.User;
 import com.sunchs.lyt.framework.bean.PagingList;
 import com.sunchs.lyt.framework.bean.TitleValueData;
@@ -14,6 +15,8 @@ public interface IItemService {
      * 项目分页列表
      */
     PagingList<ItemData> getPageList(ItemParam param);
+
+    PagingList<Item> getPageSelectList(ItemParam param);
 
     /**
      * 保存数据

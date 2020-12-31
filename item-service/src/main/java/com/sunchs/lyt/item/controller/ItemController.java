@@ -28,6 +28,15 @@ public class ItemController extends BaseController {
     }
 
     /**
+     * 项目分页列表
+     */
+    @PostMapping("/getPageSelectList")
+    public ResultData getPageSelectList(@RequestBody RequestData data) {
+        ItemParam param = data.toObject(ItemParam.class);
+        return success(itemService.getPageSelectList(param));
+    }
+
+    /**
      * 项目 添加、编辑
      */
     @PostMapping("/save")
