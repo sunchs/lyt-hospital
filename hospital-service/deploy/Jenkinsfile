@@ -3,7 +3,7 @@ pipeline {
     environment {
         module = "hospital-service"
         tag = "v1.0"
-        portBind = "-p 8003:8003 -v /usr/html/data:/lyt"
+        portBind = "-p 8003:8003 -v /usr/share/nginx/html/data:/lyt"
     }
     stages {
         stage('Build') {
